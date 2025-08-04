@@ -8,7 +8,6 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-//todo:폰트 나중에 정하기
     /*--font-sans: var(--font-geist-sans);*/
     /*--font-mono: var(--font-geist-mono);*/
 }
