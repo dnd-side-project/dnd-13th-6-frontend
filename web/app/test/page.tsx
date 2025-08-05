@@ -31,8 +31,8 @@ export default function WebViewTestPage() {
 
     window.addEventListener('message', handleMessage);
 
-    if (window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMessage(
+    if ((window as any).ReactNativeWebView) {
+      (window as any).ReactNativeWebView.postMessage(
         JSON.stringify({ type: 'WEBVIEW_READY' })
       );
       setIsConnected(true);
