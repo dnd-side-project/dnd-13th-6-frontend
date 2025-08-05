@@ -1,90 +1,24 @@
-import * as Location from 'expo-location';
-import { useEffect, useRef, useState } from 'react';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { router } from 'expo-router';
 import {
-  Alert,
   Dimensions,
-  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
   Text
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import WebView, { WebViewMessageEvent } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function Index() {
-  const inset = useSafeAreaInsets();
-  const [location, setLocation] = useState<Location.LocationObject | null>(
-    null
-  );
-  const webviewRef = useRef<WebView>(null);
-  const getGeoLocationPermission = async () => {
-    try {
-      let { status: foregroundPermission } =
-        await Location.requestForegroundPermissionsAsync();
-      let { status: backgroundPermission } =
-        await Location.requestBackgroundPermissionsAsync();
-
-      if (
-        foregroundPermission !== 'granted' &&
-        backgroundPermission !== 'granted'
-      ) {
-        Alert.alert(
-          '위치 권한이 필요합니다',
-          '앱에서 위치 정보를 사용하려면 권한을 허용해주세요.'
-        );
-        return;
-      }
-
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High
-      });
-
-      setLocation(location);
-      postMessage(
-        'message',
-        `${location.coords.latitude}, ${location.coords.longitude}`
-      );
-
-      Alert.alert('위치 정보 전송됨', '위치 정보가 웹페이지로 전송되었습니다.');
-    } catch (error) {
-      console.error('위치 정보 가져오기 실패:', error);
-      Alert.alert('오류', '위치 정보를 가져올 수 없습니다.');
-    }
-  };
-
-  const postMessage = (type: string, data: any) => {
-    const message = {
-      type,
-      message: data,
-      timestamp: Date.now(),
-      platform: Platform.OS
-    };
-
-    const messageString = JSON.stringify(message);
-    console.log('웹으로 전송하는 메시지:', messageString);
-    if (webviewRef.current) {
-      webviewRef.current.postMessage(messageString);
-    }
-  };
-
-  const onMessage = (event: WebViewMessageEvent) => {
-    console.log('웹에서 받은 메시지:', event.nativeEvent.data);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable onPress={getGeoLocationPermission}>
-        <Text>Get Location</Text>
+      <Pressable
+        style={styles.runningButton}
+        onPress={() => router.push('/(tabs)/(single-running)')}
+      >
+        <Text style={styles.runningButtonText}>달리기 시작하기</Text>
       </Pressable>
-      <WebView
-        ref={webviewRef}
-        onMessage={onMessage}
-        style={styles.webview}
-        source={{ uri: 'http://58.122.139.21:3000/test' }}
-      />
     </SafeAreaView>
   );
 }
@@ -101,5 +35,16 @@ const styles = StyleSheet.create({
     flex: 1,
     width: windowWidth,
     height: windowHeight
+  },
+  runningButton: {
+    backgroundColor: 'gray',
+    borderRadius: 100,
+    paddingVertical: 10,
+    paddingHorizontal: 20
+  },
+  runningButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold'
   }
 });

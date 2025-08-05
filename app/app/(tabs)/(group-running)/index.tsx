@@ -5,7 +5,7 @@ function Index() {
   const inset = useSafeAreaInsets();
   return (
     <View style={{ paddingTop: inset.top, paddingBottom: inset.bottom }}>
-      <Text>Calendar</Text>
+      <Text>Group Running</Text>
     </View>
   );
 }

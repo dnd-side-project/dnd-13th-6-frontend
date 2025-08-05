@@ -4,27 +4,36 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
+import { Tabs, usePathname, useSegments } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 
+const hideTabBarScreens = ['(single-running)', '(group-running)'];
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const segments = useSegments(); // usePathname 대신 useSegments 사용
 
+  // segments에서 현재 탭 정보 추출
+  const currentTab = segments[1] || ''; // (tabs) 다음 세그먼트가 현재 탭
+  const fullPath = `/${segments.join('/')}`;
+
+  const isHideTabBar = hideTabBarScreens.some(screen =>
+    currentTab.includes(screen.replace(/[()]/g, ''))
+  );
+
+  console.log('현재 세그먼트:', segments);
+  console.log('현재 탭:', currentTab);
+  console.log('전체 경로:', fullPath);
   return (
     <Tabs
+      backBehavior="history"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute'
-          },
-          default: {}
-        })
+        tabBarStyle: {
+          display: isHideTabBar ? 'none' : 'flex'
+        }
+        // tabBarButton: (props) => <AnimatedTabBarButton {...props} />,
       }}
     >
       <Tabs.Screen
@@ -46,21 +55,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="(calendar)"
-        options={{
-          title: '캘린더',
-          tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="calendar" color={color} />
-          )
-        }}
-      />
-      <Tabs.Screen
         name="(my-info)"
         options={{
           title: '내정보',
           tabBarIcon: ({ color }) => (
             <Ionicons size={28} name="person-circle" color={color} />
           )
+        }}
+      />
+      <Tabs.Screen
+        name="(single-running)"
+        options={{
+          href: null // 탭바에는 표시 안 함
+        }}
+      />
+      <Tabs.Screen
+        name="(group-running)"
+        options={{
+          href: null // 탭바에는 표시 안 함
         }}
       />
     </Tabs>
