@@ -12,7 +12,8 @@
     "next": "15.4.4",
     "prettier": "^3.6.2",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-kakao-maps-sdk": "^1.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
