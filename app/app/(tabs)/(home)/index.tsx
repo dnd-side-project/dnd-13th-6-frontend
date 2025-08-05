@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -10,7 +10,7 @@ import {
   Text
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import WebView from 'react-native-webview';
+import WebView, { WebViewMessageEvent } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -43,7 +43,10 @@ function Index() {
       });
 
       setLocation(location);
-      postMessage('location', location);
+      postMessage(
+        'message',
+        `${location.coords.latitude}, ${location.coords.longitude}`
+      );
 
       Alert.alert('위치 정보 전송됨', '위치 정보가 웹페이지로 전송되었습니다.');
     } catch (error) {
@@ -55,17 +58,20 @@ function Index() {
   const postMessage = (type: string, data: any) => {
     const message = {
       type,
-      data,
+      message: data,
       timestamp: Date.now(),
       platform: Platform.OS
     };
 
     const messageString = JSON.stringify(message);
     console.log('웹으로 전송하는 메시지:', messageString);
-
     if (webviewRef.current) {
       webviewRef.current.postMessage(messageString);
     }
+  };
+
+  const onMessage = (event: WebViewMessageEvent) => {
+    console.log('웹에서 받은 메시지:', event.nativeEvent.data);
   };
 
   return (
@@ -75,8 +81,9 @@ function Index() {
       </Pressable>
       <WebView
         ref={webviewRef}
+        onMessage={onMessage}
         style={styles.webview}
-        source={{ uri: 'http://localhost:3000' }}
+        source={{ uri: 'http://localhost:3000/test' }}
       />
     </SafeAreaView>
   );

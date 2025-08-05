@@ -24,8 +24,9 @@ export default function WebViewTestPage() {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleMessage = (event: MessageEvent<any>): void => {
-      if (event.data && event.data.type === 'FROM_RN') {
-        setReceivedMessages(prev => [...prev, `RN: ${event.data.message}`]);
+      const data = JSON.parse(event.data);
+      if (data) {
+        setReceivedMessages(prev => [...prev, `RN: ${data.message}`]);
       }
     };
 
