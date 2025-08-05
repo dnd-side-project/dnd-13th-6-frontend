@@ -2,16 +2,28 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-export default function WebViewTestPage() {
-  const [message, setMessage] = useState('');
-  const [receivedMessages, setReceivedMessages] = useState<string[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
-  const messageEndRef = useRef<HTMLDivElement>(null);
+// RN WebView 타입 선언 (이 컴포넌트 파일 안에서만 사용할 경우)
+interface ReactNativeWebView {
+  postMessage: (message: string) => void;
+}
 
-  // Handle incoming messages from React Native
+// window 객체에 ReactNativeWebView 추가
+declare global {
+  interface Window {
+    ReactNativeWebView?: ReactNativeWebView;
+  }
+}
+
+export default function WebViewTestPage() {
+  const [message, setMessage] = useState<string>('');
+  const [receivedMessages, setReceivedMessages] = useState<string[]>([]);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const messageEndRef = useRef<HTMLDivElement | null>(null);
+
+  // React Native에서 보내는 메시지 수신 처리
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      // Check if the message is from our React Native app
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleMessage = (event: MessageEvent<any>): void => {
       if (event.data && event.data.type === 'FROM_RN') {
         setReceivedMessages(prev => [...prev, `RN: ${event.data.message}`]);
       }
@@ -19,7 +31,6 @@ export default function WebViewTestPage() {
 
     window.addEventListener('message', handleMessage);
 
-    // Notify React Native that the WebView is ready
     if (window.ReactNativeWebView) {
       window.ReactNativeWebView.postMessage(
         JSON.stringify({ type: 'WEBVIEW_READY' })
@@ -32,18 +43,17 @@ export default function WebViewTestPage() {
     };
   }, []);
 
-  // Auto-scroll to bottom when new messages arrive
+  // 스크롤 자동 하단 이동
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [receivedMessages]);
 
-  const sendMessage = () => {
+  const sendMessage = (): void => {
     if (!message.trim()) return;
 
     const newMessage = `WEB: ${message}`;
     setReceivedMessages(prev => [...prev, newMessage]);
 
-    // Send message to React Native
     if (window.ReactNativeWebView) {
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
@@ -57,7 +67,7 @@ export default function WebViewTestPage() {
     setMessage('');
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
@@ -71,7 +81,9 @@ export default function WebViewTestPage() {
           <h1 className="text-xl font-bold">WebView 통신 테스트</h1>
           <div className="flex items-center mt-2">
             <div
-              className={`w-3 h-3 rounded-full mr-2 ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}
+              className={`w-3 h-3 rounded-full mr-2 ${
+                isConnected ? 'bg-green-500' : 'bg-red-500'
+              }`}
             ></div>
             <span className="text-sm text-gray-600">
               {isConnected ? 'React Native와 연결됨' : '연결 대기 중...'}
@@ -88,7 +100,11 @@ export default function WebViewTestPage() {
             receivedMessages.map((msg, index) => (
               <div
                 key={index}
-                className={`mb-2 p-2 rounded-lg max-w-[80%] ${msg.startsWith('WEB:') ? 'ml-auto bg-blue-100 text-blue-800' : 'mr-auto bg-gray-200 text-gray-800'}`}
+                className={`mb-2 p-2 rounded-lg max-w-[80%] ${
+                  msg.startsWith('WEB:')
+                    ? 'ml-auto bg-blue-100 text-blue-800'
+                    : 'mr-auto bg-gray-200 text-gray-800'
+                }`}
               >
                 {msg}
               </div>
