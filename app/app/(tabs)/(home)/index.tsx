@@ -83,7 +83,7 @@ function Index() {
         ref={webviewRef}
         onMessage={onMessage}
         style={styles.webview}
-        source={{ uri: 'http://localhost:3000/test' }}
+        source={{ uri: 'http://58.122.139.21:3000/test' }}
       />
     </SafeAreaView>
   );
