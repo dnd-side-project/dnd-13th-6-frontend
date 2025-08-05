@@ -54,8 +54,8 @@ export default function WebViewTestPage() {
     const newMessage = `WEB: ${message}`;
     setReceivedMessages(prev => [...prev, newMessage]);
 
-    if (window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMessage(
+    if ((window as any).ReactNativeWebView) {
+      (window as any).ReactNativeWebView.postMessage(
         JSON.stringify({
           type: 'MESSAGE',
           message: message,
