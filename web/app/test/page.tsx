@@ -31,8 +31,13 @@ export default function WebViewTestPage() {
 
     window.addEventListener('message', handleMessage);
 
-    if ((window as any).ReactNativeWebView) {
-      (window as any).ReactNativeWebView.postMessage(
+    if (
+      (window as unknown as { ReactNativeWebView: ReactNativeWebView })
+        .ReactNativeWebView
+    ) {
+      (
+        window as unknown as { ReactNativeWebView: ReactNativeWebView }
+      ).ReactNativeWebView.postMessage(
         JSON.stringify({ type: 'WEBVIEW_READY' })
       );
       setIsConnected(true);
@@ -54,8 +59,13 @@ export default function WebViewTestPage() {
     const newMessage = `WEB: ${message}`;
     setReceivedMessages(prev => [...prev, newMessage]);
 
-    if ((window as any).ReactNativeWebView) {
-      (window as any).ReactNativeWebView.postMessage(
+    if (
+      (window as unknown as { ReactNativeWebView: ReactNativeWebView })
+        .ReactNativeWebView
+    ) {
+      (
+        window as unknown as { ReactNativeWebView: ReactNativeWebView }
+      ).ReactNativeWebView.postMessage(
         JSON.stringify({
           type: 'MESSAGE',
           message: message,
