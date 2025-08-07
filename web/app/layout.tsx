@@ -6,7 +6,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAPS_APP_KEY}&autoload=false`;
+  const KAKAO_APP_KEY = process.env.NEXT_PUBLIC_KAKAO_MAPS_SDK_URL;
+  if (!KAKAO_APP_KEY) {
+    throw new Error('KAKAO_SDK_URL is not defined');
+  }
+  const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_APP_KEY}&autoload=false`;
 
   return (
     <html lang="en">
