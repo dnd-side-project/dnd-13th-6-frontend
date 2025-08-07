@@ -1,4 +1,6 @@
 'use client';
+import { useRouter } from 'next/navigation';
+
 import { Pause, Play, Square } from 'lucide-react';
 import { useState } from 'react';
 import ControlButton from '@/components/personal-map/ControlButton';
@@ -8,6 +10,8 @@ export function BottomDashboard() {
   const [runningState, setRunningState] = useState<'play' | 'pause' | 'stop'>(
     'play'
   );
+  const router = useRouter();
+
   const handleStart = () => {
     setRunningState('play');
   };
@@ -16,6 +20,7 @@ export function BottomDashboard() {
   };
   const handleStop = () => {
     setRunningState('stop');
+    router.replace('/run-finish');
   };
   return (
     <div className="h-[50vh] p-4">
