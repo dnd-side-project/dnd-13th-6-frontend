@@ -6,7 +6,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const KAKAO_APP_KEY = process.env.NEXT_PUBLIC_KAKAO_MAPS_SDK_URL;
+  const KAKAO_APP_KEY = process.env.NEXT_PUBLIC_KAKAO_MAPS_APP_KEY;
   if (!KAKAO_APP_KEY) {
     throw new Error('KAKAO_SDK_URL is not defined');
   }
