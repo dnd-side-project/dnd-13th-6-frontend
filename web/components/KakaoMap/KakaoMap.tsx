@@ -1,6 +1,14 @@
+'use client';
 import { Map, MapMarker, Polyline } from 'react-kakao-maps-sdk';
+import { DummyGPSData } from '@/components/KakaoMap/DummyGPSData';
 
-export default function KakaoMap() {
+export default function KakaoMap({
+  width = '100vw',
+  height = '100vh'
+}: {
+  width?: string;
+  height?: string;
+}) {
   return (
     <Map
       center={{
@@ -8,8 +16,8 @@ export default function KakaoMap() {
         lng: 126.978
       }}
       style={{
-        width: '100vw',
-        height: '100vh'
+        width,
+        height
       }}
       level={3}
     >
@@ -29,31 +37,15 @@ export default function KakaoMap() {
           }
         }}
         position={{
-          lat: 37.5665,
-          lng: 126.978
+          lat: DummyGPSData[0].lat,
+          lng: DummyGPSData[0].lng
         }}
       />
       <Polyline
         strokeWeight={6}
         strokeColor="#007aff"
         strokeOpacity={0.9}
-        path={[
-          { lat: 37.5665, lng: 126.978 },
-          { lat: 37.5666, lng: 126.9782 },
-          { lat: 37.5667, lng: 126.9784 },
-          { lat: 37.5668, lng: 126.9786 },
-          { lat: 37.5669, lng: 126.9788 },
-          { lat: 37.567, lng: 126.979 },
-          { lat: 37.5671, lng: 126.9788 },
-          { lat: 37.5673, lng: 126.9784 },
-          { lat: 37.5674, lng: 126.9782 },
-          { lat: 37.5675, lng: 126.978 },
-
-          { lat: 37.5671, lng: 126.9772 },
-          { lat: 37.567, lng: 126.977 },
-          { lat: 37.5669, lng: 126.9768 },
-          { lat: 37.5668, lng: 126.9766 }
-        ]}
+        path={DummyGPSData}
       />
     </Map>
   );
