@@ -1,8 +1,8 @@
 'use client';
 import { Pause, Play, Square } from 'lucide-react';
 import { useState } from 'react';
-import DashBoardItem from '@/components/personal-map/DashBoardItem';
 import ControlButton from '@/components/personal-map/ControlButton';
+import ExerciseOverview from '@/components/personal-map/ExerciseOverview';
 
 export function BottomDashboard() {
   const [runningState, setRunningState] = useState<'play' | 'pause' | 'stop'>(
@@ -20,17 +20,14 @@ export function BottomDashboard() {
   return (
     <div className="h-[50vh] p-4">
       {/* 2x2 그리드 영역 */}
-      <div className="grid h-[65%] grid-cols-2 grid-rows-2 gap-4">
-        <DashBoardItem title="남은거리" value="2.00km" />
-        <DashBoardItem title="거리" value="1.00km" />
-        <DashBoardItem title="평균 페이스" value="- '--'" />
-        <DashBoardItem title="칼로리" value="104" />
+      <div className="h-[50%]">
+        <ExerciseOverview />
       </div>
 
       {/* 추가 내용 영역 */}
       <div className="mt-4 flex h-[35%] items-center justify-center space-x-4">
         {runningState === 'pause' ? (
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 h-[20%]">
             <ControlButton onClick={handleStart}>
               <Play className="h-[35px] w-[35px] fill-[var(--primary)] text-[var(--primary)]" />
             </ControlButton>
@@ -39,7 +36,7 @@ export function BottomDashboard() {
             </ControlButton>
           </div>
         ) : (
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 h-[20%]">
             <ControlButton onClick={handlePause}>
               <Pause className="h-[35px] w-[35px] fill-[var(--primary)] text-[var(--primary)]" />
             </ControlButton>

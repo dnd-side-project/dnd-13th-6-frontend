@@ -8,7 +8,7 @@ export default function DashBoardItem({
   value: string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center mt-4">
       <div className="mb-2 text-base text-gray-600">{title}</div>
       <div className="text-[1.7rem] font-bold italic">{value}</div>
     </div>
