@@ -41,16 +41,10 @@ export function BottomDashboard() {
         ) : (
           <div className="flex space-x-4">
             <ControlButton onClick={handlePause}>
-              <Pause
-                className="h-[35px] w-[35px] fill-[var(--primary)] text-[var(--primary)]"
-                style={{ fill: 'var(--primary)' }}
-              />
+              <Pause className="h-[35px] w-[35px] fill-[var(--primary)] text-[var(--primary)]" />
             </ControlButton>
             <ControlButton onClick={handleStop}>
-              <Square
-                className="h-[35px] w-[35px] fill-[var(--primary)] text-[var(--primary)]"
-                style={{ fill: 'var(--primary)' }}
-              />
+              <Square className="h-[35px] w-[35px] fill-[var(--primary)] text-[var(--primary)]" />
             </ControlButton>
           </div>
         )}

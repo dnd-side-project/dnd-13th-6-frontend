@@ -9,11 +9,11 @@ export default function ControlButton({
   onClick?: () => void;
 }) {
   return (
-    <div
+    <button
       onClick={onClick}
       className="flex h-[78px] w-[78px] items-center justify-center rounded-full bg-[var(--background)]"
     >
       {children}
-    </div>
+    </button>
   );
 }
