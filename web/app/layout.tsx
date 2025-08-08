@@ -1,8 +1,17 @@
+import "./globals.css";
+import localFont from 'next/font/local'
+
+const pretendard = localFont({
+  src: '../fonts/pretendard/PretendardVariable.woff2',
+  display: 'swap',
+  weight: '100 900',
+  variable: '--font-pretendard',
+})
 import './globals.css';
 import Script from 'next/script';
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -18,7 +27,7 @@ export default function RootLayout({
         <title>Runky</title>
         <Script src={KAKAO_SDK_URL} strategy="beforeInteractive" />
       </head>
-      <body>
+      <body className={`${pretendard.variable} antialiased`}>
         <main>{children}</main>
       </body>
     </html>
