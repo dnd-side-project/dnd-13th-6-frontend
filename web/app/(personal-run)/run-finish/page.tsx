@@ -11,16 +11,16 @@ export default function Page() {
   const [isClient, setIsClient] = useState(false);
   const [windowSize, setWindowSize] = useState({
     width: 0,
-    height: 0,
+    height: 0
   });
 
   useEffect(() => {
     setIsClient(true);
     setWindowSize({
       width: window.innerWidth,
-      height: window.innerHeight,
+      height: window.innerHeight
     });
-    setNumberOfPieces(200);
+    setNumberOfPieces(300);
     setDate(new Date().toLocaleString());
 
     const timer = setTimeout(() => {
