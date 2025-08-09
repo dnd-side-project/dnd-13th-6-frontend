@@ -9,6 +9,9 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useEffect } from 'react';
+import { getGeoLocationPermission } from '@/utils/app-permisisons';
+import { Alert } from 'react-native';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -16,10 +19,16 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf')
   });
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await getGeoLocationPermission();
+      } catch (error: unknown) {
+        Alert.alert((error as Error).message);
+      }
+    };
+    init();
+  }, []);
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
