@@ -19,6 +19,12 @@ function Index() {
       >
         <Text style={styles.runningButtonText}>달리기 시작하기</Text>
       </Pressable>
+      <Pressable
+        style={styles.runningButton}
+        onPress={() => router.push('/(tabs)/(single-running)')}
+      >
+        <Text style={styles.runningButtonText}>달리기 시작하기</Text>
+      </Pressable>
     </SafeAreaView>
   );
 }
