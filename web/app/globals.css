@@ -1,27 +1,24 @@
 @import "tailwindcss";
 
-:root {
-    --primary: #32ff76;
-    --background: #000000;
-    /*--background: #ffffff;*/ /*--foreground: #171717;*/
+/* Tailwind v4 권장 테마 선언 */
+@theme {
+    --color-primary: #32ff76;
+    --color-background: #121212;
+    --color-text: #ffffff;
+    --font-pretendard: Pretendard, lufga, Arial, Helvetica, sans-serif;
+    --font-lufga: Lufga, pretendard, Arial, Helvetica, sans-serif;
 }
 
-@theme inline {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    /*--font-sans: var(--font-geist-sans);*/
-    /*--font-mono: var(--font-geist-mono);*/
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
+@media (prefers-color-scheme: light) {
+    @theme {
+        --color-background: #0a0a0a;
+        --color-text: #000000;
     }
 }
 
 body {
-    /*color: var(--foreground);*/
-    font-family: pretendard, Arial, Helvetica, sans-serif;
+    font-family: Lufga, Pretendard, Arial, Helvetica, sans-serif;
     margin: 0;
+    color: var(--color-text);
+    background-color: var(--color-background);
 }
