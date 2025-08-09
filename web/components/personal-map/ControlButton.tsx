@@ -11,7 +11,7 @@ export default function ControlButton({
   return (
     <button
       onClick={onClick}
-      className="flex h-[78px] w-[78px] items-center justify-center rounded-full bg-[var(--background)]"
+      className="flex h-[78px] w-[78px] items-center justify-center rounded-full bg-primary"
     >
       {children}
     </button>

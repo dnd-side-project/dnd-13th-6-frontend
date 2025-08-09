@@ -1,25 +1,20 @@
-import DashBoardItem from '@/components/personal-map/DashBoardItem';
 import React from 'react';
+import StatCard from '@/components/personal-map/StatCard';
 
 interface ExerciseOverviewProps {
   remainingDistance?: string;
   distance?: string;
   averageSpeed?: string;
-  calories?: string;
+  time?: string;
 }
 
-export default function ExerciseOverview({
-  remainingDistance = '0.00km',
-  distance = '1.00km',
-  averageSpeed = "- '--'",
-  calories = '104'
-}: ExerciseOverviewProps) {
+export default function ExerciseOverview({}: ExerciseOverviewProps) {
   return (
-    <div className="grid grid-cols-2 grid-rows-2 gap-4">
-      <DashBoardItem title="남은거리" value={remainingDistance} />
-      <DashBoardItem title="거리" value={distance} />
-      <DashBoardItem title="평균 페이스" value={averageSpeed} />
-      <DashBoardItem title="칼로리" value={calories} />
-    </div>
+    <>
+      <StatCard label="남은 거리" value="2.00" unit="km" />
+      <StatCard label="속도" value="8.5" unit="km/h" />
+      <StatCard label="평균 페이스" value="5’30”" />
+      <StatCard label="시간" value="10:06" />
+    </>
   );
 }
