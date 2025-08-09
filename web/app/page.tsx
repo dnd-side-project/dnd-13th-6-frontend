@@ -6,7 +6,7 @@ export default function Home() {
       <Link href="/login" className="text-blue-500 hover:underline">
         로그인 페이지로 이동
       </Link>
-      <Link href="/personal-map" className="text-blue-500 hover:underline">
+      <Link href="/running-session" className="text-blue-500 hover:underline">
         지도 페이지 이동
       </Link>
     </div>
