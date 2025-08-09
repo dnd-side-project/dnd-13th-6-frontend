@@ -1,4 +1,6 @@
-{
+import 'dotenv/config';
+
+export default {
   "expo": {
     "name": "dnd-iOS",
     "slug": "dnd-iOS",
@@ -56,6 +58,9 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "EXPO_PUBLIC_WEBVIEW_URL": process.env.EXPO_PUBLIC_WEBVIEW_URL,
     }
   }
 }

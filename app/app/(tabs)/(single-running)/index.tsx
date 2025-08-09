@@ -1,6 +1,15 @@
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import {
+  getCurrentSpeed,
+  getDistanceFromLatLonInMeters
+} from '@/utils/geolocation';
+import { STORAGE_KEY, getStorage, setStorage } from '@/utils/storage';
+import { generatePostMessage, receiveMessage } from '@/utils/webView';
+import { POST_MESSAGE_TYPE } from '@/utils/webView/consts';
+import Constants from 'expo-constants';
 import * as Location from 'expo-location';
-import { useEffect, useRef, useState } from 'react';
 import { router } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -10,15 +19,6 @@ import {
   Text
 } from 'react-native';
 import WebView from 'react-native-webview';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  getDistanceFromLatLonInMeters,
-  getCurrentSpeed
-} from '@/utils/geolocation';
-import { generatePostMessage, receiveMessage } from '@/utils/webView';
-import { STORAGE_KEY, getStorage, setStorage } from '@/utils/storage';
-import { POST_MESSAGE_TYPE } from '@/utils/webView/consts';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -127,7 +127,7 @@ function Index() {
       if (intervalId) clearInterval(intervalId);
     };
   }, []);
-
+  console.log(process.env.EXPO_PUBLIC_WEBVIEW_URL);
   return (
     <SafeAreaView style={styles.container}>
       {!intervalId && (
@@ -143,7 +143,9 @@ function Index() {
         ref={webviewRef}
         onMessage={receiveMessage}
         style={styles.webview}
-        source={{ uri: 'http://localhost:3000/test' }}
+        source={{
+          uri: Constants.expoConfig?.extra?.EXPO_PUBLIC_WEBVIEW_URL + '/test'
+        }}
       />
     </SafeAreaView>
   );
