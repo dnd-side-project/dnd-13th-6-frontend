@@ -2,6 +2,7 @@ import { LockKeyhole } from 'lucide-react';
 import React from 'react';
 import ExerciseOverview from '@/components/personal-map/ExerciseOverview';
 import ControlPanel from '@/components/personal-map/ControlPanel';
+import PageControl from '@/components/common/PageControl';
 
 export default function Page() {
   return (
@@ -41,6 +42,9 @@ export default function Page() {
       </div>
       {/* Spacer */}
       <div className="flex-1/5" />
+      <div className="flex items-center justify-center pb-4">
+        <PageControl pages={2} currentPage={0} />
+      </div>
     </div>
   );
 }
