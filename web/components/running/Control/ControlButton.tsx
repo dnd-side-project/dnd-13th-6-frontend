@@ -14,7 +14,7 @@ export default function ControlButton({
     <button
       onClick={onClick}
       className={`flex h-[78px] w-[78px] items-center justify-center rounded-full ${
-        type === 'stop' ? 'bg-[#48484a]' : 'bg-primary'
+        type === 'stop' ? 'bg-gray-80' : 'bg-primary'
       }`}
     >
       {children}
