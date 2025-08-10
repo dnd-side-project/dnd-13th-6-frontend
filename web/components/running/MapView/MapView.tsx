@@ -11,6 +11,8 @@ function MapView() {
       <div className="absolute bottom-15  z-10 flex w-[calc(100%-2rem)] items-center justify-center">
         <ControlPanel type="map" />
       </div>
+      {/* Bottom Gradient */}
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-50 bg-gradient-to-t from-black to-transparent" />
     </>
   );
 }
