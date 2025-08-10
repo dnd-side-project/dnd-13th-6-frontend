@@ -1,4 +1,3 @@
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import { router } from 'expo-router';
 import {
   Dimensions,
@@ -21,9 +20,9 @@ function Index() {
       </Pressable>
       <Pressable
         style={styles.runningButton}
-        onPress={() => router.push('/(tabs)/(single-running)')}
+        onPress={() => router.push('/(tabs)/(group-running)')}
       >
-        <Text style={styles.runningButtonText}>달리기 시작하기</Text>
+        <Text style={styles.runningButtonText}>그룹 달리기 조회</Text>
       </Pressable>
     </SafeAreaView>
   );
