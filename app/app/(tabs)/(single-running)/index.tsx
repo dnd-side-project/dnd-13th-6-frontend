@@ -4,8 +4,8 @@ import {
   getDistanceFromLatLonInMeters
 } from '@/utils/geolocation';
 import { STORAGE_KEY, getStorage, setStorage } from '@/utils/storage';
-import { generatePostMessage, receiveMessage } from '@/utils/webView';
-import { POST_MESSAGE_TYPE } from '@/utils/webView/consts';
+import { generatePostMessage } from '@/utils/webView';
+import { POST_MESSAGE_TYPE, SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
@@ -18,7 +18,7 @@ import {
   StyleSheet,
   Text
 } from 'react-native';
-import WebView from 'react-native-webview';
+import WebView, { WebViewMessageEvent } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -30,7 +30,7 @@ interface RunningData {
   speed: number;
 }
 
-const INTERVAL_TIME = 10 * 1000;
+const INTERVAL_TIME = 60 * 1000;
 
 function Index() {
   const [intervalId, setIntervalId] = useState<number | null>(null);
@@ -72,7 +72,6 @@ function Index() {
           time: INTERVAL_TIME,
           speed: 0
         };
-        console.log(runningData);
         if (runningData.length) {
           const { latitude: lastLatitude, longitude: lastLongitude } =
             runningData[runningData.length - 1];
@@ -85,14 +84,9 @@ function Index() {
           const speed = getCurrentSpeed(distance, 10);
           currentRunningData.distance = distance;
           currentRunningData.speed = speed;
-          console.log(distance);
-          if (distance > 10) {
-            postMessage(POST_MESSAGE_TYPE.MESSAGE, currentRunningData);
-          }
-        } else {
-          console.log('here');
-          postMessage(POST_MESSAGE_TYPE.MESSAGE, currentRunningData);
-        }
+          if (distance > 10)
+            postMessage(POST_MESSAGE_TYPE.MESSAGE, runningData);
+        } else postMessage(POST_MESSAGE_TYPE.MESSAGE, runningData);
 
         runningData.push(currentRunningData);
         await setStorage(STORAGE_KEY.RUNNING_DATA, runningData);
@@ -110,7 +104,26 @@ function Index() {
     }
   };
 
-  const postMessage = (type: POST_MESSAGE_TYPE, data: RunningData) => {
+  const receiveMessage = (event: WebViewMessageEvent) => {
+    const data = JSON.parse(event.nativeEvent.data);
+
+    switch (data.type) {
+      case SEND_MESSAGE_TYPE.RUNNING_START:
+        postGeoLocation();
+        break;
+      case SEND_MESSAGE_TYPE.RUNNING_END:
+        if (intervalId) clearInterval(intervalId);
+        setIntervalId(null);
+        //TODO.. 운동 종료 로직 추가
+        break;
+      case SEND_MESSAGE_TYPE.RUNNING_PAUSE:
+        if (intervalId) clearInterval(intervalId);
+        setIntervalId(null);
+        break;
+    }
+  };
+
+  const postMessage = (type: POST_MESSAGE_TYPE, data: RunningData[]) => {
     const message = generatePostMessage(type, data);
     if (webviewRef.current) webviewRef.current.postMessage(message);
   };
