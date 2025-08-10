@@ -5,6 +5,17 @@
     --color-primary: #32ff76;
     --color-background: #121212;
     --color-text: #ffffff;
+    --color-gray-10: #F2F2F7;
+    --color-gray-20: #E5E5EA;
+    --color-gray-30: #D1D1D6;
+    --color-gray-40: #C7C7CC;
+    --color-gray-50: #AEAEB2;
+    --color-gray-60: #8E8E93;
+    --color-gray-70: #636366;
+    --color-gray-80: #48484A;
+    --color-gray-90: #3A3A3C;
+
+
     --font-pretendard: Pretendard, lufga, Arial, Helvetica, sans-serif;
     --font-lufga: Lufga, pretendard, Arial, Helvetica, sans-serif;
 }
