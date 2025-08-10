@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import KakaoMap from '@/components/KakaoMap/KakaoMap';
-import ExerciseOverview from '@/components/personal-map/ExerciseOverview';
+import GoogleMap from '@/components/GoogleMap/GoogleMap';
+import ExerciseOverview from '@/components/running/OverView/ExerciseOverview';
 import Confetti from 'react-confetti';
 
 export default function Page() {
@@ -51,7 +51,7 @@ export default function Page() {
         </div>
         <ExerciseOverview />
       </div>
-      <KakaoMap height="50vh" />
+      <GoogleMap height="50vh" />
     </div>
   );
 }

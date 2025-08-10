@@ -3,11 +3,15 @@ import React from 'react';
 interface PageControlProps {
   pages: number;
   currentPage: number;
+  onClick: () => void;
 }
 
-const PageControl: React.FC<PageControlProps> = ({ pages, currentPage }) => {
+export function PageControl({ pages, currentPage, onClick }: PageControlProps) {
   return (
-    <div className="inline-flex items-center justify-center gap-2 rounded-full bg-[#353535] px-3 py-2 backdrop-blur-md z-50">
+    <button
+      className="inline-flex items-center justify-center gap-2 rounded-full bg-[#353535] px-3 py-2 backdrop-blur-md z-50"
+      onClick={onClick}
+    >
       {Array.from({ length: pages }).map((_, index) => (
         <div
           key={index}
@@ -16,8 +20,8 @@ const PageControl: React.FC<PageControlProps> = ({ pages, currentPage }) => {
           }`}
         />
       ))}
-    </div>
+    </button>
   );
-};
+}
 
 export default PageControl;
