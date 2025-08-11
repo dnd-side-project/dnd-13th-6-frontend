@@ -54,10 +54,15 @@ export default function Page() {
         <div className="flex h-full w-1/2 flex-col px-4 pb-4">
           <GpsStatus />
           <div className="flex flex-3/12 flex-col items-center justify-center text-center">
-            <MainOverview />
+            <MainOverview distance={1.06} />
           </div>
           <div className="mt-8 grid grid-cols-2 gap-y-10">
-            <ExerciseOverview />
+            <ExerciseOverview
+              remainingDistance="1.06"
+              velocity="5.2"
+              averagePace={`5\'32\'\' `}
+              time="1:30"
+            />
           </div>
           <div className="flex flex-1/12 items-center justify-center">
             <ControlPanel />

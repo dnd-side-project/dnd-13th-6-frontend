@@ -118,7 +118,7 @@ export default function RootLayout({
       <head>
         <title>Runky</title>
       </head>
-      <body>
+      <body className="bg-background text-white">
         <main>{children}</main>
       </body>
     </html>

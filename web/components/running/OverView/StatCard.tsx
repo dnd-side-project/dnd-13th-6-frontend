@@ -8,7 +8,7 @@ const StatCard = ({
   unit?: string;
 }) => (
   <div className="text-center">
-    <p className="text-lg font-semibold text-gray-30 font-pretendard">
+    <p className="text-lg font-semibold text-gray-30 font-pretendard pb-2">
       {label}
     </p>
     <div className="flex items-baseline justify-center">
