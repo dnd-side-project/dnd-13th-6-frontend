@@ -20,16 +20,14 @@
     --font-lufga: Lufga, pretendard, Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: light) {
-    @theme {
-        --color-background: #0a0a0a;
-        --color-text: #000000;
-    }
-}
+/*@media (prefers-color-scheme: light) {*/
+/*    @theme {*/
+/*        --color-background: #0a0a0a;*/
+/*        --color-text: #ffffff;*/
+/*    }*/
+/*}*/
 
 body {
     font-family: Lufga, Pretendard, Arial, Helvetica, sans-serif;
     margin: 0;
-    color: var(--color-text);
-    background-color: var(--color-background);
 }

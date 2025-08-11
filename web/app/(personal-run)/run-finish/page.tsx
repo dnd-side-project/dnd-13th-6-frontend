@@ -1,57 +1,44 @@
 'use client';
-
-import React, { useEffect, useState } from 'react';
+import MainOverview from '@/components/running/OverView/MainOverview';
+import 'react-circular-progressbar/dist/styles.css';
+import CircleProgress from '@/components/running/Finish/CircleProgress';
+import FinishOverView from '@/components/running/OverView/FinishOverView';
+import RunningNameInput from '@/components/running/Finish/RunningNameInput';
 import GoogleMap from '@/components/GoogleMap/GoogleMap';
-import ExerciseOverview from '@/components/running/OverView/ExerciseOverview';
-import Confetti from 'react-confetti';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
-  const [numberOfPieces, setNumberOfPieces] = useState(0);
-  const [date, setDate] = useState('');
-  const [isClient, setIsClient] = useState(false);
-  const [windowSize, setWindowSize] = useState({
-    width: 0,
-    height: 0
-  });
-
-  useEffect(() => {
-    setIsClient(true);
-    setWindowSize({
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
-    setNumberOfPieces(300);
-    setDate(new Date().toLocaleString());
-
-    const timer = setTimeout(() => {
-      setNumberOfPieces(0);
-    }, 7000); // Stop confetti after 7 seconds
-
-    return () => clearTimeout(timer);
-  }, []);
-
+  const navi = useRouter();
   return (
-    <div>
-      {isClient && (
-        <Confetti
-          width={windowSize.width}
-          height={windowSize.height}
-          numberOfPieces={numberOfPieces}
-          recycle={false}
-          style={{ zIndex: 9999 }}
-        />
-      )}
-      <div className="h-[50vh] p-4">
-        <div>{date}</div>
-        <div className="text-[5rem] font-bold">0.00</div>
-        <div className="pb-5">
-          <p className="inline-block bg-[#d9d9d9] px-2 py-1 rounded w-30">
-            킬로미터
-          </p>
+    <div className="text-white min-h-screen flex flex-col relative">
+      <div className="h-[45vh] p-4 flex flex-col justify-around">
+        <div className="flex items-center justify-around gap-8">
+          <div className="flex flex-col justify-center items-start">
+            <RunningNameInput />
+            <MainOverview type={'finish'} distance={1.06} />
+          </div>
+          <CircleProgress percent={82} />
         </div>
-        <ExerciseOverview />
+        <FinishOverView
+          averagePace={`5\'32\'\' `}
+          time="1:30"
+          startTime="10:00"
+        />
       </div>
-      <GoogleMap height="50vh" />
+      {/*지도 55vh 아래*/}
+      <div className="absolute bottom-0 left-0 right-0 h-[55vh]">
+        <GoogleMap height="100%" />
+      </div>
+
+      {/*종료버튼*/}
+      <div className="absolute bottom-0 left-0 right-0 w-full p-4 bg-transparent">
+        <button
+          className="w-full bg-green-400 text-black font-semibold py-4 rounded-lg font-pretendard"
+          onClick={() => navi.push('/lucky-stamp')}
+        >
+          <p className="text-lg">운동 종료하기</p>
+        </button>
+      </div>
     </div>
   );
 }
