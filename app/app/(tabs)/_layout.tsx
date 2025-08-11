@@ -21,10 +21,6 @@ export default function TabLayout() {
   const isHideTabBar = hideTabBarScreens.some(screen =>
     currentTab.includes(screen.replace(/[()]/g, ''))
   );
-
-  console.log('현재 세그먼트:', segments);
-  console.log('현재 탭:', currentTab);
-  console.log('전체 경로:', fullPath);
   return (
     <Tabs
       backBehavior="history"

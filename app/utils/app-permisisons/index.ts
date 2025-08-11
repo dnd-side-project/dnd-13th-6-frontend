@@ -18,4 +18,13 @@ const getGeoLocationPermission = async () => {
   }
 };
 
-export { getGeoLocationPermission };
+const getBackgroundLocationPermission = async () => {
+  const { status: backgroundStatus } =
+    await Location.requestBackgroundPermissionsAsync();
+  console.log('backgroundStatus', backgroundStatus);
+  if (backgroundStatus !== 'granted') {
+    throw new Error('백그라운드 권한이 필요합니다');
+  }
+};
+
+export { getGeoLocationPermission, getBackgroundLocationPermission };

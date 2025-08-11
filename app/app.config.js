@@ -20,7 +20,10 @@ export default {
               "NSExceptionRequiresForwardSecrecy": false
             }
           }
-        }
+        },
+        "NSLocationWhenInUseUsageDescription": "앱 사용 중 위치를 사용합니다.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "백그라운드에서도 위치를 사용합니다.",
+        "UIBackgroundModes": ["location"]
       }
     },
     "android": {

@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 enum STORAGE_KEY {
-  RUNNING_DATA = 'runningData'
+  RUNNING_DATA = 'runningData',
+  RUNNING_PENDING_MESSAGES = 'runningPendingMessages'
 }
 
 const getStorage = async <T>(key: STORAGE_KEY): Promise<T | null> => {
