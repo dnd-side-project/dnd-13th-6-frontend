@@ -2,7 +2,7 @@ import React from 'react';
 import GpsStatus from '@/components/running/GpsStatus';
 import ControlPanel from '@/components/running/Control/ControlPanel';
 import GoogleMap from '@/components/GoogleMap/GoogleMap';
-import { RunningData } from '../../../../app/types/runnintTypes';
+import { RunningData } from '@/types/runningTypes';
 
 interface MapViewProps {
   onControl: (action: 'play' | 'pause' | 'stop' | 'resume') => void;
@@ -12,22 +12,25 @@ interface MapViewProps {
   time: string;
 }
 
-function MapView({ 
+function MapView({
   onControl,
   isRunning,
   isPaused,
   runningData,
   time
 }: MapViewProps) {
-  const path = runningData.map(data => ({ lat: data.latitude, lng: data.longitude }));
+  const path = runningData.map(data => ({
+    lat: data.latitude,
+    lng: data.longitude
+  }));
 
   return (
     <>
       <GpsStatus />
       <GoogleMap path={path} />
       <div className="absolute bottom-15  z-10 flex w-[calc(100%-2rem)] items-center justify-center">
-        <ControlPanel 
-          type="map" 
+        <ControlPanel
+          type="map"
           onControl={onControl}
           isRunning={isRunning}
           isPaused={isPaused}
