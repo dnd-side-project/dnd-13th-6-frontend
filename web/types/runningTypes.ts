@@ -1,5 +1,3 @@
-import { POST_MESSAGE_TYPE } from '@/utils/webView/consts';
-
 interface RunningData {
   latitude: number;
   longitude: number;
@@ -9,10 +7,4 @@ interface RunningData {
   timestamp: number;
 }
 
-type RunningMessagePacket = {
-  type: POST_MESSAGE_TYPE;
-  data: RunningData[];
-  timestamp: number;
-};
-
-export type { RunningData, RunningMessagePacket };
+export type { RunningData };
