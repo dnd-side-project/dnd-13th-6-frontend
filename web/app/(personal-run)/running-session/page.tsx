@@ -22,10 +22,11 @@ export default function Page() {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  const totalDistance = useMemo(
-    () => runningData.reduce((acc, cur) => acc + cur.distance, 0) / 1000,
-    [runningData]
-  );
+  const totalDistance = useMemo(() => {
+    const sum =
+      runningData.reduce((acc, cur) => acc + Number(cur.distance), 0) / 1000;
+    return Math.round(sum * 100) / 100;
+  }, [runningData]);
 
   const totalTime = useMemo(() => {
     return elapsedTime;
