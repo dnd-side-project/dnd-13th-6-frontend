@@ -54,7 +54,7 @@ export default function Page() {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const postMessageToApp = (type: SEND_MESSAGE_TYPE, data?: any) => {
+  const postMessageToApp = (type: SEND_MESSAGE_TYPE, data?: string) => {
     if (window.ReactNativeWebView) {
       const message = JSON.stringify({ type, data });
       window.ReactNativeWebView.postMessage(message);
