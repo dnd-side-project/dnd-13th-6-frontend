@@ -7,7 +7,7 @@ import PageControl from '@/components/common/PageControl';
 import MapView from '@/components/running/MapView/MapView';
 import GpsStatus from '@/components/running/GpsStatus';
 import MainOverview from '@/components/running/OverView/MainOverview';
-import { POST_MESSAGE_TYPE, SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
+import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 import { RunningData } from '@/types/runningTypes';
 
 export default function Page() {
@@ -65,35 +65,30 @@ export default function Page() {
   // useEffect(() => {
   //   window.alert(`runningData:${runningData[0]?.latitude}`);
   // }, [runningData]);
-
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
         window.alert(`runningData:${JSON.stringify(data)}`);
         console.log('Parsed message data:', data);
-        if (data.type === POST_MESSAGE_TYPE.MESSAGE && data.message) {
+        if (data) {
           setRunningData(prev => [
             ...prev,
             { ...data.message, timestamp: data.timestamp }
           ]);
-        } else {
-          console.log(
-            'Message type is not POST_MESSAGE_TYPE.MESSAGE or data is missing:',
-            data
-          );
         }
       } catch (error) {
-        console.error('Error parsing message from React Native:', error);
+        console.error('error:', error);
       }
     };
-
-    document.addEventListener('message', handleMessage);
-    // web
+    // Android
+    document.addEventListener('message', handleMessage as EventListener);
+    // iOS
     window.addEventListener('message', handleMessage);
-
     return () => {
-      document.removeEventListener('message', handleMessage);
+      //Android
+      document.removeEventListener('message', handleMessage as EventListener);
+      //iOS
       window.removeEventListener('message', handleMessage);
     };
   }, []);
