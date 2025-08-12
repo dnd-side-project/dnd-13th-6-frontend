@@ -18,11 +18,12 @@ const getDistanceFromLatLonInMeters = (
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c * 1000; // 결과 단위: m
+  const distance = R * c * 1000;
+  return Math.round(distance * 10) / 10;
 };
 
 const getCurrentSpeed = (distance: number, time: number): number => {
-  return Math.round((distance / time) * 100) / 100;
+  return Math.round((distance / time) * 10) / 10;
 };
 
 export { getDistanceFromLatLonInMeters, getCurrentSpeed };

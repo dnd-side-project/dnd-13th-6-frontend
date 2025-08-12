@@ -59,9 +59,15 @@ TaskManager.defineTask(
       if (runningData.length) {
         const { latitude: lastLatitude, longitude: lastLongitude } =
           runningData[runningData.length - 1];
+        // const distance = getDistanceFromLatLonInMeters(
+        //   latitude,
+        //   longitude,
+        //   lastLatitude,
+        //   lastLongitude
+        // );
         const distance = getDistanceFromLatLonInMeters(
-          latitude,
-          longitude,
+          lastLatitude + 10,
+          lastLongitude + 10,
           lastLatitude,
           lastLongitude
         );
@@ -136,7 +142,7 @@ function Index() {
 
     const saveLocation = async (runningData: RunningData[] = []) => {
       try {
-        console.log(runningData, 'runningData');
+        // console.log(runningData, 'runningData');
         const { latitude, longitude } = location.coords;
         //Async Storage에 위치 정보를 가져온다. 이 때 위치 정보가 없다면 값을 바로 추가한다.
 
@@ -151,16 +157,19 @@ function Index() {
           const { latitude: lastLatitude, longitude: lastLongitude } =
             runningData[runningData.length - 1];
           const distance = getDistanceFromLatLonInMeters(
-            latitude,
-            longitude,
+            lastLatitude + 0.0000898,
+            lastLongitude + 0.0001125,
             lastLatitude,
             lastLongitude
           );
           const speed = getCurrentSpeed(distance, 10);
+          //임시
+          currentRunningData.latitude = lastLatitude + 0.0000898;
+          currentRunningData.longitude = lastLongitude + 0.0001125;
           currentRunningData.distance = distance;
           currentRunningData.speed = speed;
-          console.log(distance, 'distance');
-          if (distance > 10)
+          console.log(distance, 'distance 확인');
+          if (distance > 5)
             postMessage(POST_MESSAGE_TYPE.MESSAGE, currentRunningData);
         } else postMessage(POST_MESSAGE_TYPE.MESSAGE, currentRunningData);
 
@@ -184,7 +193,7 @@ function Index() {
 
   const receiveMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
-
+    console.log(data);
     switch (data.type) {
       case SEND_MESSAGE_TYPE.RUNNING_START:
         setIsRunning(true);
@@ -196,6 +205,8 @@ function Index() {
         setIsRunning(false);
         stopBackgroundLocation();
         //TODO.. 운동 종료 로직 추가
+        setStorage(STORAGE_KEY.RUNNING_DATA, []);
+        setStorage(STORAGE_KEY.RUNNING_PENDING_MESSAGES, []);
         break;
       case SEND_MESSAGE_TYPE.RUNNING_PAUSE:
         if (intervalId) clearInterval(intervalId);
@@ -208,6 +219,7 @@ function Index() {
 
   const postMessage = (type: POST_MESSAGE_TYPE, data: RunningData) => {
     const message = generatePostMessage(type, data);
+    console.log(message, 'message');
     if (webviewRef.current) {
       webviewRef.current.postMessage(message);
     }
@@ -290,7 +302,7 @@ function Index() {
         onMessage={receiveMessage}
         style={styles.webview}
         source={{
-          uri: Constants.expoConfig?.extra?.EXPO_PUBLIC_WEBVIEW_URL + '/test'
+          uri: 'https://runky.hojin.site' + '/running-session'
         }}
       />
     </SafeAreaView>
