@@ -13,7 +13,7 @@ interface ControlPanelProps {
   isPaused: boolean;
 }
 
-function ControlPanel({ 
+function ControlPanel({
   type,
   time = '16:00',
   onControl,
@@ -45,7 +45,7 @@ function ControlPanel({
           {isRunning && !isPaused ? (
             <button
               onClick={handlePause}
-              className="flex h-[64px] items-center justify-center space-x-2 rounded-full bg-gray-80 px-6 py-3"
+              className="flex h-[64px] items-center justify-center space-x-2 rounded-full bg-gray-70 px-6 py-3"
             >
               <Pause className="h-[36px] w-[36px] fill-gray-10 text-gray-10" />
               <span className="text-3xl font-bold text-gray-10">{time}</span>
