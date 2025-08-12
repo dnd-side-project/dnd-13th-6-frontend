@@ -15,7 +15,9 @@ export default function Page() {
   const [runningData, setRunningData] = useState<RunningData[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0); // 경과 시간을 초 단위로 저장
   const startTime = useRef<number | null>(null); // 시작 시간을 저장할 useRef 추가
+  const intervalRef = useRef<NodeJS.Timeout | null>(null); // setInterval ID를 저장할 useRef
 
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -26,15 +28,8 @@ export default function Page() {
   );
 
   const totalTime = useMemo(() => {
-    if (runningData.length === 0) return 0;
-    // 첫 데이터의 timestamp를 시작 시간으로 설정
-    if (startTime.current === null) {
-      startTime.current = runningData[0].timestamp;
-    }
-    const lastTimestamp = runningData[runningData.length - 1].timestamp;
-    // 현재 시간 - 시작 시간 (밀리초)을 초 단위로 변환
-    return Math.floor((lastTimestamp - startTime.current) / 1000);
-  }, [runningData]);
+    return elapsedTime;
+  }, [elapsedTime]);
 
   const currentSpeed = useMemo(
     () => (runningData.length ? runningData[runningData.length - 1].speed : 0),
@@ -62,14 +57,34 @@ export default function Page() {
   };
   //todo:테스트용
 
-  // useEffect(() => {
-  //   window.alert(`runningData:${runningData[0]?.latitude}`);
-  // }, [runningData]);
+  useEffect(() => {
+    if (isRunning && !isPaused) {
+      if (startTime.current === null) {
+        startTime.current = Date.now();
+      }
+      intervalRef.current = setInterval(() => {
+        setElapsedTime(
+          Math.floor((Date.now() - (startTime.current || Date.now())) / 1000)
+        );
+      }, 1000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isRunning, isPaused]);
+
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
-        window.alert(`runningData:${JSON.stringify(data)}`);
         console.log('Parsed message data:', data);
         if (data) {
           setRunningData(prev => [
