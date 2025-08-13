@@ -35,7 +35,7 @@ function RunningNameInput() {
             if (e.key === 'Enter') handleSave();
           }}
           autoFocus
-          className="bg-transparent border-b border-gray-40 text-lg text-white outline-none"
+          className="bg-transparent border-b border-gray-40 text-lg text-white outline-none max-w-[200px]"
         />
       ) : (
         <>
