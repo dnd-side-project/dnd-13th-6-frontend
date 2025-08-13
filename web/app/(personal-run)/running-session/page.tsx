@@ -169,6 +169,14 @@ export default function Page() {
         postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_START); // or a new RESUME type
         break;
       case 'stop':
+        const finishData = {
+          runningData,
+          averagePace,
+          totalDistance,
+          totalTime: formatTime(totalTime),
+          startTime: startTime.current || 0
+        };
+        localStorage.setItem('finishData', JSON.stringify(finishData));
         setIsRunning(false);
         setIsPaused(false);
         postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_END);

@@ -2,7 +2,7 @@ import React from 'react';
 
 type MainOverviewProps = {
   type?: string;
-  distance: number;
+  distance?: number;
 };
 
 function MainOverview({ type, distance }: MainOverviewProps) {

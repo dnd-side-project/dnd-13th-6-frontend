@@ -302,7 +302,7 @@ function Index() {
         onMessage={receiveMessage}
         style={styles.webview}
         source={{
-          uri: 'https://runky.hojin.site' + '/running-session'
+          uri: '192.168.55.130:3000' + '/running-session'
         }}
       />
     </SafeAreaView>
