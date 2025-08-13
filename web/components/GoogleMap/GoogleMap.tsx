@@ -95,12 +95,6 @@ export default function GoogleMap({
                   style={{ transform: 'translateY(10px)' }}
                 />
               </AdvancedMarker>
-              <AdvancedMarker position={position} title="My location">
-                <div
-                  className="w-6 h-6 border-4 border-white  rounded-full bg-primary"
-                  style={{ transform: 'translateY(10px)' }}
-                />
-              </AdvancedMarker>
               <Polyline path={polyline} />
             </>
           )}
