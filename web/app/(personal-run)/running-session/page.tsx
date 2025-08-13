@@ -197,7 +197,7 @@ export default function Page() {
       >
         {/* Stats View */}
         <div className="flex h-full w-1/2 flex-col px-4 pb-4">
-          <GpsStatus />
+          {/* <GpsStatus /> */}
           <div className="flex flex-3/12 flex-col items-center justify-center text-center">
             <MainOverview distance={totalDistance} />
           </div>

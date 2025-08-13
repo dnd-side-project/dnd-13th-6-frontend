@@ -26,7 +26,7 @@ function MapView({
 
   return (
     <>
-      <GpsStatus />
+      {/* <GpsStatus /> */}
       <GoogleMap path={path} />
       <div className="absolute bottom-15  z-10 flex w-[calc(100%-2rem)] items-center justify-center">
         <ControlPanel

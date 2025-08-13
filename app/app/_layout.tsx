@@ -12,7 +12,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import {
   getGeoLocationPermission,
   getBackgroundLocationPermission
-} from '@/utils/app-permisisons';
+} from '@/utils/app/permission';
 import { useEffect } from 'react';
 import { Alert } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';

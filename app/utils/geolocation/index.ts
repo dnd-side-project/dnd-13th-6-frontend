@@ -26,4 +26,9 @@ const getCurrentSpeed = (distance: number, time: number): number => {
   return Math.round((distance / time) * 10) / 10;
 };
 
-export { getDistanceFromLatLonInMeters, getCurrentSpeed };
+const getAvgSpped = (distance: number[], time: number): number => {
+  const totalDistance = distance.reduce((acc, cur) => acc + cur, 0);
+  return Math.round((totalDistance / time) * 10) / 10;
+};
+
+export { getDistanceFromLatLonInMeters, getCurrentSpeed, getAvgSpped };
