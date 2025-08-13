@@ -21,6 +21,7 @@ export default function Page() {
 
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+  const isSwipeActive = useRef(false);
 
   const totalDistance = useMemo(() => {
     const sum =
@@ -110,25 +111,42 @@ export default function Page() {
   }, []);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.targetTouches[0].clientX;
-    touchEndX.current = e.targetTouches[0].clientX;
+    const touchX = e.targetTouches[0].clientX;
+    const screenWidth = window.innerWidth;
+    const activationZoneWidth = screenWidth * 0.2; // 20% of screen width on each side
+
+    if (
+      touchX < activationZoneWidth ||
+      touchX > screenWidth - activationZoneWidth
+    ) {
+      isSwipeActive.current = true;
+      touchStartX.current = touchX;
+      touchEndX.current = touchX; // Initialize touchEndX
+    } else {
+      isSwipeActive.current = false;
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
+    if (isSwipeActive.current) {
+      touchEndX.current = e.targetTouches[0].clientX;
+    }
   };
 
   const handleTouchEnd = () => {
-    const swipeDistance = touchStartX.current - touchEndX.current;
-    const swipeThreshold = 50; // Minimum swipe distance
+    if (isSwipeActive.current) {
+      const swipeDistance = touchStartX.current - touchEndX.current;
+      const swipeThreshold = 50; // 최소 슬라이드 거리
 
-    if (swipeDistance > swipeThreshold) {
-      // Swipe left
-      setCurrentPage(prev => Math.min(prev + 1, 1));
-    } else if (swipeDistance < -swipeThreshold) {
-      // Swipe right
-      setCurrentPage(prev => Math.max(prev - 1, 0));
+      if (swipeDistance > swipeThreshold) {
+        // Swipe left
+        setCurrentPage(prev => Math.min(prev + 1, 1));
+      } else if (swipeDistance < -swipeThreshold) {
+        // Swipe right
+        setCurrentPage(prev => Math.max(prev - 1, 0));
+      }
     }
+    isSwipeActive.current = false; // Reset on touch end
   };
 
   const handleClickIndicator = () => {
