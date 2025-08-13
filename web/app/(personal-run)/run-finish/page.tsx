@@ -29,7 +29,6 @@ export default function Page() {
     setIsClient(true);
     const data = localStorage.getItem('finishData');
     if (data) {
-      window.alert(data);
       setFinishData(JSON.parse(data) as FinishData);
     }
   }, []);
