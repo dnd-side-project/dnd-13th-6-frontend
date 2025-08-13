@@ -9,6 +9,7 @@ export default {
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+      "bundleIdentifier": "com.yoojunho.dnd",
       "supportsTablet": true,
       "infoPlist": {
         "NSAppTransportSecurity": {
@@ -27,6 +28,7 @@ export default {
       }
     },
     "android": {
+      "package": "com.yoojunho.dnd",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -62,6 +64,9 @@ export default {
     },
     "extra": {
       "EXPO_PUBLIC_WEBVIEW_URL": process.env.EXPO_PUBLIC_WEBVIEW_URL,
+      "eas": {
+        "projectId": "fa2044ae-6823-4e2c-8376-e7aa23b5f8d5"
+      }
     }
   }
 }
