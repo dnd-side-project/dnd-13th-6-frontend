@@ -6,7 +6,6 @@ import {
 import { STORAGE_KEY, getStorage, setStorage } from '@/utils/storage';
 import { generatePostMessage } from '@/utils/webView';
 import { POST_MESSAGE_TYPE, SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
-import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -17,11 +16,16 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  AppState
+  AppState,
+  View,
+  Image
 } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import * as TaskManager from 'expo-task-manager';
 import { RunningData, RunningMessagePacket } from '@/types/runnintTypes';
+import Chip from '@/components/chips/Chip';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+// import EllipseGreen from '@/assets/images/ellipse-green.svg';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -66,12 +70,13 @@ TaskManager.defineTask(
         //   lastLongitude
         // );
         const distance = getDistanceFromLatLonInMeters(
-          lastLatitude + 10,
-          lastLongitude + 10,
+          lastLatitude + 0.0000898,
+          lastLongitude + 0.0001125,
           lastLatitude,
           lastLongitude
         );
         const speed = getCurrentSpeed(distance, 10);
+        console.log('백그라운드중...');
         currentRunningData.distance = distance;
         currentRunningData.speed = speed;
       }
@@ -84,44 +89,48 @@ TaskManager.defineTask(
   }
 );
 
-const startBackgroundLocation = async () => {
-  const { status } = await Location.requestBackgroundPermissionsAsync();
-  if (status === 'granted') {
-    //정의한 Task를 실행
-    await Location.startLocationUpdatesAsync(
-      STORAGE_KEY.RUNNING_PENDING_MESSAGES,
-      {
-        accuracy: Location.Accuracy.High,
-        timeInterval: 10 * 1000, // 1분마다rr
-        showsBackgroundLocationIndicator: true,
-        foregroundService: {
-          notificationTitle: '러닝 중 위치 추적',
-          notificationBody: '러닝 기록을 위해 위치를 추적 중입니다.'
-        }
-      }
-    );
-  } else {
-    Alert.alert('백그라운드 위치 권한이 필요합니다.');
-  }
-};
-
-const stopBackgroundLocation = async () => {
-  //Task가 등록되어 있는지 검사.
-  const isRegistered = await TaskManager.isTaskRegisteredAsync(
-    STORAGE_KEY.RUNNING_PENDING_MESSAGES
-  );
-  if (isRegistered) {
-    await Location.stopLocationUpdatesAsync(
-      STORAGE_KEY.RUNNING_PENDING_MESSAGES
-    );
-  }
-};
-
 function Index() {
+  const insets = useSafeAreaInsets();
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const webviewRef = useRef<WebView>(null);
 
+  const [isGPSEnabled, setIsGPSEnabled] = useState<boolean>(false);
+
+  const webviewRef = useRef<WebView>(null);
+  const startBackgroundLocation = async () => {
+    const { status } = await Location.requestBackgroundPermissionsAsync();
+    if (status === 'granted') {
+      console.log('startBackgroundLocation');
+      //정의한 Task를 실행
+      await Location.startLocationUpdatesAsync(
+        STORAGE_KEY.RUNNING_PENDING_MESSAGES,
+        {
+          accuracy: Location.Accuracy.High,
+          timeInterval: 1 * 1000, // 1분마다rr
+          showsBackgroundLocationIndicator: true,
+          foregroundService: {
+            notificationTitle: '러닝 중 위치 추적',
+            notificationBody: '러닝 기록을 위해 위치를 추적 중입니다.'
+          }
+        }
+      );
+      console.log('startBackgroundLocation end');
+    } else {
+      Alert.alert('백그라운드 위치 권한이 필요합니다.');
+    }
+  };
+
+  const stopBackgroundLocation = async () => {
+    //Task가 등록되어 있는지 검사.
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(
+      STORAGE_KEY.RUNNING_PENDING_MESSAGES
+    );
+    if (isRegistered) {
+      await Location.stopLocationUpdatesAsync(
+        STORAGE_KEY.RUNNING_PENDING_MESSAGES
+      );
+    }
+  };
   const getLocation = async () => {
     const location = await Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.Low
@@ -142,7 +151,8 @@ function Index() {
 
     const saveLocation = async (runningData: RunningData[] = []) => {
       try {
-        // console.log(runningData, 'runningData');
+        const providerStatus = await Location.getProviderStatusAsync();
+        setIsGPSEnabled(providerStatus.locationServicesEnabled);
         const { latitude, longitude } = location.coords;
         //Async Storage에 위치 정보를 가져온다. 이 때 위치 정보가 없다면 값을 바로 추가한다.
 
@@ -193,7 +203,6 @@ function Index() {
 
   const receiveMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
-    console.log(data);
     switch (data.type) {
       case SEND_MESSAGE_TYPE.RUNNING_START:
         setIsRunning(true);
@@ -219,7 +228,6 @@ function Index() {
 
   const postMessage = (type: POST_MESSAGE_TYPE, data: RunningData) => {
     const message = generatePostMessage(type, data);
-    console.log(message, 'message');
     if (webviewRef.current) {
       webviewRef.current.postMessage(message);
     }
@@ -244,17 +252,6 @@ function Index() {
   };
 
   useEffect(() => {
-    const init = async () => {
-      const locationList = await getStorage<RunningData[]>(
-        STORAGE_KEY.RUNNING_DATA
-      );
-      const pending = await getStorage<RunningMessagePacket[]>(
-        STORAGE_KEY.RUNNING_PENDING_MESSAGES
-      );
-      if (pending) await setStorage(STORAGE_KEY.RUNNING_PENDING_MESSAGES, []);
-      if (locationList) await setStorage(STORAGE_KEY.RUNNING_DATA, []);
-    };
-    init();
     // 앱 상태 전환에 따라 백그라운드 위치 업데이트 on/off
     const appStateRef = { current: AppState.currentState } as {
       current: string;
@@ -268,6 +265,11 @@ function Index() {
 
       // 포그라운드에서 백그라운드로 이동하고 운동 중이면 백그라운드 위치 업데이트 시작
       if (wasActive && goingBackground && isRunning) {
+        await stopBackgroundLocation();
+        if (intervalId) {
+          clearInterval(intervalId);
+          setIntervalId(null);
+        }
         await startBackgroundLocation();
       }
 
@@ -286,25 +288,38 @@ function Index() {
     };
   }, [isRunning, intervalId]);
 
+  useEffect(() => {
+    const init = async () => {
+      const locationList = await getStorage<RunningData[]>(
+        STORAGE_KEY.RUNNING_DATA
+      );
+      const pending = await getStorage<RunningMessagePacket[]>(
+        STORAGE_KEY.RUNNING_PENDING_MESSAGES
+      );
+      if (pending) await setStorage(STORAGE_KEY.RUNNING_PENDING_MESSAGES, []);
+      if (locationList) await setStorage(STORAGE_KEY.RUNNING_DATA, []);
+    };
+    init();
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
-      {!intervalId && (
-        <Pressable onPress={postGeoLocation}>
-          <Text>운동 시작하기</Text>
-        </Pressable>
-      )}
-
-      <Pressable onPress={() => router.back()}>
-        <IconSymbol size={28} name="arrow.left" color="black" />
-      </Pressable>
+      <Chip style={[styles.chip, { top: insets.top + 30 }]}>
+        <View style={styles.chipContent}>
+          <Image
+            source={require('@/assets/images/ellipse-green.svg')}
+            style={{ width: 8, height: 8 }}
+          />
+          <Text style={styles.chipText}>GPS 활성화 됨</Text>
+        </View>
+      </Chip>
       <WebView
         ref={webviewRef}
         onMessage={receiveMessage}
         style={styles.webview}
         source={{
-          uri: 'https://runky.hojin.site' + '/running-session'
+          uri: 'http://localhost:3000' + '/running-session'
         }}
-      />
+      ></WebView>
     </SafeAreaView>
   );
 }
@@ -315,11 +330,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    position: 'relative'
   },
   webview: {
     flex: 1,
     width: windowWidth,
-    height: windowHeight
+    height: windowHeight,
+    position: 'relative'
+  },
+  //웹뷰 기준으로 띄우기 위해 절대 위치 사용
+  chip: {
+    backgroundColor: 'rgba(28, 28, 30, 0.5)',
+    position: 'absolute',
+    zIndex: 100,
+    left: 16
+  },
+  chipContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8
+  },
+  chipText: {
+    color: '#fff',
+    opacity: 1
   }
 });
