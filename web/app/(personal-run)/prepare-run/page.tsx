@@ -57,7 +57,7 @@ function Page() {
       {/* 하단 카드 */}
       <div
         className={`absolute left-1/2 -translate-x-1/2 flex flex-col items-center transition-all duration-300 ease-in-out ${
-          onFocus ? 'bottom-2/3 translate-y-1/2' : 'bottom-5'
+          onFocus ? 'bottom-2/3 translate-y-1/2' : 'bottom-10'
         }`}
       >
         {/* 거리 목표 버튼 */}
