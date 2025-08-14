@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ExerciseOverview from '@/components/running/OverView/ExerciseOverview';
 import ControlPanel from '@/components/running/Control/ControlPanel';
 import PageControl from '@/components/common/PageControl';
 import MapView from '@/components/running/MapView/MapView';
-import GpsStatus from '@/components/running/GpsStatus';
 import MainOverview from '@/components/running/OverView/MainOverview';
 import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 import { RunningData } from '@/types/runningTypes';
@@ -23,34 +22,46 @@ export default function Page() {
   const touchEndX = useRef(0);
   const isSwipeActive = useRef(false);
 
-  const totalDistance = useMemo(() => {
+  //받아온 데이터 처리
+  const totalDistance = () => {
     const sum =
       runningData.reduce((acc, cur) => acc + Number(cur.distance), 0) / 1000;
     return Math.round(sum * 100) / 100;
-  }, [runningData]);
+  };
 
-  const totalTime = useMemo(() => {
+  const totalTime = () => {
     return elapsedTime;
-  }, [elapsedTime]);
+  };
 
-  const currentSpeed = useMemo(
-    () => (runningData.length ? runningData[runningData.length - 1].speed : 0),
-    [runningData]
-  );
-  const averagePace = useMemo(() => {
-    if (totalDistance === 0) return `0'00"`;
-    const pace = totalTime / 60 / totalDistance;
+  const currentSpeed = () => {
+    return runningData.length ? runningData[runningData.length - 1].speed : 0;
+  };
+
+  const averagePace = () => {
+    if (totalDistance() === 0) return `0'00"`;
+    const pace = totalTime() / 60 / totalDistance();
     const minutes = Math.floor(pace);
     const seconds = Math.round((pace - minutes) * 60);
     return `${minutes}'${seconds.toString().padStart(2, '0')}"`;
-  }, [totalDistance, totalTime]);
+  };
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
-
+  const remainingDistance = () => {
+    try {
+      const targetDistance = localStorage.getItem('targetDistance');
+      if (targetDistance !== null) {
+        return (parseFloat(targetDistance) - totalDistance()).toFixed(2);
+      }
+      return '0';
+    } catch (e) {
+      console.log(e);
+      return '0';
+    }
+  };
   const postMessageToApp = (type: SEND_MESSAGE_TYPE, data?: string) => {
     if (window.ReactNativeWebView) {
       const message = JSON.stringify({ type, data });
@@ -58,7 +69,7 @@ export default function Page() {
     }
   };
   //todo:테스트용
-
+  //시간 계산
   useEffect(() => {
     if (isRunning && !isPaused) {
       if (startTime.current === null) {
@@ -83,6 +94,7 @@ export default function Page() {
     };
   }, [isRunning, isPaused]);
 
+  //이벤트 등록
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       try {
@@ -110,6 +122,7 @@ export default function Page() {
     };
   }, []);
 
+  //화면 슬라이드 범위
   const handleTouchStart = (e: React.TouchEvent) => {
     const touchX = e.targetTouches[0].clientX;
     const screenWidth = window.innerWidth;
@@ -152,7 +165,10 @@ export default function Page() {
   const handleClickIndicator = () => {
     setCurrentPage(prev => (prev === 0 ? 1 : 0));
   };
-
+  //버튼
+  useEffect(() => {
+    handleControl('play');
+  }, []);
   const handleControl = (action: 'play' | 'pause' | 'stop' | 'resume') => {
     switch (action) {
       case 'play':
@@ -171,9 +187,9 @@ export default function Page() {
       case 'stop':
         const finishData = {
           runningData,
-          averagePace,
-          totalDistance,
-          totalTime: formatTime(totalTime),
+          averagePace: averagePace(),
+          totalDistance: totalDistance(),
+          totalTime: formatTime(totalTime()),
           startTime: startTime.current || 0
         };
         localStorage.setItem('finishData', JSON.stringify(finishData));
@@ -199,17 +215,17 @@ export default function Page() {
         <div className="flex h-full w-1/2 flex-col px-4 pb-4">
           {/* <GpsStatus /> */}
           <div className="flex flex-3/12 flex-col items-center justify-center text-center">
-            <MainOverview distance={totalDistance} />
+            <MainOverview distance={totalDistance()} />
           </div>
           <div className="mt-8 grid grid-cols-2 gap-y-10">
             <ExerciseOverview
-              remainingDistance={totalDistance.toFixed(2)}
-              velocity={currentSpeed.toFixed(1)}
-              averagePace={averagePace}
-              time={formatTime(totalTime)}
+              remainingDistance={remainingDistance()}
+              velocity={currentSpeed().toFixed(1)}
+              averagePace={averagePace()}
+              time={formatTime(totalTime())}
             />
           </div>
-          <div className="flex flex-1/12 items-center justify-center">
+          <div className="flex flex-1/12 items-center justify-center mb-5">
             <ControlPanel
               onControl={handleControl}
               isRunning={isRunning}
@@ -225,13 +241,13 @@ export default function Page() {
             isRunning={isRunning}
             isPaused={isPaused}
             runningData={runningData}
-            time={formatTime(totalTime)}
+            time={formatTime(totalTime())}
           />
         </div>
       </div>
 
       {/* Sticky PageControl */}
-      <div className="absolute bottom-4 left-0 right-0 z-10 flex justify-center">
+      <div className="absolute bottom-15 left-0 right-0 z-10 flex justify-center">
         <PageControl
           pages={2}
           currentPage={currentPage}
