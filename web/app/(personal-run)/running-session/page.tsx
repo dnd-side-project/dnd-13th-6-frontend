@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ExerciseOverview from '@/components/running/OverView/ExerciseOverview';
 import ControlPanel from '@/components/running/Control/ControlPanel';
 import PageControl from '@/components/common/PageControl';
@@ -17,33 +17,34 @@ export default function Page() {
   const [elapsedTime, setElapsedTime] = useState(0); // 경과 시간을 초 단위로 저장
   const startTime = useRef<number | null>(null); // 시작 시간을 저장할 useRef 추가
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // setInterval ID를 저장할 useRef
+  const [targetDistance, setTargetDistance] = useState('0');
 
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const isSwipeActive = useRef(false);
 
   //받아온 데이터 처리
-  const totalDistance = () => {
+  const totalDistance = useMemo(() => {
     const sum =
       runningData.reduce((acc, cur) => acc + Number(cur.distance), 0) / 1000;
     return Math.round(sum * 100) / 100;
-  };
+  }, [runningData]);
 
-  const totalTime = () => {
+  const totalTime = useMemo(() => {
     return elapsedTime;
-  };
+  }, [elapsedTime]);
 
   const currentSpeed = () => {
     return runningData.length ? runningData[runningData.length - 1].speed : 0;
   };
 
-  const averagePace = () => {
-    if (totalDistance() === 0) return `0'00"`;
-    const pace = totalTime() / 60 / totalDistance();
+  const averagePace = useMemo(() => {
+    if (totalDistance === 0) return `0'00"`;
+    const pace = totalTime / 60 / totalDistance;
     const minutes = Math.floor(pace);
     const seconds = Math.round((pace - minutes) * 60);
     return `${minutes}'${seconds.toString().padStart(2, '0')}"`;
-  };
+  }, [totalDistance, totalTime]);
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -52,9 +53,8 @@ export default function Page() {
   };
   const remainingDistance = () => {
     try {
-      const targetDistance = localStorage.getItem('targetDistance');
-      if (targetDistance !== null) {
-        return (parseFloat(targetDistance) - totalDistance()).toFixed(2);
+      if (targetDistance !== '0') {
+        return (parseFloat(targetDistance) - totalDistance).toFixed(2);
       }
       return '0';
     } catch (e) {
@@ -165,10 +165,7 @@ export default function Page() {
   const handleClickIndicator = () => {
     setCurrentPage(prev => (prev === 0 ? 1 : 0));
   };
-  //버튼
-  useEffect(() => {
-    handleControl('play');
-  }, []);
+
   const handleControl = (action: 'play' | 'pause' | 'stop' | 'resume') => {
     switch (action) {
       case 'play':
@@ -187,9 +184,9 @@ export default function Page() {
       case 'stop':
         const finishData = {
           runningData,
-          averagePace: averagePace(),
-          totalDistance: totalDistance(),
-          totalTime: formatTime(totalTime()),
+          averagePace: averagePace,
+          totalDistance: totalDistance,
+          totalTime: formatTime(totalTime),
           startTime: startTime.current || 0
         };
         localStorage.setItem('finishData', JSON.stringify(finishData));
@@ -199,7 +196,12 @@ export default function Page() {
         break;
     }
   };
-
+  //버튼
+  useEffect(() => {
+    handleControl('play');
+    setTargetDistance(localStorage.getItem('targetDistance') || '0');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <div
       className="relative h-screen w-full overflow-hidden bg-background text-white"
@@ -215,14 +217,14 @@ export default function Page() {
         <div className="flex h-full w-1/2 flex-col px-4 pb-4">
           {/* <GpsStatus /> */}
           <div className="flex flex-3/12 flex-col items-center justify-center text-center">
-            <MainOverview distance={totalDistance()} />
+            <MainOverview distance={totalDistance} />
           </div>
           <div className="mt-8 grid grid-cols-2 gap-y-10">
             <ExerciseOverview
               remainingDistance={remainingDistance()}
               velocity={currentSpeed().toFixed(1)}
-              averagePace={averagePace()}
-              time={formatTime(totalTime())}
+              averagePace={averagePace}
+              time={formatTime(totalTime)}
             />
           </div>
           <div className="flex flex-1/12 items-center justify-center mb-5">
@@ -241,7 +243,7 @@ export default function Page() {
             isRunning={isRunning}
             isPaused={isPaused}
             runningData={runningData}
-            time={formatTime(totalTime())}
+            time={formatTime(totalTime)}
           />
         </div>
       </div>

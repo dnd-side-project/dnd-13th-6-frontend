@@ -8,15 +8,16 @@ export default function StartCountPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (count > 0) {
-      const timer = setTimeout(() => {
-        setCount(count - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
     if (count === 0) {
       router.replace('/running-session');
+      return;
     }
+
+    const timer = setTimeout(() => {
+      setCount(c => c - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, [count, router]);
 
   return (
