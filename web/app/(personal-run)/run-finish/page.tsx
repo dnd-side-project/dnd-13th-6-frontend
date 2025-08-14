@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import ReactConfetti from 'react-confetti';
 import { useEffect, useState } from 'react';
 import formatTo24H from '@/utils/time/formatTo24H';
+import Button from '@/components/common/Button';
 
 type FinishData = {
   runningData: {
@@ -72,12 +73,12 @@ export default function Page() {
 
         {/*종료버튼*/}
         <div className="absolute bottom-0 left-0 right-0 w-full p-4 bg-transparent">
-          <button
-            className="w-full bg-green-400 text-black font-semibold py-4 rounded-lg font-pretendard"
+          <Button
             onClick={() => navi.push('/lucky-stamp')}
+            className="w-full h-15 mb-5"
           >
-            <p className="text-lg">운동 종료하기</p>
-          </button>
+            운동종료하기
+          </Button>
         </div>
       </div>
     </>

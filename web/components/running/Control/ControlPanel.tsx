@@ -41,7 +41,7 @@ function ControlPanel({
   if (type === 'map') {
     return (
       <>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-5">
           {isRunning && !isPaused ? (
             <button
               onClick={handlePause}
@@ -77,7 +77,7 @@ function ControlPanel({
 
   return (
     <>
-      <div className="flex h-[20%] space-x-4">
+      <div className="flex h-[20%] space-x-8">
         {isRunning && !isPaused ? (
           <ControlButton onClick={handlePause}>
             <Pause className="h-[35px] w-[35px] fill-black text-black" />

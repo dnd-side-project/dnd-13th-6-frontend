@@ -1,29 +1,28 @@
+import Chip from '@/components/chips/Chip';
+import { useWebView } from '@/hooks/useWebView';
+import { RunningData } from '@/types/runnintTypes';
+import { getAppState } from '@/utils/app';
 import {
   getCurrentSpeed,
   getDistanceFromLatLonInMeters
 } from '@/utils/geolocation';
 import { STORAGE_KEY, getStorage, setStorage } from '@/utils/storage';
 import { POST_MESSAGE_TYPE, SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
+import dayjs from 'dayjs';
 import * as Location from 'expo-location';
-import { useEffect, useState } from 'react';
+import * as TaskManager from 'expo-task-manager';
+import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
+  AppState,
   Dimensions,
+  Image,
   StyleSheet,
   Text,
-  AppState,
-  View,
-  Image
+  View
 } from 'react-native';
-import WebView, { WebViewMessageEvent } from 'react-native-webview';
-import * as TaskManager from 'expo-task-manager';
-import { RunningData } from '@/types/runnintTypes';
-import Chip from '@/components/chips/Chip';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { getAppState } from '@/utils/app';
-import { useWebView } from '@/hooks/useWebView';
-import { ENV } from '@/utils/app/consts';
-import dayjs from 'dayjs';
+import WebView, { WebViewMessageEvent } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -137,30 +136,62 @@ function Index() {
   const [isGPSEnabled, setIsGPSEnabled] = useState<boolean>(false);
 
   const { webviewRef, postMessage } = useWebView<RunningData>();
+  const mockLocationRef = useRef<Location.LocationObject | null>(null);
+
+  const getMockLocation = (): Location.LocationObject => {
+    if (mockLocationRef.current === null) {
+      mockLocationRef.current = {
+        coords: {
+          latitude: 37.5665, // 서울 시청 위도
+          longitude: 126.978, // 서울 시청 경도
+          altitude: 0,
+          accuracy: 5,
+          altitudeAccuracy: 5,
+          heading: 0,
+          speed: 0
+        },
+        timestamp: Date.now()
+      };
+    } else {
+      mockLocationRef.current = {
+        ...mockLocationRef.current,
+        coords: {
+          ...mockLocationRef.current.coords,
+          // 5초마다 약 14m 이동 (10km/h)
+          latitude: mockLocationRef.current.coords.latitude + 0.00009,
+          longitude: mockLocationRef.current.coords.longitude + 0.000114
+        },
+        timestamp: Date.now()
+      };
+    }
+    return mockLocationRef.current;
+  };
+
   const getLocation = async () => {
-    const location = await Location.getCurrentPositionAsync({
+    if (__DEV__) {
+      return getMockLocation();
+    }
+    return Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.Low
     });
-    return location;
   };
 
   const postGeoLocation = async () => {
     setIsRunning(true);
-    const location = await getLocation();
 
-    /**
-     * Async Storage에 위치 정보를 저장한다.
-     * 만약 위치 정보가 없다면 Async Storage에 위치 정보를 저장한다.
-     * 만약 위치 정보가 있다면 마지막 위치와 현재 위치의 거리를 계산한다.
-     * 만약 거리가 5m인 경우에만 위치 정보를 저장한다.
-     */
-
-    const saveLocation = async (runningData: RunningData[] = []) => {
+    const saveLocation = async () => {
       try {
-        const providerStatus = await Location.getProviderStatusAsync();
-        setIsGPSEnabled(providerStatus.locationServicesEnabled);
+        const runningData =
+          (await getStorage<RunningData[]>(STORAGE_KEY.RUNNING_DATA)) || [];
+        const location = await getLocation();
+
+        if (__DEV__) {
+          setIsGPSEnabled(true);
+        } else {
+          const providerStatus = await Location.getProviderStatusAsync();
+          setIsGPSEnabled(providerStatus.locationServicesEnabled);
+        }
         const { latitude, longitude } = location.coords;
-        //Async Storage에 위치 정보를 가져온다. 이 때 위치 정보가 없다면 값을 바로 추가한다.
 
         const currentRunningData = setRunningData(
           latitude,
@@ -178,12 +209,8 @@ function Index() {
     };
 
     if (!intervalId) {
-      const runningData =
-        (await getStorage<RunningData[]>(STORAGE_KEY.RUNNING_DATA)) || [];
-      await saveLocation(runningData);
-      const id = setInterval(async () => {
-        await saveLocation(runningData);
-      }, INTERVAL_TIME);
+      saveLocation();
+      const id = setInterval(saveLocation, INTERVAL_TIME);
       setIntervalId(id);
     }
   };
@@ -290,7 +317,7 @@ function Index() {
         onMessage={receiveMessage}
         style={styles.webview}
         source={{
-          uri: ENV.WEB_VIEW_URL + '/running-session'
+          uri: 'http:192.168.55.130:3000' + '/prepare-run'
         }}
       />
     </View>

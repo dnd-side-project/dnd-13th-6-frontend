@@ -16,7 +16,7 @@ export default function Polyline({
   path,
   strokeColor = '#32ff76',
   strokeOpacity = 1.0,
-  strokeWeight = 15
+  strokeWeight = 10
 }: PolylineProps) {
   const map = useMap();
   const maps = useMapsLibrary('maps');

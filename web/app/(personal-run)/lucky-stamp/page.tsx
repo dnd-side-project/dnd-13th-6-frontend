@@ -1,15 +1,18 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import Button from '@/components/common/Button';
+import { useRouter } from 'next/navigation';
 
 export default function LuckyStampPage() {
   const [visible, setVisible] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 100); // 0.1초 후에 나타나기 시작
     return () => clearTimeout(timer);
   }, []);
+
   return (
     <div className="text-white min-h-screen flex flex-col justify-between p-4 font-pretendard">
       {/* Spacer for top area */}
@@ -38,11 +41,9 @@ export default function LuckyStampPage() {
 
       {/* Bottom Button */}
       <div className="w-full">
-        <Link href="/" passHref>
-          <button className="w-full bg-green-400 text-black font-semibold py-4 rounded-lg text-lg">
-            홈화면으로 돌아가기
-          </button>
-        </Link>
+        <Button onClick={() => router.push('/')} className="w-full h-15 mb-5">
+          홈화면으로 돌아가기
+        </Button>
       </div>
     </div>
   );

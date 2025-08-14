@@ -3,8 +3,10 @@
 /* Tailwind v4 권장 테마 선언 */
 @theme {
     --color-primary: #32ff76;
-    --color-background: #121212;
+    --color-background: #211e22;
     --color-text: #ffffff;
+    --color-pressed: #278847;
+    --color-disabled: #189d6b;
     --color-gray-10: #F2F2F7;
     --color-gray-20: #E5E5EA;
     --color-gray-30: #D1D1D6;
