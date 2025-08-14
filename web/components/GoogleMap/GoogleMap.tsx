@@ -12,17 +12,25 @@ interface LatLng {
 export default function GoogleMap({
   width = '100%',
   height = '100%',
-  path = []
+  path = [],
+  type
 }: {
   width?: string;
   height?: string;
   path?: LatLng[];
+  type?: string;
 }) {
   const position = useMemo(
     () =>
       path.length > 0 ? path[path.length - 1] : { lat: 37.5665, lng: 126.978 }, // Default to Seoul
     [path]
   );
+
+  const mapCenter = useMemo(() => {
+    // Y-axis offset to move the center of the map down, thus moving the marker up.
+    const latOffset = -0.001;
+    return { lat: position.lat + latOffset, lng: position.lng };
+  }, [position]);
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -78,7 +86,7 @@ export default function GoogleMap({
       <APIProvider apiKey={apiKey}>
         <Map
           zoom={isPanning ? null : 18}
-          center={isPanning ? null : position}
+          center={isPanning ? null : type === 'prepare' ? mapCenter : position}
           disableDefaultUI={true}
           gestureHandling="greedy"
           mapId="DEMO_MAP_ID"

@@ -1,5 +1,4 @@
 import React from 'react';
-import GpsStatus from '@/components/running/GpsStatus';
 import ControlPanel from '@/components/running/Control/ControlPanel';
 import GoogleMap from '@/components/GoogleMap/GoogleMap';
 import { RunningData } from '@/types/runningTypes';
@@ -28,7 +27,7 @@ function MapView({
     <>
       {/* <GpsStatus /> */}
       <GoogleMap path={path} />
-      <div className="absolute bottom-15  z-10 flex w-[calc(100%-2rem)] items-center justify-center">
+      <div className="absolute bottom-30  z-10 flex w-[calc(100%-2rem)] items-center justify-center">
         <ControlPanel
           type="map"
           onControl={onControl}

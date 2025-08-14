@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 
 export default function Home() {
@@ -10,7 +9,7 @@ export default function Home() {
       <Link href="/test" className="text-blue-500 hover:underline">
         테스트 페이지로 이동
       </Link>
-      <Link href="/running-session" className="text-blue-500 hover:underline">
+      <Link href="/prepare-run" className="text-blue-500 hover:underline">
         지도 페이지 이동
       </Link>
     </div>
