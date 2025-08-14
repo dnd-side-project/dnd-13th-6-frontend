@@ -51,17 +51,22 @@ export default function Page() {
     const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
-  const remainingDistance = () => {
+  const remainingDistance = useMemo(() => {
     try {
-      if (targetDistance !== '0') {
-        return (parseFloat(targetDistance) - totalDistance).toFixed(2);
+      const remainDistance = parseFloat(targetDistance) - totalDistance;
+      if (remainDistance !== 0) {
+        if (remainDistance < 0) {
+          return '+' + Math.abs(remainDistance).toFixed(2);
+        }
+        return remainDistance.toFixed(2);
       }
       return '0';
     } catch (e) {
       console.log(e);
       return '0';
     }
-  };
+  }, [targetDistance, totalDistance]);
+
   const postMessageToApp = (type: SEND_MESSAGE_TYPE, data?: string) => {
     if (window.ReactNativeWebView) {
       const message = JSON.stringify({ type, data });
@@ -221,7 +226,7 @@ export default function Page() {
           </div>
           <div className="mt-8 grid grid-cols-2 gap-y-10">
             <ExerciseOverview
-              remainingDistance={remainingDistance()}
+              remainingDistance={remainingDistance}
               velocity={currentSpeed().toFixed(1)}
               averagePace={averagePace}
               time={formatTime(totalTime)}
