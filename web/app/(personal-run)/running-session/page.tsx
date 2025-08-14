@@ -227,7 +227,7 @@ export default function Page() {
               time={formatTime(totalTime)}
             />
           </div>
-          <div className="flex flex-1/12 items-center justify-center mb-5">
+          <div className="flex flex-1/12 items-center justify-center mb-10">
             <ControlPanel
               onControl={handleControl}
               isRunning={isRunning}

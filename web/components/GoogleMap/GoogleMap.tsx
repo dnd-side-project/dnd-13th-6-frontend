@@ -2,7 +2,8 @@
 
 import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
 import Polyline from '@/components/GoogleMap/Polyline';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import GpsStatus from '@/components/running/GpsStatus';
 
 interface LatLng {
   lat: number;
@@ -82,32 +83,41 @@ export default function GoogleMap({
 
   const polyline = path.slice(0, path.length - 1);
   return (
-    <div style={{ width, height }}>
-      <APIProvider apiKey={apiKey}>
-        <Map
-          zoom={isPanning ? null : 18}
-          center={isPanning ? null : type === 'prepare' ? mapCenter : position}
-          disableDefaultUI={true}
-          gestureHandling="greedy"
-          mapId="DEMO_MAP_ID"
-          style={{ height: '100%' }}
-          colorScheme="DARK"
-          onDragstart={handleDragStart}
-          onDragend={handleDragEnd}
-        >
-          {path.length > 0 && (
-            <>
-              <AdvancedMarker position={position} title="My location">
-                <div
-                  className="w-6 h-6 border-4 border-white  rounded-full bg-primary"
-                  style={{ transform: 'translateY(10px)' }}
-                />
-              </AdvancedMarker>
-              <Polyline path={polyline} />
-            </>
-          )}
-        </Map>
-      </APIProvider>
-    </div>
+    <>
+      {type === 'map' ? (
+        <GpsStatus onClick={() => setIsPanning(false)} />
+      ) : (
+        <></>
+      )}
+      <div style={{ width, height }}>
+        <APIProvider apiKey={apiKey}>
+          <Map
+            zoom={isPanning ? null : 18}
+            center={
+              isPanning ? null : type === 'prepare' ? mapCenter : position
+            }
+            disableDefaultUI={true}
+            gestureHandling="greedy"
+            mapId="DEMO_MAP_ID"
+            style={{ height: '100%' }}
+            colorScheme="DARK"
+            onDragstart={handleDragStart}
+            onDragend={handleDragEnd}
+          >
+            {path.length > 0 && (
+              <>
+                <AdvancedMarker position={position} title="My location">
+                  <div
+                    className="w-6 h-6 border-4 border-white  rounded-full bg-primary"
+                    style={{ transform: 'translateY(10px)' }}
+                  />
+                </AdvancedMarker>
+                <Polyline path={polyline} />
+              </>
+            )}
+          </Map>
+        </APIProvider>
+      </div>
+    </>
   );
 }
