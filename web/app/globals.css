@@ -29,6 +29,60 @@
 /*    }*/
 /*}*/
 
+@layer utilities {
+    .lufga-large-title {
+        @apply font-bold italic text-[48px]
+    }
+
+    .lufga-title1 {
+        @apply font-bold italic text-[33px]
+    }
+
+    .pretendard-large-title {
+        @apply font-bold text-[30px] leading-[150%] tracking-[-0.025em];
+    }
+
+    .pretendard-title1 {
+        @apply font-bold text-[26px] leading-[150%] tracking-[-0.025em];
+    }
+
+    .pretendard-title2 {
+        @apply font-bold text-[24px] leading-[150%] tracking-[-0.025em];
+    }
+
+    .pretendard-title3 {
+        @apply font-bold text-[22px] leading-[150%] tracking-[-0.025em];
+    }
+
+    .pretendard-title4 {
+        @apply font-bold text-[20px] leading-[150%] tracking-[-0.025em];
+    }
+
+    .pretendard-title5 {
+        @apply font-semibold text-[20px] leading-[150%] tracking-[-0.025em];
+    }
+
+    .pretendard-headline {
+        @apply font-medium text-[19px] leading-[150%] tracking-[-0.014em];
+    }
+
+    .pretendard-headline1 {
+        @apply font-bold text-[17px] leading-[150%] tracking-[-0.014em];
+    }
+
+    .pretendard-headline2 {
+        @apply font-semibold text-[15px] leading-[150%] tracking-[-0.014em];
+    }
+
+    .body1 {
+        @apply font-semibold text-[17px] leading-[150%] tracking-[-0.015em];
+    }
+
+    .body2 {
+        @apply font-medium text-[14px]  leading-[140%] tracking-[-0.025em];
+    }
+}
+
 body {
     font-family: Pretendard, Lufga, Arial, Helvetica, sans-serif;
     margin: 0;
