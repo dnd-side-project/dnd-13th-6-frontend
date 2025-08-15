@@ -24,7 +24,7 @@ export default function StartCountPage() {
     <div className="flex h-screen w-full flex-col items-center justify-center bg-[#201F22]">
       <div className="flex flex-grow items-center justify-center">
         <h1
-          className="font-lufga text-[200px] font-extrabold text-[#32FF76]"
+          className="font-lufga text-[200px] font-extrabold text-[#32FF76] italic"
           style={{ letterSpacing: '-0.15%' }}
         >
           {count > 0 && count}

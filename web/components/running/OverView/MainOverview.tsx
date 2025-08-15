@@ -15,12 +15,12 @@ function MainOverview({ type, distance }: MainOverviewProps) {
       )}
       <div className="flex items-baseline">
         <span
-          className={`${type === 'finish' ? 'text-7xl' : 'text-8xl'} font-extrabold italic`}
+          className={`${type === 'finish' ? 'text-7xl' : 'text-8xl'} font-extrabold italic font-lufga`}
         >
           {distance}
         </span>
 
-        <span className="ml-2 text-4xl font-semibold italic text-gray-50">
+        <span className="ml-2 text-4xl font-semibold italic text-gray-50 font-lufga">
           km
         </span>
       </div>

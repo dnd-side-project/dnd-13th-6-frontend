@@ -72,7 +72,7 @@ function Page() {
           <p className="text-white/70 text-xl">이번 러닝 목표</p>
           <div className="flex justify-center items-baseline space-x-1 max-w-[320px]">
             <input
-              className="w-full bg-transparent border-none text-white text-8xl italic font-extrabold text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-full bg-transparent border-none font-lufga text-white text-8xl italic font-extrabold text-right focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               type="text"
               inputMode="decimal"
               value={targetDistance}
@@ -86,7 +86,7 @@ function Page() {
                 }
               }}
             />
-            <span className="font-semibold italic text-gray-50 text-3xl">
+            <span className="font-semibold italic text-gray-50 text-3xl font-lufga">
               km
             </span>
           </div>

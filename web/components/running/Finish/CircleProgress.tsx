@@ -29,8 +29,8 @@ function CircleProgress({ percent }: { percent: number }) {
       />
       <div className="absolute inset-0 flex items-center justify-center text-gray-20 font-bold">
         <div className="align-baseline italic">
-          <span className="text-3xl">{percent}</span>
-          <span className="text-1xl">%</span>
+          <span className="text-3xl font-lufga">{percent}</span>
+          <span className="text-1xl font-lufga">%</span>
         </div>
       </div>
     </div>
