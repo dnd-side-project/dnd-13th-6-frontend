@@ -11,7 +11,7 @@ function Page() {
     '같이 달리는 기쁨,\n지금 여기서 시작해요!'
   ];
   const text = [
-    '실시간으로 함께 느끼는 러닝, 이제 당신 차례에요',
+    '실시간으로 함께 느끼는 러닝, 이제 당신 차례에요.',
     '각 나라의 행운 상징에서 탄생한 캐릭터들과 \n목표를 달성하고, 클로버 보상까지 받아보세요!'
   ];
   const image = ['img1', 'img2', 'img3'];
@@ -24,7 +24,7 @@ function Page() {
         <p className="text-gray-20 text-2xl font-bold whitespace-pre-line">
           {title[index]}
         </p>
-        <p className="whitespace-pre-line text-base text-gray-60 mt-1">
+        <p className="whitespace-pre-line text-base text-gray-60 mt-2">
           {text[index]}
         </p>
       </div>
@@ -55,14 +55,14 @@ function Page() {
       {/* 버튼 */}
       {index !== 2 ? (
         <button
-          className="absolute bottom-15 right-5 text-gray-60"
+          className="absolute bottom-13 right-5 text-gray-60"
           onClick={() => setIndex(index + 1)}
         >
           건너뛰기
         </button>
       ) : (
         <Button
-          className="absolute bottom-15 h-15 left-5 right-5"
+          className="absolute bottom-13 h-13 left-5 right-5"
           onClick={() => router.replace('/login')}
         >
           시작하기
