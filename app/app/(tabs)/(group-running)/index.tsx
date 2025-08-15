@@ -36,7 +36,20 @@ const RankingItem: React.FC<RankingItemProps> = ({
       </View>
     );
   };
+  const rankStyle = () => {
+    switch (rank) {
+      case 1:
+        return 'bg-[#FFE500] border border-[2px] border-[#DA9E07]';
+      case 2:
+        return 'bg-[#D4D4D4] border border-[2px] border-white';
+      case 3:
+        return 'bg-[#F09749] border border-[2px] border-[#9D571A]';
+      default:
+        return '';
+    }
+  };
 
+  const rankClass = rankStyle();
   return (
     <Swipeable
       friction={2}
@@ -47,7 +60,7 @@ const RankingItem: React.FC<RankingItemProps> = ({
       <View
         style={rank % 2 !== 0 ? styles.rankingItemEven : styles.rankingItemOdd}
       >
-        <View style={styles.rankBadge}>
+        <View style={styles.rankBadge} className={rankClass}>
           <Text style={styles.rankText}>{rank}</Text>
         </View>
         <View style={styles.itemContent}>
@@ -96,22 +109,17 @@ function Index() {
         />
         <RankingItem
           name="박준호"
-          rank={3}
+          rank={4}
           distance="4.1km"
           onDelete={() => handleDelete('박준호')}
         />
         <RankingItem
           name="박준호"
-          rank={3}
+          rank={5}
           distance="4.1km"
           onDelete={() => handleDelete('박준호')}
         />
       </ScrollView>
-      <View>
-        <Pressable style={styles.leaveButton}>
-          <Text style={styles.leaveButtonText}>탈퇴하기</Text>
-        </Pressable>
-      </View>
     </View>
   );
 }
@@ -122,7 +130,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: '100%',
-    backgroundColor: '#313131'
+    backgroundColor: '#313131',
+    paddingTop: 37
   },
   title: {
     fontSize: 22,
@@ -145,14 +154,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 80,
-    backgroundColor: '#313131',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     paddingHorizontal: 15
   },
   rankBadge: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#d3d3d3',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15
