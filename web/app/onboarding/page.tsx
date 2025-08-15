@@ -48,15 +48,12 @@ function Page() {
           className="object-contain"
         />
         <div className="flex gap-2">
-          <div
-            className={`h-3 rounded-full  ${index === 0 ? 'bg-primary w-8' : 'bg-gray-60 w-3 '}`}
-          />
-          <div
-            className={`w-3 h-3 rounded-full  ${index === 1 ? 'bg-primary w-8' : 'bg-gray-60 w-3 '}`}
-          />
-          <div
-            className={`w-3 h-3 rounded-full  ${index === 2 ? 'bg-primary w-8' : 'bg-gray-60 w-3 '}`}
-          />
+          {slides.map((_, i) => (
+            <div
+              key={i}
+              className={`h-3 rounded-full transition-all ${index === i ? 'bg-primary w-8' : 'bg-gray-60 w-3'}`}
+            />
+          ))}
         </div>
       </div>
 
