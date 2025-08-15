@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import GoogleMap from '@/components/GoogleMap/GoogleMap';
+import GoogleMap from '@/components/googleMap/GoogleMap';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
 

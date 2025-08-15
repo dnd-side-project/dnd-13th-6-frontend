@@ -317,7 +317,7 @@ function Index() {
         onMessage={receiveMessage}
         style={styles.webview}
         source={{
-          uri: 'http:192.168.55.130:3000' + '/prepare-run'
+          uri: 'http:192.168.55.130:3000'
         }}
       />
     </View>
