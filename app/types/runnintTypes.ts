@@ -3,7 +3,6 @@ interface RunningData {
   longitude: number;
   distance: number;
   timestamp: string;
-  totalDistance: number;
   speed: number;
 }
 
