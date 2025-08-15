@@ -52,7 +52,6 @@ const RankingItem: React.FC<RankingItemProps> = ({
         </View>
         <View style={styles.itemContent}>
           <Text style={styles.nameText}>{name}</Text>
-          <Text style={styles.distanceText}>{distance}</Text>
         </View>
       </View>
     </Swipeable>
@@ -66,7 +65,7 @@ function Index() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>누가 가장 잘 뛰고있나요?</Text>
+      <Text style={styles.title}>이번 주의 크루 MVP는?</Text>
       <ScrollView
         style={styles.rankingList}
         showsVerticalScrollIndicator={false}
@@ -112,9 +111,6 @@ function Index() {
         <Pressable style={styles.leaveButton}>
           <Text style={styles.leaveButtonText}>탈퇴하기</Text>
         </Pressable>
-        <Pressable style={styles.startButton}>
-          <Text style={styles.startButtonText}>운동 시작하기</Text>
-        </Pressable>
       </View>
     </View>
   );
@@ -126,13 +122,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: '100%',
-    backgroundColor: '#fff'
+    backgroundColor: '#313131'
   },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: 'bold',
+    marginLeft: 16,
     paddingVertical: 20,
-    textAlign: 'center'
+    color: 'white'
   },
   rankingList: {
     flex: 1
@@ -141,14 +138,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 80,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#313131',
     paddingHorizontal: 15
   },
   rankingItemEven: {
     flexDirection: 'row',
     alignItems: 'center',
     height: 80,
-    backgroundColor: 'white',
+    backgroundColor: '#313131',
     paddingHorizontal: 15
   },
   rankBadge: {
@@ -171,7 +168,7 @@ const styles = StyleSheet.create({
   nameText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#fff',
     marginBottom: 4
   },
   distanceText: {
@@ -212,19 +209,5 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
     textDecorationLine: 'underline',
     marginTop: 10
-  },
-  startButton: {
-    backgroundColor: '#28AA78',
-    textAlign: 'center',
-    marginInline: 18,
-    paddingVertical: 18,
-    borderRadius: 12,
-    marginTop: 26
-  },
-  startButtonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'semibold',
-    fontSize: 20
   }
 });

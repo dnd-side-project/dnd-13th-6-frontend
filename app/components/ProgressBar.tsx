@@ -16,8 +16,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   progress,
   width = 360,
   height = 30,
-  backgroundColor = '#E0E0E0',
-  progressColor = '#666666',
   animated = true,
   duration = 1000,
   style
@@ -45,21 +43,20 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   return (
     <View style={style}>
       <View
+        className="bg-black h-3"
         style={[
           styles.progressBackground,
           {
-            width,
-            height,
-            backgroundColor
+            width
           }
         ]}
       >
         <Animated.View
+          className="bg-main"
           style={[
             styles.progressBar,
             {
-              width: progressWidth,
-              backgroundColor: progressColor
+              width: progressWidth
             }
           ]}
         />
@@ -71,14 +68,11 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 const styles = StyleSheet.create({
   progressBackground: {
     borderRadius: 20,
-    overflow: 'hidden',
-    paddingBlock: 4,
-    paddingInline: 8
+    overflow: 'hidden'
   },
   progressBar: {
     height: '100%',
-    borderRadius: 18,
-    margin: 1
+    borderRadius: 18
   }
 });
 
