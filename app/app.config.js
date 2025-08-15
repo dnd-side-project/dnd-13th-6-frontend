@@ -6,7 +6,7 @@ export default {
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "dndios",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "white",
     "newArchEnabled": true,
     "ios": {
       "bundleIdentifier": "com.yoojunho.dnd",
