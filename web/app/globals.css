@@ -2,7 +2,7 @@
 
 /* Tailwind v4 권장 테마 선언 */
 @theme {
-    --color-primary: #32ff76;
+    --color-primary: #32FF76;
     --color-background: #211e22;
     --color-text: #ffffff;
     --color-pressed: #278847;
