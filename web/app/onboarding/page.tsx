@@ -12,7 +12,7 @@ function Page() {
       image: 'img1'
     },
     {
-      title: '우리 팀 목표, \n세계의 행운이 함께 응원해요!',
+      title: '우리팀 목표, \n세계의 행운이 함께 응원해요!',
       text: '각 나라의 행운 상징에서 탄생한 캐릭터들과 \n 목표를 달성하고, 클로버 보상까지 받아보세요!',
       image: 'img2'
     },
@@ -48,22 +48,22 @@ function Page() {
 
   return (
     <div
-      className="h-screen flex flex-col justify-between px-4"
+      className="h-screen"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       {/* 글 영역 - 위쪽 */}
-      <div className="pt-[132px]">
-        <p className="text-gray-20 text-[26px] font-bold whitespace-pre-line leading-[35px] tracking-[-0.025em]">
+      <div className="pl-3 pt-10">
+        <p className="text-gray-20 text-2xl font-bold whitespace-pre-line">
           {slides[index].title}
         </p>
-        <p className="pretendard-headline2 whitespace-pre-line text-gray-60 mt-[12px] leading-[22px]">
+        <p className="whitespace-pre-line text-base text-gray-60 mt-2">
           {slides[index].text}
         </p>
       </div>
 
       {/* 이미지 + 점 - 화면 정중앙 */}
-      <div className="flex flex-col items-center">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
         <Image
           src={`/assets/onboarding/${slides[index].image}.png`}
           alt={slides[index].image}
@@ -72,34 +72,32 @@ function Page() {
           priority
           className="object-contain"
         />
-        <div className="flex gap-3 mt-[78px]">
+        <div className="flex gap-3 mt-10">
           {slides.map((_, i) => (
             <div
               key={i}
-              className={`h-3.5 rounded-full transition-all ${index === i ? 'bg-primary w-8' : 'bg-gray-60 w-3.5'}`}
+              className={`h-3 rounded-full transition-all ${index === i ? 'bg-primary w-8' : 'bg-gray-60 w-3'}`}
             />
           ))}
         </div>
       </div>
 
       {/* 버튼 */}
-      <div className="h-20">
-        {index !== 2 ? (
-          <button
-            className="float-right text-gray-60"
-            onClick={() => setIndex(index + 1)}
-          >
-            건너뛰기
-          </button>
-        ) : (
-          <Button
-            className="h-13 w-full"
-            onClick={() => router.replace('/login')}
-          >
-            시작하기
-          </Button>
-        )}
-      </div>
+      {index !== 2 ? (
+        <button
+          className="absolute bottom-13 right-5 text-gray-60"
+          onClick={() => setIndex(index + 1)}
+        >
+          건너뛰기
+        </button>
+      ) : (
+        <Button
+          className="absolute bottom-13 h-13 left-5 right-5"
+          onClick={() => router.replace('/login')}
+        >
+          시작하기
+        </Button>
+      )}
     </div>
   );
 }
