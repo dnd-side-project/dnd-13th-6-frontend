@@ -14,7 +14,7 @@ export default function LuckyStampPage() {
   }, []);
 
   return (
-    <div className="text-white min-h-screen flex flex-col justify-between p-4 font-pretendard">
+    <div className="text-white min-h-screen flex flex-col justify-between p-4 ">
       {/* Spacer for top area */}
       <h1 className="text-2xl font-semibold leading-relaxed mb-8 whitespace-pre-line">
         {'오늘도 수고 많으셨어요!\n오늘의 행운이 도착했어요!'}
@@ -33,9 +33,7 @@ export default function LuckyStampPage() {
         visible ? 'opacity-100' : 'opacity-0'
       }`}
         >
-          <p className="text-xl font-bold text-gray-20 font-pretendard">
-            클로버 +1개
-          </p>
+          <p className="text-xl font-bold text-gray-20 ">클로버 +1개</p>
         </div>
       </div>
 

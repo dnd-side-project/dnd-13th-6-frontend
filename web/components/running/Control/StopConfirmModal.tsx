@@ -32,7 +32,7 @@ function StopConfirmModal({
           boxShadow: '0px 4px 4px 0px #00000040'
         }}
       >
-        <h2 className="text-[22px] font-bold text-[#E5E5EA]">
+        <h2 className="text-[22px] font-bold text-gray-20">
           러닝을 종료할까요?
         </h2>
         <div className="flex gap-3">
@@ -40,15 +40,13 @@ function StopConfirmModal({
             onClick={onClose}
             className="flex h-[54px] w-[146px] items-center justify-center rounded-[10px] bg-[#8E8E93] px-4 py-2"
           >
-            <span className="text-[17px] font-bold text-[#E5E5EA]">취소</span>
+            <span className="text-[17px] font-bold text-gray-20">취소</span>
           </button>
           <button
             onClick={onConfirm}
-            className="flex h-[54px] w-[146px] items-center justify-center rounded-[10px] bg-[#FF383C] px-4 py-2"
+            className="flex h-[54px] w-[146px] items-center justify-center rounded-[10px] bg-[#FF002E] px-4 py-2"
           >
-            <span className="text-[17px] font-bold text-[#E5E5EA]">
-              종료하기
-            </span>
+            <span className="text-[17px] font-bold text-gray-20">종료하기</span>
           </button>
         </div>
       </div>
