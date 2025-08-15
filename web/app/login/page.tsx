@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function Login() {
   return (
-    <div className="w-full min-h-screen m-0 p-0 flex items-center justify-center bg-white">
+    <div className="w-full min-h-screen m-0 p-0 flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <div className="h-[110px] w-[110px] bg-[#f7f7f7] flex items-center justify-center px-[30px] text-center">
           LOGO
