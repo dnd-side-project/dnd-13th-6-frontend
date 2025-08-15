@@ -1,3 +1,8 @@
+import { useColorScheme } from '@/hooks/useColorScheme';
+import {
+  getBackgroundLocationPermission,
+  getGeoLocationPermission
+} from '@/utils/app/permission';
 import {
   DarkTheme,
   DefaultTheme,
@@ -6,17 +11,11 @@ import {
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-import {
-  getGeoLocationPermission,
-  getBackgroundLocationPermission
-} from '@/utils/app/permission';
 import { useEffect } from 'react';
 import { Alert } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
+import 'react-native-reanimated';
+import './global.css';
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
