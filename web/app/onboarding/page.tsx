@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { TouchEvent, useState } from 'react';
 import Button from '@/components/common/Button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -13,7 +13,7 @@ function Page() {
     },
     {
       title: '우리팀 목표, \n세계의 행운이 함께 응원해요!',
-      text: '각 나라의 행운 상징에서 탄생한 캐릭터들과 \n목표를 달성하고, 클로버 보상까지 받아보세요!',
+      text: '각 나라의 행운 상징에서 탄생한 캐릭터들과 \n 목표를 달성하고, 클로버 보상까지 받아보세요!',
       image: 'img2'
     },
     {
@@ -24,11 +24,36 @@ function Page() {
   ];
 
   const [index, setIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState(0);
   const router = useRouter();
+
+  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: TouchEvent<HTMLDivElement>) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchDiff = touchEndX - touchStartX;
+
+    // 오른쪽으로 스와이프 (->)
+    if (touchDiff < -50 && index < slides.length - 1) {
+      setIndex(index + 1);
+    }
+
+    // 왼쪽으로 스와이프 (<-)
+    if (touchDiff > 50 && index > 0) {
+      setIndex(index - 1);
+    }
+  };
+
   return (
-    <>
+    <div
+      className="h-screen"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* 글 영역 - 위쪽 */}
-      <div className="ml-3 mt-10">
+      <div className="pl-3 pt-10">
         <p className="text-gray-20 text-2xl font-bold whitespace-pre-line">
           {slides[index].title}
         </p>
@@ -47,7 +72,7 @@ function Page() {
           priority
           className="object-contain"
         />
-        <div className="flex gap-2">
+        <div className="flex gap-3 mt-10">
           {slides.map((_, i) => (
             <div
               key={i}
@@ -73,7 +98,7 @@ function Page() {
           시작하기
         </Button>
       )}
-    </>
+    </div>
   );
 }
 
