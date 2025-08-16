@@ -6,7 +6,7 @@ export default {
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "dndios",
-    "userInterfaceStyle": "white",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
       "bundleIdentifier": "com.yoojunho.dnd",
@@ -45,10 +45,10 @@ export default {
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/splash.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#000"
         }
       ],
       [
