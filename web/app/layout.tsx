@@ -118,7 +118,7 @@ export default function RootLayout({
       <head>
         <title>Runky</title>
       </head>
-      <body className="bg-background text-white">
+      <body className="bg-background text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <main>{children}</main>
       </body>
     </html>

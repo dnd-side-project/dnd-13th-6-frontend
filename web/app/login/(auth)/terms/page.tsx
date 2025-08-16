@@ -29,10 +29,7 @@ function Page() {
   };
 
   return (
-    <div
-      className=" h-screen flex flex-col justify-between pt-[120px] px-4 pb-4"
-      style={{ minHeight: 'calc(100vh - 3.75rem)' }}
-    >
+    <div className="flex flex-col justify-between flex-grow p-4">
       <div>
         <ProgressBar progress={20} className="h-[6px]" />
         <p className="text-gray-20 text-[26px] font-bold whitespace-pre-line mt-[51px] leading-[35px] tracking-[-0.025em]">
@@ -52,7 +49,7 @@ function Page() {
               onClick={() => handleSingleClick('service')}
               text={'(필수) 서비스 이용 약관'}
             />
-            <p className="text-gray-60 underline">상세보기</p>
+            <p className="body2 text-gray-60 underline">상세보기</p>
           </div>
 
           <div className="flex justify-between">
@@ -61,7 +58,7 @@ function Page() {
               onClick={() => handleSingleClick('privacy')}
               text={'(필수) 개인정보 수집 및 이용 동의'}
             />
-            <p className="text-gray-60 underline">상세보기</p>
+            <p className="body2 text-gray-60 underline">상세보기</p>
           </div>
           <CheckBox
             isClicked={agreements.marketing}

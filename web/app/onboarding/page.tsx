@@ -41,13 +41,13 @@ function Page() {
 
   return (
     <div
-      className="min-h-screen flex flex-col justify-between px-[5vw] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+      className="min-h-screen flex flex-col justify-between px-[5vw]"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       {/* 글 영역 - 위쪽 */}
-      <div className="pt-[8vh]">
-        <p className="pretendard-title1 leading-[1.35] text-gray-20  whitespace-pre-line">
+      <div className="pt-[16vh]">
+        <p className="font-bold text-[1.625rem] text-gray-20 tracking-[-0.025em] leading-[1.35] whitespace-pre-line ">
           {slides[index].title}
         </p>
         <p className="pretendard-headline2 whitespace-pre-line text-gray-60 mt-[1.5vh] sm:mt-[2vh] leading-[1.375] text-[0.9375rem] sm:text-[1.5vw]">
@@ -56,7 +56,7 @@ function Page() {
       </div>
 
       {/* 이미지 + 점 */}
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center mt-[-9vh]">
         <Image
           src={`/assets/onboarding/${slides[index].image}.png`}
           alt={slides[index].image}
@@ -65,7 +65,7 @@ function Page() {
           priority
           className="object-contain max-w-[70vw]"
         />
-        <div className="flex gap-[2vw] mt-[8vh]">
+        <div className="flex gap-[3vw] mt-[8vh]">
           {slides.map((_, i) => (
             <div
               key={i}
