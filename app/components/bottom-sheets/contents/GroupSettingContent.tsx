@@ -4,6 +4,14 @@ import { Pressable, Text, View } from 'react-native';
 // 기존에 만든 Grid 컴포넌트 사용
 import Grid from '../../ui/Grid';
 
+interface GroupSettingContentProps {
+  isAdminUser: boolean;
+  onExitPress: () => void;
+  onEditNoticePress?: () => void;
+  onEditMemberPress?: () => void;
+  onEditGroupInfoPress?: () => void;
+}
+
 interface GroupSettingItemProps {
   title: string;
   icon: string;
@@ -33,38 +41,46 @@ function GroupSettingItem({
   );
 }
 
-const settingItems = [
-  {
-    id: 1,
-    title: '공지\n수정하기',
-    icon: 'notifications-outline',
-    backgroundColor: '#32FF76',
-    onPress: () => console.log('공지 수정하기')
-  },
-  {
-    id: 2,
-    title: '멤버\n관리하기',
-    icon: 'people-outline',
-    backgroundColor: '#32FF76',
-    onPress: () => console.log('멤버 관리하기')
-  },
-  {
-    id: 3,
-    title: '그룹 정보\n수정하기',
-    icon: 'create-outline',
-    backgroundColor: '#32FF76',
-    onPress: () => console.log('그룹 정보 수정하기')
-  },
-  {
-    id: 4,
-    title: '그룹\n나가기',
-    icon: 'exit-outline',
-    backgroundColor: '#ef4444',
-    onPress: () => console.log('그룹 나가기')
-  }
-];
+function GroupSettingContent({
+  isAdminUser,
+  onExitPress,
+  onEditNoticePress,
+  onEditMemberPress,
+  onEditGroupInfoPress
+}: GroupSettingContentProps) {
+  const normalSettingItems = [
+    {
+      id: 4,
+      title: '그룹\n나가기',
+      icon: 'exit-outline',
+      backgroundColor: '#ef4444',
+      onPress: onExitPress
+    }
+  ];
 
-function GroupSettingContent() {
+  const adminSettingItems = [
+    {
+      id: 1,
+      title: '공지\n수정하기',
+      icon: 'notifications-outline',
+      backgroundColor: '#32FF76',
+      onPress: onEditNoticePress
+    },
+    {
+      id: 2,
+      title: '멤버\n관리하기',
+      icon: 'people-outline',
+      backgroundColor: '#32FF76',
+      onPress: onEditMemberPress
+    },
+    {
+      id: 3,
+      title: '그룹 정보\n수정하기',
+      icon: 'create-outline',
+      backgroundColor: '#32FF76',
+      onPress: onEditGroupInfoPress
+    }
+  ];
   const renderItem = (item: GroupSettingItemProps) => (
     <GroupSettingItem
       title={item.title}
@@ -77,7 +93,11 @@ function GroupSettingContent() {
   return (
     <View className="px-[32px]">
       <Grid
-        data={settingItems}
+        data={
+          isAdminUser
+            ? [...adminSettingItems, ...normalSettingItems]
+            : normalSettingItems
+        }
         numColumns={2}
         renderItem={renderItem}
         spacing={16}

@@ -4,11 +4,13 @@ interface GridProps {
   numColumns: number;
   renderItem: (item: any, index: number) => React.ReactNode;
   spacing?: number;
+  containerClassName?: string;
 }
 
 const Grid: React.FC<GridProps> = ({
   data,
   numColumns,
+  containerClassName,
   renderItem,
   spacing = 10
 }) => {
@@ -18,7 +20,7 @@ const Grid: React.FC<GridProps> = ({
   }
 
   return (
-    <View style={{ padding: spacing / 2 }}>
+    <View className={containerClassName} style={{ padding: spacing / 2 }}>
       {rows.map((row, rowIndex) => (
         <View
           key={rowIndex}
