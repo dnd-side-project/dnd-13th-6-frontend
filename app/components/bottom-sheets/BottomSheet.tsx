@@ -1,14 +1,15 @@
 import {
-  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
   BottomSheetModal,
   BottomSheetView
 } from '@gorhom/bottom-sheet';
+import { BlurView } from 'expo-blur';
 import { forwardRef, useCallback, useMemo } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { BottomSheetConfig } from '../../hooks/useBottomSheet';
-
 interface BottomSheetProps extends BottomSheetConfig {
   children?: React.ReactNode;
+  onBackdropPress?: () => void;
 }
 
 const BottomSheet = forwardRef<BottomSheetModal, BottomSheetProps>(
@@ -23,15 +24,33 @@ const BottomSheet = forwardRef<BottomSheetModal, BottomSheetProps>(
     ref
   ) => {
     const snapPointsMemo = useMemo(() => snapPoints, [snapPoints]);
-
     const renderBackdrop = useCallback(
-      (props: any) => (
-        <BottomSheetBackdrop
-          {...props}
-          pressBehavior={enableBackdropPress ? 'close' : 'none'}
-        />
+      (props: BottomSheetBackdropProps) => (
+        <Pressable
+          onPress={() => {
+            if (typeof ref === 'function') {
+              return;
+            }
+            ref?.current?.close();
+          }}
+          style={[props.style, { flex: 1 }]}
+        >
+          {/* Blur 효과 */}
+          <BlurView
+            style={{ flex: 1 }}
+            intensity={0} // 블러 강도
+            tint="dark" // 'light', 'dark', 'default'
+          />
+          {/* 살짝 어두운 오버레이 */}
+          <View
+            style={{
+              ...StyleSheet.absoluteFillObject,
+              backgroundColor: 'rgba(0,0,0,0.3)' // 투명도 조절
+            }}
+          />
+        </Pressable>
       ),
-      [enableBackdropPress]
+      []
     );
 
     return (
@@ -79,3 +98,10 @@ const BottomSheet = forwardRef<BottomSheetModal, BottomSheetProps>(
 BottomSheet.displayName = 'BottomSheet';
 
 export default BottomSheet;
+
+const styles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)'
+  }
+});

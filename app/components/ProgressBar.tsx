@@ -16,8 +16,7 @@ interface ProgressBarProps {
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
   progress,
-  width = 360,
-  height = 30,
+  width = 330,
   animated = true,
   duration = 1000,
   style,

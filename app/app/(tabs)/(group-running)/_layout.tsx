@@ -6,9 +6,13 @@ import {
 } from '@react-navigation/material-top-tabs';
 import { ParamListBase, TabNavigationState } from '@react-navigation/native';
 import { withLayoutContext } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BottomSheet from '../../../components/bottom-sheets/BottomSheet';
+import EditGroupNotificationContent from '../../../components/bottom-sheets/contents/EditGroupNotificationContent';
+import EditMemberContent from '../../../components/bottom-sheets/contents/EditMemberContent';
+import GroupExitContent from '../../../components/bottom-sheets/contents/GroupExitContent';
 import GroupSettingContent from '../../../components/bottom-sheets/contents/GroupSettingContent';
 import Chip from '../../../components/chips/Chip';
 import ProgressBar from '../../../components/ProgressBar';
@@ -74,7 +78,9 @@ const GroupGoal = ({ onProgressPress }: { onProgressPress: () => void }) => {
 
 export default function Layout() {
   const insets = useSafeAreaInsets();
-
+  const [editMemberType, setEditMemberType] = useState<
+    'editMember' | 'editOwner'
+  >('editMember');
   // 각각 개별적으로 바텀시트 훅 호출 배경 블러처리
   const settingsBottomSheet = useBottomSheet({
     snapPoints: ['50%'],
@@ -82,20 +88,44 @@ export default function Layout() {
     enablePanDownToClose: true
   });
 
-  const progressBottomSheet = useBottomSheet({
+  const groupExitBottomSheet = useBottomSheet({
     snapPoints: ['60%', '80%'],
     enableBackdropPress: true
   });
 
-  const startRunningBottomSheet = useBottomSheet({
-    snapPoints: ['40%', '60%'],
+  const editMemberBottomSheet = useBottomSheet({
+    snapPoints: ['60%'],
+    enableBackdropPress: true
+  });
+
+  const editNoticeBottomSheet = useBottomSheet({
+    snapPoints: ['60%'],
     enableBackdropPress: true
   });
 
   // 바텀시트 핸들러들
   const handleSettingsPress = () => settingsBottomSheet.present();
-  const handleProgressPress = () => progressBottomSheet.present();
-  const handleStartRunningPress = () => startRunningBottomSheet.present();
+  const handleProgressPress = () => groupExitBottomSheet.present();
+  const handleEditMemberPress = () => editMemberBottomSheet.present();
+  const handleEditNoticePress = () => editNoticeBottomSheet.present();
+  const isAdminUser = true;
+
+  //그룹 나가기
+  const onGroupExit = () => {
+    settingsBottomSheet.close();
+    handleProgressPress();
+  };
+
+  const onEditMember = (type: 'editMember' | 'editOwner') => {
+    settingsBottomSheet.close();
+    setEditMemberType(type);
+    handleEditMemberPress();
+  };
+
+  const onEditNotice = () => {
+    settingsBottomSheet.close();
+    handleEditNoticePress();
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -127,7 +157,7 @@ export default function Layout() {
       </MaterialTopTabs>
 
       <View style={{ backgroundColor: '#313131' }}>
-        <Pressable style={styles.startButton} onPress={handleStartRunningPress}>
+        <Pressable style={styles.startButton} onPress={handleEditMemberPress}>
           <Text style={styles.startButtonText}>운동 시작하기</Text>
         </Pressable>
       </View>
@@ -139,58 +169,45 @@ export default function Layout() {
         ref={settingsBottomSheet.bottomSheetRef}
         {...settingsBottomSheet.config}
       >
-        <GroupSettingContent />
+        <GroupSettingContent
+          isAdminUser={isAdminUser}
+          onExitPress={onGroupExit}
+          onEditMemberPress={() => onEditMember('editMember')}
+          onEditGroupInfoPress={() => onEditMember('editOwner')}
+          onEditNoticePress={onEditNotice}
+        />
       </BottomSheet>
 
-      {/* 진행률 상세 BottomSheet */}
       <BottomSheet
-        ref={progressBottomSheet.bottomSheetRef}
-        {...progressBottomSheet.config}
+        ref={groupExitBottomSheet.bottomSheetRef}
+        {...groupExitBottomSheet.config}
       >
-        <View style={{ gap: 15 }}>
-          <View style={styles.progressDetailItem}>
-            <Text style={styles.progressDetailLabel}>현재 진행률</Text>
-            <Text style={styles.progressDetailValue}>40%</Text>
-          </View>
-          <View style={styles.progressDetailItem}>
-            <Text style={styles.progressDetailLabel}>달성한 거리</Text>
-            <Text style={styles.progressDetailValue}>2.3 KM</Text>
-          </View>
-          <View style={styles.progressDetailItem}>
-            <Text style={styles.progressDetailLabel}>남은 거리</Text>
-            <Text style={styles.progressDetailValue}>0.7 KM</Text>
-          </View>
-          <View style={styles.progressDetailItem}>
-            <Text style={styles.progressDetailLabel}>예상 완료일</Text>
-            <Text style={styles.progressDetailValue}>3일 후</Text>
-          </View>
-          <View style={{ marginTop: 20 }}>
-            <ProgressBar progress={40} />
-          </View>
-        </View>
+        <GroupExitContent onClose={groupExitBottomSheet.close} />
       </BottomSheet>
 
-      {/* 운동 시작 BottomSheet */}
-      <BottomSheet
-        ref={startRunningBottomSheet.bottomSheetRef}
-        {...startRunningBottomSheet.config}
-      >
-        <View style={{ gap: 20 }}>
-          <Pressable style={styles.runningOption}>
-            <Ionicons name="person-outline" size={24} color="#fff" />
-            <Text style={styles.runningOptionText}>개인 러닝</Text>
-          </Pressable>
-          <Pressable style={styles.runningOption}>
-            <Ionicons name="people-outline" size={24} color="#fff" />
-            <Text style={styles.runningOptionText}>그룹 러닝</Text>
-          </Pressable>
-          <View style={{ marginTop: 20 }}>
-            <Text style={styles.runningNote}>
-              * 그룹 러닝은 다른 멤버들과 함께 실시간으로 운동할 수 있습니다.
-            </Text>
-          </View>
-        </View>
-      </BottomSheet>
+      {isAdminUser && (
+        <>
+          {/* 멤버 탈퇴 및 그룹장 위임 bottomSheet */}
+          <BottomSheet
+            ref={editMemberBottomSheet.bottomSheetRef}
+            {...editMemberBottomSheet.config}
+          >
+            <EditMemberContent
+              type={editMemberType}
+              onClose={editMemberBottomSheet.close}
+            />
+          </BottomSheet>
+          {/* 공지 변경 bottomSheet */}
+          <BottomSheet
+            ref={editNoticeBottomSheet.bottomSheetRef}
+            {...editNoticeBottomSheet.config}
+          >
+            <EditGroupNotificationContent
+              onClose={editNoticeBottomSheet.close}
+            />
+          </BottomSheet>
+        </>
+      )}
     </View>
   );
 }
@@ -221,7 +238,8 @@ const styles = StyleSheet.create({
     flexGrow: 1
   },
   GroupGoalContainer: {
-    paddingInline: 17,
+    width: 360,
+    paddingHorizontal: 17,
     paddingTop: 22,
     paddingBottom: 53,
     backgroundColor: '#313131',
