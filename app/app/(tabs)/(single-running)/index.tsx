@@ -38,7 +38,6 @@ const setRunningData = (
     longitude,
     distance: 0,
     timestamp: dayjs(new Date()).format('YYYYMMDDHHmmss'),
-    totalDistance: 0,
     speed: 0
   };
   if (!lastRunningData) {
@@ -52,7 +51,6 @@ const setRunningData = (
   );
   const speed = getCurrentSpeed(distance, 10);
   currentRunningData.distance = distance;
-  currentRunningData.totalDistance = lastRunningData.totalDistance + distance;
   currentRunningData.speed = speed;
   return currentRunningData;
 };

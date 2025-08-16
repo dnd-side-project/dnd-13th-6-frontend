@@ -36,7 +36,20 @@ const RankingItem: React.FC<RankingItemProps> = ({
       </View>
     );
   };
+  const rankStyle = () => {
+    switch (rank) {
+      case 1:
+        return 'bg-[#FFE500] border border-[2px] border-[#DA9E07]';
+      case 2:
+        return 'bg-[#D4D4D4] border border-[2px] border-white';
+      case 3:
+        return 'bg-[#F09749] border border-[2px] border-[#9D571A]';
+      default:
+        return '';
+    }
+  };
 
+  const rankClass = rankStyle();
   return (
     <Swipeable
       friction={2}
@@ -47,12 +60,11 @@ const RankingItem: React.FC<RankingItemProps> = ({
       <View
         style={rank % 2 !== 0 ? styles.rankingItemEven : styles.rankingItemOdd}
       >
-        <View style={styles.rankBadge}>
+        <View style={styles.rankBadge} className={rankClass}>
           <Text style={styles.rankText}>{rank}</Text>
         </View>
         <View style={styles.itemContent}>
           <Text style={styles.nameText}>{name}</Text>
-          <Text style={styles.distanceText}>{distance}</Text>
         </View>
       </View>
     </Swipeable>
@@ -66,7 +78,7 @@ function Index() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>누가 가장 잘 뛰고있나요?</Text>
+      <Text style={styles.title}>이번 주의 크루 MVP는?</Text>
       <ScrollView
         style={styles.rankingList}
         showsVerticalScrollIndicator={false}
@@ -97,25 +109,17 @@ function Index() {
         />
         <RankingItem
           name="박준호"
-          rank={3}
+          rank={4}
           distance="4.1km"
           onDelete={() => handleDelete('박준호')}
         />
         <RankingItem
           name="박준호"
-          rank={3}
+          rank={5}
           distance="4.1km"
           onDelete={() => handleDelete('박준호')}
         />
       </ScrollView>
-      <View>
-        <Pressable style={styles.leaveButton}>
-          <Text style={styles.leaveButtonText}>탈퇴하기</Text>
-        </Pressable>
-        <Pressable style={styles.startButton}>
-          <Text style={styles.startButtonText}>운동 시작하기</Text>
-        </Pressable>
-      </View>
     </View>
   );
 }
@@ -126,13 +130,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: '100%',
-    backgroundColor: '#fff'
+    backgroundColor: '#313131',
+    paddingTop: 37
   },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: 'bold',
+    marginLeft: 16,
     paddingVertical: 20,
-    textAlign: 'center'
+    color: 'white'
   },
   rankingList: {
     flex: 1
@@ -141,21 +147,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 80,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#313131',
     paddingHorizontal: 15
   },
   rankingItemEven: {
     flexDirection: 'row',
     alignItems: 'center',
     height: 80,
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     paddingHorizontal: 15
   },
   rankBadge: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#d3d3d3',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15
@@ -171,7 +176,7 @@ const styles = StyleSheet.create({
   nameText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#fff',
     marginBottom: 4
   },
   distanceText: {
@@ -212,19 +217,5 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
     textDecorationLine: 'underline',
     marginTop: 10
-  },
-  startButton: {
-    backgroundColor: '#28AA78',
-    textAlign: 'center',
-    marginInline: 18,
-    paddingVertical: 18,
-    borderRadius: 12,
-    marginTop: 26
-  },
-  startButtonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'semibold',
-    fontSize: 20
   }
 });
