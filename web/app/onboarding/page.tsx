@@ -35,34 +35,27 @@ function Page() {
     const touchEndX = e.changedTouches[0].clientX;
     const touchDiff = touchEndX - touchStartX;
 
-    // 오른쪽으로 스와이프 (->)
-    if (touchDiff < -50 && index < slides.length - 1) {
-      setIndex(index + 1);
-    }
-
-    // 왼쪽으로 스와이프 (<-)
-    if (touchDiff > 50 && index > 0) {
-      setIndex(index - 1);
-    }
+    if (touchDiff < -50 && index < slides.length - 1) setIndex(index + 1);
+    if (touchDiff > 50 && index > 0) setIndex(index - 1);
   };
 
   return (
     <div
-      className="h-screen flex flex-col justify-between px-4"
+      className="min-h-screen flex flex-col justify-between px-[5vw] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       {/* 글 영역 - 위쪽 */}
-      <div className="pt-[132px]">
-        <p className="text-gray-20 text-[26px] font-bold whitespace-pre-line leading-[35px] tracking-[-0.025em]">
+      <div className="pt-[8vh]">
+        <p className="pretendard-title1 leading-[1.35] text-gray-20  whitespace-pre-line">
           {slides[index].title}
         </p>
-        <p className="pretendard-headline2 whitespace-pre-line text-gray-60 mt-[12px] leading-[22px]">
+        <p className="pretendard-headline2 whitespace-pre-line text-gray-60 mt-[1.5vh] sm:mt-[2vh] leading-[1.375] text-[0.9375rem] sm:text-[1.5vw]">
           {slides[index].text}
         </p>
       </div>
 
-      {/* 이미지 + 점 - 화면 정중앙 */}
+      {/* 이미지 + 점 */}
       <div className="flex flex-col items-center">
         <Image
           src={`/assets/onboarding/${slides[index].image}.png`}
@@ -70,30 +63,34 @@ function Page() {
           width={243}
           height={243}
           priority
-          className="object-contain"
+          className="object-contain max-w-[70vw]"
         />
-        <div className="flex gap-3 mt-[78px]">
+        <div className="flex gap-[2vw] mt-[8vh]">
           {slides.map((_, i) => (
             <div
               key={i}
-              className={`h-3.5 rounded-full transition-all ${index === i ? 'bg-primary w-8' : 'bg-gray-60 w-3.5'}`}
+              className={`rounded-full transition-all ${
+                index === i
+                  ? 'bg-primary w-[32px] h-[14px]'
+                  : 'bg-gray-60 w-[14px] h-[14px]'
+              }`}
             />
           ))}
         </div>
       </div>
 
       {/* 버튼 */}
-      <div className="h-20">
+      <div className="h-[8vh]">
         {index !== 2 ? (
           <button
-            className="float-right text-gray-60"
+            className="float-right text-gray-60 text-[0.875rem] sm:text-[1rem]"
             onClick={() => setIndex(index + 1)}
           >
             건너뛰기
           </button>
         ) : (
           <Button
-            className="h-13 w-full"
+            className="h-[6vh] w-full text-[1rem] sm:text-[1.25rem]"
             onClick={() => router.replace('/login')}
           >
             시작하기
