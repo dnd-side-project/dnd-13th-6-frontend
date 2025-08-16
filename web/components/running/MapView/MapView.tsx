@@ -1,6 +1,6 @@
 import React from 'react';
 import ControlPanel from '@/components/running/Control/ControlPanel';
-import GoogleMap from '@/components/GoogleMap/GoogleMap';
+import GoogleMap from '@/components/googleMap/GoogleMap';
 import { RunningData } from '@/types/runningTypes';
 
 interface MapViewProps {
