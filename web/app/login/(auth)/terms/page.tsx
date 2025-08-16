@@ -8,7 +8,6 @@ function Page() {
   const [agreements, setAgreements] = useState({
     all: false,
     service: false,
-    terms: false,
     privacy: false,
     marketing: false
   });
@@ -18,7 +17,6 @@ function Page() {
     setAgreements({
       all: newValue,
       service: newValue,
-      terms: newValue,
       privacy: newValue,
       marketing: newValue
     });
@@ -26,8 +24,7 @@ function Page() {
 
   const handleSingleClick = (key: keyof typeof agreements) => {
     const newAgreements = { ...agreements, [key]: !agreements[key] };
-    const allChecked =
-      newAgreements.terms && newAgreements.privacy && newAgreements.marketing;
+    const allChecked = newAgreements.privacy && newAgreements.marketing;
     setAgreements({ ...newAgreements, all: allChecked });
   };
 
@@ -75,7 +72,7 @@ function Page() {
       </div>
       <Button
         className="w-full h-13 mb-5"
-        disabled={!agreements.all}
+        disabled={!(agreements.service && agreements.privacy)}
         onClick={() => {}}
       >
         다음으로
