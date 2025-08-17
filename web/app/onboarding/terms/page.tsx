@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import ProgressBar from '@/components/common/ProgressBar';
 import CheckBox from '@/components/common/CheckBox';
 import Button from '@/components/common/Button';
+import { useRouter } from 'next/navigation';
 
 function Page() {
   const [agreements, setAgreements] = useState({
@@ -27,7 +28,7 @@ function Page() {
     const allChecked = newAgreements.privacy && newAgreements.marketing;
     setAgreements({ ...newAgreements, all: allChecked });
   };
-
+  const router = useRouter();
   return (
     <div className="flex flex-col justify-between flex-grow p-4">
       <div>
@@ -68,9 +69,11 @@ function Page() {
         </div>
       </div>
       <Button
-        className="w-full h-13 mb-5"
+        className="w-full h-15 mb-5"
         disabled={!(agreements.service && agreements.privacy)}
-        onClick={() => {}}
+        onClick={() => {
+          router.push('/onboarding/setup-nickname');
+        }}
       >
         다음으로
       </Button>

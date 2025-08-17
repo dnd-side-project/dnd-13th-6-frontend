@@ -8,13 +8,13 @@ function Page() {
   const slides: { title: string; text: string; image: string }[] = [
     {
       title: '지금 친구가 \n어디쯤 달리고 있을까?',
-      text: '실시간으로 함께 느끼는 러닝, 이제 당신 차례에요.',
-      image: 'img1'
+      text: '함께 달리며, 행운의 클로버를 보내 응원해보세요.',
+      image: 'onboarding1'
     },
     {
       title: '우리 팀 목표, \n세계의 행운이 함께 응원해요!',
-      text: '각 나라의 행운 상징에서 탄생한 캐릭터들과 \n 목표를 달성하고, 클로버 보상까지 받아보세요!',
-      image: 'img2'
+      text: '크루 목표는 매주 확인! 성공할 때마다 클로버 득템!',
+      image: 'onboarding2'
     },
     {
       title: '같이 달리는 기쁨,\n지금 여기서 시작해요!',
@@ -58,7 +58,7 @@ function Page() {
       {/* 이미지 + 점 */}
       <div className="flex flex-col items-center mt-[-9vh]">
         <Image
-          src={`/assets/onboarding/${slides[index].image}.png`}
+          src={`/assets/onboarding/${slides[index].image}.svg`}
           alt={slides[index].image}
           width={243}
           height={243}

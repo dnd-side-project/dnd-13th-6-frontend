@@ -20,7 +20,7 @@ export default function Login() {
 
       {/* 로그인 버튼 - 화면 정중앙 */}
       <Link
-        href="/login/terms"
+        href="/onboarding/terms"
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[13vw] max-h-[100px] w-[calc(100vw-5vw)] max-w-[400px] "
       >
         <Image
