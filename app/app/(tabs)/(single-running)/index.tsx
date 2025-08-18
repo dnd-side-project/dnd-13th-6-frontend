@@ -2,6 +2,7 @@ import Chip from '@/components/chips/Chip';
 import { useWebView } from '@/hooks/useWebView';
 import { RunningData } from '@/types/runnintTypes';
 import { getAppState } from '@/utils/app';
+import { ENV } from '@/utils/app/consts';
 import {
   getCurrentSpeed,
   getDistanceFromLatLonInMeters
@@ -129,12 +130,20 @@ function Index() {
   const insets = useSafeAreaInsets();
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
-
   //TODO.. 위치 표시 UI 추가시 구현
-  const [isGPSEnabled, setIsGPSEnabled] = useState<boolean>(false);
+  const [isGPSEnabled, setIsGPSEnabled] = useState<
+    'granted' | 'waiting' | 'denied'
+  >('waiting');
 
   const { webviewRef, postMessage } = useWebView<RunningData>();
   const mockLocationRef = useRef<Location.LocationObject | null>(null);
+
+  const setGpsStatus = async () => {
+    const providerStatus = await Location.getProviderStatusAsync();
+    setIsGPSEnabled(
+      providerStatus.locationServicesEnabled ? 'granted' : 'denied'
+    );
+  };
 
   const getMockLocation = (): Location.LocationObject => {
     if (mockLocationRef.current === null) {
@@ -183,12 +192,7 @@ function Index() {
           (await getStorage<RunningData[]>(STORAGE_KEY.RUNNING_DATA)) || [];
         const location = await getLocation();
 
-        if (__DEV__) {
-          setIsGPSEnabled(true);
-        } else {
-          const providerStatus = await Location.getProviderStatusAsync();
-          setIsGPSEnabled(providerStatus.locationServicesEnabled);
-        }
+        setGpsStatus();
         const { latitude, longitude } = location.coords;
 
         const currentRunningData = setRunningData(
@@ -260,6 +264,7 @@ function Index() {
     const appStateRef = { current: AppState.currentState } as {
       current: string;
     };
+
     const subscription = AppState.addEventListener('change', async next => {
       const appState = getAppState(next);
       if (appState === 'background' && isRunning) {
@@ -296,6 +301,7 @@ function Index() {
       );
       if (pending) await setStorage(STORAGE_KEY.RUNNING_PENDING_MESSAGES, []);
       if (locationList) await setStorage(STORAGE_KEY.RUNNING_DATA, []);
+      setGpsStatus();
     };
     init();
   }, []);
@@ -304,10 +310,22 @@ function Index() {
       <Chip style={[styles.chip, { top: insets.top + 30 }]}>
         <View style={styles.chipContent}>
           <Image
-            source={require('@/assets/images/ellipse-green.png')}
+            source={
+              isGPSEnabled === 'granted'
+                ? require('@/assets/images/ellipse-green.png')
+                : isGPSEnabled === 'waiting'
+                ? require('@/assets/images/ellipse-yellow.png')
+                : require('@/assets/images/ellipse-red.png')
+            }
             style={{ width: 16, height: 16 }}
           />
-          <Text style={styles.chipText}>GPS 연결됨</Text>
+          <Text style={styles.chipText}>
+            {isGPSEnabled === 'granted'
+              ? 'GPS 연결됨'
+              : isGPSEnabled === 'waiting'
+              ? 'GPS 연결중'
+              : 'GPS 연결 실패'}
+          </Text>
         </View>
       </Chip>
       <WebView
@@ -315,7 +333,7 @@ function Index() {
         onMessage={receiveMessage}
         style={styles.webview}
         source={{
-          uri: 'http:192.168.55.130:3000' + '/prepare-run'
+          uri: ENV.WEB_VIEW_URL + '/prepare-run'
         }}
       />
     </View>
