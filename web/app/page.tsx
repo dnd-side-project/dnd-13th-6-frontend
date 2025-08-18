@@ -6,6 +6,9 @@ export default function Home() {
       <Link href="/onboarding" className="text-blue-500 hover:underline">
         온보딩 페이지로 이동
       </Link>
+      <Link href="/main" className="text-blue-500 hover:underline">
+      메인 페이지 이동
+      </Link>
       <Link href="/login" className="text-blue-500 hover:underline">
         로그인 페이지로 이동
       </Link>
