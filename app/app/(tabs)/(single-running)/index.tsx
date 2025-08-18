@@ -14,6 +14,7 @@ import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import { useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   AppState,
   Dimensions,
@@ -130,6 +131,7 @@ function Index() {
   const insets = useSafeAreaInsets();
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   //TODO.. 위치 표시 UI 추가시 구현
   const [isGPSEnabled, setIsGPSEnabled] = useState<
     'granted' | 'waiting' | 'denied'
@@ -328,10 +330,24 @@ function Index() {
           </Text>
         </View>
       </Chip>
+      {isLoading && (
+        <ActivityIndicator
+          color="#32FF76"
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: windowHeight
+          }}
+        />
+      )}
       <WebView
         ref={webviewRef}
         onMessage={receiveMessage}
-        style={styles.webview}
+        onLoadEnd={() => {
+          setIsLoading(false);
+        }}
+        style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         source={{
           uri: ENV.WEB_VIEW_URL + '/prepare-run'
         }}
