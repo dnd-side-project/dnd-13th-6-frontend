@@ -54,7 +54,7 @@ const GroupGoal = ({ onProgressPress }: { onProgressPress: () => void }) => {
           marginBottom: 12,
           paddingHorizontal: 8.5,
           paddingVertical: 3.5,
-          width: 115
+          alignSelf: 'flex-start'
         }}
       >
         <Text style={{ color: '#32FF76', fontSize: 13, textAlign: 'center' }}>
@@ -238,7 +238,6 @@ const styles = StyleSheet.create({
     flexGrow: 1
   },
   GroupGoalContainer: {
-    width: 360,
     paddingHorizontal: 17,
     paddingTop: 22,
     paddingBottom: 53,

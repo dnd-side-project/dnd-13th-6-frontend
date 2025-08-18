@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/css": "^11.13.5",
     "@vis.gl/react-google-maps": "^1.5.5",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.23.12",
     "lucide-react": "^0.536.0",
+    "motion": "^12.23.12",
     "next": "15.4.4",
     "prettier": "^3.6.2",
     "react": "19.1.0",

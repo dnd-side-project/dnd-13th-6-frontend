@@ -13,9 +13,10 @@ export default function Chip({ children, onPress, style }: Props) {
     </Pressable>
   );
 }
-
+//children크기만큼만 차지하도록
 const styles = StyleSheet.create({
   container: {
+    width: 'auto',
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderRadius: 100
