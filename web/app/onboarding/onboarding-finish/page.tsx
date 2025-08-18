@@ -23,14 +23,11 @@ function Page() {
   }, [seconds, router]);
 
   return (
-    <div className="flex flex-col justify-between flex-grow p-4 overflow-hidden">
+    <div className="flex flex-grow flex-col justify-between overflow-hidden p-4">
       <div>
         <ProgressBar progress={100} className="h-[6px]" />
         <div className="flex flex-col items-center">
-          <p
-            className="text-gray-20 text-[26px] font-bold whitespace-pre-line mt-[51px] leading-[35px]
-          tracking-[-0.025em] inline-block text-center justify-center"
-          >
+          <p className="text-gray-20 mt-[51px] inline-block justify-center text-center text-[26px] leading-[35px] font-bold tracking-[-0.025em] whitespace-pre-line">
             <Image
               src="/assets/LOGO.png"
               alt="onboarding3"
@@ -38,10 +35,10 @@ function Page() {
               height={28}
               className="inline-block"
             />
-            {`와 함께\n 행운의 첫걸음을 내딛으세요!`}
+            {`와 함께\n 행운의 첫걸음을 시작해요!`}
           </p>
         </div>
-        <div className="flex flex-col items-center mt-20">
+        <div className="mt-20 flex flex-col items-center">
           <Image
             src="/assets/icon/start.svg"
             alt="start"

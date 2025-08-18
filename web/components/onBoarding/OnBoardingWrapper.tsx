@@ -1,18 +1,16 @@
 import React from 'react';
 
-function OnBoardingWrapper({
-  title,
-  children
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function OnBoardingWrapper({ title, text }: { title: string; text?: string }) {
   return (
-    <div className="absolute top-[132px] left-[16px]">
-      <p className="text-gray-20 text-[26px] font-bold whitespace-pre-line leading-[35px]">
+    <div className="">
+      <p className="text-gray-20 text-[1.625rem] leading-[1.35] font-bold tracking-[-0.025em] whitespace-pre-line">
         {title}
       </p>
-      {children}
+      {text && (
+        <p className="pretendard-headline2 text-gray-60 mt-[1.5vh] text-[0.9375rem] leading-[1.375] whitespace-pre-line sm:mt-[2vh] sm:text-[1.5vw]">
+          {text}
+        </p>
+      )}
     </div>
   );
 }

@@ -3,18 +3,16 @@ import React, { useState } from 'react';
 import ProgressBar from '@/components/common/ProgressBar';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
+import NicknameInput from '@/components/onBoarding/NicknameInput';
 
 function Page() {
-  const [nickname, setNickname] = useState('');
-  const helpMessage = {
-    error: '(이미 사용중인 닉네임이에요)',
-    pass: '✔ 사용가능한 닉네임입니다.'
-  };
-  const [test, setTest] = useState<'error' | 'pass' | null>(null);
-  const onClick = () => {
-    setTest(prev => (prev === 'pass' ? 'error' : 'pass'));
-  };
+  const [isNicknameValid, setIsNicknameValid] = useState(false);
   const router = useRouter();
+
+  const handleValidationChange = (isValid: boolean) => {
+    setIsNicknameValid(isValid);
+  };
+
   return (
     <div className="flex flex-col flex-grow p-4">
       <div>
@@ -23,33 +21,11 @@ function Page() {
           {`닉네임을\n설정해주세요!`}
         </p>
       </div>
-      <div className="flex items-center border-gray-60 border-b-2 mt-[15vh]">
-        <input
-          className="flex-grow bg-transparent outline-none"
-          value={nickname}
-          onChange={e => setNickname(e.target.value.trim())}
-        />
-        <button
-          disabled={nickname.trim() === ''}
-          className={` border-2 p-2 rounded-xl mb-4 font-regular text-[0.8125rem] tracking-[-0.025em]
-           ${nickname.trim() !== '' ? 'border-white text-white ' : 'border-gray-60 text-gray-60'}
-           `}
-          onClick={onClick}
-        >
-          중복 확인
-        </button>
-      </div>
-      <p
-        className={`body2 mt-3
-      ${test === 'error' ? 'text-[#FF7373]' : 'text-[#00AF49]'}
-      `}
-      >
-        {test && helpMessage[test]}
-      </p>
+      <NicknameInput onValidationChange={handleValidationChange} />
       <div className="mt-auto">
         <Button
           className="w-full h-15 mb-5"
-          disabled={test !== 'pass'}
+          disabled={!isNicknameValid}
           onClick={() => router.push('/onboarding/select-character')}
         >
           다음으로
