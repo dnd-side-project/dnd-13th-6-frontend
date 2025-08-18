@@ -15,10 +15,10 @@ export default function DefaultLayout({
   backHref
 }: DefaultLayoutProps) {
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex h-screen flex-col">
       <div className="h-[50px]" />
       {showHeader && (
-        <header className="flex items-center justify-between p-4 bg-gradient-to-b">
+        <header className="flex items-center justify-between bg-gradient-to-b p-4">
           {backHref ? (
             <Link href={backHref}>
               <Image
@@ -31,11 +31,11 @@ export default function DefaultLayout({
           ) : (
             <div className="w-6" />
           )}
-          {title && <h1 className="text-white text-lg font-bold">{title}</h1>}
+          {title && <h1 className="text-lg font-bold text-white">{title}</h1>}
           <div className="w-6" />
         </header>
       )}
-      <main className="flex-1 flex flex-col">{children}</main>
+      <main className="flex flex-1 flex-col p-4">{children}</main>
     </div>
   );
 }

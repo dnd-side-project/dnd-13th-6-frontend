@@ -14,17 +14,17 @@ function Page() {
   };
 
   return (
-    <div className="flex flex-col flex-grow p-4">
+    <div className="flex flex-grow flex-col">
       <div>
         <ProgressBar progress={50} className="h-[6px]" />
-        <p className="text-gray-20 text-[26px] font-bold whitespace-pre-line mt-[51px] leading-[35px] tracking-[-0.025em]">
+        <p className="text-gray-20 mt-[51px] text-[26px] leading-[35px] font-bold tracking-[-0.025em] whitespace-pre-line">
           {`닉네임을\n설정해주세요!`}
         </p>
       </div>
       <NicknameInput onValidationChange={handleValidationChange} />
       <div className="mt-auto">
         <Button
-          className="w-full h-15 mb-5"
+          className="mb-5 h-15 w-full"
           disabled={!isNicknameValid}
           onClick={() => router.push('/onboarding/select-character')}
         >
