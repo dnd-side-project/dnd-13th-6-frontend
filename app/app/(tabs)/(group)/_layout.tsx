@@ -5,7 +5,7 @@ import {
   MaterialTopTabNavigationOptions
 } from '@react-navigation/material-top-tabs';
 import { ParamListBase, TabNavigationState } from '@react-navigation/native';
-import { withLayoutContext } from 'expo-router';
+import { router, withLayoutContext } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -157,7 +157,10 @@ export default function Layout() {
       </MaterialTopTabs>
 
       <View style={{ backgroundColor: '#313131' }}>
-        <Pressable style={styles.startButton} onPress={handleEditMemberPress}>
+        <Pressable
+          style={styles.startButton}
+          onPress={() => router.push('/(tabs)/(single-running)')}
+        >
           <Text style={styles.startButtonText}>운동 시작하기</Text>
         </Pressable>
       </View>
