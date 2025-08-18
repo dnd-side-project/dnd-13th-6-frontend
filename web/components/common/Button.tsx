@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 type ButtonProps = {
@@ -19,13 +18,11 @@ export default function Button({
   const [isPressed, setIsPressed] = useState(false);
 
   const buttonClass = twMerge(
-    clsx(
-      'font-pretendard font-bold text-black px-6 py-2 rounded-xl', // 기본값
-      isPressed && 'bg-pressed',
-      disabled && 'bg-disabled',
-      !isPressed && !disabled && 'bg-primary',
-      className
-    )
+    'font-pretendard font-bold text-black px-6 py-2 rounded-xl', // 기본값
+    isPressed && 'bg-pressed',
+    disabled && 'bg-disabled',
+    !isPressed && !disabled && 'bg-primary',
+    className
   );
 
   return (

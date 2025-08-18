@@ -1,7 +1,7 @@
 'use client';
 
 import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
-import Polyline from '@/components/GoogleMap/Polyline';
+import Polyline from '@/components/googleMap/Polyline';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import GpsStatus from '@/components/running/GpsStatus';
 

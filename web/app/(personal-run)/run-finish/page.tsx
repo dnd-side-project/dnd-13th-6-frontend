@@ -4,7 +4,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import CircleProgress from '@/components/running/Finish/CircleProgress';
 import FinishOverView from '@/components/running/OverView/FinishOverView';
 import RunningNameInput from '@/components/running/Finish/RunningNameInput';
-import GoogleMap from '@/components/GoogleMap/GoogleMap';
+import GoogleMap from '@/components/googleMap/GoogleMap';
 import { useRouter } from 'next/navigation';
 import ReactConfetti from 'react-confetti';
 import { useEffect, useState } from 'react';
