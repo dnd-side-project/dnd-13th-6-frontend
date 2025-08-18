@@ -36,23 +36,23 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
     <div
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className="flex flex-grow flex-col p-4"
+      className="flex flex-grow flex-col"
     >
       <OnBoardingWrapper
         title={slides[index].title}
         text={slides[index].text}
       />
       {/* 이미지 + 점 */}
-      <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+      <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center pt-20">
         <Image
           src={`/assets/onboarding/${slides[index].image}.svg`}
           alt={slides[index].image}
-          width={243}
-          height={243}
+          width={index === 2 ? 275 : 243}
+          height={index === 2 ? 275 : 243}
           priority
           className="max-w-[70vw] object-contain"
         />
-        <div className="mt-[8vh] flex justify-between gap-[3vw]">
+        <div className="mt-19 flex justify-between gap-[3vw]">
           {slides.map((_, i) => (
             <div
               key={i}
@@ -67,23 +67,27 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
       </div>
 
       {/* 버튼 */}
-      <div className="absolute right-4 bottom-11 left-4">
+      <>
         {index !== slides.length - 1 ? (
-          <button
-            className="text-gray-60 float-right text-[0.875rem] sm:text-[1rem]"
-            onClick={() => setIndex(index + 1)}
-          >
-            건너뛰기
-          </button>
+          <div className="absolute right-4 bottom-17 left-4">
+            <button
+              className="text-gray-60 float-right text-[1rem] sm:text-[1rem]"
+              onClick={() => setIndex(index + 1)}
+            >
+              건너뛰기
+            </button>
+          </div>
         ) : (
-          <Button
-            className="h-[6vh] w-full text-[1rem] sm:text-[1.25rem]"
-            onClick={onComplete}
-          >
-            시작하기
-          </Button>
+          <div className="absolute right-4 bottom-10 left-4">
+            <Button
+              className="h-15 w-full text-[1rem] sm:text-[1.25rem]"
+              onClick={onComplete}
+            >
+              시작하기
+            </Button>
+          </div>
         )}
-      </div>
+      </>
     </div>
   );
 }
