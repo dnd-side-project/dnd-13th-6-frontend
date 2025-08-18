@@ -2,7 +2,7 @@ import React from 'react';
 
 function OnBoardingWrapper({ title, text }: { title: string; text?: string }) {
   return (
-    <div className="">
+    <div>
       <p className="text-gray-20 text-[1.625rem] leading-[1.35] font-bold tracking-[-0.025em] whitespace-pre-line">
         {title}
       </p>
