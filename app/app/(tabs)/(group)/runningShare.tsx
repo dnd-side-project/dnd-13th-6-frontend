@@ -1,4 +1,4 @@
-import Constants from 'expo-constants';
+import { ENV } from '@/utils/app/consts';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import WebView from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
@@ -9,9 +9,7 @@ function RunningShare() {
       <WebView
         style={styles.webview}
         source={{
-          uri:
-            Constants.expoConfig?.extra?.EXPO_PUBLIC_WEBVIEW_URL +
-            '/group-running'
+          uri: ENV.WEB_VIEW_URL + '/group-running'
         }}
       />
     </View>

@@ -20,7 +20,7 @@ function Index() {
       </Pressable>
       <Pressable
         style={styles.runningButton}
-        onPress={() => router.push('/(tabs)/(group-running)')}
+        onPress={() => router.push('/(tabs)/(group)')}
       >
         <Text style={styles.runningButtonText}>그룹 달리기 조회</Text>
       </Pressable>
