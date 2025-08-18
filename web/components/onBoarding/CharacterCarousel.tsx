@@ -43,7 +43,7 @@ function CharacterCarousel({ characters }: CharacterCarouselProps) {
   const itemGap = 32;
 
   return (
-    <div className="flex flex-col items-center justify-center flex-grow">
+    <div className="flex flex-grow flex-col items-center justify-center">
       <div
         className="w-full overflow-hidden"
         onTouchStart={handleTouchStart}
@@ -65,11 +65,11 @@ function CharacterCarousel({ characters }: CharacterCarouselProps) {
             >
               <Image
                 src={`/assets/icon/${character.image}.svg`}
-                alt=""
+                alt={`${character.image}`}
                 width={itemWidth}
                 height={itemWidth}
                 priority
-                className={`object-contain w-full h-auto transition-transform duration-300 ${
+                className={`h-auto w-full object-contain transition-transform duration-300 ${
                   index === i ? 'scale-100' : 'scale-75'
                 }`}
               />
@@ -78,11 +78,11 @@ function CharacterCarousel({ characters }: CharacterCarouselProps) {
         </div>
       </div>
 
-      <div className="flex gap-[3vw] mt-[3vh]">
+      <div className="mt-[3vh] flex gap-[3vw]">
         {characters.map((_, i) => (
           <div
             key={i}
-            className={`rounded-full transition-all w-[14px] h-[14px] ${
+            className={`h-[14px] w-[14px] rounded-full transition-all ${
               index === i ? 'bg-primary' : 'bg-gray-60'
             }`}
           />

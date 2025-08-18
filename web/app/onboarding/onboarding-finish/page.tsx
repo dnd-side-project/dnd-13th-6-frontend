@@ -1,26 +1,18 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ProgressBar from '@/components/common/ProgressBar';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 function Page() {
-  const [seconds, setSeconds] = useState(0);
   const router = useRouter();
   useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds(prev => prev + 1);
-    }, 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (seconds === 3) {
+    const timer = setTimeout(() => {
       router.replace('/');
-    }
-  }, [seconds, router]);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [router]);
 
   return (
     <div className="flex flex-grow flex-col justify-between overflow-hidden p-4">

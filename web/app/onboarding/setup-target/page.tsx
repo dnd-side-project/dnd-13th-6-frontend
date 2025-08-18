@@ -41,7 +41,7 @@ function Page() {
           <div className="flex items-center">
             <div className="mt-4 flex items-end space-x-2">
               <input
-                className="font-lufga border-gray-60 align-center ext-white w-50 [appearance:textfield] border-b-2 bg-transparent text-center text-7xl font-extrabold italic focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                className="font-lufga border-gray-60 align-center w-50 [appearance:textfield] border-b-2 bg-transparent text-center text-7xl font-extrabold text-white italic focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 type="text"
                 inputMode="decimal"
                 value={targetDistance}
