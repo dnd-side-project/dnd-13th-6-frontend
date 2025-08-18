@@ -28,7 +28,7 @@ function Page() {
   };
   const router = useRouter();
   return (
-    <div className="flex flex-grow flex-col p-4">
+    <div className="flex flex-grow flex-col">
       <div>
         <ProgressBar progress={85} className="h-[6px]" />
         <p className="text-gray-20 mt-[51px] text-[26px] leading-[35px] font-bold tracking-[-0.025em] whitespace-pre-line">

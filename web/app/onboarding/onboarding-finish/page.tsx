@@ -15,7 +15,7 @@ function Page() {
   }, [router]);
 
   return (
-    <div className="flex flex-grow flex-col justify-between overflow-hidden p-4">
+    <div className="flex flex-grow flex-col justify-between overflow-hidden">
       <div>
         <ProgressBar progress={100} className="h-[6px]" />
         <div className="flex flex-col items-center">

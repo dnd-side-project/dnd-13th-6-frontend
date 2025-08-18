@@ -14,7 +14,7 @@ function Page() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-grow flex-col justify-between overflow-hidden p-4">
+    <div className="flex flex-grow flex-col justify-between overflow-hidden">
       <div>
         <ProgressBar progress={70} className="h-[6px]" />
         <p className="text-gray-20 mt-[51px] text-[26px] leading-[35px] font-bold tracking-[-0.025em] whitespace-pre-line">

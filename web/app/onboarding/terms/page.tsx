@@ -15,7 +15,7 @@ function Page() {
   };
 
   return (
-    <div className="flex flex-grow flex-col p-4">
+    <div className="flex flex-grow flex-col">
       {/* ProgressBar는 상단 고정 */}
       <ProgressBar progress={20} className="mb-[51px] h-[6px]" />
       {/* 나머지 공간은 온보딩 영역으로 */}
