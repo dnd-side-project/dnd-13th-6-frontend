@@ -142,10 +142,9 @@ export default function Layout() {
           tabBarActiveTintColor: '#fff',
           tabBarIndicatorStyle: {
             backgroundColor: '#E5E5EA',
-            borderRadius: 12,
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-            height: 4
+            height: 4,
+            width: '45%',
+            marginHorizontal: 12
           }
         }}
       >
