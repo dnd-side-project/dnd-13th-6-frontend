@@ -1,10 +1,11 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/GoogleMap/GoogleMap';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import UserMarker from '@/components/GoogleMap/UserMarker';
+import { useStomp } from '@/hooks/useStomp';
 function CrewMemberProfiles({users, onClick}: {users:Array<any>, onClick: (user:any) => void}) {
   return (
     <div className="flex justify-evenly overflow-x-scroll">
@@ -24,7 +25,8 @@ function CrewMemberProfiles({users, onClick}: {users:Array<any>, onClick: (user:
 export default function Page() {
     const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
 
-  const handleClick = () => {
+  // 클로버 애니메이션
+  const startCloverAnimation = () => {
     const id = Date.now();
     const randomX = (Math.random()) * 60; // 버튼 기준 좌우 살짝 흔들림
     setClovers((prev) => [...prev, { id, x: randomX }]);
@@ -33,6 +35,8 @@ export default function Page() {
       setClovers((prev) => prev.filter((c) => c.id !== id));
     }, 2000);
   };
+
+
   const [memberData, setMemberData] = useState({
     lat: 35.97664845766847,
     lng: 126.99597295767953
@@ -52,6 +56,24 @@ export default function Page() {
     })
   }
 
+  const { connected, publish } = useStomp({
+    url: process.env.NEXT_PUBLIC_SERVER_BASE_URL + '/ws',
+    subscribeUrl: '/topic/group-running',
+    publishUrl: '/app/group-running',
+    onMessage: (message) => {
+      const data = JSON.parse(message);
+      setMemberData({
+        lat: data.lat,
+        lng: data.lng
+      });
+    }
+  });
+
+    const sendEmogi = (emojiType: string) => {
+      startCloverAnimation()
+      publish(emojiType);
+  };
+
   return (
     <div
       className="relative h-screen w-full bg-[#313131] text-whit px-4 pt-10 overflow-scroll"
@@ -68,7 +90,7 @@ export default function Page() {
       </div>
 
       <button
-        onClick={handleClick}
+        onClick={() => sendEmogi('clover')}
         className=" px-4 py-2 rounded-full bg-gray-80 ml-auto text-white flex items-center gap-2 mt-[14px]"
       >
         {/* 🌿 클로버 아이콘 컨테이너 */}
