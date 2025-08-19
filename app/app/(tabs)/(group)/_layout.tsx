@@ -33,7 +33,10 @@ const GroupInfo = ({ onSettingsPress }: { onSettingsPress: () => void }) => {
         <Text style={styles.GroupInfoTitle}>방 제목 최대 몇 글자까지</Text>
         <View style={styles.GroupNotificationContainer}>
           <Ionicons name="megaphone-outline" color={'white'} size={19} />
-          <Text style={styles.GroupNotificationText}>
+          <Text
+            className="text-gray40 font-semibold"
+            style={styles.GroupNotificationText}
+          >
             매일매일 열심히 하자 (공지 및 방 설명)
           </Text>
           <Pressable onPress={onSettingsPress}>
@@ -128,8 +131,20 @@ export default function Layout() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={{ paddingInline: 17, paddingTop: 38 }}>
+    <View
+      style={[
+        styles.container,
+        { paddingTop: insets.top, backgroundColor: '#313131' }
+      ]}
+    >
+      <View
+        style={{
+          paddingInline: 17,
+          paddingTop: 22,
+          paddingBottom: 26,
+          backgroundColor: '#000'
+        }}
+      >
         <GroupInfo onSettingsPress={handleSettingsPress} />
         <GroupGoal onProgressPress={handleProgressPress} />
       </View>
@@ -137,7 +152,11 @@ export default function Layout() {
       <MaterialTopTabs
         style={styles.topTabsContainer}
         screenOptions={{
-          tabBarStyle: { backgroundColor: '#313131' },
+          tabBarStyle: {
+            backgroundColor: '#313131',
+            borderTopLeftRadius: 24, // Apply border-radius to the top-left corner
+            borderTopRightRadius: 24
+          },
           tabBarLabelStyle: { fontSize: 20, fontWeight: 'bold' },
           tabBarActiveTintColor: '#fff',
           tabBarIndicatorStyle: {
@@ -155,7 +174,14 @@ export default function Layout() {
         />
       </MaterialTopTabs>
 
-      <View style={{ backgroundColor: '#313131' }}>
+      <View
+        style={{
+          backgroundColor: '#313131',
+          marginTop: 26,
+          marginBottom: 21,
+          paddingInline: 18
+        }}
+      >
         <Pressable
           style={styles.startButton}
           onPress={() => router.push('/(tabs)/(single-running)')}
@@ -233,7 +259,7 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   GroupNotificationText: {
-    backgroundColor: '#E5E5E7',
+    backgroundColor: '#313131',
     paddingBlock: 8,
     paddingInline: 20,
     borderRadius: 10,
@@ -258,20 +284,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   topTabsContainer: {
-    marginTop: 24,
-    backgroundColor: '#313131'
+    backgroundColor: '#313131',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24
   },
   startButton: {
     backgroundColor: '#31FF76',
     textAlign: 'center',
-    marginInline: 18,
     paddingVertical: 18,
-    borderRadius: 12,
-    marginTop: 26,
-    marginBottom: 35
+    borderRadius: 12
   },
   startButtonText: {
-    color: '#000',
+    color: '#313131',
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 20

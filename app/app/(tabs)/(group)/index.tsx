@@ -4,7 +4,8 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
+  Image
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
@@ -63,6 +64,10 @@ const RankingItem: React.FC<RankingItemProps> = ({
         <View style={styles.rankBadge} className={rankClass}>
           <Text style={styles.rankText}>{rank}</Text>
         </View>
+        <Image
+          source={require('@/assets/images/ellipse-red.png')}
+          style={{ width: 50, height: 50, borderRadius: 100 }}
+        />
         <View style={styles.itemContent}>
           <Text style={styles.nameText}>{name}</Text>
         </View>
@@ -130,15 +135,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: '100%',
-    backgroundColor: '#313131',
-    paddingTop: 37
+    backgroundColor: '#313131'
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     marginLeft: 16,
-    paddingVertical: 20,
-    color: 'white'
+    color: 'white',
+    marginTop: 36,
+    marginVertical: 15
   },
   rankingList: {
     flex: 1
@@ -148,22 +153,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 80,
     backgroundColor: '#313131',
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    gap: 15
   },
   rankingItemEven: {
     flexDirection: 'row',
     alignItems: 'center',
     height: 80,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    gap: 15
   },
   rankBadge: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15
+    alignItems: 'center'
   },
   rankText: {
     color: 'white',

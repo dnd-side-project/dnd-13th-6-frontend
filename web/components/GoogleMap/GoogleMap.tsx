@@ -14,12 +14,14 @@ export default function GoogleMap({
   width = '100%',
   height = '100%',
   path = [],
-  type
+  type,
+  children
 }: {
   width?: string;
   height?: string;
   path?: LatLng[];
   type?: string;
+  children?: React.ReactNode;
 }) {
   const position = useMemo(
     () =>
@@ -112,6 +114,7 @@ export default function GoogleMap({
                     style={{ transform: 'translateY(10px)' }}
                   />
                 </AdvancedMarker>
+                {children}
                 <Polyline path={polyline} />
               </>
             )}

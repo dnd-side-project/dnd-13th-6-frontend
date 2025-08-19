@@ -4,6 +4,22 @@ import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/GoogleMap/GoogleMap';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
+import UserMarker from '@/components/GoogleMap/UserMarker';
+function CrewMemberProfiles({users, onClick}: {users:Array<any>, onClick: (user:any) => void}) {
+  return (
+    <div className="flex justify-evenly overflow-x-scroll">
+      {users.map((user, index) => (
+        <ProfileImage
+          key={index}
+          onClick={() => onClick(user)}
+          isRunning={true}
+          profileImageUrl={'/assets/clover.png'}
+          alt='user'
+        />
+      ))}
+    </div>
+  )
+}
 
 export default function Page() {
     const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
@@ -40,15 +56,15 @@ export default function Page() {
     <div
       className="relative h-screen w-full bg-[#313131] text-whit px-4 pt-10 overflow-scroll"
     >
-      <div className="flex gap-4 min-w-full overflow-auto justify-center">
-        <ProfileImage onClick={onMemberClick} isRunning={true} profileImageUrl="https://picsum.photos/200/300" width={60} height={60} alt='user'  />
-        <ProfileImage onClick={onMemberClick} profileImageUrl="https://picsum.photos/60" width={60} height={60} alt='user'  />
-        <ProfileImage onClick={onMemberClick} profileImageUrl="https://picsum.photos/200/300" width={60} height={60} alt='user'  />
-        <ProfileImage onClick={onMemberClick} profileImageUrl="https://picsum.photos/200/300" width={60} height={60} alt='user'  />
-        <ProfileImage onClick={onMemberClick} profileImageUrl="https://picsum.photos/200/300" width={60} height={60} alt='user'  />
-      </div>
-      <div className="mt-8 h-full">
-        <GoogleMap path={[{lat:memberData.lat, lng: memberData.lng}]} />
+      <CrewMemberProfiles users={[1,2,3,4,5]} onClick={onMemberClick} />
+      <div className="mt-8 overflow-y-scroll h-[400px]">
+        <GoogleMap path={[{lat:memberData.lat, lng: memberData.lng}]}>
+          <UserMarker
+            lat={memberData.lat}
+            lng={memberData.lng}
+            imageUrl={'/assets/clover.png'}
+          />
+        </GoogleMap>
       </div>
 
       <button
