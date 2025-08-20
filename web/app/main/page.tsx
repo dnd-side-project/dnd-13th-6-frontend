@@ -1,26 +1,25 @@
 'use client';
 import React from 'react';
-import Image from 'next/image';
-import { Bell } from '@phosphor-icons/react';
+import MainHeader from '@/components/main/MainHeader';
+import WelcomeCard from '@/components/main/WelcomeCard';
+import WeeklyGoalCard from '@/components/main/WeeklyGoalCard';
+import TodayStatsCard from '@/components/main/TodayStatsCard';
+import CheerCard from '@/components/main/CheerCard';
+import GachaCard from '@/components/main/GachaCard';
+import CrewChallengeSection from '@/components/main/CrewChallengeSection';
 
 export default function Main() {
   return (
-    <div>
-      <div className="flex w-full items-center justify-between px-4 py-2">
-        <Image
-          src={'/assets/LogoWithText.png'}
-          alt={'logo'}
-          width={92}
-          height={29}
-        />
-        <div className="relative">
-          <Bell width={24} height={24} color={'white'} />
-          {/* 빨간 점 */}
-          <div className="absolute top-1 right-0 h-[8px] w-[8px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FF3B30]" />
-        </div>
-        {/*카드 */}
+    <>
+      <MainHeader />
+      <WelcomeCard />
+      <WeeklyGoalCard />
+      <TodayStatsCard />
+      <div className="mt-[24px] flex gap-4">
+        <CheerCard />
+        <GachaCard />
       </div>
-      <div className="width-full bg-">카드</div>
-    </div>
+      <CrewChallengeSection />
+    </>
   );
 }

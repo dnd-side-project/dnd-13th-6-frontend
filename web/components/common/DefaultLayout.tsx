@@ -16,7 +16,8 @@ export default function DefaultLayout({
 }: DefaultLayoutProps) {
   return (
     <div className="flex h-screen flex-col">
-      <div className="h-[50px]" />
+      <div className="h-[59px] flex-none" />
+
       {showHeader && (
         <header className="flex items-center justify-between bg-gradient-to-b p-4">
           {backHref ? (
