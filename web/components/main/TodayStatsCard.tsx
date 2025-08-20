@@ -29,7 +29,7 @@ const TodayStatsCard = () => {
             {`'-'--''`}
           </p>
           <p className="font-regular text-[0.9375rem] leading-[1.5] tracking-[-0.025em]">
-            거리
+            페이스
           </p>
         </div>
       </div>

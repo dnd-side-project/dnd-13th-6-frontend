@@ -41,7 +41,7 @@ const WeeklyGoalCard = () => {
       </div>
       <div className="mt-[8px] flex items-center justify-between">
         <p className="text-gray-30 text-[1.0625rem] leading-[1.5] font-medium tracking-[-0.025em]">
-          현재까지 달린 거리
+          목표까지 남은 거리
         </p>
         <p className="font-lufga text-gray-20 text-[1.1875rem] leading-[1.4] font-medium tracking-[-0.025em] italic">
           5km

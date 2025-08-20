@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const title = undefined;
 
   return (
-    <DefaultLayout showHeader={showHeader} title={title} backHref="/login">
+    <DefaultLayout showHeader={showHeader} title={title}>
       {children}
     </DefaultLayout>
   );
