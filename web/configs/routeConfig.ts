@@ -35,5 +35,10 @@ export const routeConfigs: Record<string, RouteConfig> = {
   },
   '/badge-collection/gacha/result': {
     showHeader: true
+  },
+  '/notification': {
+    showHeader: true,
+    backHref: '/main',
+    title: '알림'
   }
 };
