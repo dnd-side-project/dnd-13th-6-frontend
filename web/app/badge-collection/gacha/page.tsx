@@ -10,6 +10,7 @@ function Page() {
   const validateCount = () => {
     return clover / 10 >= 1;
   };
+  const canDraw = validateCount();
   const [image, setImage] = useState('/assets/gacha/pickgachaball.svg');
   const [isOnClick, setIsOnClick] = useState(false);
   const router = useRouter();
@@ -31,16 +32,16 @@ function Page() {
     >
       {/* 상단 텍스트 */}
       <p className="onboarding mt-6 mb-[50px] text-center whitespace-pre-line sm:mt-12">
-        {validateCount()
+        {canDraw
           ? `진수님을 응원해줄\n행운의 배지는?`
           : `클로버가 조금 부족해요\n러닝으로 더 모아볼까요?`}
       </p>
       {/* 이미지 화면 정중앙 고정 */}
       <Image
-        src={validateCount() ? image : '/assets/gacha/disabledgachaball.svg'}
+        src={canDraw ? image : '/assets/gacha/disabledgachaball.svg'}
         alt="가챠공"
-        width={isOnClick ? 228 : validateCount() ? 270 : 228}
-        height={isOnClick ? 228 : validateCount() ? 270 : 228}
+        width={isOnClick ? 228 : canDraw ? 270 : 228}
+        height={isOnClick ? 228 : canDraw ? 270 : 228}
         className={` ${isAnimating ? 'animate-roll' : ''}`}
       />
       {/* 하단 버튼 */}
@@ -53,7 +54,7 @@ function Page() {
             </p>
             <Button
               className="mb-5 h-15 w-full"
-              disabled={!validateCount()}
+              disabled={!canDraw}
               onClick={handleGacha}
             >
               캐릭터 뽑기
