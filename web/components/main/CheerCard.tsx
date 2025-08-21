@@ -18,7 +18,7 @@ const CheerCard = () => {
             />
           </div>
         </div>
-        <div className="z-10 mt-5 justify-self-center text-center font-bold">
+        <div className="z-10 mt-7 justify-self-center text-center font-bold">
           <span className="text-primary z-10">인생한접시</span>
           <span className="whitespace-pre-line text-white">
             {`님이

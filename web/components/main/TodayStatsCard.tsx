@@ -3,7 +3,7 @@ import Card from '@/components/main/Card';
 
 const TodayStatsCard = () => {
   return (
-    <Card className="relative mt-[24px] py-[28px]">
+    <Card className="relative mt-[24px] pt-[16px] pb-[16px]">
       <p className="text-gray-30 text-[1.0625rem] leading-[1.5] font-medium tracking-[-0.025em]">
         오늘 달린 기록
       </p>
