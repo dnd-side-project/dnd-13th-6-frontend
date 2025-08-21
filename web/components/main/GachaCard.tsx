@@ -25,12 +25,12 @@ const GachaCard = () => {
           {`클로버를 모으면
  랜덤 가챠 1회권 지급!`}
         </div>
-        <div className="flex justify-center">
+        <div className="mt-1 flex justify-center">
           <Image
             alt="뽑기공"
             src="/assets/main/gachaball.svg"
-            width={90}
-            height={90}
+            width={85}
+            height={85}
           />
         </div>
       </div>
