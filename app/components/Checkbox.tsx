@@ -8,15 +8,8 @@ interface CheckboxProps {
 
 export default function Checkbox({ checked, onPress }: CheckboxProps) {
   return (
-    <Pressable
-      onPress={onPress}
-      style={[styles.checkbox, checked ? styles.checked : styles.unchecked]}
-    >
-      {checked ? (
-        <Ionicons name="checkmark" size={24} color="black" />
-      ) : (
-        <Ionicons name="checkmark" size={24} color="black" />
-      )}
+    <Pressable onPress={onPress} style={[styles.checkbox]}>
+      <Ionicons name="ellipse" size={12} color={checked ? '#31FF76' : 'none'} />
     </Pressable>
   );
 }
@@ -24,14 +17,13 @@ export default function Checkbox({ checked, onPress }: CheckboxProps) {
 const styles = StyleSheet.create({
   checkbox: {
     borderRadius: 100,
-    borderWidth: 1
-  },
-  unchecked: {
-    backgroundColor: 'transparent',
-    borderColor: '#8E8E93'
-  },
-  checked: {
-    backgroundColor: 'red',
-    borderColor: 'transparent'
+    borderWidth: 3,
+    width: 20,
+    height: 20,
+    borderColor: '#8E8E93',
+    padding: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
