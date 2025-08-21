@@ -18,7 +18,7 @@ export default function Button({
   const [isPressed, setIsPressed] = useState(false);
 
   const buttonClass = twMerge(
-    'font-pretendard font-bold text-black px-6 py-2 rounded-xl', // 기본값
+    'button-title5 px-6 py-2 rounded-xl', // 기본값
     isPressed && 'bg-pressed',
     disabled && 'bg-disabled',
     !isPressed && !disabled && 'bg-primary',

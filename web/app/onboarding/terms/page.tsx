@@ -17,7 +17,11 @@ function Page() {
   return (
     <div className="flex flex-grow flex-col">
       {/* ProgressBar는 상단 고정 */}
-      <ProgressBar progress={20} className="mb-[51px] h-[6px]" />
+      <ProgressBar
+        progress={20}
+        className="mb-[51px] h-[6px]"
+        barStyle="h-[8px]"
+      />
       {/* 나머지 공간은 온보딩 영역으로 */}
       <OnBoardingWrapper title={`서비스 이용 약관에 \n동의해주세요.`} />
       <TermsAgreements onAgreementChange={handleAgreementChange} />

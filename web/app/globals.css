@@ -94,6 +94,11 @@
         @apply font-medium text-[0.875rem] leading-[1.4] tracking-[-0.025em];
         /* 14px / 16 = 0.875rem */
     }
+
+    .button-title5 {
+        @apply font-semibold text-[1.25rem] text-black
+    }
+
 }
 
 body {
