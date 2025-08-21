@@ -9,17 +9,24 @@ import { withLayoutContext } from 'expo-router';
 const MaterialTopTabsScreenOptions: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
     backgroundColor: '#313131',
-    borderTopLeftRadius: 24, // Apply border-radius to the top-left corner
+    borderTopLeftRadius: 24,
     borderTopRightRadius: 24
   },
-  tabBarLabelStyle: { fontSize: 20, fontWeight: 'bold' },
+  tabBarLabelStyle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textTransform: 'none' // 이 옵션을 추가하여 title이 그대로 표시되도록 함
+  },
   tabBarActiveTintColor: '#fff',
+  tabBarInactiveTintColor: '#999', // 비활성 탭 색상 추가
   tabBarIndicatorStyle: {
     backgroundColor: '#E5E5EA',
     height: 4,
     width: '45%',
     marginHorizontal: 12
-  }
+  },
+  // title이 제대로 표시되도록 하는 옵션 추가
+  tabBarShowLabel: true
 };
 
 const { Navigator } = createMaterialTopTabNavigator();
@@ -31,13 +38,26 @@ export const MaterialTopTabs = withLayoutContext<
   MaterialTopTabNavigationEventMap
 >(Navigator);
 
-export function TobTab({ children }: { children: React.ReactNode }) {
+export function TobTab({
+  items
+}: {
+  items: {
+    name: string;
+    options: MaterialTopTabNavigationOptions;
+  }[];
+}) {
   return (
     <MaterialTopTabs
       className="bg-gray px-6"
       screenOptions={MaterialTopTabsScreenOptions}
     >
-      {children}
+      {items.map(item => (
+        <MaterialTopTabs.Screen
+          key={item.name}
+          name={item.name}
+          options={item.options}
+        />
+      ))}
     </MaterialTopTabs>
   );
 }

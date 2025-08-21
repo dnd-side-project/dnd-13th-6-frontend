@@ -63,6 +63,21 @@ const GroupGoal = ({ onProgressPress }: { onProgressPress: () => void }) => {
   );
 };
 
+const MaterialTobTabItems = [
+  {
+    name: 'index',
+    options: {
+      title: '랭킹'
+    }
+  },
+  {
+    name: 'runningShare',
+    options: {
+      title: '러닝 공유'
+    }
+  }
+];
+
 export default function Layout() {
   const insets = useSafeAreaInsets();
   const [editMemberType, setEditMemberType] = useState<
@@ -70,7 +85,7 @@ export default function Layout() {
   >('editMember');
   // 각각 개별적으로 바텀시트 훅 호출 배경 블러처리
   const settingsBottomSheet = useBottomSheet({
-    snapPoints: ['50%'],
+    snapPoints: ['60%'],
     enableBackdropPress: true,
     enablePanDownToClose: true
   });
@@ -141,15 +156,7 @@ export default function Layout() {
         <GroupGoal onProgressPress={handleProgressPress} />
       </View>
 
-      <TobTab>
-        <>
-          <MaterialTopTabs.Screen name="index" options={{ title: '랭킹' }} />
-          <MaterialTopTabs.Screen
-            name="runningShare"
-            options={{ title: '러닝 공유' }}
-          />
-        </>
-      </TobTab>
+      <TobTab items={MaterialTobTabItems} />
 
       <View
         style={{

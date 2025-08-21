@@ -50,6 +50,7 @@ function GroupSettingContent({
   ];
   const renderItem = (item: GroupSettingItemProps) => (
     <Pressable
+      key={item.id}
       className="py-5 text-center bg-gray90 rounded-md"
       onPress={item.onPress}
     >
