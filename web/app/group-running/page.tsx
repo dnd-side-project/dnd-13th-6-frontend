@@ -1,12 +1,20 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/GoogleMap/GoogleMap';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import UserMarker from '@/components/GoogleMap/UserMarker';
 import { useStomp } from '@/hooks/useStomp';
-function CrewMemberProfiles({users, onClick}: {users:Array<any>, onClick: (user:any) => void}) {
+import type { MemberData } from '@/types/crew';
+
+function CrewMemberProfiles({
+  users,
+  onClick
+}: {
+  users: Array<MemberData>;
+  onClick: (user: MemberData) => void;
+}) {
   return (
     <div className="flex justify-evenly overflow-x-scroll">
       {users.map((user, index) => (
@@ -15,27 +23,26 @@ function CrewMemberProfiles({users, onClick}: {users:Array<any>, onClick: (user:
           onClick={() => onClick(user)}
           isRunning={true}
           profileImageUrl={'/assets/clover.png'}
-          alt='user'
+          alt="user"
         />
       ))}
     </div>
-  )
+  );
 }
 
 export default function Page() {
-    const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
+  const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
 
   // 클로버 애니메이션
   const startCloverAnimation = () => {
     const id = Date.now();
-    const randomX = (Math.random()) * 60; // 버튼 기준 좌우 살짝 흔들림
-    setClovers((prev) => [...prev, { id, x: randomX }]);
+    const randomX = Math.random() * 60; // 버튼 기준 좌우 살짝 흔들림
+    setClovers(prev => [...prev, { id, x: randomX }]);
 
     setTimeout(() => {
-      setClovers((prev) => prev.filter((c) => c.id !== id));
+      setClovers(prev => prev.filter(c => c.id !== id));
     }, 2000);
   };
-
 
   const [memberData, setMemberData] = useState({
     lat: 35.97664845766847,
@@ -44,23 +51,19 @@ export default function Page() {
   //todo:테스트용
 
   //TODO 멤버 타입 정의
-  const onMemberClick = (member?: {
-    langtitude: number,
-    lngitude: number,
-    isRunning: boolean
-  }) => {
+  const onMemberClick = (member: MemberData) => {
     // const {langtitude, longitude, isRunning=true} = member;
     setMemberData({
-      lng:  126.8542609,
+      lng: 126.8542609,
       lat: 37.5615603
-    })
-  }
+    });
+  };
 
   const { connected, publish } = useStomp({
     url: process.env.NEXT_PUBLIC_SERVER_BASE_URL + '/ws',
     subscribeUrl: '/topic/group-running',
     publishUrl: '/app/group-running',
-    onMessage: (message) => {
+    onMessage: message => {
       const data = JSON.parse(message);
       setMemberData({
         lat: data.lat,
@@ -69,18 +72,37 @@ export default function Page() {
     }
   });
 
-    const sendEmogi = (emojiType: string) => {
-      startCloverAnimation()
-      publish(emojiType);
+  const sendEmogi = (emojiType: string) => {
+    startCloverAnimation();
+    publish(emojiType);
   };
 
+
+
   return (
-    <div
-      className="relative h-screen w-full bg-[#313131] text-whit px-4 pt-10 overflow-scroll"
-    >
-      <CrewMemberProfiles users={[1,2,3,4,5]} onClick={onMemberClick} />
+    <div className="relative h-screen w-full bg-[#313131] text-whit px-4 pt-10 overflow-scroll">
+      <CrewMemberProfiles
+        users={[
+          {
+            memberId: '1',
+            nickname: '유준호',
+            character: 'clover'
+          },
+          {
+            memberId: '2',
+            nickname: '김철수',
+            character: 'clover'
+          },
+          {
+            memberId: '3',
+            nickname: '이영희',
+            character: 'clover'
+          }
+        ]}
+        onClick={onMemberClick}
+      />
       <div className="mt-8 overflow-y-scroll h-[400px]">
-        <GoogleMap path={[{lat:memberData.lat, lng: memberData.lng}]}>
+        <GoogleMap path={[{ lat: memberData.lat, lng: memberData.lng }]}>
           <UserMarker
             lat={memberData.lat}
             lng={memberData.lng}
@@ -101,13 +123,13 @@ export default function Page() {
           {/* 처음에는 흐리게* */}
           <div className="absolute left-2 top-0 w-5 h-5 pointer-events-none">
             <AnimatePresence>
-              {clovers.map((c) => (
+              {clovers.map(c => (
                 <motion.div
                   key={c.id}
-                  initial={{ y: 0, scale: 3, opacity: 0.3,  }}
+                  initial={{ y: 0, scale: 3, opacity: 0.3 }}
                   animate={{
                     y: -50, // 위로 이동
-                    scale: 7,    
+                    scale: 7,
                     opacity: 1,
                     //오른쪽으로 기울어짐
                     rotate: 45
@@ -115,12 +137,17 @@ export default function Page() {
                   transition={{ duration: 0.5 }}
                   className="absolute left-1/2 top-0 -translate-x-1/2"
                 >
-                  <Image src="/assets/clover-142.png" alt="clover" width={142} height={142} />
+                  <Image
+                    src="/assets/clover-142.png"
+                    alt="clover"
+                    width={142}
+                    height={142}
+                  />
                 </motion.div>
               ))}
             </AnimatePresence>
-            </div>
           </div>
+        </div>
         행운 보내기
       </button>
     </div>

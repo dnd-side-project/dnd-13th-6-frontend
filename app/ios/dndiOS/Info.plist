@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>dndios</string>
-          <string>com.yoojunho.dnd</string>
+          <string>com.runky.dnd</string>
         </array>
       </dict>
       <dict>
@@ -61,14 +61,14 @@
         </dict>
       </dict>
     </dict>
-    <key>NSFaceIDUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your Face ID biometric data.</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>$(PRODUCT_NAME)는 위치 정보 권한을 필요로 합니다.</string>
+    <string>이 앱은 위치 기반 서비스를 제공하기 위해 위치 정보가 필요합니다.</string>
     <key>NSLocationAlwaysUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your location</string>
+    <string>백그라운드에서도 위치 기반 서비스를 제공하기 위해 필요합니다.</string>
+    <key>NSLocationUsageDescription</key>
+    <string>백그라운드에서도 위치를 사용합니다.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>앱 사용 중 위치를 사용합니다.</string>
+    <string>이 앱은 현재 위치를 확인하기 위해 위치 정보가 필요합니다.</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
@@ -76,6 +76,7 @@
     <key>UIBackgroundModes</key>
     <array>
       <string>location</string>
+      <string>fetch</string>
     </array>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
@@ -100,7 +101,7 @@
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
     <key>UIUserInterfaceStyle</key>
-    <string>Automatic</string>
+    <string>Dark</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
   </dict>

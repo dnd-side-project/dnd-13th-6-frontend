@@ -16,12 +16,7 @@ interface RankingItemProps {
   onDelete?: () => void;
 }
 
-const RankingItem: React.FC<RankingItemProps> = ({
-  name,
-  rank,
-  distance,
-  onDelete
-}) => {
+const RankingItem: React.FC<RankingItemProps> = ({ name, rank }) => {
   // 왼쪽 스와이프 액션 (삭제)
   const renderRightActions = () => {
     return (
@@ -58,9 +53,7 @@ const RankingItem: React.FC<RankingItemProps> = ({
       rightThreshold={80}
       renderRightActions={renderRightActions}
     >
-      <View
-        style={rank % 2 !== 0 ? styles.rankingItemEven : styles.rankingItemOdd}
-      >
+      <View style={styles.rankingItem}>
         <View style={styles.rankBadge} className={rankClass}>
           <Text style={styles.rankText}>{rank}</Text>
         </View>
@@ -135,7 +128,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: '100%',
-    backgroundColor: '#313131'
+    backgroundColor: '#313131',
+    paddingBottom: 26
   },
   title: {
     fontSize: 22,
@@ -148,19 +142,11 @@ const styles = StyleSheet.create({
   rankingList: {
     flex: 1
   },
-  rankingItemOdd: {
+  rankingItem: {
     flexDirection: 'row',
     alignItems: 'center',
     height: 80,
     backgroundColor: '#313131',
-    paddingHorizontal: 15,
-    gap: 15
-  },
-  rankingItemEven: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 80,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     paddingHorizontal: 15,
     gap: 15
   },

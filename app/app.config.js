@@ -9,7 +9,8 @@ export default {
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
-      "bundleIdentifier": "com.yoojunho.dnd",
+      "bundleIdentifier": "com.runky.dnd",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "infoPlist": {
         "NSAppTransportSecurity": {
@@ -24,16 +25,38 @@ export default {
         },
         "NSLocationWhenInUseUsageDescription": "앱 사용 중 위치를 사용합니다.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "백그라운드에서도 위치를 사용합니다.",
+        "NSLocationUsageDescription": "백그라운드에서도 위치를 사용합니다.",
         "UIBackgroundModes": ["location"]
       }
     },
     "android": {
-      "package": "com.yoojunho.dnd",
+      "package": "com.runky.dnd",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION"
+      ],
+      "edgeToEdgeEnabled": true,
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "fa2044ae-6823-4e2c-8376-e7aa23b5f8d5"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -45,28 +68,25 @@ export default {
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash.png",
+          "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#000"
+          "backgroundColor": "#000000"
         }
       ],
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "$(PRODUCT_NAME)는 위치 정보 권한을 필요로 합니다."
+          "locationAlwaysAndWhenInUsePermission": "이 앱은 위치 기반 서비스를 제공하기 위해 위치 정보가 필요합니다.",
+          "locationWhenInUsePermission": "이 앱은 현재 위치를 확인하기 위해 위치 정보가 필요합니다.",
+          "locationAlwaysPermission": "백그라운드에서도 위치 기반 서비스를 제공하기 위해 필요합니다.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true
         }
-      ],
-      "expo-secure-store"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "EXPO_PUBLIC_WEBVIEW_URL": process.env.EXPO_PUBLIC_WEBVIEW_URL,
-      "eas": {
-        "projectId": "fa2044ae-6823-4e2c-8376-e7aa23b5f8d5"
-      }
     }
   }
 }

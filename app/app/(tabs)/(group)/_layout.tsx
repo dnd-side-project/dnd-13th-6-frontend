@@ -9,14 +9,15 @@ import { router, withLayoutContext } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import BottomSheet from '../../../components/bottom-sheets/BottomSheet';
-import EditGroupNotificationContent from '../../../components/bottom-sheets/contents/EditGroupNotificationContent';
-import EditMemberContent from '../../../components/bottom-sheets/contents/EditMemberContent';
-import GroupExitContent from '../../../components/bottom-sheets/contents/GroupExitContent';
-import GroupSettingContent from '../../../components/bottom-sheets/contents/GroupSettingContent';
-import Chip from '../../../components/chips/Chip';
-import ProgressBar from '../../../components/ProgressBar';
-import { useBottomSheet } from '../../../hooks/useBottomSheet';
+import BottomSheet from '@/components/bottom-sheets/BottomSheet';
+import EditGroupNotificationContent from '@/components/bottom-sheets/contents/EditGroupNotificationContent';
+import EditMemberContent from '@/components/bottom-sheets/contents/EditMemberContent';
+import GroupExitContent from '@/components/bottom-sheets/contents/GroupExitContent';
+import GroupSettingContent from '@/components/bottom-sheets/contents/GroupSettingContent';
+import Chip from '@/components/chips/Chip';
+import ProgressBar from '@/components/ProgressBar';
+import { useBottomSheet } from '@/hooks/useBottomSheet';
+
 const { Navigator } = createMaterialTopTabNavigator();
 
 export const MaterialTopTabs = withLayoutContext<
@@ -26,7 +27,7 @@ export const MaterialTopTabs = withLayoutContext<
   MaterialTopTabNavigationEventMap
 >(Navigator);
 
-const GroupInfo = ({ onSettingsPress }: { onSettingsPress: () => void }) => {
+const GroupInfo = () => {
   return (
     <View style={styles.GroupInfoContainer}>
       <View>
@@ -39,9 +40,6 @@ const GroupInfo = ({ onSettingsPress }: { onSettingsPress: () => void }) => {
           >
             매일매일 열심히 하자 (공지 및 방 설명)
           </Text>
-          <Pressable onPress={onSettingsPress}>
-            <Ionicons name="settings-outline" color={'white'} size={19} />
-          </Pressable>
         </View>
       </View>
     </View>
@@ -129,14 +127,22 @@ export default function Layout() {
     settingsBottomSheet.close();
     handleEditNoticePress();
   };
-
   return (
     <View
       style={[
         styles.container,
-        { paddingTop: insets.top, backgroundColor: '#313131' }
+        { paddingTop: insets.top, backgroundColor: '#000' }
       ]}
     >
+      <View className="flex-row justify-between px-4 py-[10px]">
+        <Pressable onPress={() => router.push('/(tabs)/(home)')}>
+          <Ionicons name="arrow-back-outline" color={'white'} size={24} />
+        </Pressable>
+        <Text className="text-white text-lg font-semibold">크루</Text>
+        <Pressable onPress={handleSettingsPress}>
+          <Ionicons name="settings-outline" color={'white'} size={24} />
+        </Pressable>
+      </View>
       <View
         style={{
           paddingInline: 17,
@@ -145,7 +151,7 @@ export default function Layout() {
           backgroundColor: '#000'
         }}
       >
-        <GroupInfo onSettingsPress={handleSettingsPress} />
+        <GroupInfo />
         <GroupGoal onProgressPress={handleProgressPress} />
       </View>
 
@@ -177,9 +183,9 @@ export default function Layout() {
       <View
         style={{
           backgroundColor: '#313131',
-          marginTop: 26,
-          marginBottom: 21,
-          paddingInline: 18
+
+          paddingBottom: 21,
+          paddingHorizontal: 18
         }}
       >
         <Pressable
@@ -255,20 +261,21 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
-    marginTop: 20
-  },
-  GroupNotificationText: {
+    gap: 10,
+    marginTop: 20,
     backgroundColor: '#313131',
     paddingBlock: 8,
-    paddingInline: 20,
+    paddingInline: 12,
+    borderRadius: 10
+  },
+  GroupNotificationText: {
     borderRadius: 10,
     flexGrow: 1
   },
   GroupGoalContainer: {
     paddingHorizontal: 17,
     paddingTop: 22,
-    paddingBottom: 53,
+    paddingBottom: 65,
     backgroundColor: '#313131',
     borderRadius: 12,
     marginTop: 17

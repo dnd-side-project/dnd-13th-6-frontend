@@ -1,7 +1,8 @@
 import { useColorScheme } from '@/hooks/useColorScheme';
 import {
   getBackgroundLocationPermission,
-  getGeoLocationPermission
+  getGeoLocationPermission,
+  registerForPushNotificationsAsync
 } from '@/utils/app/permission';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import {
@@ -11,7 +12,6 @@ import {
 } from '@react-navigation/native';
 import { Asset } from 'expo-asset';
 import Constants from 'expo-constants';
-import * as Device from 'expo-device';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -20,6 +20,7 @@ import * as Updates from 'expo-updates';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import * as Notifications from 'expo-notifications';
 import 'react-native-reanimated';
 import './global.css';
 
@@ -35,10 +36,6 @@ function AnimatedSplashScreen({
   const [isAppReady, setAppReady] = useState(false);
   const [isSplashAnimationComplete, setAnimationComplete] = useState(false);
   const animation = useRef(new Animated.Value(1)).current;
-  const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
-
-  const { currentlyRunning, isUpdateAvailable, isUpdatePending } =
-    Updates.useUpdates();
 
   useEffect(() => {
     if (isAppReady) {
@@ -68,7 +65,6 @@ function AnimatedSplashScreen({
       }
     } catch (error) {
       console.error(error);
-      // You can also add an alert() to see the error message in case of an error when fetching updates.
       alert(`Error fetching latest Expo update: ${error}`);
     }
   }
@@ -84,12 +80,6 @@ function AnimatedSplashScreen({
       setAppReady(true);
     }
   };
-
-  useEffect(() => {
-    if (expoPushToken && Device.isDevice) {
-      Alert.alert('sendPushNotification', expoPushToken);
-    }
-  }, [expoPushToken]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -156,6 +146,11 @@ export default function RootLayout() {
   const [inited, setInited] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const splashOpacity = useRef(new Animated.Value(1)).current;
+  const [token, setToken] = useState<string | null>(null);
+
+  const sendTokenToServer = async (token: string) => {
+    //TODO API 연결
+  };
 
   // 권한 초기화
   useEffect(() => {
@@ -168,6 +163,28 @@ export default function RootLayout() {
       } finally {
         setInited(true);
       }
+      registerForPushNotificationsAsync().then(fcmToken => {
+        if (fcmToken) {
+          setToken(fcmToken);
+          // 서버에 fcmToken 전달
+          sendTokenToServer(fcmToken);
+        }
+      });
+
+      const receivedSubscription =
+        Notifications.addNotificationReceivedListener(notification => {
+          console.log('알림 수신:', notification);
+        });
+
+      const responseSubscription =
+        Notifications.addNotificationResponseReceivedListener(response => {
+          console.log('알림 클릭:', response);
+        });
+
+      return () => {
+        receivedSubscription.remove();
+        responseSubscription.remove();
+      };
     };
     init();
   }, []);
