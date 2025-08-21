@@ -3,20 +3,20 @@ import Image from 'next/image';
 import CrewChallengeCard from './CrewChallengeCard';
 
 const CrewChallengeSection = () => {
-    const challenges = [
-        {
-            title: '블랙핑크-뛰어',
-            distance: 2.2,
-            progress: 70,
-            members: ['a', 'b', 'c'],
-        },
-        {
-            title: '우리 크루, 이번주도 완주 GO!',
-            distance: 2.2,
-            progress: 70,
-            members: ['a', 'b', 'c'],
-        }
-    ]
+  const challenges = [
+    {
+      title: '블랙핑크-뛰어',
+      distance: 2.2,
+      progress: 70,
+      members: ['a', 'b', 'c']
+    },
+    {
+      title: '우리 크루, 이번주도 완주 GO!',
+      distance: 2.2,
+      progress: 70,
+      members: ['a', 'b', 'c']
+    }
+  ];
   return (
     <>
       <div className="mt-[37px] flex">
@@ -33,13 +33,13 @@ const CrewChallengeSection = () => {
         </button>
       </div>
       {challenges.map((challenge, index) => (
-          <CrewChallengeCard
-              key={index}
-              title={challenge.title}
-              distance={challenge.distance}
-              progress={challenge.progress}
-              members={challenge.members}
-          />
+        <CrewChallengeCard
+          key={index}
+          title={challenge.title}
+          distance={challenge.distance}
+          progress={challenge.progress}
+          members={challenge.members}
+        />
       ))}
     </>
   );
