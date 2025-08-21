@@ -12,7 +12,9 @@ module.exports = {
         gray20: '#E5E5EA',
         gray40: '#C7C7CC',
         gray60: '#8E8E93',
+        gray70: '#636366',
         gray90: '#3A3A3C',
+        red:'#ff0000'
       },
       fontFamily: {
         pretendard: ['Pretendard-Regular', 'sans-serif'],

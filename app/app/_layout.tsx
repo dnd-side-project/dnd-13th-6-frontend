@@ -152,6 +152,8 @@ export default function RootLayout() {
     //TODO API 연결
   };
 
+  // 예시 함수 - 크루 리더 위임 Alert
+
   // 권한 초기화
   useEffect(() => {
     const init = async () => {

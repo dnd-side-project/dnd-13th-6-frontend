@@ -16,7 +16,7 @@ function GroupExitContent({ onClose }: Props) {
       <Text className="text-white text-title3">정말 탈퇴하시겠어요?</Text>
       <Text className="font-medium mt-2 text-gray40">{`탈퇴하면 지금까지의 모든 기록이 삭제됩니다.\n다시 초대받아도 기록은 복구되지 않습니다.`}</Text>
       <Button
-        className="bg-red-500 rounded-md py-[14px] text-body1 mt-11"
+        className="bg-red rounded-xl py-[14px] text-body1 mt-11"
         onPress={onExist}
       >
         <Text className="text-center text-white"> 탈퇴하기</Text>

@@ -1,11 +1,13 @@
 import Checkbox from '@/components/Checkbox';
 import Grid from '@/components/ui/Grid';
-import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Alert, Text, View } from 'react-native';
 import Button from '../../../components/Button';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
 interface EditMemberContentProps {
   type: 'editMember' | 'editOwner';
   onClose: () => void;
+  onPress: () => void | Promise<void>;
 }
 const data = [
   {
@@ -43,37 +45,37 @@ export function MemberSelectContainer({
 }) {
   const renderItem = (item: any) => {
     return (
-      <View className="flex flex-row gap-1">
+      <View
+        className="flex flex-row items-center justify-left gap-2 py-4"
+        key={item.id}
+      >
         <Checkbox
           checked={item.id === selectedMemberId}
           onPress={() => setSelectedMemberId(item.id)}
         />
-        <Text
-          className={`${
-            item.id === selectedMemberId ? 'text-red-500' : 'text-gray60'
-          } text-[20px] font-medium`}
-        >
-          {item.name}
-        </Text>
+        <Text className="text-gray20 text-headline1">{item.name}</Text>
       </View>
     );
   };
 
   return (
-    <View className="bg-black rounded-2xl mt-[14px] px-9 pt-6">
-      <Grid data={data} renderItem={renderItem} numColumns={2} spacing={19} />
+    <View className="bg-black rounded-2xl mt-4 px-4 py-[14px]">
+      {data.map(renderItem)}
     </View>
   );
 }
 
 export default function EditMemberContent({
   type,
-  onClose
+  onClose,
+  onPress
 }: EditMemberContentProps) {
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
-  const onConfirm = () => {
-    console.log('onConfirm');
-  };
+
+  const isEdit = useMemo<boolean>(() => {
+    return type === 'editMember';
+  }, [type]);
+
   return (
     <View className="mb-4">
       {type === 'editMember' ? (
@@ -86,7 +88,7 @@ export default function EditMemberContent({
       ) : (
         <>
           <Text className="text-white text-title3">
-            위임할 크루를 선택해주세요.
+            새 크루 리더를 지정해주세요.
           </Text>
           <Text className="font-medium mt-2 text-gray40">{`현재 리더는 [사후르]님입니다.\n새로운 리더를 지정해주세요.`}</Text>
         </>
@@ -96,33 +98,25 @@ export default function EditMemberContent({
         setSelectedMemberId={setSelectedMemberId}
       />
       <Button
-        className="bg-red-500 rounded-md py-[14px] text-body1 mt-6"
-        onPress={onConfirm}
+        className={`${
+          isEdit ? 'bg-red' : 'bg-main'
+        } rounded-xl py-[14px] text-body1 mt-6`}
+        onPress={onPress}
       >
-        <Text className="text-center text-white">
-          {type === 'editMember' ? '탈퇴하기' : '위임하기'}
+        <Text
+          className={`text-center text-headline1 ${
+            isEdit ? 'text-white' : 'text-black'
+          }`}
+        >
+          {isEdit ? '내보내기' : '위임하기'}
         </Text>
       </Button>
       <Button
         className="bg-gray rounded-md py-[14px] font-body1"
         onPress={onClose}
       >
-        <Text className="text-white font-body1 text-center">닫기</Text>
+        <Text className="text-white text-headline1 text-center">닫기</Text>
       </Button>
     </View>
   );
 }
-const styles = StyleSheet.create({
-  checkbox: {
-    borderRadius: 100,
-    borderWidth: 1
-  },
-  unchecked: {
-    backgroundColor: 'transparent',
-    borderColor: '#8E8E93'
-  },
-  checked: {
-    backgroundColor: '#31FF76', // 메인 컬러 배경 (검정 아이콘이 잘 보임)
-    borderColor: '#31FF76'
-  }
-});

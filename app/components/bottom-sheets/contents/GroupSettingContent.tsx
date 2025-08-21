@@ -26,7 +26,7 @@ function GroupSettingContent({
   const normalSettingItems = [
     {
       id: 4,
-      title: '그룹 탈퇴하기',
+      title: '크루 탈퇴하기',
       onPress: onExitPress
     }
   ];
@@ -39,13 +39,13 @@ function GroupSettingContent({
     },
     {
       id: 2,
-      title: '멤버 관리하기',
-      onPress: onEditMemberPress
+      title: '리더 위임하기',
+      onPress: onEditGroupInfoPress
     },
     {
       id: 3,
-      title: '그룹 정보수정하기',
-      onPress: onEditGroupInfoPress
+      title: '멤버 내보내기',
+      onPress: onEditMemberPress
     }
   ];
   const renderItem = (item: GroupSettingItemProps) => (

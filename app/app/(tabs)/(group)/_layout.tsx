@@ -8,14 +8,17 @@ import EditGroupNotificationContent from '@/components/bottom-sheets/contents/Ed
 import EditMemberContent from '@/components/bottom-sheets/contents/EditMemberContent';
 import GroupExitContent from '@/components/bottom-sheets/contents/GroupExitContent';
 import GroupSettingContent from '@/components/bottom-sheets/contents/GroupSettingContent';
+import SelectNewCrewContent from '@/components/bottom-sheets/contents/SelectNewCrewContent';
 import Chip from '@/components/chips/Chip';
 import ProgressBar from '@/components/ProgressBar';
 import { useBottomSheet } from '@/hooks/useBottomSheet';
-import { MaterialTopTabs, TobTab } from '@/components/TobTab';
+import { TobTab } from '@/components/TobTab';
+import CustomAlert from '@/components/modal/CustomAlert';
+import { useCustomAlert } from '@/hooks/useCustomAlert';
 
 const GroupInfo = () => {
   return (
-    <View style={styles.GroupInfoContainer}>
+    <View>
       <View>
         <Text style={styles.GroupInfoTitle}>방 제목 최대 몇 글자까지</Text>
         <View style={styles.GroupNotificationContainer}>
@@ -83,25 +86,30 @@ export default function Layout() {
   const [editMemberType, setEditMemberType] = useState<
     'editMember' | 'editOwner'
   >('editMember');
+
+  const isCrewLeader = true;
+  // CustomAlert 훅
+  const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
+
   // 각각 개별적으로 바텀시트 훅 호출 배경 블러처리
   const settingsBottomSheet = useBottomSheet({
-    snapPoints: ['60%'],
+    snapPoints: ['70%'],
     enableBackdropPress: true,
     enablePanDownToClose: true
   });
 
   const groupExitBottomSheet = useBottomSheet({
-    snapPoints: ['60%', '80%'],
+    snapPoints: ['70%'],
     enableBackdropPress: true
   });
 
   const editMemberBottomSheet = useBottomSheet({
-    snapPoints: ['60%'],
+    snapPoints: ['65%'],
     enableBackdropPress: true
   });
 
   const editNoticeBottomSheet = useBottomSheet({
-    snapPoints: ['60%'],
+    snapPoints: ['70%'],
     enableBackdropPress: true
   });
 
@@ -110,6 +118,7 @@ export default function Layout() {
   const handleProgressPress = () => groupExitBottomSheet.present();
   const handleEditMemberPress = () => editMemberBottomSheet.present();
   const handleEditNoticePress = () => editNoticeBottomSheet.present();
+  const handleGroupInfoPress = () => editMemberBottomSheet.present();
   const isAdminUser = true;
 
   //그룹 나가기
@@ -118,7 +127,47 @@ export default function Layout() {
     handleProgressPress();
   };
 
-  const onEditMember = (type: 'editMember' | 'editOwner') => {
+  const onEditMember = (type: 'editMember' | 'editOwner', memberId: string) => {
+    if (type === 'editMember') {
+      showAlert({
+        message: `${memberId}님을\n 크루에서 내보낼까요?`,
+        buttons: [
+          {
+            text: '아니오',
+            className: 'bg-gray70 py-4 rounded-md',
+            textClassName: 'text-white text-headline1',
+            onPress: hideAlert
+          },
+          {
+            text: '네, 내보낼게요',
+            className: 'bg-red py-4 rounded-md',
+            textClassName: 'text-white text-headline1',
+            onPress: hideAlert
+          }
+        ]
+      });
+    } else {
+      showAlert({
+        message: `${memberId}님께\n 크루 리더를 위임할까요?`,
+        buttons: [
+          {
+            text: '아니오',
+            className: 'bg-gray70 py-4 rounded-md',
+            textClassName: 'text-white text-headline1',
+            onPress: hideAlert
+          },
+          {
+            text: '네, 위임할게요',
+            className: 'bg-main py-4 rounded-md',
+            textClassName: 'text-white text-headline1',
+            onPress: hideAlert
+          }
+        ]
+      });
+    }
+  };
+
+  const onEditGroupInfo = (type: 'editMember' | 'editOwner') => {
     settingsBottomSheet.close();
     setEditMemberType(type);
     handleEditMemberPress();
@@ -128,6 +177,7 @@ export default function Layout() {
     settingsBottomSheet.close();
     handleEditNoticePress();
   };
+
   return (
     <View
       style={[
@@ -173,8 +223,6 @@ export default function Layout() {
         </Pressable>
       </View>
 
-      {/* BottomSheets */}
-
       {/* 설정 BottomSheet */}
       <BottomSheet
         ref={settingsBottomSheet.bottomSheetRef}
@@ -184,8 +232,8 @@ export default function Layout() {
           isAdminUser={isAdminUser}
           onClose={settingsBottomSheet.close}
           onExitPress={onGroupExit}
-          onEditMemberPress={() => onEditMember('editMember')}
-          onEditGroupInfoPress={() => onEditMember('editOwner')}
+          onEditMemberPress={() => onEditGroupInfo('editMember')}
+          onEditGroupInfoPress={() => onEditGroupInfo('editOwner')}
           onEditNoticePress={onEditNotice}
         />
       </BottomSheet>
@@ -194,7 +242,11 @@ export default function Layout() {
         ref={groupExitBottomSheet.bottomSheetRef}
         {...groupExitBottomSheet.config}
       >
-        <GroupExitContent onClose={groupExitBottomSheet.close} />
+        {isCrewLeader ? (
+          <SelectNewCrewContent onClose={groupExitBottomSheet.close} />
+        ) : (
+          <GroupExitContent onClose={groupExitBottomSheet.close} />
+        )}
       </BottomSheet>
 
       {isAdminUser && (
@@ -207,6 +259,7 @@ export default function Layout() {
             <EditMemberContent
               type={editMemberType}
               onClose={editMemberBottomSheet.close}
+              onPress={() => onEditMember(editMemberType, '1')}
             />
           </BottomSheet>
           {/* 공지 변경 bottomSheet */}
@@ -220,6 +273,13 @@ export default function Layout() {
           </BottomSheet>
         </>
       )}
+      <CustomAlert
+        visible={visible}
+        title={alertConfig?.title}
+        message={alertConfig?.message || ''}
+        buttons={alertConfig?.buttons}
+        onClose={hideAlert}
+      />
     </View>
   );
 }
@@ -229,7 +289,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000'
   },
-  GroupInfoContainer: {},
   GroupInfoTitle: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -291,29 +350,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#404040'
   },
-  bottomSheetItemText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '500'
-  },
-  progressDetailItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    backgroundColor: '#404040',
-    borderRadius: 8
-  },
-  progressDetailLabel: {
-    color: '#ccc',
-    fontSize: 14
-  },
-  progressDetailValue: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
   runningOption: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -322,16 +358,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: '#404040',
     borderRadius: 8
-  },
-  runningOptionText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600'
-  },
-  runningNote: {
-    color: '#999',
-    fontSize: 12,
-    textAlign: 'center',
-    lineHeight: 16
   }
 });
