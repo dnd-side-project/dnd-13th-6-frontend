@@ -175,6 +175,7 @@ export default function Layout() {
       >
         <GroupSettingContent
           isAdminUser={isAdminUser}
+          onClose={settingsBottomSheet.close}
           onExitPress={onGroupExit}
           onEditMemberPress={() => onEditMember('editMember')}
           onEditGroupInfoPress={() => onEditMember('editOwner')}

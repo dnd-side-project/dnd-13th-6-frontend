@@ -1,11 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Pressable, Text, View } from 'react-native';
-
-// 기존에 만든 Grid 컴포넌트 사용
-import Grid from '../../ui/Grid';
 
 interface GroupSettingContentProps {
   isAdminUser: boolean;
+  onClose: () => void;
   onExitPress: () => void;
   onEditNoticePress?: () => void;
   onEditMemberPress?: () => void;
@@ -14,35 +11,13 @@ interface GroupSettingContentProps {
 
 interface GroupSettingItemProps {
   title: string;
-  icon: string;
-  backgroundColor: string;
-  onPress: () => void;
-}
-
-function GroupSettingItem({
-  title,
-  icon,
-  backgroundColor,
-  onPress
-}: GroupSettingItemProps) {
-  return (
-    <Pressable
-      className="bg-[#636366] backdrop-blur-md rounded-lg p-5 min-h-[120px]"
-      onPress={onPress}
-    >
-      <Text className="text-white text-[17px] font-bold mb-2">{title}</Text>
-      <View
-        className={`rounded-full flex items-center justify-center w-11 h-11 ml-auto mt-auto`}
-        style={{ backgroundColor }}
-      >
-        <Ionicons name={icon as any} size={24} color="#fff" />
-      </View>
-    </Pressable>
-  );
+  onPress?: () => void | Promise<void>;
+  id: number;
 }
 
 function GroupSettingContent({
   isAdminUser,
+  onClose,
   onExitPress,
   onEditNoticePress,
   onEditMemberPress,
@@ -51,57 +26,51 @@ function GroupSettingContent({
   const normalSettingItems = [
     {
       id: 4,
-      title: '그룹\n나가기',
-      icon: 'exit-outline',
-      backgroundColor: '#ef4444',
+      title: '그룹 탈퇴하기',
       onPress: onExitPress
     }
   ];
 
-  const adminSettingItems = [
+  const adminSettingItems: Array<GroupSettingItemProps> = [
     {
       id: 1,
-      title: '공지\n수정하기',
-      icon: 'notifications-outline',
-      backgroundColor: '#32FF76',
+      title: '공지 수정하기',
       onPress: onEditNoticePress
     },
     {
       id: 2,
-      title: '멤버\n관리하기',
-      icon: 'people-outline',
-      backgroundColor: '#32FF76',
+      title: '멤버 관리하기',
       onPress: onEditMemberPress
     },
     {
       id: 3,
-      title: '그룹 정보\n수정하기',
-      icon: 'create-outline',
-      backgroundColor: '#32FF76',
+      title: '그룹 정보수정하기',
       onPress: onEditGroupInfoPress
     }
   ];
   const renderItem = (item: GroupSettingItemProps) => (
-    <GroupSettingItem
-      title={item.title}
-      icon={item.icon}
-      backgroundColor={item.backgroundColor}
+    <Pressable
+      className="py-5 text-center bg-gray90 rounded-md"
       onPress={item.onPress}
-    />
+    >
+      <Text className="text-gray20 text-center text-headline1">
+        {item.title}
+      </Text>
+    </Pressable>
   );
 
   return (
-    <View className="px-[32px]">
-      <Grid
-        data={
-          isAdminUser
-            ? [...adminSettingItems, ...normalSettingItems]
-            : normalSettingItems
-        }
-        numColumns={2}
-        renderItem={renderItem}
-        spacing={16}
-      />
+    <View className="flex px-[32px] gap-6">
+      <View className="flex gap-3 flex-grow">
+        {isAdminUser && adminSettingItems.map(item => renderItem(item))}
+        {normalSettingItems.map(item => renderItem(item))}
+      </View>
+
+      <Pressable className="justify-end  py-[14px]" onPress={onClose}>
+        <Text className="text-gray20 text-lg font-medium text-center">
+          닫기
+        </Text>
+      </Pressable>
     </View>
   );
 }
