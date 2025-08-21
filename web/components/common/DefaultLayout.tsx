@@ -11,7 +11,7 @@ interface DefaultLayoutProps {
 export default function DefaultLayout({
   children,
   showHeader = false,
-  title,
+  title = undefined,
   backHref
 }: DefaultLayoutProps) {
   return (
@@ -19,7 +19,7 @@ export default function DefaultLayout({
       {showHeader && (
         <>
           <div className="h-[59px] flex-none" />
-          <header className=" ">
+          <header className="flex items-center">
             {backHref && (
               <div className="p-4">
                 <Link href={backHref}>
