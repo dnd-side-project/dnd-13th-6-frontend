@@ -1,11 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import {
-  createMaterialTopTabNavigator,
-  MaterialTopTabNavigationEventMap,
-  MaterialTopTabNavigationOptions
-} from '@react-navigation/material-top-tabs';
-import { ParamListBase, TabNavigationState } from '@react-navigation/native';
-import { router, withLayoutContext } from 'expo-router';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,15 +11,7 @@ import GroupSettingContent from '@/components/bottom-sheets/contents/GroupSettin
 import Chip from '@/components/chips/Chip';
 import ProgressBar from '@/components/ProgressBar';
 import { useBottomSheet } from '@/hooks/useBottomSheet';
-
-const { Navigator } = createMaterialTopTabNavigator();
-
-export const MaterialTopTabs = withLayoutContext<
-  MaterialTopTabNavigationOptions,
-  typeof Navigator,
-  TabNavigationState<ParamListBase>,
-  MaterialTopTabNavigationEventMap
->(Navigator);
+import { MaterialTopTabs, TobTab } from '@/components/TobTab';
 
 const GroupInfo = () => {
   return (
@@ -155,35 +141,19 @@ export default function Layout() {
         <GroupGoal onProgressPress={handleProgressPress} />
       </View>
 
-      <MaterialTopTabs
-        style={styles.topTabsContainer}
-        screenOptions={{
-          tabBarStyle: {
-            backgroundColor: '#313131',
-            borderTopLeftRadius: 24, // Apply border-radius to the top-left corner
-            borderTopRightRadius: 24
-          },
-          tabBarLabelStyle: { fontSize: 20, fontWeight: 'bold' },
-          tabBarActiveTintColor: '#fff',
-          tabBarIndicatorStyle: {
-            backgroundColor: '#E5E5EA',
-            height: 4,
-            width: '45%',
-            marginHorizontal: 12
-          }
-        }}
-      >
-        <MaterialTopTabs.Screen name="index" options={{ title: '랭킹' }} />
-        <MaterialTopTabs.Screen
-          name="runningShare"
-          options={{ title: '러닝 공유' }}
-        />
-      </MaterialTopTabs>
+      <TobTab>
+        <>
+          <MaterialTopTabs.Screen name="index" options={{ title: '랭킹' }} />
+          <MaterialTopTabs.Screen
+            name="runningShare"
+            options={{ title: '러닝 공유' }}
+          />
+        </>
+      </TobTab>
 
       <View
         style={{
           backgroundColor: '#313131',
-
           paddingBottom: 21,
           paddingHorizontal: 18
         }}
@@ -290,11 +260,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold'
   },
-  topTabsContainer: {
-    backgroundColor: '#313131',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24
-  },
+
   startButton: {
     backgroundColor: '#31FF76',
     textAlign: 'center',
