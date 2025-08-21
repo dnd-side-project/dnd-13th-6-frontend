@@ -27,5 +27,6 @@ export const routeConfigs: Record<string, RouteConfig> = {
     backHref: '/onboarding/select-character'
   },
   '/onboarding/onboarding-finish': { showHeader: true },
-  '/main': { showHeader: true }
+  '/main': { showHeader: true },
+  '/gacha': { showHeader: true, backHref: '/main', title: '뽑기' }
 };
