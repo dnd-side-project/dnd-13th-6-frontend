@@ -1,104 +1,34 @@
 'use client';
-import React, { TouchEvent, useState } from 'react';
-import Button from '@/components/common/Button';
-import Image from 'next/image';
+import React from 'react';
 import { useRouter } from 'next/navigation';
+import OnboardingCarousel from '@/components/onBoarding/OnboardingCarousel';
 
 function Page() {
   const slides: { title: string; text: string; image: string }[] = [
     {
       title: '지금 친구가 \n어디쯤 달리고 있을까?',
-      text: '실시간으로 함께 느끼는 러닝, 이제 당신 차례에요.',
-      image: 'img1'
+      text: '함께 달리며, 행운의 클로버를 보내 응원해보세요.',
+      image: 'onboarding1'
     },
     {
-      title: '우리팀 목표, \n세계의 행운이 함께 응원해요!',
-      text: '각 나라의 행운 상징에서 탄생한 캐릭터들과 \n 목표를 달성하고, 클로버 보상까지 받아보세요!',
-      image: 'img2'
+      title: '우리 팀 목표, \n세계의 행운이 함께 응원해요!',
+      text: '크루 목표는 매주 확인! 성공할 때마다 클로버 득템!',
+      image: 'onboarding2'
     },
     {
-      title: '같이 달리는 기쁨,\n지금 여기서 시작해요!',
-      text: '',
-      image: 'img3'
+      title: '모은 클로버로 \n행운 가챠를 돌려보세요!',
+      text: '다양한 행운의 배지들이 크루들을 기다려요!',
+      image: 'onboarding3'
     }
   ];
-
-  const [index, setIndex] = useState(0);
-  const [touchStartX, setTouchStartX] = useState(0);
   const router = useRouter();
 
-  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
-    setTouchStartX(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchEnd = (e: TouchEvent<HTMLDivElement>) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchDiff = touchEndX - touchStartX;
-
-    // 오른쪽으로 스와이프 (->)
-    if (touchDiff < -50 && index < slides.length - 1) {
-      setIndex(index + 1);
-    }
-
-    // 왼쪽으로 스와이프 (<-)
-    if (touchDiff > 50 && index > 0) {
-      setIndex(index - 1);
-    }
+  const handleOnboardingComplete = () => {
+    router.replace('/login');
   };
 
   return (
-    <div
-      className="h-screen"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* 글 영역 - 위쪽 */}
-      <div className="pl-3 pt-10">
-        <p className="text-gray-20 text-2xl font-bold whitespace-pre-line">
-          {slides[index].title}
-        </p>
-        <p className="whitespace-pre-line text-base text-gray-60 mt-2">
-          {slides[index].text}
-        </p>
-      </div>
-
-      {/* 이미지 + 점 - 화면 정중앙 */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
-        <Image
-          src={`/assets/onboarding/${slides[index].image}.png`}
-          alt={slides[index].image}
-          width={243}
-          height={243}
-          priority
-          className="object-contain"
-        />
-        <div className="flex gap-3 mt-10">
-          {slides.map((_, i) => (
-            <div
-              key={i}
-              className={`h-3 rounded-full transition-all ${index === i ? 'bg-primary w-8' : 'bg-gray-60 w-3'}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* 버튼 */}
-      {index !== 2 ? (
-        <button
-          className="absolute bottom-13 right-5 text-gray-60"
-          onClick={() => setIndex(index + 1)}
-        >
-          건너뛰기
-        </button>
-      ) : (
-        <Button
-          className="absolute bottom-13 h-13 left-5 right-5"
-          onClick={() => router.replace('/login')}
-        >
-          시작하기
-        </Button>
-      )}
-    </div>
+    <OnboardingCarousel slides={slides} onComplete={handleOnboardingComplete} />
   );
 }
 

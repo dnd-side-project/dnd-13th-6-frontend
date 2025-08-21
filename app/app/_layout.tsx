@@ -23,6 +23,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Notifications from 'expo-notifications';
 import { ToastProvider } from '@/contexts/ToastContext';
 import ToastContainer from '@/components/ToastContainer';
+import * as Device from 'expo-device';
 import 'react-native-reanimated';
 import './global.css';
 
@@ -38,6 +39,10 @@ function AnimatedSplashScreen({
   const [isAppReady, setAppReady] = useState(false);
   const [isSplashAnimationComplete, setAnimationComplete] = useState(false);
   const animation = useRef(new Animated.Value(1)).current;
+  const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
+
+  const { currentlyRunning, isUpdateAvailable, isUpdatePending } =
+    Updates.useUpdates();
 
   useEffect(() => {
     if (isAppReady) {
@@ -82,6 +87,12 @@ function AnimatedSplashScreen({
       setAppReady(true);
     }
   };
+
+  useEffect(() => {
+    if (expoPushToken && Device.isDevice) {
+      Alert.alert('sendPushNotification', expoPushToken);
+    }
+  }, [expoPushToken]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -148,7 +159,6 @@ export default function RootLayout() {
   const [inited, setInited] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const splashOpacity = useRef(new Animated.Value(1)).current;
-  // 예시 함수 - 크루 리더 위임 Alert
 
   // 권한 초기화
   useEffect(() => {

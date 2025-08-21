@@ -1,10 +1,10 @@
 'use client';
 import React, { useCallback, useState } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
-import GoogleMap from '@/components/GoogleMap/GoogleMap';
+import GoogleMap from '@/components/googleMap/GoogleMap';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
-import UserMarker from '@/components/GoogleMap/UserMarker';
+import UserMarker from '@/components/googleMap/UserMarker';
 import { useStomp } from '@/hooks/useStomp';
 import type { MemberData } from '@/types/crew';
 
