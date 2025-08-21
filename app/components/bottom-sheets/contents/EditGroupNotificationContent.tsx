@@ -27,15 +27,15 @@ function EditGroupNotificationContent({
       />
       <Button
         onPress={onSave}
-        className="bg-red-500 rounded-md py-[14px] text-body1"
+        className="bg-main rounded-xl py-[14px] text-body1"
       >
-        <Text className="text-center text-white"> 변경하기</Text>
+        <Text className="text-center text-headline1 text-black"> 변경하기</Text>
       </Button>
       <Button
         onPress={onClose}
         className="bg-gray rounded-md py-[14px] font-body1"
       >
-        <Text className="text-white font-body1 text-center">닫기</Text>
+        <Text className="text-white text-headline1 text-center">닫기</Text>
       </Button>
     </View>
   );
