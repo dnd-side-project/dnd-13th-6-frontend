@@ -8,36 +8,35 @@ import { useRouter } from 'next/navigation';
 function GachaRewardCard() {
   const router = useRouter();
   return (
-    <div
+    <Card
+      className="bg-primary p-3"
       onClick={() => {
         router.push('/badge-collection/gacha');
       }}
     >
-      <Card className="bg-primary p-3">
-        <div
-          className="absolute inset-0 z-10"
-          style={{
-            background:
-              'linear-gradient(to bottom, rgba(32,31,34,1) 0%, rgba(32,31,34,0.5) 100%)'
-          }}
+      <div
+        className="absolute inset-0 z-10"
+        style={{
+          background:
+            'linear-gradient(to bottom, rgba(32,31,34,1) 0%, rgba(32,31,34,0.5) 100%)'
+        }}
+      />
+      <div className="relative z-20 flex">
+        <Image
+          src="/assets/main/gachaball.svg"
+          alt="가챠 공"
+          width={72}
+          height={72}
+          className="mr-[8px]"
         />
-        <div className="relative z-20 flex">
-          <Image
-            src="/assets/main/gachaball.svg"
-            alt="가챠 공"
-            width={72}
-            height={72}
-            className="mr-[8px]"
-          />
-          <div>
-            <CloverCountChip />
-            <p className="whitespace-pre-line">
-              {`클로버를 모으면\n랜덤 가챠 1회권 지급!`}
-            </p>
-          </div>
+        <div>
+          <CloverCountChip />
+          <p className="whitespace-pre-line">
+            {`클로버를 모으면\n랜덤 가챠 1회권 지급!`}
+          </p>
         </div>
-      </Card>
-    </div>
+      </div>
+    </Card>
   );
 }
 

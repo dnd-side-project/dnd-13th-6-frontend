@@ -107,3 +107,14 @@ body {
     font-family: Pretendard, Lufga, Arial, Helvetica, sans-serif;
     margin: 0;
 }
+
+
+.animate-roll {
+    animation: roll 3s ease-in-out forwards;
+}
+
+@keyframes roll {
+    0%   { transform: translateX(0) rotate(0deg); }
+    50%  { transform: translateX(-500px) rotate(-180deg); }  /* 왼쪽 */
+    100%  { transform: translateX(500px) rotate(180deg); }    /* 오른쪽 */
+}

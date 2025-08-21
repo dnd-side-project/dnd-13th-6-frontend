@@ -1,11 +1,19 @@
+'use client';
 import React from 'react';
 import Card from '@/components/main/Card';
 import Image from 'next/image';
 import CloverCountChip from '@/components/common/CloverCountChip';
+import { useRouter } from 'next/navigation';
 
 const GachaCard = () => {
+  const router = useRouter();
   return (
-    <Card className="bg-primary relative overflow-hidden">
+    <Card
+      className="bg-primary relative overflow-hidden"
+      onClick={() => {
+        router.push('/badge-collection/gacha');
+      }}
+    >
       <div
         className="absolute inset-0 z-10"
         style={{
