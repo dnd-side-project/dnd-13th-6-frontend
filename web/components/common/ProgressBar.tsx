@@ -4,15 +4,15 @@ import { twMerge } from 'tailwind-merge';
 interface ProgressBarProps {
   progress: number; // 0 to 100
   className?: string;
-  backgroundColor?: string;
-  barColor?: string;
+  backgroundStyle?: string;
+  barStyle?: string;
 }
 
 export const ProgressBar = ({
   progress,
   className,
-  backgroundColor,
-  barColor
+  backgroundStyle,
+  barStyle
 }: ProgressBarProps) => {
   const clampedProgress = Math.min(Math.max(progress, 0), 100);
 
@@ -22,15 +22,15 @@ export const ProgressBar = ({
       className={twMerge(
         'h-2.5 w-full rounded-full bg-gray-700',
         className,
-        backgroundColor
+        backgroundStyle
       )}
     >
       {/*초록색*/}
       <div
         className={twMerge(
-          'bg-primary h-2.5 rounded-full',
+          'bg-primary h-2.5 justify-center rounded-full',
           className,
-          barColor
+          barStyle
         )}
         style={{ width: `${clampedProgress}%` }}
       />

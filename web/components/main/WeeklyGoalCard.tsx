@@ -28,8 +28,8 @@ const WeeklyGoalCard = () => {
       <ProgressBar
         progress={70}
         className="mt-[16px] h-[8px]"
-        backgroundColor="bg-background"
-        barColor="bg-gradient-to-r from-primary to-[#69b4ff]"
+        backgroundStyle="bg-background"
+        barStyle="bg-gradient-to-r from-primary to-[#69b4ff]"
       />
       <div className="mt-[14px] flex items-center justify-between">
         <p className="text-gray-30 text-[1.0625rem] leading-[1.5] font-medium tracking-[-0.025em]">

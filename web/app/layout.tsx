@@ -1,5 +1,8 @@
+'use client';
 import localFont from 'next/font/local';
 import './globals.css';
+import DefaultLayout from '@/components/common/DefaultLayout';
+import { usePathname } from 'next/navigation';
 
 const pretendard = localFont({
   src: '../fonts/pretendard/PretendardVariable.woff2',
@@ -110,6 +113,35 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+
+  // URL별 뒤로가기 링크
+  const backHrefMap: Record<string, string | undefined> = {
+    '/login': undefined,
+    '/onboarding/terms': '/login',
+    '/onboarding/setup-nickname': '/onboarding/terms',
+    '/onboarding/select-character': '/onboarding/setup-nickname',
+    '/onboarding/setup-target': '/onboarding/select-character',
+    '/main': undefined
+  };
+
+  // URL별 헤더 표시 여부
+  const showHeaderMap: Record<string, boolean> = {
+    '/login': false,
+    '/onboarding': true,
+    '/onboarding/terms': true,
+    '/onboarding/setup-nickname': true,
+    '/onboarding/select-character': true,
+    '/onboarding/setup-target': true,
+    '/onboarding/onboarding-finish': true,
+    '/main': true
+  };
+  //URL 별 타이틀 표시 여부
+  const headerTitleMap: Record<string, string> = {};
+
+  const backHref = backHrefMap[pathname];
+  const showHeader = showHeaderMap[pathname] ?? false; // 기본 false
+  const title = headerTitleMap[pathname] ?? undefined;
   return (
     <html
       lang="ko"
@@ -118,8 +150,14 @@ export default function RootLayout({
       <head>
         <title>Runky</title>
       </head>
-      <body className="bg-background text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-        <main>{children}</main>
+      <body className="bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-white">
+        <DefaultLayout
+          showHeader={showHeader}
+          title={title}
+          backHref={backHref}
+        >
+          {children}
+        </DefaultLayout>
       </body>
     </html>
   );

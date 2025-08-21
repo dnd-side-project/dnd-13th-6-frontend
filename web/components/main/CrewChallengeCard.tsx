@@ -10,7 +10,12 @@ interface CrewChallengeCardProps {
   members: string[]; // For now, just strings
 }
 
-const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({ title, distance, progress, members }) => {
+const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
+  title,
+  distance,
+  progress,
+  members
+}) => {
   return (
     <Card className="mt-[24px]">
       <div className="flex flex-row justify-between gap-2">
@@ -52,7 +57,7 @@ const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({ title, distance, 
       <ProgressBar
         progress={progress}
         className="mt-[16px] h-2"
-        backgroundColor="bg-background"
+        backgroundStyle="bg-background"
       />
     </Card>
   );

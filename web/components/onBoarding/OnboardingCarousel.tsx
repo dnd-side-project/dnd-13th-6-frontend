@@ -36,7 +36,7 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
     <div
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className="flex flex-grow flex-col"
+      className="mt-15 flex flex-grow flex-col"
     >
       <OnBoardingWrapper
         title={slides[index].title}
