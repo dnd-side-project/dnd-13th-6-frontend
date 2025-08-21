@@ -21,6 +21,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Notifications from 'expo-notifications';
+import { ToastProvider } from '@/contexts/ToastContext';
+import ToastContainer from '@/components/ToastContainer';
 import 'react-native-reanimated';
 import './global.css';
 
@@ -146,12 +148,6 @@ export default function RootLayout() {
   const [inited, setInited] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const splashOpacity = useRef(new Animated.Value(1)).current;
-  const [token, setToken] = useState<string | null>(null);
-
-  const sendTokenToServer = async (token: string) => {
-    //TODO API 연결
-  };
-
   // 예시 함수 - 크루 리더 위임 Alert
 
   // 권한 초기화
@@ -165,13 +161,6 @@ export default function RootLayout() {
       } finally {
         setInited(true);
       }
-      registerForPushNotificationsAsync().then(fcmToken => {
-        if (fcmToken) {
-          setToken(fcmToken);
-          // 서버에 fcmToken 전달
-          sendTokenToServer(fcmToken);
-        }
-      });
 
       const receivedSubscription =
         Notifications.addNotificationReceivedListener(notification => {
@@ -208,23 +197,28 @@ export default function RootLayout() {
   }, [loaded, inited, splashOpacity]);
 
   return (
-    <AnimatedAppLoader image={require('../assets/images/splash.png')}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <BottomSheetModalProvider>
-          <ThemeProvider
-            value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-          >
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <StatusBar style="auto" />
-          </ThemeProvider>
-        </BottomSheetModalProvider>
+    <ToastProvider>
+      <AnimatedAppLoader image={require('../assets/images/splash.png')}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <BottomSheetModalProvider>
+            <ThemeProvider
+              value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+            >
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <StatusBar style="auto" />
+            </ThemeProvider>
+            <ToastContainer />
+          </BottomSheetModalProvider>
 
-        {showSplash && <Animated.View style={[styles.splash]}></Animated.View>}
-      </GestureHandlerRootView>
-    </AnimatedAppLoader>
+          {showSplash && (
+            <Animated.View style={[styles.splash]}></Animated.View>
+          )}
+        </GestureHandlerRootView>
+      </AnimatedAppLoader>
+    </ToastProvider>
   );
 }
 

@@ -15,6 +15,7 @@ import { useBottomSheet } from '@/hooks/useBottomSheet';
 import { TobTab } from '@/components/TobTab';
 import CustomAlert from '@/components/modal/CustomAlert';
 import { useCustomAlert } from '@/hooks/useCustomAlert';
+import { useToast } from '@/contexts/ToastContext';
 
 const GroupInfo = () => {
   return (
@@ -119,6 +120,7 @@ export default function Layout() {
   const handleEditMemberPress = () => editMemberBottomSheet.present();
   const handleEditNoticePress = () => editNoticeBottomSheet.present();
   const handleGroupInfoPress = () => editMemberBottomSheet.present();
+  const { showSuccess } = useToast();
   const isAdminUser = true;
 
   //그룹 나가기
@@ -136,7 +138,9 @@ export default function Layout() {
             text: '아니오',
             className: 'bg-gray70 py-4 rounded-md',
             textClassName: 'text-white text-headline1',
-            onPress: hideAlert
+            onPress: () => {
+              showSuccess('크루 나가기 완료');
+            }
           },
           {
             text: '네, 내보낼게요',
@@ -154,7 +158,9 @@ export default function Layout() {
             text: '아니오',
             className: 'bg-gray70 py-4 rounded-md',
             textClassName: 'text-white text-headline1',
-            onPress: hideAlert
+            onPress: () => {
+              showSuccess('크루 리더가 [닉네임]으로 변경됐어요.');
+            }
           },
           {
             text: '네, 위임할게요',
