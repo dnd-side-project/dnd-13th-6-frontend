@@ -27,7 +27,7 @@ export default function Button({
 
   return (
     <button
-      className={buttonClass}
+      className={`button-title5 ${buttonClass}`}
       onClick={() => {
         if (!disabled) {
           setIsPressed(true);
