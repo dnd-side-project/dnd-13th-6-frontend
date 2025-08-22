@@ -66,6 +66,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(group-running)"
         options={{
+          tabBarLabel: () => null,
           href: null // 탭바에는 표시 안 함
         }}
       />

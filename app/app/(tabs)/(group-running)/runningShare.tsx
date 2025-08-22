@@ -1,19 +1,13 @@
 import { ENV } from '@/utils/app/consts';
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  Dimensions,
-  SafeAreaView,
-  StyleSheet,
-  View
-} from 'react-native';
+import { ActivityIndicator, Dimensions, StyleSheet, View } from 'react-native';
 import WebView from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 function RunningShare() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {isLoading && (
         <ActivityIndicator
           size="large"
@@ -27,10 +21,10 @@ function RunningShare() {
           setIsLoading(false);
         }}
         source={{
-          uri: ENV.WEB_VIEW_URL + '/group'
+          uri: ENV.WEB_VIEW_URL + '/group-running'
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
