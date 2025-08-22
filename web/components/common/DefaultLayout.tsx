@@ -32,12 +32,16 @@ export default function DefaultLayout({
                 </Link>
               </div>
             )}
-            {title && <h1 className="text-lg font-bold text-white">{title}</h1>}
+            {title && (
+              <h1 className="absolute left-1/2 -translate-x-1/2 transform text-lg font-bold text-white">
+                {title}
+              </h1>
+            )}
           </header>
         </>
       )}
 
-      <main className={showHeader ? 'flex flex-1 flex-col p-4' : ''}>
+      <main className={showHeader ? 'flex flex-1 flex-col px-4' : ''}>
         {children}
       </main>
     </div>

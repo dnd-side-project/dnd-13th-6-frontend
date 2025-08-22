@@ -1,10 +1,19 @@
+'use client';
 import React from 'react';
 import Card from '@/components/main/Card';
 import Image from 'next/image';
+import CloverCountChip from '@/components/common/CloverCountChip';
+import { useRouter } from 'next/navigation';
 
 const GachaCard = () => {
+  const router = useRouter();
   return (
-    <Card className="bg-primary relative overflow-hidden">
+    <Card
+      className="bg-primary relative overflow-hidden"
+      onClick={() => {
+        router.push('/badge-collection/gacha');
+      }}
+    >
       <div
         className="absolute inset-0 z-10"
         style={{
@@ -14,12 +23,7 @@ const GachaCard = () => {
       />
       <div className="relative z-20">
         <div className="flex justify-center">
-          <div className="bg-primary w-[70px] justify-self-center rounded-full p-1 text-center leading-[1.4] tracking-[-0.025em] text-black/70">
-            <span className="text-[17px] font-semibold">3</span>
-            <span className="font-regular text-[17px] leading-[1.4] tracking-[-0.025em]">
-              /10개
-            </span>
-          </div>
+          <CloverCountChip />
         </div>
         <div className="mt-3 text-center text-[15px] leading-[1.4] font-medium tracking-[-0.025em] whitespace-pre-line text-white">
           {`클로버를 모으면
