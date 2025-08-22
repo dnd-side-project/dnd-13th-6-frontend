@@ -41,5 +41,10 @@ export const routeConfigs: Record<string, RouteConfig> = {
     backHref: '/main',
     title: '알림'
   },
-  '/lucky-stamp': { showHeader: true, backHref: '/main', title: '러닝종료' }
+  '/lucky-stamp': { showHeader: true, backHref: '/main', title: '러닝종료' },
+  '/crew-reward': {
+    showHeader: true,
+    backHref: '/main',
+    title: '크루 주간 보상'
+  }
 };
