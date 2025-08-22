@@ -6,7 +6,7 @@ import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
 
 export default function LuckyStampPage() {
-  const [isSucess, setIsSucess] = useState(false);
+  const [isSuccess] = useState(true);
   const [visible, setVisible] = useState(false);
   const router = useRouter();
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function LuckyStampPage() {
     <div className="relative flex h-full flex-col items-center bg-[#201F22] text-center text-white">
       <div className="flex-grow pt-10">
         <h1 className="onboarding whitespace-pre-line">
-          {isSucess
+          {isSuccess
             ? '오늘도 수고 많으셨어요!\n오늘의 행운이 도착했어요!'
             : '클로버는 놓쳤지만\n꾸준함이 곧 행운이에요!'}
         </h1>
@@ -29,29 +29,22 @@ export default function LuckyStampPage() {
             alt="배경"
             width={325}
             height={325}
-            className={`${!isSucess && 'invisible'} object-contain`}
+            className={`${!isSuccess && 'invisible'} object-contain`}
           />
-          {isSucess ? (
-            <Image
-              src="/assets/lucky-stamp/four-leaf-clover.svg"
-              alt="Four Leaf Clover"
-              width={225}
-              height={224}
-              priority
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-            />
-          ) : (
-            <Image
-              src="/assets/lucky-stamp/disabled-four-leaf-clover.svg"
-              alt="disabledFour Leaf Clover"
-              width={225}
-              height={224}
-              priority
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-            />
-          )}
+          <Image
+            src={
+              isSuccess
+                ? '/assets/lucky-stamp/four-leaf-clover.svg'
+                : '/assets/lucky-stamp/disabled-four-leaf-clover.svg'
+            }
+            alt={isSuccess ? 'Four Leaf Clover' : 'Disabled Four Leaf Clover'}
+            width={225}
+            height={224}
+            priority
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
         </div>
-        {isSucess && (
+        {isSuccess && (
           <div
             className={`relative mx-auto inline-flex items-center justify-center rounded-[20px] bg-white/13 px-5 py-1 transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0'}`}
           >
