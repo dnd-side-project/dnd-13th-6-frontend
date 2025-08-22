@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
 import Card from '@/components/main/Card';
-import Image from 'next/image';
 import CloverCountChip from '@/components/common/CloverCountChip';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const GachaCard = () => {
   const router = useRouter();
@@ -14,6 +14,15 @@ const GachaCard = () => {
         router.push('/badge-collection/gacha');
       }}
     >
+      <div className="z-0 flex justify-center">
+        <Image
+          alt="뽑기공"
+          src="/assets/main/gachaball.svg"
+          width={60}
+          height={60}
+          className="z-20"
+        />
+      </div>
       <div
         className="absolute inset-0 z-10"
         style={{
@@ -22,20 +31,11 @@ const GachaCard = () => {
         }}
       />
       <div className="relative z-20">
-        <div className="flex justify-center">
+        <div className="mt-4 flex justify-center">
           <CloverCountChip />
         </div>
-        <div className="mt-3 text-center text-[15px] leading-[1.4] font-medium tracking-[-0.025em] whitespace-pre-line text-white">
-          {`클로버를 모으면
- 랜덤 가챠 1회권 지급!`}
-        </div>
-        <div className="mt-1 flex justify-center">
-          <Image
-            alt="뽑기공"
-            src="/assets/main/gachaball.svg"
-            width={85}
-            height={85}
-          />
+        <div className="mt-3 text-center text-[1.0625rem] leading-[1.4] font-medium tracking-[-0.025em] whitespace-pre-line text-white">
+          {`행운배지\n뽑으러가기`}
         </div>
       </div>
     </Card>

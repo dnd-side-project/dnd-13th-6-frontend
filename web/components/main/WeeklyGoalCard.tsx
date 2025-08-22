@@ -1,10 +1,9 @@
 'use client';
 import React from 'react';
 import Card from '@/components/main/Card';
-import ControlButton from '@/components/running/Control/ControlButton';
-import { Play } from 'lucide-react';
 import ProgressBar from '@/components/common/ProgressBar';
 import { useRouter } from 'next/navigation';
+import Button from '@/components/common/Button';
 
 const WeeklyGoalCard = () => {
   const router = useRouter();
@@ -24,14 +23,6 @@ const WeeklyGoalCard = () => {
             </p>
           </div>
         </div>
-        <ControlButton
-          className="h-[48px] w-[48px]"
-          onClick={() => {
-            router.push('/prepare-run');
-          }}
-        >
-          <Play className="h-[24px] w-[24px] fill-black text-black" />
-        </ControlButton>
       </div>
       <ProgressBar
         progress={70}
@@ -55,6 +46,14 @@ const WeeklyGoalCard = () => {
           5km
         </p>
       </div>
+      <Button
+        className="mt-5 h-12 w-full text-[0.9375rem] leading-[1.5] font-bold tracking-[-0.025em] text-black"
+        onClick={() => {
+          router.push('/prepare-run');
+        }}
+      >
+        시작하기
+      </Button>
     </Card>
   );
 };

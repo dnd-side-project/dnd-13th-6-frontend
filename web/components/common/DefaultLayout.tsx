@@ -41,7 +41,7 @@ export default function DefaultLayout({
         </>
       )}
 
-      <main className={showHeader ? 'flex flex-1 flex-col px-4' : ''}>
+      <main className={showHeader ? 'flex flex-1 flex-col px-4 pb-4' : ''}>
         {children}
       </main>
     </div>
