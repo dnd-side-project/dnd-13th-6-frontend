@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "515859031655",
+    "project_id": "runky-1c2f8",
+    "storage_bucket": "runky-1c2f8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515859031655:android:a3307f3b12a20e784096c2",
+        "android_client_info": {
+          "package_name": "com.runky.dnd"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPV0yHAbtmMKv9QDFoPW2Pyl3aCsNLLYc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
