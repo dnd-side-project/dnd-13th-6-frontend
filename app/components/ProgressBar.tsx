@@ -57,18 +57,10 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     extrapolate: 'clamp'
   });
 
-  // 퍼센트 말풍선 위치(컨테이너 내부로 클램핑)
-  const bubblePosition =
-    ((effectiveWidth || 0) * Math.max(0, Math.min(progress, 100))) / 100;
-  const clampedPosition = effectiveWidth
-    ? Math.max(26, Math.min(bubblePosition, effectiveWidth - 26))
-    : 26;
-
   const onLayout = (e: LayoutChangeEvent) => {
     const w = e.nativeEvent.layout.width;
     if (w && w !== layoutWidth) setLayoutWidth(w);
   };
-
   return (
     <View
       onLayout={onLayout}
@@ -85,8 +77,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         style={[
           styles.progressBackground,
           {
-            width: '100%',
-            marginTop: showPercentage ? 8 : 0
+            width: '100%'
           }
         ]}
       >
@@ -100,20 +91,25 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           ]}
         />
       </View>
-
-      {/* SpeechBubble */}
+      {/* 툴팁 영역 */}
       {showPercentage && progress > 0 && effectiveWidth > 0 && (
-        <View
-          style={[styles.speechBubbleContainer, { left: clampedPosition - 26 }]}
-        >
-          <SpeechBubble
-            position="bottom"
-            className="bg-black rounded-md w-[52px] h-[32px] flex items-center justify-center"
+        <View style={{ height: 42, justifyContent: 'flex-end', marginTop: 5 }}>
+          <Animated.View
+            style={[
+              {
+                transform: [{ translateX: -30 }]
+              }
+            ]}
           >
-            <Text className="text-main font-[600] text-[15px]">
-              {Math.round(Math.max(0, Math.min(progress, 100)))}%
-            </Text>
-          </SpeechBubble>
+            <SpeechBubble
+              position="bottom"
+              className="bg-black rounded-md w-[52px] h-[32px] flex items-center justify-center"
+            >
+              <Text className="text-main font-[600] text-[15px]">
+                {Math.round(Math.max(0, Math.min(progress, 100)))}%
+              </Text>
+            </SpeechBubble>
+          </Animated.View>
         </View>
       )}
     </View>
@@ -123,11 +119,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 const styles = StyleSheet.create({
   container: {
     position: 'relative'
-  },
-  speechBubbleContainer: {
-    position: 'absolute',
-    top: 33,
-    zIndex: 10
   },
   progressBackground: {
     borderRadius: 20,

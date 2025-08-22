@@ -7,7 +7,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import UserMarker from '@/components/googleMap/UserMarker';
 import { useStomp } from '@/hooks/useStomp';
 import type { MemberData } from '@/types/crew';
-
+import Button from '@/components/common/Button';
+import type { ReactNode } from 'react';
 function CrewMemberProfiles({
   users,
   onClick
@@ -16,7 +17,7 @@ function CrewMemberProfiles({
   onClick: (user: MemberData) => void;
 }) {
   return (
-    <div className="flex justify-evenly overflow-x-scroll">
+    <div className="flex gap-4 overflow-x-scroll mt-6">
       {users.map((user, index) => (
         <ProfileImage
           key={index}
@@ -80,7 +81,7 @@ export default function Page() {
 
 
   return (
-    <div className="relative h-screen w-full bg-[#313131] text-whit px-4 pt-10 overflow-scroll">
+    <div className="relative h-screen w-full bg-[#313131] text-whit px-4  overflow-scroll">
       <CrewMemberProfiles
         users={[
           {
@@ -101,55 +102,55 @@ export default function Page() {
         ]}
         onClick={onMemberClick}
       />
-      <div className="mt-8 overflow-y-scroll h-[400px]">
+      <div className="mt-6 overflow-y-scroll h-[400px] relative mb-[14px]">
         <GoogleMap path={[{ lat: memberData.lat, lng: memberData.lng }]}>
           <UserMarker
             lat={memberData.lat}
             lng={memberData.lng}
             imageUrl={'/assets/clover.png'}
           />
+      
         </GoogleMap>
+        <button
+          onClick={() => sendEmogi('clover')}
+          className="absolute right-2 bottom-2 z-10 px-4 py-2 rounded-full bg-black/50 ml-auto text-white flex items-center gap-2"
+        >
+          <div className="relative w-5 h-5 max-h-15">
+            <Image src="/assets/clover.png" alt="clover" fill />
+
+              {/* 클릭 시 생성되는 클로버 애니메이션 */}
+              {/* 처음에는 흐리게* */}
+              <div className="absolute left-2 top-0 w-5 h-5 pointer-events-none">
+                <AnimatePresence>
+                  {clovers.map(c => (
+                    <motion.div
+                      key={c.id}
+                      initial={{ y: 0, scale: 3, opacity: 0.3 }}
+                      animate={{
+                        y: -100, // 위로 이동
+                        x: 50,
+                        scale: 12,
+                        opacity: 1,
+                        //오른쪽으로 기울어짐
+                        rotate: 45
+                      }}
+                      transition={{ duration: 0.5 }}
+                      className="absolute left-1/2 top-0 -translate-x-1/2"
+                    >
+                      <Image
+                        src="/assets/clover-142.png"
+                        alt="clover"
+                        width={142}
+                        height={142}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </div>
+            <div>행운 보내기</div>
+          </button>
       </div>
-
-      <button
-        onClick={() => sendEmogi('clover')}
-        className=" px-4 py-2 rounded-full bg-gray-80 ml-auto text-white flex items-center gap-2 mt-[14px]"
-      >
-        {/* 🌿 클로버 아이콘 컨테이너 */}
-        <div className="relative w-5 h-5 max-h-15">
-          <Image src="/assets/clover.png" alt="clover" fill />
-
-          {/* 클릭 시 생성되는 클로버 애니메이션 */}
-          {/* 처음에는 흐리게* */}
-          <div className="absolute left-2 top-0 w-5 h-5 pointer-events-none">
-            <AnimatePresence>
-              {clovers.map(c => (
-                <motion.div
-                  key={c.id}
-                  initial={{ y: 0, scale: 3, opacity: 0.3 }}
-                  animate={{
-                    y: -50, // 위로 이동
-                    scale: 7,
-                    opacity: 1,
-                    //오른쪽으로 기울어짐
-                    rotate: 45
-                  }}
-                  transition={{ duration: 0.5 }}
-                  className="absolute left-1/2 top-0 -translate-x-1/2"
-                >
-                  <Image
-                    src="/assets/clover-142.png"
-                    alt="clover"
-                    width={142}
-                    height={142}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
-        행운 보내기
-      </button>
     </div>
   );
 }

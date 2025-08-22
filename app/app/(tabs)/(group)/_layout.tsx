@@ -42,7 +42,6 @@ const GroupGoal = ({ onProgressPress }: { onProgressPress: () => void }) => {
       <Chip
         style={{
           backgroundColor: '#000',
-          marginBottom: 12,
           paddingHorizontal: 8.5,
           paddingVertical: 3.5,
           alignSelf: 'flex-start'
@@ -54,15 +53,11 @@ const GroupGoal = ({ onProgressPress }: { onProgressPress: () => void }) => {
       </Chip>
       <View>
         <Text style={styles.GroupGoalText}>최종 목표까지</Text>
-        <Text style={[styles.GroupGoalText, { marginTop: 10 }]}>
+        <Text style={[styles.GroupGoalText, { marginTop: 5 }]}>
           <Text style={styles.RemainingGoalText}>0.7KM</Text> 남았어요!
         </Text>
-        <Pressable onPress={onProgressPress}>
-          <View>
-            <ProgressBar progress={40} style={{ marginTop: 8 }} />
-          </View>
-        </Pressable>
       </View>
+      <ProgressBar progress={40} />
     </View>
   );
 };
@@ -190,6 +185,7 @@ export default function Layout() {
         styles.container,
         { paddingTop: insets.top, backgroundColor: '#000' }
       ]}
+      className="flex-1"
     >
       <View className="flex-row justify-between px-4 py-[10px]">
         <Pressable onPress={() => router.push('/(tabs)/(home)')}>
@@ -207,6 +203,7 @@ export default function Layout() {
           paddingBottom: 26,
           backgroundColor: '#000'
         }}
+        className="flex-grow-0"
       >
         <GroupInfo />
         <GroupGoal onProgressPress={handleProgressPress} />
@@ -316,12 +313,14 @@ const styles = StyleSheet.create({
     flexGrow: 1
   },
   GroupGoalContainer: {
-    paddingHorizontal: 17,
-    paddingTop: 22,
-    paddingBottom: 65,
+    padding: 18,
     backgroundColor: '#313131',
     borderRadius: 12,
-    marginTop: 17
+    marginTop: 17,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    gap: 14
   },
   GroupGoalText: {
     fontSize: 17,

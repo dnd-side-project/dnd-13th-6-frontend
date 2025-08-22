@@ -25,7 +25,6 @@ const MaterialTopTabsScreenOptions: MaterialTopTabNavigationOptions = {
     width: '45%',
     marginHorizontal: 12
   },
-  // title이 제대로 표시되도록 하는 옵션 추가
   tabBarShowLabel: true
 };
 
@@ -39,16 +38,18 @@ export const MaterialTopTabs = withLayoutContext<
 >(Navigator);
 
 export function TobTab({
-  items
+  items,
+  className = ''
 }: {
   items: {
     name: string;
     options: MaterialTopTabNavigationOptions;
   }[];
+  className?: string;
 }) {
   return (
     <MaterialTopTabs
-      className="bg-gray px-6"
+      className={`bg-gray px-6 ${className} `}
       screenOptions={MaterialTopTabsScreenOptions}
     >
       {items.map(item => (

@@ -11,7 +11,7 @@ function RunningShare() {
       {isLoading && (
         <ActivityIndicator
           size="large"
-          color="#32FF76"
+          color="#313131"
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
         />
       )}
@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
+    height: windowHeight,
     width: windowWidth,
-    height: windowHeight
+    backgroundColor: '#313131'
   }
 });
