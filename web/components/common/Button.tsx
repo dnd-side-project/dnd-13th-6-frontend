@@ -1,4 +1,3 @@
-'use client';
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,8 +16,21 @@ export default function Button({
 }: ButtonProps) {
   const [isPressed, setIsPressed] = useState(false);
 
+  const handlePressStart = () => {
+    if (!disabled) {
+      setIsPressed(true);
+    }
+  };
+
+  const handlePressEnd = () => {
+    if (!disabled) {
+      setIsPressed(false);
+    }
+  };
+
   const buttonClass = twMerge(
     'button-title5 px-6 py-2 rounded-xl', // 기본값
+    'transition-colors', // 색상 변경 애니메이션
     isPressed && 'bg-pressed',
     disabled && 'bg-disabled',
     !isPressed && !disabled && 'bg-primary',
@@ -27,13 +39,15 @@ export default function Button({
 
   return (
     <button
-      className={`button-title5 ${buttonClass}`}
+      className={buttonClass}
       onClick={() => {
         if (!disabled) {
-          setIsPressed(true);
           onClick();
         }
       }}
+      onTouchStart={handlePressStart}
+      onTouchEnd={handlePressEnd}
+      onTouchCancel={handlePressEnd} // 터치 취소 시 상태 초기화
     >
       {children}
     </button>
