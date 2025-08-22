@@ -1,10 +1,13 @@
+'use client';
 import React from 'react';
 import Card from '@/components/main/Card';
 import ControlButton from '@/components/running/Control/ControlButton';
 import { Play } from 'lucide-react';
 import ProgressBar from '@/components/common/ProgressBar';
+import { useRouter } from 'next/navigation';
 
 const WeeklyGoalCard = () => {
+  const router = useRouter();
   return (
     <Card className="relative mt-[24px] py-[28px]">
       <div className="flex items-center justify-between">
@@ -21,7 +24,12 @@ const WeeklyGoalCard = () => {
             </p>
           </div>
         </div>
-        <ControlButton className="h-[48px] w-[48px]">
+        <ControlButton
+          className="h-[48px] w-[48px]"
+          onClick={() => {
+            router.push('/prepare-run');
+          }}
+        >
           <Play className="h-[24px] w-[24px] fill-black text-black" />
         </ControlButton>
       </div>
