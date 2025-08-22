@@ -40,5 +40,6 @@ export const routeConfigs: Record<string, RouteConfig> = {
     showHeader: true,
     backHref: '/main',
     title: '알림'
-  }
+  },
+  '/lucky-stamp': { showHeader: true, backHref: '/main', title: '러닝종료' }
 };
