@@ -20,7 +20,7 @@ const CrewChallengeSection = () => {
   return (
     <>
       <div className="mt-[37px] flex">
-        <p className="mr-2 flex align-baseline text-[20px] leading-[1.4] font-bold tracking-[-0.025em]">
+        <p className="text-gray-20 mr-2 flex align-baseline text-[24px] leading-[1.5] font-bold tracking-[-0.025em]">
           내 크루 챌린지
         </p>
         <button>
