@@ -1,9 +1,17 @@
+'use client';
 import React from 'react';
 import Card from '@/components/main/Card';
+import { useRouter } from 'next/navigation';
 
 const TodayStatsCard = () => {
+  const router = useRouter();
   return (
-    <Card className="relative mt-[24px] pt-[16px] pb-[16px]">
+    <Card
+      className="relative mt-[24px] pt-[16px] pb-[16px]"
+      onClick={() => {
+        router.push('/run-finish');
+      }}
+    >
       <p className="text-gray-30 text-[1.0625rem] leading-[1.5] font-medium tracking-[-0.025em]">
         오늘 달린 기록
       </p>

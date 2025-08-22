@@ -1,10 +1,18 @@
+'use client';
 import React from 'react';
 import Card from '@/components/main/Card';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const WelcomeCard = () => {
+  const router = useRouter();
   return (
-    <Card className="relative mt-[36px] overflow-visible">
+    <Card
+      className="relative mt-[36px] overflow-visible"
+      onClick={() => {
+        router.push('/badge-collection');
+      }}
+    >
       <div className="flex items-center justify-start">
         <div>
           <p className="mb-2 text-[1.0625rem] leading-[150%] font-medium tracking-tight text-white/70">

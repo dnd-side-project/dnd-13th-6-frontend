@@ -16,7 +16,7 @@
     --color-gray-70: #636366;
     --color-gray-80: #48484A;
     --color-gray-90: #3A3A3C;
-
+    --color-golden: #FFE500;
 
     --font-pretendard: Pretendard, lufga, Arial, Helvetica, sans-serif;
     --font-lufga: Lufga, pretendard, Arial, Helvetica, sans-serif;
@@ -98,10 +98,24 @@
     .button-title5 {
         @apply font-semibold text-[1.25rem] text-black;
     }
-
+    .onboarding{
+        @apply font-bold text-[1.625rem]  tracking-[-0.025em];
+    }
 }
 
 body {
     font-family: Pretendard, Lufga, Arial, Helvetica, sans-serif;
     margin: 0;
 }
+
+
+.animate-roll {
+    animation: roll 5s ease-in-out forwards;
+}
+
+@keyframes roll {
+    0%   { transform: translateX(0) translateY(50px) rotate(0deg); }
+    50%  { transform: translateX(-250px) translateY(50px) rotate(-360deg); }
+    100% { transform: translateX(250px) translateY(50px) rotate(360deg); }
+}
+

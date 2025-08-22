@@ -27,5 +27,24 @@ export const routeConfigs: Record<string, RouteConfig> = {
     backHref: '/onboarding/select-character'
   },
   '/onboarding/onboarding-finish': { showHeader: true },
-  '/main': { showHeader: true }
+  '/main': { showHeader: true },
+  '/badge-collection': { showHeader: true, backHref: '/main', title: '뽑기' },
+  '/badge-collection/gacha': {
+    showHeader: true,
+    backHref: '/badge-collection'
+  },
+  '/badge-collection/gacha/result': {
+    showHeader: true
+  },
+  '/notification': {
+    showHeader: true,
+    backHref: '/main',
+    title: '알림'
+  },
+  '/lucky-stamp': { showHeader: true, backHref: '/main', title: '러닝종료' },
+  '/crew-reward': {
+    showHeader: true,
+    backHref: '/main',
+    title: '크루 주간 보상'
+  }
 };
