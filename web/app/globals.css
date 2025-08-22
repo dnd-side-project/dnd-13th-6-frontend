@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Tailwind v4 권장 테마 선언 */
+@theme {
+    --color-primary: #32FF76;
+    --color-background: #211e22;
+    --color-text: #ffffff;
+    --color-pressed: #278847;
+    --color-disabled: rgba(50, 255, 118, 0.3);
+    --color-gray-10: #F2F2F7;
+    --color-gray-20: #E5E5EA;
+    --color-gray-30: #D1D1D6;
+    --color-gray-40: #C7C7CC;
+    --color-gray-50: #AEAEB2;
+    --color-gray-60: #8E8E93;
+    --color-gray-70: #636366;
+    --color-gray-80: #48484A;
+    --color-gray-90: #3A3A3C;
+    --color-golden: #FFE500;
+
+    --font-pretendard: Pretendard, lufga, Arial, Helvetica, sans-serif;
+    --font-lufga: Lufga, pretendard, Arial, Helvetica, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/*@media (prefers-color-scheme: light) {*/
+/*    @theme {*/
+/*        --color-background: #0a0a0a;*/
+/*        --color-text: #ffffff;*/
+/*    }*/
+/*}*/
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@layer utilities {
+    .lufga-large-title {
+        @apply font-lufga font-bold italic text-[3rem];
+        /* 48px / 16 = 3rem */
+    }
+
+    .lufga-title1 {
+        @apply font-lufga font-bold italic text-[2.0625rem];
+        /* 33px / 16 = 2.0625rem */
+    }
+
+    .pretendard-large-title {
+        @apply font-bold text-[1.875rem] leading-[1.5] tracking-[-0.025em];
+        /* 30px / 16 = 1.875rem */
+    }
+
+    .pretendard-title1 {
+        @apply font-bold text-[1.625rem] leading-[1.5] tracking-[-0.025em];
+        /* 26px / 16 = 1.625rem */
+    }
+
+    .pretendard-title2 {
+        @apply font-bold text-[1.5rem] leading-[1.5] tracking-[-0.025em];
+        /* 24px / 16 = 1.5rem */
+    }
+
+    .pretendard-title3 {
+        @apply font-bold text-[1.375rem] leading-[1.5] tracking-[-0.025em];
+        /* 22px / 16 = 1.375rem */
+    }
+
+    .pretendard-title4 {
+        @apply font-bold text-[1.25rem] leading-[1.5] tracking-[-0.025em];
+        /* 20px / 16 = 1.25rem */
+    }
+
+    .pretendard-title5 {
+        @apply font-semibold text-[1.25rem] leading-[1.5] tracking-[-0.025em];
+        /* 20px / 16 = 1.25rem */
+    }
+
+    .pretendard-headline {
+        @apply font-medium text-[1.1875rem] leading-[1.5] tracking-[-0.014em];
+        /* 19px / 16 = 1.1875rem */
+    }
+
+    .pretendard-headline1 {
+        @apply font-bold text-[1.0625rem] leading-[1.5] tracking-[-0.014em];
+        /* 17px / 16 = 1.0625rem */
+    }
+
+    .pretendard-headline2 {
+        @apply font-semibold text-[0.9375rem] leading-[1.5] tracking-[-0.014em];
+        /* 15px / 16 = 0.9375rem */
+    }
+
+    .body1 {
+        @apply font-semibold text-[1.0625rem] leading-[1.5] tracking-[-0.015em];
+        /* 17px / 16 = 1.0625rem */
+    }
+
+    .body2 {
+        @apply font-medium text-[0.875rem] leading-[1.4] tracking-[-0.025em];
+        /* 14px / 16 = 0.875rem */
+    }
+
+    .button-title5 {
+        @apply font-semibold text-[1.25rem] text-black;
+    }
+    .onboarding{
+        @apply font-bold text-[1.625rem]  tracking-[-0.025em];
+    }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    font-family: Pretendard, Lufga, Arial, Helvetica, sans-serif;
+    margin: 0;
 }
+
+
+.animate-roll {
+    animation: roll 5s ease-in-out forwards;
+}
+
+@keyframes roll {
+    0%   { transform: translateX(0) translateY(50px) rotate(0deg); }
+    50%  { transform: translateX(-250px) translateY(50px) rotate(-360deg); }
+    100% { transform: translateX(250px) translateY(50px) rotate(360deg); }
+}
+
