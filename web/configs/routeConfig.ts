@@ -33,7 +33,7 @@ export const routeConfigs: Record<string, RouteConfig> = {
     showHeader: true,
     backHref: '/main',
     title: '프로필',
-    showSaveButton: true,
+    showSaveButton: true
   },
   '/badge-collection/gacha': {
     showHeader: true,
@@ -52,5 +52,11 @@ export const routeConfigs: Record<string, RouteConfig> = {
     showHeader: true,
     backHref: '/main',
     title: '크루 주간 보상'
+  },
+  '/change-target-distance': {
+    showHeader: true,
+    backHref: '/main',
+    title: '목표 수정',
+    showSaveButton: true
   }
 };
