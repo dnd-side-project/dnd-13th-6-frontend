@@ -1,13 +1,19 @@
 "use client";
-import { useState } from "react";
+import { ReactEventHandler, useState } from "react";
 import { useRouter } from "next/navigation";
 function CodePad({ code, setCode }: { code: string[]; setCode: (code: string[]) => void }) {
 
 
-  const handleChange = (value: string) => {
+  const handleChange = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const value = event.key;
     const index = code.findIndex((char) => char === "");
-    if (index === -1) return; // 모두 채워졌으면 무시
-    const newCode = [...code];
+     const newCode = [...code];
+    if(event.key === 'Backspace' && (index > 0 || index === -1)) {
+      newCode[index === -1 ? 5 : index -1] = "";
+      setCode(newCode);
+      return;
+    }
+    if(index === -1) return; // 모든 칸이 채워져 있으면 무시
 
     newCode[index] = value.at(-1) || ""; // 마지막 문자만 사용
     setCode(newCode);
@@ -23,7 +29,7 @@ function CodePad({ code, setCode }: { code: string[]; setCode: (code: string[]) 
           inputMode="numeric"
           name={`code-${idx}`}
           value={char}
-          onChange={(e) => handleChange(e.target.value)}
+          onKeyUp={(e) => handleChange(e)}
           className="text-center w-13 h-16 flex-1 block text-2xl font-bold rounded-xl p-4 bg-[#3A3A3C] text-white text-[28px]"
         />
       ))}
