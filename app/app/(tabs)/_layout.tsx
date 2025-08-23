@@ -8,7 +8,6 @@ import { Dimensions } from 'react-native';
 const hideTabBarScreens = ['(single-running)', '(group-running)'];
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
   const segments = useSegments(); // usePathname 대신 useSegments 사용
 
   // segments에서 현재 탭 정보 추출

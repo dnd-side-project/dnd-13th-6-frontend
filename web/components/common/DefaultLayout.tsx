@@ -6,6 +6,7 @@ interface DefaultLayoutProps {
   showHeader?: boolean;
   title?: string;
   backHref?: string;
+  showAlarmIcon?: boolean;
 }
 
 export default function DefaultLayout({

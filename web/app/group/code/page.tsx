@@ -1,5 +1,5 @@
 "use client";
-import { ReactEventHandler, useState } from "react";
+import {  useState } from "react";
 import { useRouter } from "next/navigation";
 function CodePad({ code, setCode }: { code: string[]; setCode: (code: string[]) => void }) {
 
@@ -42,14 +42,7 @@ export default function Page() {
   const router = useRouter();
     const [code, setCode] = useState(Array(6).fill(""));
   return (
-    <div className="max-w-screen min-h-screen bg-black flex flex-col px-2">
-      {/* Header */}
-      <header className="flex items-center p-4">
-        <button className="text-white text-2xl">&lt;</button>
-        <h1 className="flex-1 text-center text-white font-semibold text-lg">
-          초대 코드 입력
-        </h1>
-      </header>
+    <div className="flex flex-col px-2 h-[calc(100vh-60px)]">
 
       {/* Content */}
       <div className="flex flex-col flex-1 mt-8">
@@ -62,9 +55,9 @@ export default function Page() {
         </div>
       </div>
       {/* Footer */}
-     <button className="w-full bg-[#32FF76] rounded-xl mt-auto" onClick={() => router.push(`/group/code/${code.join('')}`)}>
-          <div className="text-[18px] py-3 text-black font-bold">초대 코드 입력하기</div>
-        </button>
+     <button disabled={code.join("").trim().length !== 6} className="w-full self-end bg-[#32FF76] disabled:opacity-20 rounded-xl mt-auto mb-3" onClick={() => router.push(`/group/code/${code.join('')}`)}>
+        <div className="text-[18px] py-3 text-black font-bold">초대 코드 입력하기</div>
+     </button>
     </div>
   );
 }

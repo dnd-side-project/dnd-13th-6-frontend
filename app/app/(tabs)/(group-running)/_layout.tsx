@@ -117,7 +117,6 @@ export default function Layout() {
   const handleGroupInfoPress = () => editMemberBottomSheet.present();
   const { showSuccess } = useToast();
   const isAdminUser = true;
-
   //그룹 나가기
   const onGroupExit = () => {
     settingsBottomSheet.close();

@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import UserMarker from '@/components/googleMap/UserMarker';
 import { useStomp } from '@/hooks/useStomp';
 import type { MemberData } from '@/types/crew';
+import { useSearchParams } from 'next/navigation';
 function CrewMemberProfiles({
   users,
   onClick
@@ -31,7 +32,9 @@ function CrewMemberProfiles({
 
 export default function Page() {
   const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
-
+  const searchParams = useSearchParams();
+  //TODO 크루 ID를 통해 크루 조회
+  console.log(searchParams.get('q'));
   // 클로버 애니메이션
   const startCloverAnimation = () => {
     const id = Date.now();
