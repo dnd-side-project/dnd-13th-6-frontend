@@ -41,6 +41,11 @@ function RunningShare() {
         source={{ uri: ENV.WEB_VIEW_URL + '/group' }}
         onLoadEnd={() => setIsLoading(false)}
         onLoadStart={() => setIsLoading(true)}
+        scrollEnabled={true}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        allowsLinkPreview={false}
+        allowsBackForwardNavigationGestures={true}
       />
       {/* </KeyboardAvoidingView> */}
     </SafeAreaView>

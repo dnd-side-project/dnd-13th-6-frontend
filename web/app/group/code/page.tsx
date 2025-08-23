@@ -29,6 +29,7 @@ function CodePad({ code, setCode }: { code: string[]; setCode: (code: string[]) 
           inputMode="numeric"
           name={`code-${idx}`}
           value={char}
+          onChange={() => {}}
           onKeyUp={(e) => handleChange(e)}
           className="text-center w-13 h-16 flex-1 block text-2xl font-bold rounded-xl p-4 bg-[#3A3A3C] text-white text-[28px]"
         />

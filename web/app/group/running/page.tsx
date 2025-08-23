@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Image from 'next/image';
@@ -7,8 +7,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import UserMarker from '@/components/googleMap/UserMarker';
 import { useStomp } from '@/hooks/useStomp';
 import type { MemberData } from '@/types/crew';
-import Button from '@/components/common/Button';
-import type { ReactNode } from 'react';
 function CrewMemberProfiles({
   users,
   onClick
