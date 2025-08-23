@@ -15,6 +15,7 @@ export default {
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true,
+          "NSAllowsLocalNetworking": true,
           "NSExceptionDomains": {
             "localhost": {
               "NSExceptionAllowsInsecureHTTPLoads": true,

@@ -1,35 +1,48 @@
 import { ENV } from '@/utils/app/consts';
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Dimensions,
+  Keyboard,
+  KeyboardEventName,
+  KeyboardAvoidingView,
   SafeAreaView,
   StyleSheet,
-  View
+  Platform
 } from 'react-native';
 import WebView from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 function RunningShare() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const webviewRef = useRef<WebView>(null);
+  useLayoutEffect(() => {
+    const getEvent = (listener: KeyboardEventName) => {
+      return Keyboard.addListener(listener, () => {
+        return webviewRef.current?.postMessage(JSON.stringify('내용'));
+      });
+    };
+
+    const event = getEvent('keyboardWillShow');
+
+    return () => {
+      event.remove();
+    };
+  }, [webviewRef]);
   return (
     <SafeAreaView style={styles.container}>
-      {isLoading && (
-        <ActivityIndicator
-          size="large"
-          color="#313131"
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        />
-      )}
+      {/* <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      > */}
       <WebView
-        style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
-        onLoadEnd={() => {
-          setIsLoading(false);
-        }}
-        source={{
-          uri: ENV.WEB_VIEW_URL + '/group'
-        }}
+        ref={webviewRef}
+        style={styles.webview}
+        keyboardDisplayRequiresUserAction={false}
+        source={{ uri: ENV.WEB_VIEW_URL + '/group' }}
+        onLoadEnd={() => setIsLoading(false)}
+        onLoadStart={() => setIsLoading(true)}
       />
+      {/* </KeyboardAvoidingView> */}
     </SafeAreaView>
   );
 }
