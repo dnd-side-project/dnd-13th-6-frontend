@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 function BadgeItem() {
   return (
-    <Card className="p-[7px]">
+    <Card className="h-[114px] w-[114px] p-[7px]">
       <Image
         src={'/assets/icon/pig.svg'}
         alt={'캐릭터'}
