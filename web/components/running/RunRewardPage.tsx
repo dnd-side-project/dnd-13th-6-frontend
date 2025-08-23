@@ -98,7 +98,10 @@ export default function RunRewardPage({ type }: RewardType) {
           )}
         </p>
 
-        <Button onClick={() => router.push('/main')} className="h-15 w-full">
+        <Button
+          onClickAction={() => router.push('/main')}
+          className="h-15 w-full"
+        >
           홈 화면으로 돌아가기
         </Button>
       </div>
