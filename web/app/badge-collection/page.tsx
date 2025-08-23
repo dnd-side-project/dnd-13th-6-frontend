@@ -1,25 +1,34 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import GachaRewardCard from '@/components/gacha/GachaRewardCard';
 import Image from 'next/image';
 import BadgeList from '@/components/gacha/BadgeList';
+import { PencilSimpleLine } from '@phosphor-icons/react';
 
 function Page() {
-  return (
-    <>
-      <GachaRewardCard />
-      <div className="pretendard-headline mt-[33px] text-center text-[19px]">
-        진수한접시님의 보유 배지
-      </div>
+  const [name, setName] = useState('진수한접시');
 
-      <Image
-        src={'/assets/icon/pig.svg'}
-        alt={'캐릭터'}
-        width={156}
-        height={156}
-        className="mx-auto mt-[14px]"
-      />
+  return (
+    <div>
+      <div className="bg-gray-90 mx-auto flex h-37 w-37 items-center justify-center rounded-full">
+        <Image
+          src="/assets/icon/pig.svg"
+          alt="캐릭터"
+          width={120}
+          height={120}
+        />
+      </div>
+      <p className="flex flex-col">
+        <input
+          value={name}
+          onChange={e => setName(e.target.value)}
+          className="pretendard-title3 text-gray-20 mt-4 mb-4 inline-block w-full flex-col rounded-md text-center"
+        />
+        <PencilSimpleLine />
+        <GachaRewardCard />
+      </p>
       <BadgeList />
-    </>
+    </div>
   );
 }
 

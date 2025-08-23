@@ -28,7 +28,7 @@ export const routeConfigs: Record<string, RouteConfig> = {
   },
   '/onboarding/onboarding-finish': { showHeader: true },
   '/main': { showHeader: true },
-  '/badge-collection': { showHeader: true, backHref: '/main', title: '뽑기' },
+  '/badge-collection': { showHeader: true, backHref: '/main', title: '프로필' },
   '/badge-collection/gacha': {
     showHeader: true,
     backHref: '/badge-collection'
