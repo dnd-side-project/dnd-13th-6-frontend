@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import GachaRewardCard from '@/components/gacha/GachaRewardCard';
 import Image from 'next/image';
 import BadgeList from '@/components/gacha/BadgeList';
@@ -7,6 +7,15 @@ import { PencilSimpleLine } from '@phosphor-icons/react';
 
 function Page() {
   const [name, setName] = useState('진수한접시');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [isEdit, setIsEdit] = useState(false);
+  const handleIconClick = () => {
+    setIsEdit(true);
+  };
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [isEdit]);
 
   return (
     <div>
@@ -18,15 +27,36 @@ function Page() {
           height={120}
         />
       </div>
-      <p className="flex flex-col">
-        <input
-          value={name}
-          onChange={e => setName(e.target.value)}
-          className="pretendard-title3 text-gray-20 mt-4 mb-4 inline-block w-full flex-col rounded-md text-center"
-        />
-        <PencilSimpleLine />
-        <GachaRewardCard />
-      </p>
+
+      <div className="mt-7 mb-8 flex items-center justify-center">
+        {isEdit ? (
+          <>
+            <input
+              ref={inputRef}
+              value={name}
+              onBlur={() => setIsEdit(false)}
+              onChange={e => setName(e.target.value)}
+              className="font-pretendard w-auto bg-transparent text-center text-[22px] font-bold text-white focus:outline-none"
+            />
+          </>
+        ) : (
+          <>
+            <p className="font-pretendard w-auto bg-transparent text-center text-[22px] font-bold text-white">
+              {name}
+            </p>
+            <span className="font-pretendard mr-2 w-auto bg-transparent text-center text-[22px] font-bold text-white">
+              님
+            </span>
+            <PencilSimpleLine
+              size={20}
+              className="cursor-pointer text-gray-400"
+              onClick={handleIconClick}
+            />
+          </>
+        )}
+      </div>
+      <GachaRewardCard />
+
       <BadgeList />
     </div>
   );
