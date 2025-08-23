@@ -48,7 +48,7 @@ const WeeklyGoalCard = () => {
       </div>
       <Button
         className="mt-5 h-12 w-full text-[0.9375rem] leading-[1.5] font-bold tracking-[-0.025em] text-black"
-        onClick={() => {
+        onClickAction={() => {
           router.push('/prepare-run');
         }}
       >

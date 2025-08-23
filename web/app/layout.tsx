@@ -27,6 +27,7 @@ export default function RootLayout({
           showHeader={config?.showHeader}
           title={config?.title}
           backHref={config?.backHref}
+          showSaveButton={config?.showSaveButton}
         >
           {children}
         </DefaultLayout>

@@ -36,7 +36,7 @@ function Page() {
         </p>
         <Button
           className="mb-10 h-15 w-full"
-          onClick={() => {
+          onClickAction={() => {
             router.push('/main');
           }}
         >

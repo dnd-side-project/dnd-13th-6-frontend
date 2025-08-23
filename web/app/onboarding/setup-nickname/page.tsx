@@ -26,7 +26,7 @@ function Page() {
         <Button
           className="mb-5 h-15 w-full"
           disabled={!isNicknameValid}
-          onClick={() => router.push('/onboarding/select-character')}
+          onClickAction={() => router.push('/onboarding/select-character')}
         >
           다음으로
         </Button>
