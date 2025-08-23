@@ -17,7 +17,6 @@ export default function TabLayout() {
   const isHideTabBar = hideTabBarScreens.some(screen =>
     currentTab.includes(screen.replace(/[()]/g, ''))
   );
-  console.log(Dimensions.get('window').height);
   return (
     <Tabs
       backBehavior="history"
