@@ -29,7 +29,7 @@ function Page() {
       <Button
         className="mb-5 h-15 w-full"
         disabled={isButtonDisabled}
-        onClick={() => {
+        onClickAction={() => {
           router.push('/onboarding/setup-nickname');
         }}
       >

@@ -48,10 +48,10 @@ export default function Page() {
           style={{ zIndex: 9999 }}
         />
       )}
-      <div className="text-white min-h-screen flex flex-col relative">
-        <div className="h-[45vh] p-4 flex flex-col justify-around">
+      <div className="relative flex min-h-screen flex-col text-white">
+        <div className="flex h-[45vh] flex-col justify-around p-4">
           <div className="flex items-center justify-around gap-8">
-            <div className="flex flex-col justify-center items-start">
+            <div className="flex flex-col items-start justify-center">
               <RunningNameInput />
               <MainOverview
                 type={'finish'}
@@ -67,15 +67,15 @@ export default function Page() {
           />
         </div>
         {/*지도 55vh 아래*/}
-        <div className="absolute bottom-0 left-0 right-0 h-[55vh]">
+        <div className="absolute right-0 bottom-0 left-0 h-[55vh]">
           <GoogleMap height="100%" path={pathForMap} />
         </div>
 
         {/*종료버튼*/}
-        <div className="absolute bottom-0 left-0 right-0 w-full p-4 bg-transparent">
+        <div className="absolute right-0 bottom-0 left-0 w-full bg-transparent p-4">
           <Button
-            onClick={() => navi.push('/lucky-stamp')}
-            className="w-full h-15 mb-5"
+            onClickAction={() => navi.push('/lucky-stamp')}
+            className="mb-5 h-15 w-full"
           >
             운동종료하기
           </Button>

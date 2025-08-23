@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -5,14 +6,14 @@ type ButtonProps = {
   disabled?: boolean;
   children: string;
   className?: string; // 외부 class 추가 가능
-  onClick?: () => void;
+  onClickAction?: () => void;
 };
 
 export default function Button({
   disabled,
   children,
   className,
-  onClick = () => {}
+  onClickAction = () => {}
 }: ButtonProps) {
   const [isPressed, setIsPressed] = useState(false);
 
@@ -42,7 +43,7 @@ export default function Button({
       className={buttonClass}
       onClick={() => {
         if (!disabled) {
-          onClick();
+          onClickAction();
         }
       }}
       onTouchStart={handlePressStart}

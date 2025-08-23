@@ -55,7 +55,7 @@ function Page() {
             <Button
               className="mb-5 h-15 w-full"
               disabled={!canDraw}
-              onClick={handleGacha}
+              onClickAction={handleGacha}
             >
               캐릭터 뽑기
             </Button>

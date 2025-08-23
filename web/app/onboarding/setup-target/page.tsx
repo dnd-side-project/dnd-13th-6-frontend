@@ -69,7 +69,7 @@ function Page() {
       </div>
       <Button
         className="mb-5 h-15 w-full"
-        onClick={() => {
+        onClickAction={() => {
           router.push('/onboarding/onboarding-finish');
         }}
       >

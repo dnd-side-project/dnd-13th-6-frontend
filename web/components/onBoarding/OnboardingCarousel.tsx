@@ -79,7 +79,7 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
           </div>
         ) : (
           <div className="absolute right-4 bottom-10 left-4">
-            <Button className="h-15 w-full" onClick={onComplete}>
+            <Button className="h-15 w-full" onClickAction={onComplete}>
               시작하기
             </Button>
           </div>
