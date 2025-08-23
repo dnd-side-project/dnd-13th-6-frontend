@@ -1,21 +1,54 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import GachaRewardCard from '@/components/gacha/GachaRewardCard';
 import Image from 'next/image';
 import BadgeList from '@/components/gacha/BadgeList';
 import { PencilSimpleLine } from '@phosphor-icons/react';
+import { useSetAtom } from 'jotai';
+import { headerSaveAtom } from '@/store/header';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 function Page() {
   const [name, setName] = useState('진수한접시');
   const inputRef = useRef<HTMLInputElement>(null);
-
   const [isEdit, setIsEdit] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const setHandleSave = useSetAtom(headerSaveAtom);
+
+  const actualSave = useCallback(() => {
+    // TODO: Add API call to save the name
+    setIsEdit(false);
+    console.log('Saved:', name);
+  }, [name]);
+
+  const openSaveModal = useCallback(() => {
+    setIsModalOpen(true);
+  }, []);
+
+  useEffect(() => {
+    setHandleSave(() => openSaveModal);
+    return () => setHandleSave(undefined);
+  }, [setHandleSave, openSaveModal]);
+
   const handleIconClick = () => {
     setIsEdit(true);
   };
+
   useEffect(() => {
-    inputRef.current?.focus();
+    if (isEdit) {
+      inputRef.current?.focus();
+    }
   }, [isEdit]);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleConfirm = () => {
+    actualSave();
+    handleCloseModal();
+  };
 
   return (
     <div>
@@ -58,6 +91,15 @@ function Page() {
       <GachaRewardCard />
 
       <BadgeList />
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirm}
+        title="변경사항을 저장할까요?"
+        closeText="취소"
+        confirmText="저장하기"
+        confirmBtnStyle="bg-primary text-black"
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@ export interface RouteConfig {
   showHeader: boolean;
   backHref?: string;
   title?: string;
+  showSaveButton?: boolean;
 }
 
 export const routeConfigs: Record<string, RouteConfig> = {
@@ -28,7 +29,12 @@ export const routeConfigs: Record<string, RouteConfig> = {
   },
   '/onboarding/onboarding-finish': { showHeader: true },
   '/main': { showHeader: true },
-  '/badge-collection': { showHeader: true, backHref: '/main', title: '프로필' },
+  '/badge-collection': {
+    showHeader: true,
+    backHref: '/main',
+    title: '프로필',
+    showSaveButton: true,
+  },
   '/badge-collection/gacha': {
     showHeader: true,
     backHref: '/badge-collection'

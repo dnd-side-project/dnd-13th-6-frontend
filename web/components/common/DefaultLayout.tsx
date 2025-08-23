@@ -1,19 +1,25 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useAtomValue } from 'jotai';
+import { headerSaveAtom } from '@/store/header';
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
   showHeader?: boolean;
   title?: string;
   backHref?: string;
+  showSaveButton?: boolean;
 }
 
 export default function DefaultLayout({
   children,
   showHeader = false,
   title = undefined,
-  backHref
+  backHref,
+  showSaveButton,
 }: DefaultLayoutProps) {
+  const handleSave = useAtomValue(headerSaveAtom);
+
   return (
     <div className="flex h-screen flex-col">
       {showHeader && (
@@ -36,6 +42,14 @@ export default function DefaultLayout({
               <h1 className="absolute left-1/2 -translate-x-1/2 transform text-lg font-bold text-white">
                 {title}
               </h1>
+            )}
+            {showSaveButton && handleSave && (
+              <button
+                onClick={handleSave}
+                className="ml-auto p-4 text-[1.0625rem] leading-[22px] font-semibold tracking-[-0.43px]"
+              >
+                저장
+              </button>
             )}
           </header>
         </>

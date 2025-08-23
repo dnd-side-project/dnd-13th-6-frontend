@@ -10,11 +10,12 @@
   },
   "dependencies": {
     "@emotion/css": "^11.13.5",
-    "@stomp/stompjs": "^7.1.1",
     "@phosphor-icons/react": "^2.1.10",
+    "@stomp/stompjs": "^7.1.1",
     "@vis.gl/react-google-maps": "^1.5.5",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
+    "jotai": "^2.13.1",
     "lucide-react": "^0.536.0",
     "motion": "^12.23.12",
     "net": "^1.0.2",
