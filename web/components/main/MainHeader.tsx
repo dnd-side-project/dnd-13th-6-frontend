@@ -8,12 +8,7 @@ const MainHeader = () => {
   const router = useRouter();
   return (
     <div className="flex w-full items-center justify-between">
-      <Image
-        src={'/assets/LogoWithText.png'}
-        alt={'logo'}
-        width={92}
-        height={29}
-      />
+      <Image src={'/assets/LOGO.svg'} alt={'logo'} width={92} height={29} />
       <button
         className="relative"
         onClick={() => {

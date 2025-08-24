@@ -6,11 +6,7 @@ import Button from '@/components/common/Button';
 import CharacterCarousel from '@/components/onBoarding/CharacterCarousel';
 
 function Page() {
-  const characters = [
-    { image: 'pig' },
-    { image: 'elephant' },
-    { image: 'img3' }
-  ];
+  const characters = [{ image: 'pig' }, { image: 'elephant' }];
   const router = useRouter();
 
   return (
