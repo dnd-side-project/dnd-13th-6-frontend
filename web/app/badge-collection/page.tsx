@@ -5,32 +5,44 @@ import Image from 'next/image';
 import BadgeList from '@/components/gacha/BadgeList';
 import { PencilSimpleLine } from '@phosphor-icons/react';
 import { useSetAtom } from 'jotai';
-import { headerSaveAtom } from '@/store/header';
+import { headerBackAtom, headerSaveAtom } from '@/store/header';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { useRouter } from 'next/navigation';
 
 function Page() {
   const [name, setName] = useState('진수한접시');
+  const defaultName = '진수한접시';
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEdit, setIsEdit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const router = useRouter();
   const setHandleSave = useSetAtom(headerSaveAtom);
+  const setHandleBack = useSetAtom(headerBackAtom);
 
+  //TODO:저장버튼 추후 통신 구현
   const actualSave = useCallback(() => {
-    // TODO: Add API call to save the name
     setIsEdit(false);
-    console.log('Saved:', name);
-  }, [name]);
-
-  const openSaveModal = useCallback(() => {
-    setIsModalOpen(true);
+    router.push('/main');
   }, []);
-
+  // 값이 변경되었을때 모달 띄우기
+  //TODO:배지 비교도 추가해야함
+  const openSaveModal = useCallback(() => {
+    if (name !== defaultName) {
+      setIsModalOpen(true);
+    } else {
+      router.push('/main');
+    }
+  }, [name, router, defaultName]);
+  //layout의 버튼에 함수 연결
   useEffect(() => {
-    setHandleSave(() => openSaveModal);
-    return () => setHandleSave(undefined);
-  }, [setHandleSave, openSaveModal]);
-
+    setHandleSave(() => actualSave);
+    setHandleBack(() => openSaveModal);
+    return () => {
+      setHandleSave(undefined);
+      setHandleBack(undefined);
+    };
+  }, [setHandleSave, openSaveModal, setHandleBack, actualSave]);
+  //edit 버튼 눌렀을때
   const handleIconClick = () => {
     setIsEdit(true);
   };
@@ -41,8 +53,12 @@ function Page() {
     }
   }, [isEdit]);
 
-  const handleCloseModal = () => {
+  const handleOverlayClick = () => {
     setIsModalOpen(false);
+  };
+  const handleCloseModal = () => {
+    handleOverlayClick();
+    router.back();
   };
 
   const handleConfirm = () => {
@@ -93,10 +109,11 @@ function Page() {
       <BadgeList />
       <ConfirmModal
         isOpen={isModalOpen}
+        onOverlayClick={handleOverlayClick}
         onClose={handleCloseModal}
         onConfirm={handleConfirm}
         title="변경사항을 저장할까요?"
-        closeText="취소"
+        closeText="그냥 나가기"
         confirmText="저장하기"
         confirmBtnStyle="bg-primary text-black"
       />

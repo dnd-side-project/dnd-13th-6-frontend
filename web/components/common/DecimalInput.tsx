@@ -4,6 +4,7 @@ import React from 'react';
 interface DecimalInputProps {
   value: string;
   onChange: (value: string) => void;
+  placeholder?: string;
   onBlur?: () => void;
   className?: string;
   ref?: React.RefObject<HTMLInputElement>;
@@ -13,6 +14,7 @@ const DecimalInput = ({
   value,
   onChange,
   onBlur,
+  placeholder,
   className,
   ref
 }: DecimalInputProps) => {
@@ -42,6 +44,7 @@ const DecimalInput = ({
       ref={ref}
       className={className}
       type="text"
+      placeholder={placeholder}
       inputMode="decimal"
       value={value}
       onChange={validateDecimalInput}
