@@ -45,7 +45,7 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
       {/* 이미지 + 점 */}
       <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center pt-20">
         <Image
-          src={`/assets/onboarding/${slides[index].image}.svg`}
+          src={`/assets/icon/${slides[index].image}.svg`}
           alt={slides[index].image}
           width={index === 2 ? 275 : 243}
           height={index === 2 ? 275 : 243}

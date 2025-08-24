@@ -3,29 +3,10 @@ import React, { useState } from 'react';
 import ProgressBar from '@/components/common/ProgressBar';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
+import DecimalInput from '@/components/common/DecimalInput';
 
 function Page() {
-  const [targetDistance, setTargetDistance] = useState('3.0');
-  const validateDecimalInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value;
-    // 숫자와 점 이외의 문자 제거
-    val = val.replace(/[^0-9.]/g, '');
-
-    // 점이 두 개 이상일 경우 첫 번째 점만 남김
-    const dotIndex = val.indexOf('.');
-    if (dotIndex > -1) {
-      const afterDot = val.substring(dotIndex + 1).replace(/\./g, '');
-      val = val.substring(0, dotIndex + 1) + afterDot;
-    }
-
-    // 소수점 둘째 자리까지만 허용
-    const parts = val.split('.');
-    if (parts[1] && parts[1].length > 2) {
-      val = `${parts[0]}.${parts[1].substring(0, 2)}`;
-    }
-
-    setTargetDistance(val);
-  };
+  const [targetDistance, setTargetDistance] = useState('3.00');
   const router = useRouter();
   return (
     <div className="flex flex-grow flex-col">
@@ -40,13 +21,11 @@ function Page() {
           </p>
           <div className="flex items-center">
             <div className="mt-4 flex items-end space-x-2">
-              <input
+              <DecimalInput
                 className="font-lufga border-gray-60 align-center w-50 [appearance:textfield] border-b-2 bg-transparent text-center text-7xl font-extrabold text-white italic focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                type="text"
-                inputMode="decimal"
                 value={targetDistance}
                 placeholder="3.00"
-                onChange={validateDecimalInput}
+                onChange={setTargetDistance}
                 onBlur={() => {
                   if (targetDistance !== '') {
                     setTargetDistance(parseFloat(targetDistance).toFixed(2));
