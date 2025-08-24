@@ -71,8 +71,9 @@ export const routeConfigs: Record<string, RouteConfig> = {
   '/group/running': {
     showHeader: false,
     backHref: '/main',
-    title: '그룹 달리기 조회',
-   '/change-target-distance': {
+    title: '그룹 달리기 조회'
+  },
+  '/change-target-distance': {
     showHeader: true,
     backHref: '/main',
     title: '목표 수정',
