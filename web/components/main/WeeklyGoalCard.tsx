@@ -8,7 +8,10 @@ import Button from '@/components/common/Button';
 const WeeklyGoalCard = () => {
   const router = useRouter();
   return (
-    <Card className="relative mt-[24px] py-[28px]">
+    <Card
+      className="relative mt-[24px] py-[28px]"
+      onClick={() => router.push('/change-target-distance')}
+    >
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <p className="tex-[1.0625rem] text-gray-20 leading-[150%] font-bold tracking-tight">

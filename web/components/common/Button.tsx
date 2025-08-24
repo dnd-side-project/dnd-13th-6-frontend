@@ -41,7 +41,8 @@ export default function Button({
   return (
     <button
       className={buttonClass}
-      onClick={() => {
+      onClick={e => {
+        e.stopPropagation();
         if (!disabled) {
           onClickAction();
         }
