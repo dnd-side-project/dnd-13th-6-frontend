@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Image from 'next/image';
@@ -8,6 +8,7 @@ import UserMarker from '@/components/googleMap/UserMarker';
 import { useStomp } from '@/hooks/useStomp';
 import type { MemberData } from '@/types/crew';
 import { useSearchParams } from 'next/navigation';
+
 function CrewMemberProfiles({
   users,
   onClick
@@ -30,11 +31,14 @@ function CrewMemberProfiles({
   );
 }
 
-export default function Page() {
+function GroupRunningContent() {
   const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
   const searchParams = useSearchParams();
   //TODO 크루 ID를 통해 크루 조회
   console.log(searchParams.get('q'));
+  
+  // ... existing code ...
+  
   // 클로버 애니메이션
   const startCloverAnimation = () => {
     const id = Date.now();
@@ -50,7 +54,6 @@ export default function Page() {
     lat: 35.97664845766847,
     lng: 126.99597295767953
   });
-  //todo:테스트용
 
   //TODO 멤버 타입 정의
   const onMemberClick = (member: MemberData) => {
@@ -78,8 +81,6 @@ export default function Page() {
     startCloverAnimation();
     publish(emojiType);
   };
-
-
 
   return (
     <div className="relative h-screen w-full bg-[#313131] text-whit px-4  overflow-scroll">
@@ -110,7 +111,6 @@ export default function Page() {
             lng={memberData.lng}
             imageUrl={'/assets/clover.png'}
           />
-      
         </GoogleMap>
         <button
           onClick={() => sendEmogi('clover')}
@@ -153,5 +153,13 @@ export default function Page() {
           </button>
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <GroupRunningContent />
+    </Suspense>
   );
 }
