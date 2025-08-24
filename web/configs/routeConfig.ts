@@ -53,7 +53,26 @@ export const routeConfigs: Record<string, RouteConfig> = {
     backHref: '/main',
     title: '크루 주간 보상'
   },
-  '/change-target-distance': {
+  '/group': {
+    showHeader: false,
+    backHref: '/main',
+    title: '크루'
+  },
+  '/group/code': {
+    showHeader: false,
+    backHref: '/group',
+    title: '초대 코드 입력'
+  },
+  '/group/code/invite': {
+    showHeader: false,
+    backHref: '/group/code',
+    title: '초대 코드 입력'
+  },
+  '/group/running': {
+    showHeader: false,
+    backHref: '/main',
+    title: '그룹 달리기 조회',
+   '/change-target-distance': {
     showHeader: true,
     backHref: '/main',
     title: '목표 수정',

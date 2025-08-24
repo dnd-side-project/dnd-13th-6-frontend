@@ -8,6 +8,7 @@ interface DefaultLayoutProps {
   showHeader?: boolean;
   title?: string;
   backHref?: string;
+  showAlarmIcon?: boolean;
   showSaveButton?: boolean;
 }
 
@@ -16,7 +17,7 @@ export default function DefaultLayout({
   showHeader = false,
   title = undefined,
   backHref,
-  showSaveButton,
+  showSaveButton
 }: DefaultLayoutProps) {
   const handleSave = useAtomValue(headerSaveAtom);
 

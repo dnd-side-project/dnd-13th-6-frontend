@@ -1,15 +1,14 @@
+import { MODULE } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
+import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
-import { MODULE } from '@/utils/apis/api';
-import { router } from 'expo-router';
-
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-function RunningShare() {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+export default function Code() {
   const webviewRef = useRef<WebView>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
@@ -21,10 +20,10 @@ function RunningShare() {
   return (
     <SafeAreaView style={styles.container}>
       <WebView
-        ref={webviewRef}
         style={styles.webview}
+        ref={webviewRef}
         keyboardDisplayRequiresUserAction={false}
-        source={{ uri: ENV.WEB_VIEW_URL + '/group' }}
+        source={{ uri: ENV.WEB_VIEW_URL + '/group/code' }}
         onLoadEnd={() => setIsLoading(false)}
         onLoadStart={() => setIsLoading(true)}
         scrollEnabled={true}
@@ -37,8 +36,6 @@ function RunningShare() {
     </SafeAreaView>
   );
 }
-
-export default RunningShare;
 
 const styles = StyleSheet.create({
   container: {
