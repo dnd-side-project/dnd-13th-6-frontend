@@ -45,3 +45,4 @@ node_modules
 .vercel
 android/*
 ios/*
+certificates
