@@ -6,7 +6,7 @@ function BadgeItem() {
   return (
     <Card className="h-[114px] w-[114px] p-[7px]">
       <Image
-        src={'/assets/icon/pig.svg'}
+        src={'/assets/icon/speedup-pig.svg'}
         alt={'캐릭터'}
         width={100}
         height={100}
