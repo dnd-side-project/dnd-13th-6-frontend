@@ -9,6 +9,7 @@ interface DefaultLayoutProps {
   showHeader?: boolean;
   title?: string;
   backHref?: string;
+  showAlarmIcon?: boolean;
   showSaveButton?: boolean;
 }
 

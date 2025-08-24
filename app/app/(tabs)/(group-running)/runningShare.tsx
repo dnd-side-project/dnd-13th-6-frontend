@@ -21,7 +21,7 @@ function RunningShare() {
           setIsLoading(false);
         }}
         source={{
-          uri: ENV.WEB_VIEW_URL + '/group-running'
+          uri: ENV.WEB_VIEW_URL + '/group/running'
         }}
       />
     </View>

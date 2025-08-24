@@ -1,6 +1,7 @@
 import Chip from '@/components/chips/Chip';
 import { useWebView } from '@/hooks/useWebView';
 import { RunningData } from '@/types/runnintTypes';
+import { MODULE } from '@/utils/apis/api';
 import { getAppState } from '@/utils/app';
 import { ENV } from '@/utils/app/consts';
 import {
@@ -11,6 +12,7 @@ import { STORAGE_KEY, getStorage, setStorage } from '@/utils/storage';
 import { POST_MESSAGE_TYPE, SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 import dayjs from 'dayjs';
 import * as Location from 'expo-location';
+import { router } from 'expo-router';
 import * as TaskManager from 'expo-task-manager';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -240,6 +242,12 @@ function Index() {
         setIntervalId(null);
         setIsRunning(false);
         stopBackgroundLocation();
+        break;
+      case MODULE.PUSH:
+        const { type, data } = JSON.parse(event.nativeEvent.data);
+        if (type === MODULE.PUSH) {
+          router.push(JSON.parse(data).url);
+        }
         break;
     }
   };

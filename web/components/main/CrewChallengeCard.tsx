@@ -8,16 +8,22 @@ interface CrewChallengeCardProps {
   distance: number;
   progress: number;
   members: string[]; // For now, just strings
+  onClick?: () => void;
+  onTouchEnd?: () => void;
+  className?: string;
 }
 
 const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
   title,
   distance,
   progress,
-  members
+  members,
+  onClick,
+  className,
+  onTouchEnd
 }) => {
   return (
-    <Card className="mt-[24px]">
+    <Card className={`mt-[24px] ${className}`} onClick={onClick} onTouchEnd={onTouchEnd}>
       <div className="flex flex-row justify-between gap-2">
         {/* 상단 타이틀 */}
         <div>
