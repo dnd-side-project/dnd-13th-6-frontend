@@ -9,7 +9,7 @@ const TodayStatsCard = () => {
     <Card
       className="relative mt-[24px] pt-[16px] pb-[16px]"
       onClick={() => {
-        router.push('/run-finish');
+        router.push('/last-run-result');
       }}
     >
       <p className="text-gray-30 text-[1.0625rem] leading-[1.5] font-medium tracking-[-0.025em]">

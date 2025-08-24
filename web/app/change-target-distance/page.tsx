@@ -3,33 +3,48 @@ import React, { useCallback, useEffect, useState } from 'react';
 import DecimalInput from '@/components/common/DecimalInput';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { useSetAtom } from 'jotai/index';
-import { headerSaveAtom } from '@/store/header';
+import { headerBackAtom, headerSaveAtom } from '@/store/header';
+import { useRouter } from 'next/navigation';
 
 function Page() {
+  const router = useRouter();
   const [targetDistance, setTargetDistance] = useState('3.00');
+  const defaultDistance = '3.00';
   const [isModalOpen, setIsModalOpen] = useState(false);
   const setHandleSave = useSetAtom(headerSaveAtom);
+  const setHandleBack = useSetAtom(headerBackAtom);
   const actualSave = useCallback(() => {
     // TODO: Add API call to save the name
     console.log('Saved:', targetDistance);
   }, [targetDistance]);
   const openSaveModal = useCallback(() => {
-    setIsModalOpen(true);
-  }, []);
+    if (defaultDistance !== targetDistance) {
+      setIsModalOpen(true);
+    } else {
+      router.push('/main');
+    }
+  }, [router, defaultDistance, targetDistance]);
 
   useEffect(() => {
     setHandleSave(() => openSaveModal);
-    return () => setHandleSave(undefined);
-  }, [setHandleSave, openSaveModal]);
+    setHandleBack(() => openSaveModal);
+    return () => {
+      setHandleSave(undefined);
+      setHandleBack(undefined);
+    };
+  }, [setHandleSave, openSaveModal, setHandleBack]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    router.back();
   };
   const handleConfirm = () => {
     actualSave();
     handleCloseModal();
   };
-
+  const handleOverlayClick = () => {
+    setIsModalOpen(false);
+  };
   return (
     <div className="flex flex-grow flex-col">
       <div>
@@ -58,6 +73,7 @@ function Page() {
       </div>
       <ConfirmModal
         isOpen={isModalOpen}
+        onOverlayClick={handleOverlayClick}
         onClose={handleCloseModal}
         onConfirm={handleConfirm}
         title="변경사항을 저장할까요?"

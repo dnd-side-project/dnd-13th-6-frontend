@@ -209,7 +209,7 @@ export default function Page() {
   }, []);
   return (
     <div
-      className="relative h-screen w-full overflow-hidden bg-background text-white"
+      className="bg-background relative h-screen w-full overflow-hidden text-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -232,7 +232,7 @@ export default function Page() {
               time={formatTime(totalTime)}
             />
           </div>
-          <div className="flex flex-1/12 items-center justify-center mb-10">
+          <div className="mb-10 flex flex-1/12 items-center justify-center">
             <ControlPanel
               onControl={handleControl}
               isRunning={isRunning}
@@ -254,7 +254,7 @@ export default function Page() {
       </div>
 
       {/* Sticky PageControl */}
-      <div className="absolute bottom-15 left-0 right-0 z-10 flex justify-center">
+      <div className="absolute right-0 bottom-15 left-0 z-10 flex justify-center">
         <PageControl
           pages={2}
           currentPage={currentPage}

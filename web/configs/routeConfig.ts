@@ -58,5 +58,9 @@ export const routeConfigs: Record<string, RouteConfig> = {
     backHref: '/main',
     title: '목표 수정',
     showSaveButton: true
+  },
+  '/last-run-result': {
+    showHeader: true,
+    backHref: '/main'
   }
 };

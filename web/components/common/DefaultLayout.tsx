@@ -1,7 +1,8 @@
+'use client';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useAtomValue } from 'jotai';
-import { headerSaveAtom } from '@/store/header';
+import { headerBackAtom, headerSaveAtom } from '@/store/header';
+import { useRouter } from 'next/navigation';
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
@@ -16,10 +17,11 @@ export default function DefaultLayout({
   showHeader = false,
   title = undefined,
   backHref,
-  showSaveButton,
+  showSaveButton
 }: DefaultLayoutProps) {
   const handleSave = useAtomValue(headerSaveAtom);
-
+  const handleBack = useAtomValue(headerBackAtom);
+  const router = useRouter();
   return (
     <div className="flex h-screen flex-col">
       {showHeader && (
@@ -28,14 +30,22 @@ export default function DefaultLayout({
           <header className="flex items-center">
             {backHref && (
               <div className="p-4">
-                <Link href={backHref}>
+                <button
+                  onClick={() => {
+                    if (handleBack) {
+                      handleBack?.();
+                    } else {
+                      router.push(backHref);
+                    }
+                  }}
+                >
                   <Image
                     src="/assets/CaretLeft.svg"
                     alt="Back"
                     width={24}
                     height={24}
                   />
-                </Link>
+                </button>
               </div>
             )}
             {title && (
