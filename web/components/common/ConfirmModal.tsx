@@ -6,6 +6,7 @@ import { twMerge } from 'tailwind-merge';
 
 interface ConfirmModalProps {
   isOpen: boolean;
+  onOverlayClick?: () => void;
   onClose: () => void;
   onConfirm: () => void;
   title: string;
@@ -16,6 +17,7 @@ interface ConfirmModalProps {
 
 function ConfirmModal({
   isOpen,
+  onOverlayClick,
   onClose,
   title,
   closeText = '취소',
@@ -34,12 +36,14 @@ function ConfirmModal({
   }
 
   return createPortal(
-    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+    <div
+      className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
+      onClick={onOverlayClick} // overlay 클릭 시 닫기
+    >
       <div
         className="flex flex-col items-center gap-9 rounded-[20px] bg-[#313131] px-[21px] py-9"
-        style={{
-          boxShadow: '0px 4px 4px 0px #00000040'
-        }}
+        style={{ boxShadow: '0px 4px 4px 0px #00000040' }}
+        onClick={e => e.stopPropagation()} // 모달 내부 클릭 시 닫히지 않음
       >
         <h2 className="text-gray-20 text-[22px] font-bold">{title}</h2>
         <div className="flex gap-3">
