@@ -34,3 +34,28 @@ export const API_END_POINT: Record<Controller, CrewAPI> = {
       `${API_VERSION_PREFIX}/${MODULE.CREWS}/${crewId}`
   }
 };
+
+export const AUTH_API = {
+  SIGN_UP: () => `/api/auth/signup/complete`,
+  LOG_OUT: () => `/api/auth/logout`,
+  REFRESH_TOKEN: () => `/api/auth/token/refresh`
+} as const;
+
+export const MEMBER_API = {
+  CHANGE_NICKNAME: () => `/api/members/me/nickname`,
+  CHANGE_BADGE: () => `/api/members/me/badge`,
+  MY_BADGE: (memberId: string | number) => `/api/members/${memberId}/badge`,
+  MY_INFO: () => `/api/members/me`
+};
+export const NOTIFICATION_API = {
+  NOTIFICATION_LIST: () => `/api/notifications/recent`
+};
+export const REWARD_API = {
+  CLOVER: () => `/api/rewards/clovers`,
+  BADGE: () => `/api/rewards/badges`
+};
+export const RUNNING_API = {
+  RUNNING_END: (runningID: string | number) => `/api/runnings/${runningID}/end`,
+  RUNNING_START: (runningID: string | number) =>
+    `/api/runnings/${runningID}/start`
+};

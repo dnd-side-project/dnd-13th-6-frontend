@@ -1,13 +1,24 @@
+// utils/webView/consts.ts
 
+// WebView -> React Native
+export const WEB_VIEW_MESSAGE_TYPE = {
+  REQUEST_TOKENS: 'REQUEST_TOKENS',
+  REFRESH_TOKENS: 'REFRESH_TOKENS'
+} as const;
 
-const postMessageToApp = (type: string, data?: string) => {
-  if (window.ReactNativeWebView) {
-    const message = JSON.stringify({ type, data });
-    window.ReactNativeWebView.postMessage(message);
-  }
-};
+// React Native -> WebView
+export const NATIVE_MESSAGE_TYPE = {
+  TOKENS: 'TOKENS',
+  REFRESH_SUCCESS: 'REFRESH_SUCCESS',
+  REFRESH_FAILURE: 'REFRESH_FAILURE'
+} as const;
 
+export interface WebViewMessage {
+  type: keyof typeof WEB_VIEW_MESSAGE_TYPE;
+  payload?: unknown;
+}
 
-export {
-  postMessageToApp
+export interface NativeMessage {
+  type: keyof typeof NATIVE_MESSAGE_TYPE;
+  payload?: unknown;
 }
