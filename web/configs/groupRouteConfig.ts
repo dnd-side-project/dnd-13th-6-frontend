@@ -15,7 +15,7 @@ export const routeConfigs: Record<string, RouteConfig> = {
   '/group/code': {
     showHeader: true,
     backHref: '/group',
-    title: '초대 코드 입력'
+    title: '크루'
   },
   '/group/code/invite': {
     showHeader: false,

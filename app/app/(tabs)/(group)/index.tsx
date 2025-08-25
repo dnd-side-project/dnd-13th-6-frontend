@@ -14,6 +14,7 @@ function RunningShare() {
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
     if (type === MODULE.PUSH) {
+      console.log(JSON.parse(data).url);
       router.push(JSON.parse(data).url);
     }
   };

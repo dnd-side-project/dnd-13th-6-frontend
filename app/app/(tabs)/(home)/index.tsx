@@ -6,13 +6,19 @@ import {
   StyleSheet,
   Text
 } from 'react-native';
+import { ENV } from '@/utils/app/consts';
+import { WebView } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function Index() {
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable
+      <WebView
+        style={styles.webview}
+        source={{ uri: `${ENV.WEB_VIEW_URL}/main` }}
+      />
+      {/* <Pressable
         style={styles.runningButton}
         onPress={() => router.push('/(tabs)/(single-running)')}
       >
@@ -23,7 +29,7 @@ function Index() {
         onPress={() => router.push('/(tabs)/(group-running)')}
       >
         <Text style={styles.runningButtonText}>그룹 달리기 조회</Text>
-      </Pressable>
+      </Pressable> */}
     </SafeAreaView>
   );
 }
@@ -39,7 +45,8 @@ const styles = StyleSheet.create({
   webview: {
     flex: 1,
     width: windowWidth,
-    height: windowHeight
+    height: windowHeight,
+    backgroundColor: '#333333'
   },
   runningButton: {
     backgroundColor: 'gray',

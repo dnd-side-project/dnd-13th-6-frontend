@@ -11,6 +11,7 @@ interface CrewChallengeCardProps {
   onClick?: () => void;
   onTouchEnd?: () => void;
   className?: string;
+  children?: React.ReactNode;
 }
 
 const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
@@ -20,7 +21,9 @@ const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
   members,
   onClick,
   className,
-  onTouchEnd
+  onTouchEnd,
+  children
+  
 }) => {
   return (
     <Card className={`mt-[24px] ${className}`} onClick={onClick} onTouchEnd={onTouchEnd}>
@@ -65,6 +68,7 @@ const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
         className="mt-[16px] h-2"
         backgroundStyle="bg-background"
       />
+      {children}
     </Card>
   );
 };

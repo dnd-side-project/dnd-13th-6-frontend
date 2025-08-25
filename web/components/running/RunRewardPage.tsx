@@ -4,13 +4,18 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
+import { MODULE } from '@/utils/apis/api';
+import { postMessageToApp } from '@/utils/webView/message';
 
 type RewardType = {
-  type: 'personal' | 'crew';
+  type?: 'personal' | 'crew';
+  isSuccess?: 'true' | 'false';
 };
 
-export default function RunRewardPage({ type }: RewardType) {
-  const [isSuccess] = useState(true);
+export default function RunRewardPage({
+  type = 'crew',
+  isSuccess = 'true'
+}: RewardType) {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
 
@@ -46,6 +51,14 @@ export default function RunRewardPage({ type }: RewardType) {
     ? rewardContent[type].success
     : rewardContent[type].failure;
 
+  const onMove = () => {
+    const data = {
+      type: MODULE.PUSH,
+      url: '/(tabs)/(home)'
+    };
+    router.push('/group');
+    postMessageToApp(MODULE.PUSH, JSON.stringify(data));
+  };
   return (
     <div className="relative flex h-full flex-col items-center bg-[#201F22] text-center text-white">
       <div className="flex-grow pt-10">
@@ -98,10 +111,7 @@ export default function RunRewardPage({ type }: RewardType) {
           )}
         </p>
 
-        <Button
-          onClickAction={() => router.push('/main')}
-          className="h-15 w-full"
-        >
+        <Button onClickAction={onMove} className="h-15 w-full">
           홈 화면으로 돌아가기
         </Button>
       </div>
