@@ -12,16 +12,17 @@ function Page() {
   const handleValidationChange = (isValid: boolean) => {
     setIsNicknameValid(isValid);
   };
-
   return (
-    <div className="flex flex-grow flex-col">
+    <div className="flex w-[calc(100vw-32px)] flex-grow flex-col">
       <div>
         <ProgressBar progress={50} className="h-[6px]" />
         <p className="text-gray-20 mt-[51px] text-[26px] leading-[35px] font-bold tracking-[-0.025em] whitespace-pre-line">
           {`닉네임을\n설정해주세요!`}
         </p>
       </div>
-      <NicknameInput onValidationChange={handleValidationChange} />
+      <div className="mt-[15vh] flex w-full flex-col">
+        <NicknameInput onValidationChange={handleValidationChange} />
+      </div>
       <div className="mt-auto">
         <Button
           className="mb-5 h-15 w-full"
