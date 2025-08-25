@@ -82,5 +82,10 @@ export const routeConfigs: Record<string, RouteConfig> = {
   '/last-run-result': {
     showHeader: true,
     backHref: '/main'
+  },
+  '/badge-collection/edit-nickname': {
+    showHeader: true,
+    backHref: '/badge-collection',
+    title: '프로필'
   }
 };

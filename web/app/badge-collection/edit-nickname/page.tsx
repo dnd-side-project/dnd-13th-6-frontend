@@ -1,29 +1,32 @@
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
-import GachaRewardCard from '@/components/gacha/GachaRewardCard';
 import Image from 'next/image';
-import BadgeList from '@/components/gacha/BadgeList';
-import { useSetAtom } from 'jotai';
-import { headerBackAtom, headerSaveAtom } from '@/store/header';
+import NicknameInput from '@/components/onBoarding/NicknameInput';
+import Button from '@/components/common/Button';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { useSetAtom } from 'jotai/index';
+import { headerBackAtom, headerSaveAtom } from '@/store/header';
 import { useRouter } from 'next/navigation';
 
 function Page() {
   const [name, setName] = useState('진수한접시');
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const defaultName = '진수한접시';
   const router = useRouter();
-  const setHandleSave = useSetAtom(headerSaveAtom);
-  const setHandleBack = useSetAtom(headerBackAtom);
   //TODO:저장버튼 추후 통신 구현
   const actualSave = useCallback(() => {
     router.push('/main');
   }, []);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const setHandleSave = useSetAtom(headerSaveAtom);
+  const setHandleBack = useSetAtom(headerBackAtom);
   // 값이 변경되었을때 모달 띄우기
-  //TODO:배지 비교
   const openSaveModal = useCallback(() => {
-    router.push('/main');
-  }, []);
+    if (name !== defaultName) {
+      setIsModalOpen(true);
+    } else {
+      router.push('/main');
+    }
+  }, [name, router, defaultName]);
   //layout의 버튼에 함수 연결
   useEffect(() => {
     setHandleSave(() => actualSave);
@@ -46,13 +49,9 @@ function Page() {
     actualSave();
     handleCloseModal();
   };
-
   return (
-    <div>
-      <div className="mb-[26px]">
-        <GachaRewardCard />
-      </div>
-      <div className="bg-gray-90 mx-auto flex h-37 w-37 items-center justify-center rounded-full">
+    <div className="flex w-[calc(100vw-32px)] flex-grow flex-col">
+      <div className="bg-gray-90 mb-32px mx-auto flex h-37 w-37 items-center justify-center rounded-full">
         <Image
           src="/assets/icon/pig.svg"
           alt="캐릭터"
@@ -60,27 +59,14 @@ function Page() {
           height={120}
         />
       </div>
+      <p className="mt-[32px]">이름</p>
+      <div className="">
+        <NicknameInput onValidationChange={() => {}} />
+      </div>
 
-      <div className="mt-[25px] mb-4 flex items-center justify-center">
-        <p className="font-pretendard w-auto bg-transparent text-center text-[22px] font-bold text-white">
-          {name}
-        </p>
-        <span className="font-pretendard mr-2 w-auto bg-transparent text-center text-[22px] font-bold text-white">
-          님
-        </span>
+      <div className="mt-auto">
+        <Button className="mb-5 h-15 w-full">닉네임 설정</Button>
       </div>
-      <div className="mb-[36px] flex justify-center">
-        <button
-          className="border-gray-20 rounded-full border-1 bg-white/10 px-[12px] py-[6px]"
-          onClick={() => router.push('/badge-collection/edit-nickname')}
-        >
-          <p className="text-gray-20 text-[17px] font-medium tracking-[-0.014em]">
-            수정
-          </p>
-        </button>
-      </div>
-      <p className="pretendard-title3">진수한접시 님의 보유 배지</p>
-      <BadgeList />
       <ConfirmModal
         isOpen={isModalOpen}
         onOverlayClick={handleOverlayClick}
