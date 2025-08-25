@@ -6,7 +6,6 @@ import WeeklyGoalCard from '@/components/main/WeeklyGoalCard';
 import TodayStatsCard from '@/components/main/TodayStatsCard';
 import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 import GachaCard from '@/components/main/GachaCard';
-import CrewChallengeSection from '@/components/main/CrewChallengeSection';
 
 export default function Main() {
   return (
@@ -19,7 +18,6 @@ export default function Main() {
         <CheerCardWrapper />
         <GachaCard />
       </div>
-      <CrewChallengeSection />
     </>
   );
 }

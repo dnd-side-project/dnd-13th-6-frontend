@@ -1,13 +1,17 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import ProgressBar from '@/components/common/ProgressBar';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
 import CharacterCarousel from '@/components/onBoarding/CharacterCarousel';
 
 function Page() {
-  const characters = [{ image: 'pig' }, { image: 'elephant' }];
   const router = useRouter();
+  const [index, setIndex] = useState(0);
+  const characters = [
+    { image: 'pig', url: 'https://test.image.com' },
+    { image: 'elephant', url: 'https://text.image.com' }
+  ];
 
   return (
     <div className="flex flex-grow flex-col justify-between overflow-hidden">
@@ -18,7 +22,11 @@ function Page() {
         </p>
       </div>
 
-      <CharacterCarousel characters={characters} />
+      <CharacterCarousel
+        characters={characters}
+        index={index}
+        setIndex={setIndex}
+      />
 
       <div className="mb-[4vh] flex items-center justify-center text-center whitespace-pre-line">
         <p className="text-gray-40 text-[13px] leading-[1.2] tracking-[-0.025em]">

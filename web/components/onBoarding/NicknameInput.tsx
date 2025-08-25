@@ -3,10 +3,15 @@ import React, { useState } from 'react';
 
 interface NicknameInputProps {
   onValidationChange: (isValid: boolean) => void;
+  nickname: string;
+  setNickname: (text: string) => void;
 }
 
-function NicknameInput({ onValidationChange }: NicknameInputProps) {
-  const [nickname, setNickname] = useState('');
+function NicknameInput({
+  onValidationChange,
+  nickname,
+  setNickname
+}: NicknameInputProps) {
   const helpMessage = {
     error: '(이미 사용중인 닉네임이에요)',
     pass: '✔ 사용가능한 닉네임입니다.'

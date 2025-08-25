@@ -7,12 +7,15 @@ import NicknameInput from '@/components/onBoarding/NicknameInput';
 
 function Page() {
   const [isNicknameValid, setIsNicknameValid] = useState(false);
+  const [nickname, setNickname] = useState('');
   const router = useRouter();
 
   const handleValidationChange = (isValid: boolean) => {
     setIsNicknameValid(isValid);
   };
-
+  const handlePost = () => {
+    router.push('/onboarding/select-character');
+  };
   return (
     <div className="flex flex-grow flex-col">
       <div>
@@ -21,12 +24,16 @@ function Page() {
           {`닉네임을\n설정해주세요!`}
         </p>
       </div>
-      <NicknameInput onValidationChange={handleValidationChange} />
+      <NicknameInput
+        onValidationChange={handleValidationChange}
+        nickname={nickname}
+        setNickname={setNickname}
+      />
       <div className="mt-auto">
         <Button
           className="mb-5 h-15 w-full"
           disabled={!isNicknameValid}
-          onClickAction={() => router.push('/onboarding/select-character')}
+          onClickAction={handlePost}
         >
           다음으로
         </Button>
