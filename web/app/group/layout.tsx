@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { routeConfigs } from '@/configs/routeConfig';
+import { routeConfigs } from '@/configs/groupRouteConfig';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

@@ -1,3 +1,4 @@
+import { useLayoutEffect } from 'react';
 import {
   Alert,
   Pressable,
@@ -8,6 +9,8 @@ import {
   Image
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
+import useFetch from '@/hooks/useFetch';
+import { API_END_POINT } from '@/utils/apis/api';
 
 interface RankingItemProps {
   name: string;
@@ -73,6 +76,18 @@ function Index() {
   const handleDelete = (name: string) => {
     console.log(`${name} 삭제됨`);
   };
+
+  const { data, error, fetchData } = useFetch(
+    API_END_POINT.crews.GET_CREW_DETAIL(1)
+  );
+
+  useLayoutEffect(() => {
+    const init = async () => {
+      await fetchData();
+      console.log(data, error);
+    };
+    init();
+  }, []);
 
   return (
     <View style={styles.container}>
