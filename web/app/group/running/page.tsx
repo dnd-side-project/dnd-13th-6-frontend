@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, Suspense, useLayoutEffect } from 'react';
+import React, { useState, Suspense, useLayoutEffect, useEffect } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Image from 'next/image';
@@ -61,19 +61,39 @@ function GroupRunningContent() {
       lat: 37.5615603
     });
   };
+  const { isConnected } = useStomp({
+    socketUrl: `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`,
+    subscribeTopic: '/topic/running/101/location', // 세션 topic (FCM 알림에서 받은 값)
+    onMessage: msg => {
+      console.log('📩 Runner Location:', msg);
+    },
+    connectionHeaders: {
+      'Content-Type': 'application/json',
+      'X-USER-ID': '2'
+    }
+  });
 
-  // const { connected, publish } = useStomp({
-  //   url: process.env.NEXT_PUBLIC_SERVER_BASE_URL + '/ws',
-  //   subscribeUrl: '/topic/group-running',
-  //   publishUrl: '/app/group-running',
-  //   onMessage: message => {
-  //     const data = JSON.parse(message);
-  //     setMemberData({
-  //       lat: data.lat,
-  //       lng: data.lng
-  //     });
+  // const { isConnected: runnerConnected, sendLocation } = useStomp({
+  //   socketUrl: `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`, // Spring WebSocket 엔드포인트
+  //   publishDest: '/app/running/101/location', // 서버에서 받은 publishDest,
+  //   connectionHeaders: {
+  //     'Content-Type': 'application/json',
+  //     'X-USER-ID': '1'
   //   }
   // });
+
+  // useEffect(() => {
+  //   if (!isConnected) return;
+
+  //   const interval = setInterval(() => {
+  //     const x = 12.3456 + Math.random() * 0.001;
+  //     const y = 78.9012 + Math.random() * 0.001;
+  //     sendLocation({ x, y });
+  //     console.log('📤 Sent Location:', x, y);
+  //   }, 5000);
+
+  //   return () => clearInterval(interval);
+  // }, [isConnected, sendLocation]);
 
   const sendEmogi = (emojiType: string) => {
     startCloverAnimation();

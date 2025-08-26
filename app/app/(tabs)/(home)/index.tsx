@@ -1,11 +1,4 @@
-import { router } from 'expo-router';
-import {
-  Dimensions,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text
-} from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import { ENV } from '@/utils/app/consts';
 import { WebView } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
@@ -58,13 +51,11 @@ export default Index;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    width: windowWidth,
+    height: windowHeight
   },
   webview: {
     flex: 1,
-    width: windowWidth,
-    height: windowHeight,
     backgroundColor: '#333333'
   },
   runningButton: {
