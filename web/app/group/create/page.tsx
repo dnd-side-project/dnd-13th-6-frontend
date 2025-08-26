@@ -20,6 +20,7 @@ export default function Page() {
     e.preventDefault();
     try {
       const response = await CrewApi.createCrew(crewName);
+
       onMove('/(tabs)/(group)');
     } catch (error) {
       console.error(error);

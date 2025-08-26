@@ -3,7 +3,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs, useSegments } from 'expo-router';
 import React from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, Image } from 'react-native';
 
 const hideTabBarScreens = ['(single-running)', '(group-running)'];
 
@@ -35,10 +35,7 @@ export default function TabLayout() {
           title: '홈',
           tabBarIcon: ({ color }) => (
             <Ionicons size={28} name="home" color={color} />
-          ),
-          tabBarLabelStyle: {
-            color: '#31FF76'
-          }
+          )
         }}
       />
       <Tabs.Screen
@@ -46,23 +43,25 @@ export default function TabLayout() {
         options={{
           title: '그룹',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="person" color={color} />
-          ),
-          tabBarLabelStyle: {
-            color: '#31FF76'
-          }
+            <Image
+              tintColor={color}
+              source={require('../../assets/images/UsersThree.png')}
+              style={{ width: 28, height: 28 }}
+            />
+          )
         }}
       />
       <Tabs.Screen
         name="(my-info)"
         options={{
-          title: '내정보',
+          title: '캘린더',
           tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="calendar" color={color} />
-          ),
-          tabBarLabelStyle: {
-            color: '#31FF76'
-          }
+            <Image
+              tintColor={color}
+              source={require('../../assets/images/CalendarBlank.png')}
+              style={{ width: 28, height: 28 }}
+            />
+          )
         }}
       />
       <Tabs.Screen
