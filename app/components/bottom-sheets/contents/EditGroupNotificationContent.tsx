@@ -1,24 +1,47 @@
 import Button from '@/components/Button';
+import useFetch from '@/hooks/useFetch';
+import { API_END_POINT } from '@/utils/apis/api';
+import { ENV } from '@/utils/app/consts';
 import { useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 
 interface EditGroupNotificationContentProps {
   onClose: () => void;
+  crewId: string;
+  prevNotice: string;
 }
 
 function EditGroupNotificationContent({
-  onClose
+  onClose,
+  crewId,
+  prevNotice
 }: EditGroupNotificationContentProps) {
-  const [notice, setNotice] = useState('');
+  const [notice, setNotice] = useState(prevNotice);
 
-  const onSave = () => {
-    console.log('onSave');
+  const onSave = async () => {
+    console.log(notice);
+    try {
+      const url = `${ENV.API_BASE_URL}/${API_END_POINT.CREWS.UPDATE_CREW_NOTICE(
+        crewId as string
+      )}`;
+      await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-USER-ID': '1'
+        },
+        body: JSON.stringify({ notice })
+      });
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <View className="flex gap-4">
       <Text className="text-white text-title3">공지사항 변경하기</Text>
       <TextInput
-        className="bg-black rounded-xl p-4 text-body1 h-32 placeholder:text-gray40"
+        className="bg-black rounded-xl p-4 text-body1 h-32 placeholder:text-gray40 text-white"
         placeholder="최대 15글자까지 변경가능해요"
         maxLength={15}
         value={notice}
@@ -27,9 +50,10 @@ function EditGroupNotificationContent({
       />
       <Button
         onPress={onSave}
-        className="bg-main rounded-xl py-[14px] text-body1"
+        disabled={notice.trim() === '' || notice.length > 15}
+        className="bg-main rounded-xl py-[14px] text-body1 disabled:opacity-50"
       >
-        <Text className="text-center text-headline1 text-black"> 변경하기</Text>
+        <Text className="text-center text-headline1 text-black">변경하기</Text>
       </Button>
       <Button
         onPress={onClose}

@@ -157,7 +157,7 @@ export default function Layout() {
   const {
     data: crewInfo,
     error: creInfoError,
-    fetchData: creInfoFetchData
+    fetchData: crewInfoFetchData
   } = useFetch<Crew>(API_END_POINT.CREWS.GET_CREW_DETAIL(crewId as string), {
     method: 'GET'
   });
@@ -248,7 +248,7 @@ export default function Layout() {
 
   useLayoutEffect(() => {
     const init = async () => {
-      await Promise.all([creInfoFetchData(), crewMembersFetchData()]).then(
+      await Promise.all([crewInfoFetchData(), crewMembersFetchData()]).then(
         ([creInfo]) => {
           setIsAdminUser(creInfo?.leaderNickname === 'leader');
         }
@@ -363,7 +363,12 @@ export default function Layout() {
             {...editNoticeBottomSheet.config}
           >
             <EditGroupNotificationContent
-              onClose={editNoticeBottomSheet.close}
+              crewId={crewId as string}
+              prevNotice={crewInfo?.notice || ''}
+              onClose={() => {
+                crewInfoFetchData();
+                editNoticeBottomSheet.close();
+              }}
             />
           </BottomSheet>
         </>
