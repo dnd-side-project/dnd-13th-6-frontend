@@ -8,7 +8,7 @@ function Page() {
   const router = useRouter();
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace('/');
+      router.replace('/main');
     }, 3000);
 
     return () => clearTimeout(timer);

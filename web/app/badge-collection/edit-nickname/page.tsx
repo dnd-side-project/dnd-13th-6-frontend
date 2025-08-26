@@ -2,7 +2,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import NicknameInput from '@/components/onBoarding/NicknameInput';
-import Button from '@/components/common/Button';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { useSetAtom } from 'jotai/index';
 import { headerBackAtom, headerSaveAtom } from '@/store/header';
@@ -60,13 +59,10 @@ function Page() {
         />
       </div>
       <p className="mt-[32px]">이름</p>
-      <div className="">
-        <NicknameInput onValidationChange={() => {}} />
+      <div>
+        <NicknameInput type="profile" />
       </div>
 
-      <div className="mt-auto">
-        <Button className="mb-5 h-15 w-full">닉네임 설정</Button>
-      </div>
       <ConfirmModal
         isOpen={isModalOpen}
         onOverlayClick={handleOverlayClick}

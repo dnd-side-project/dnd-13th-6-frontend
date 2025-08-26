@@ -1,5 +1,5 @@
 'use client';
-import React, { TouchEvent, useRef, useState } from 'react';
+import React, { TouchEvent, useRef } from 'react';
 import Image from 'next/image';
 
 interface Character {
@@ -8,10 +8,15 @@ interface Character {
 
 interface CharacterCarouselProps {
   characters: Character[];
+  index: number;
+  setIndex: (text: number) => void;
 }
 
-function CharacterCarousel({ characters }: CharacterCarouselProps) {
-  const [index, setIndex] = useState(0);
+function CharacterCarousel({
+  characters,
+  index,
+  setIndex
+}: CharacterCarouselProps) {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 

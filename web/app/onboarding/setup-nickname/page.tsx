@@ -1,17 +1,9 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import ProgressBar from '@/components/common/ProgressBar';
-import Button from '@/components/common/Button';
-import { useRouter } from 'next/navigation';
 import NicknameInput from '@/components/onBoarding/NicknameInput';
 
 function Page() {
-  const [isNicknameValid, setIsNicknameValid] = useState(false);
-  const router = useRouter();
-
-  const handleValidationChange = (isValid: boolean) => {
-    setIsNicknameValid(isValid);
-  };
   return (
     <div className="flex w-[calc(100vw-32px)] flex-grow flex-col">
       <div>
@@ -20,17 +12,8 @@ function Page() {
           {`닉네임을\n설정해주세요!`}
         </p>
       </div>
-      <div className="mt-[15vh] flex w-full flex-col">
-        <NicknameInput onValidationChange={handleValidationChange} />
-      </div>
-      <div className="mt-auto">
-        <Button
-          className="mb-5 h-15 w-full"
-          disabled={!isNicknameValid}
-          onClickAction={() => router.push('/onboarding/select-character')}
-        >
-          다음으로
-        </Button>
+      <div className="mt-[15vh]">
+        <NicknameInput type="onboarding" />
       </div>
     </div>
   );
