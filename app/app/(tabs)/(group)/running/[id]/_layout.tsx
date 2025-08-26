@@ -156,7 +156,6 @@ export default function Layout() {
         const url = `${ENV.API_BASE_URL}/${API_END_POINT.CREWS.DELETE_CREW(
           crewInfo.crewId
         )}`;
-        console.log(url);
         const ret = await fetch(url, {
           method: 'DELETE',
           headers: {
@@ -164,7 +163,6 @@ export default function Layout() {
             'X-USER-ID': '1'
           }
         });
-        console.log(ret);
         if (ret.ok) {
           router.push('/(tabs)/(group)');
         }

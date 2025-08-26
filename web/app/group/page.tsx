@@ -58,7 +58,7 @@ export default function Page() {
         <div className="flex gap-3 bg-none">
           <button
             className="flex-1 rounded-2xl bg-[#48484A]"
-            onClick={() => alert('결과보기')}
+            onClick={() => onMove('/(tabs)/(group)/create')}
           >
             <div className="py-3 text-[17px] font-bold">크루 만들기</div>
           </button>
