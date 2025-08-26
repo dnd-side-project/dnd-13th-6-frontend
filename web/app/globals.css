@@ -102,6 +102,9 @@
   .onboarding {
     @apply text-[1.625rem] font-bold tracking-[-0.025em];
   }
+  .footnote {
+    @apply text-[13px] font-[400] tracking-[-0.025em];
+  }
 }
 
 body {
