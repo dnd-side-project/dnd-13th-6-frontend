@@ -4,8 +4,6 @@ import ControlButton from '@/components/running/Control/ControlButton';
 import { Pause, Play, Square } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import StopConfirmModal from '@/components/running/Control/StopConfirmModal';
-import api from '@/utils/apis/customAxios';
-import { RUNNING_API } from '@/utils/apis/api';
 
 interface ControlPanelProps {
   type?: string;
@@ -32,8 +30,6 @@ function ControlPanel({
   const handleConfirmStop = async () => {
     onControl('stop');
     try {
-      const runningId = localStorage.getItem('runningId') || '';
-      await api.post(RUNNING_API.RUNNING_END(runningId));
       router.replace('/run-finish');
     } catch (err) {
       console.error(err);

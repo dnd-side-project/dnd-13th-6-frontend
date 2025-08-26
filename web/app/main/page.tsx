@@ -7,9 +7,8 @@ import TodayStatsCard from '@/components/main/TodayStatsCard';
 import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 import GachaCard from '@/components/main/GachaCard';
 import { fetchUserInfo } from '@/utils/apis/member';
-import { fetchClover } from '@/utils/apis/reward';
 import api from '@/utils/apis/customAxios';
-import { NOTIFICATION_API } from '@/utils/apis/api';
+import { NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
 import { Notification } from '@/types/notification';
 
 const NotificationMockData = [
@@ -57,7 +56,8 @@ export default function Main() {
   };
   const getClover = async () => {
     try {
-      const clover = await fetchClover();
+      const res = await api.get(`${REWARD_API.CLOVER()}`);
+      const clover = res.data.result.count;
       setCloverCount(clover);
       localStorage.setItem('cloverCount', clover);
       console.log(clover);
@@ -80,9 +80,7 @@ export default function Main() {
   };
 
   useEffect(() => {
-    fetchMemberData();
-    getClover();
-    fetchNotification();
+    Promise.all([fetchMemberData(), getClover(), fetchNotification()]);
   }, []);
   return (
     <>

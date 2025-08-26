@@ -28,9 +28,13 @@ export default function Page() {
 
   //백엔드에 시작한다고 알림
   const startRunning = async () => {
-    const res = await api.post(RUNNING_API.RUNNING_START());
-    localStorage.setItem('runningId', res.data.result.runningId);
-    localStorage.setItem('runnerId', res.data.result.runnerId);
+    try {
+      const res = await api.post(RUNNING_API.RUNNING_START());
+      localStorage.setItem('runningId', res.data.result.runningId);
+      localStorage.setItem('runnerId', res.data.result.runnerId);
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
     startRunning();
@@ -176,12 +180,15 @@ export default function Page() {
     setCurrentPage(prev => (prev === 0 ? 1 : 0));
   };
 
-  const handleControl = (action: 'play' | 'pause' | 'stop' | 'resume') => {
+  const handleControl = async (
+    action: 'play' | 'pause' | 'stop' | 'resume'
+  ) => {
+    const runningId = localStorage.getItem('runningId');
+
     switch (action) {
       case 'play':
         setIsRunning(true);
         setIsPaused(false);
-        const runningId = localStorage.getItem('runningId');
         const runnerId = localStorage.getItem('runnerId');
         const data = JSON.stringify({ runningId, runnerId });
         postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_START, data);
@@ -206,6 +213,16 @@ export default function Page() {
         setIsRunning(false);
         setIsPaused(false);
         postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_END);
+        await api.post(RUNNING_API.RUNNING_END(runningId || ''), {
+          totalDistance: totalDistance,
+          durationSeconds: totalTime,
+          avgSpeedMPS: totalDistance / totalTime
+        });
+
+        //totalDistance -> totalDistanceMinutes
+        //durationSeconds -> totalTime
+        //avgSpeedMPS -> totalDistance/totalTime
+
         break;
     }
   };
