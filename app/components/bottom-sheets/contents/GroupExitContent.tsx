@@ -1,15 +1,48 @@
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 import Button from '../../../components/Button';
+import { Crew } from '@/types/crew';
+import { ENV } from '@/utils/app/consts';
+import { API_END_POINT } from '@/utils/apis/api';
+import { router } from 'expo-router';
 interface Props {
   onClose: () => void;
+  crewInfo: Crew | null;
 }
 
-function GroupExitContent({ onClose }: Props) {
+function GroupExitContent({ onClose, crewInfo }: Props) {
   const [reaseon, setReaseon] = useState<string>('');
 
+  const onExit = async () => {
+    try {
+      if (crewInfo) {
+        const url = `${ENV.API_BASE_URL}/${API_END_POINT.CREWS.EXIT_CREW(
+          crewInfo.crewId
+        )}`;
+        const ret = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-USER-ID': '1'
+          }
+        });
+        if (ret.ok) {
+          router.push('/(tabs)/(group)');
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onExist = () => {
-    onClose();
+    if (crewInfo) {
+      if (crewInfo.leaderNickname === 'leader') {
+        onClose();
+        return;
+      }
+      onExist();
+    }
   };
   return (
     <View className="mb-4">

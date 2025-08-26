@@ -19,7 +19,6 @@ function EditGroupNotificationContent({
   const [notice, setNotice] = useState(prevNotice);
 
   const onSave = async () => {
-    console.log(notice);
     try {
       const url = `${ENV.API_BASE_URL}/${API_END_POINT.CREWS.UPDATE_CREW_NOTICE(
         crewId as string

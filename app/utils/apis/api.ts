@@ -24,6 +24,7 @@ interface APIDefinitions {
     GET_CREW_MEMBERS: (crewId: string) => string;
     DELETE_CREW_MEMBER: (crewId: string, memberId: string) => string;
     UPDATE_CREW_NOTICE: (crewId: string) => string;
+    EXIT_CREW: (crewId: number) => string;
   };
   AUTH: {};
 }
@@ -42,7 +43,9 @@ export const API_END_POINT: { [K in keyof APIDefinitions]: APIDefinitions[K] } =
       DELETE_CREW_MEMBER: (crewId: string, memberId: string) =>
         `${API_SUFFIX}/${MODULE.CREWS}/${crewId}/members/${memberId}`,
       UPDATE_CREW_NOTICE: (crewId: string) =>
-        `${API_SUFFIX}/${MODULE.CREWS}/${crewId}/notice`
+        `${API_SUFFIX}/${MODULE.CREWS}/${crewId}/notice`,
+      EXIT_CREW: (crewId: number) =>
+        `${API_SUFFIX}/${MODULE.CREWS}/${crewId}/members/me`
     },
     AUTH: {}
   };

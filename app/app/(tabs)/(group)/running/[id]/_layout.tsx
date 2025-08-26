@@ -143,7 +143,7 @@ export default function Layout() {
 
   // 바텀시트 핸들러들
   const handleSettingsPress = () => settingsBottomSheet.present();
-  const handleProgressPress = () => groupExitBottomSheet.present();
+  const handleExitProgress = () => groupExitBottomSheet.present();
   const handleEditMemberPress = () => editMemberBottomSheet.present();
   const handleEditNoticePress = () => editNoticeBottomSheet.present();
   const { showSuccess } = useToast();
@@ -151,7 +151,7 @@ export default function Layout() {
   //그룹 나가기
   const onGroupExit = () => {
     settingsBottomSheet.close();
-    handleProgressPress();
+    handleExitProgress();
   };
 
   const {
@@ -335,10 +335,19 @@ export default function Layout() {
         ref={groupExitBottomSheet.bottomSheetRef}
         {...groupExitBottomSheet.config}
       >
-        {isCrewLeader ? (
-          <SelectNewCrewContent onClose={groupExitBottomSheet.close} />
+        {crewInfo?.leaderNickname === 'leader' ? (
+          <SelectNewCrewContent
+            onClose={() => {
+              groupExitBottomSheet.close();
+              setEditMemberType('editOwner');
+              editMemberBottomSheet.present();
+            }}
+          />
         ) : (
-          <GroupExitContent onClose={groupExitBottomSheet.close} />
+          <GroupExitContent
+            crewInfo={crewInfo}
+            onClose={groupExitBottomSheet.close}
+          />
         )}
       </BottomSheet>
       {isAdminUser && (
