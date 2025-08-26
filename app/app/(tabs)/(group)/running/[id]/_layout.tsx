@@ -24,6 +24,7 @@ import {
 } from '@react-navigation/material-top-tabs';
 import { ParamListBase, TabNavigationState } from '@react-navigation/native';
 import { Crew, MemberData } from '@/types/crew';
+import { ENV } from '@/utils/app/consts';
 
 export const CrewContext = createContext<{
   crewInfo: Crew | null;
@@ -149,9 +150,28 @@ export default function Layout() {
   const { showSuccess } = useToast();
   const [isAdminUser, setIsAdminUser] = useState(false);
   //그룹 나가기
-  const onGroupExit = () => {
-    settingsBottomSheet.close();
-    handleExitProgress();
+  const onGroupExit = async () => {
+    try {
+      if (crewInfo) {
+        const url = `${ENV.API_BASE_URL}/${API_END_POINT.CREWS.DELETE_CREW(
+          crewInfo.crewId
+        )}`;
+        console.log(url);
+        const ret = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-USER-ID': '1'
+          }
+        });
+        console.log(ret);
+        if (ret.ok) {
+          router.push('/(tabs)/(group)');
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const {
@@ -325,7 +345,14 @@ export default function Layout() {
         <GroupSettingContent
           isAdminUser={isAdminUser}
           onClose={settingsBottomSheet.close}
-          onExitPress={onGroupExit}
+          onExitPress={() => {
+            if (crewMembers?.members.length === 1) {
+              console.log('1');
+              onGroupExit();
+            } else {
+              groupExitBottomSheet.present();
+            }
+          }}
           onEditMemberPress={() => onEditGroupInfo('editMember')}
           onEditGroupInfoPress={() => onEditGroupInfo('editOwner')}
           onEditNoticePress={onEditNotice}
@@ -346,6 +373,7 @@ export default function Layout() {
         ) : (
           <GroupExitContent
             crewInfo={crewInfo}
+            isLastUser={crewMembers?.members.length === 1}
             onClose={groupExitBottomSheet.close}
           />
         )}

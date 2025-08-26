@@ -8,9 +8,10 @@ import { router } from 'expo-router';
 interface Props {
   onClose: () => void;
   crewInfo: Crew | null;
+  isLastUser: boolean;
 }
 
-function GroupExitContent({ onClose, crewInfo }: Props) {
+function GroupExitContent({ onClose, crewInfo, isLastUser }: Props) {
   const [reaseon, setReaseon] = useState<string>('');
 
   const onExit = async () => {
@@ -37,11 +38,12 @@ function GroupExitContent({ onClose, crewInfo }: Props) {
 
   const onExist = () => {
     if (crewInfo) {
-      if (crewInfo.leaderNickname === 'leader') {
+      console.log(isLastUser);
+      if (crewInfo.leaderNickname === 'leader' && !isLastUser) {
         onClose();
         return;
       }
-      onExist();
+      onExit();
     }
   };
   return (
