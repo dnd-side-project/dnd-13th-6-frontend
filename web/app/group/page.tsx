@@ -3,108 +3,74 @@ import { useRouter } from 'next/navigation';
 import CrewChallengeCard from '@/components/main/CrewChallengeCard';
 import { postMessageToApp } from '@/utils/webView/message';
 import { MODULE } from '@/utils/apis/api';
+import { Crew } from '@/types/crew';
+import { useLayoutEffect, useState } from 'react';
+import { CrewApi } from '@/utils/apis/crewApi';
+import { APIResponse } from '@/types/genericTypes';
 export default function Page() {
   const router = useRouter();
-
-  const onMove = () => {
+  const [crewList, setCrewList] = useState<Crew[]>([]);
+  const onMove = (url: string) => {
     const data = {
       type: MODULE.PUSH,
-      url: ''
-    }
+      url: url
+    };
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
-  }
+  };
+
+  useLayoutEffect(() => {
+    const init = async () => {
+      const response = (await CrewApi.getCrewList()) as APIResponse<{
+        crews: Crew[];
+      }>;
+      console.log(response);
+      setCrewList(response.result.crews);
+    };
+    init();
+  }, []);
+
   return (
     <div className="flex h-[calc(100vh-60px)] w-full flex-col">
       <div className="flex flex-grow flex-col gap-5 overflow-y-scroll p-4">
+        {crewList.map(crew => (
           <CrewChallengeCard
-            title="이번 주 크루 챌린지"
+            key={crew.crewId}
+            id={crew.crewId}
+            title={crew.name}
             distance={42}
             progress={0.7}
-            className="!border-[#00FF63] border"
-            members={['A', 'B', 'C', 'D', 'E']}
+            members={crew.characters}
+            className="border !border-[#00FF63]"
+            onClick={() => onMove(`/(tabs)/(group)/running/${crew.crewId}`)}
           >
-            <button className="mt-4 rounded-2xl bg-[#48484A] w-full" onClick={() => router.push('/crew-reward?type=crew&isSuccess=true')}>
-               <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
-                  저번 주 결과 보기
-                </div>
-            </button>
-          </CrewChallengeCard>
-               <CrewChallengeCard
-            title="이번 주 크루 챌린지"
-            distance={42}
-            progress={0.7}
-            members={['A', 'B', 'C', 'D', 'E']}
-          >
-            <button className="mt-4 rounded-2xl bg-[#48484A] w-full" onClick={onMove}>
-               <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
-                  저번 주 결과 보기
-                </div>
-            </button>
-          </CrewChallengeCard>
-               <CrewChallengeCard
-            title="이번 주 크루 챌린지"
-            distance={42}
-            progress={0.7}
-            members={['A', 'B', 'C', 'D', 'E']}
-          >
-            <button className="mt-4 rounded-2xl bg-[#48484A] w-full" onClick={onMove}>
-               <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
-                  저번 주 결과 보기
-                </div>
-            </button>
-          </CrewChallengeCard>
-               <CrewChallengeCard
-            title="이번 주 크루 챌린지"
-            distance={42}
-            progress={0.7}
-            members={['A', 'B', 'C', 'D', 'E']}
-          >
-            <button className="mt-4 rounded-2xl bg-[#48484A] w-full" onClick={onMove}>
-               <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
-                  저번 주 결과 보기
-                </div>
-            </button>
-          </CrewChallengeCard>
-               <CrewChallengeCard
-            title="이번 주 크루 챌린지"
-            distance={42}
-            progress={0.7}
-            members={['A', 'B', 'C', 'D', 'E']}
-          >
-            <button className="mt-4 rounded-2xl bg-[#48484A] w-full" onClick={onMove}>
-               <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
-                  저번 주 결과 보기
-                </div>
-            </button>
-          </CrewChallengeCard>
-               <CrewChallengeCard
-            title="이번 주 크루 챌린지"
-            distance={42}
-            progress={0.7}
-            members={['A', 'B', 'C', 'D', 'E']}
-          >
-            <button className="mt-4 rounded-2xl bg-[#48484A] w-full" onClick={onMove}>
-               <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
-                  저번 주 결과 보기
-                </div>
-            </button>
-          </CrewChallengeCard>
-          <div className="flex gap-3 bg-none">
             <button
-              className="flex-1 rounded-2xl bg-[#48484A]"
-              onClick={() => alert('결과보기')}
+              className="mt-4 w-full rounded-2xl bg-[#48484A]"
+              onClick={() =>
+                router.push('/crew-reward?type=crew&isSuccess=true')
+              }
             >
-              <div className="py-3 text-[17px] font-bold">크루 만들기</div>
-            </button>
-            <button
-              className="flex-1 rounded-2xl bg-[#32FF76]"
-              onClick={onMove}
-            >
-              <div className="py-3 text-[18px] font-bold text-black">
-                초대 코드 입력
+              <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
+                저번 주 결과 보기
               </div>
             </button>
-          </div>
+          </CrewChallengeCard>
+        ))}
+        <div className="flex gap-3 bg-none">
+          <button
+            className="flex-1 rounded-2xl bg-[#48484A]"
+            onClick={() => alert('결과보기')}
+          >
+            <div className="py-3 text-[17px] font-bold">크루 만들기</div>
+          </button>
+          <button
+            className="flex-1 rounded-2xl bg-[#32FF76]"
+            onClick={() => onMove('/(tabs)/(group)/code')}
+          >
+            <div className="py-3 text-[18px] font-bold text-black">
+              초대 코드 입력
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   );

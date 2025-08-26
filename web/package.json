@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:https": "next dev --experimental-https",
+    "dev:https": "next dev --experimental-https --experimental-https-key ./localhost-key.pem --experimental-https-cert ./localhost.pem",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
@@ -14,6 +14,7 @@
     "@phosphor-icons/react": "^2.1.10",
     "@stomp/stompjs": "^7.1.1",
     "@vis.gl/react-google-maps": "^1.5.5",
+    "axios": "^1.11.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
     "jotai": "^2.13.1",

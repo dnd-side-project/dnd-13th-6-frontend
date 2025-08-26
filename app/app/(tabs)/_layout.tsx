@@ -24,7 +24,8 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           display: isHideTabBar ? 'none' : 'flex'
-        }
+        },
+        tabBarActiveTintColor: '#31FF76'
         // tabBarButton: (props) => <AnimatedTabBarButton {...props} />,
       }}
     >
@@ -34,7 +35,10 @@ export default function TabLayout() {
           title: '홈',
           tabBarIcon: ({ color }) => (
             <Ionicons size={28} name="home" color={color} />
-          )
+          ),
+          tabBarLabelStyle: {
+            color: '#31FF76'
+          }
         }}
       />
       <Tabs.Screen
@@ -42,8 +46,11 @@ export default function TabLayout() {
         options={{
           title: '그룹',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="leaf" color={color} />
-          )
+            <IconSymbol size={28} name="person" color={color} />
+          ),
+          tabBarLabelStyle: {
+            color: '#31FF76'
+          }
         }}
       />
       <Tabs.Screen
@@ -51,20 +58,16 @@ export default function TabLayout() {
         options={{
           title: '내정보',
           tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="person-circle" color={color} />
-          )
+            <Ionicons size={28} name="calendar" color={color} />
+          ),
+          tabBarLabelStyle: {
+            color: '#31FF76'
+          }
         }}
       />
       <Tabs.Screen
         name="(single-running)"
         options={{
-          href: null // 탭바에는 표시 안 함
-        }}
-      />
-      <Tabs.Screen
-        name="(group-running)"
-        options={{
-          tabBarLabel: () => null,
           href: null // 탭바에는 표시 안 함
         }}
       />

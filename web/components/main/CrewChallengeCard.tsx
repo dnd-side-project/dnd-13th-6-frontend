@@ -7,6 +7,7 @@ interface CrewChallengeCardProps {
   title: string;
   distance: number;
   progress: number;
+  id: string;
   members: string[]; // For now, just strings
   onClick?: () => void;
   onTouchEnd?: () => void;
@@ -22,11 +23,16 @@ const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
   onClick,
   className,
   onTouchEnd,
-  children
-  
+  children,
+  id
 }) => {
+  const isSuccess = true;
   return (
-    <Card className={`mt-[24px] ${className}`} onClick={onClick} onTouchEnd={onTouchEnd}>
+    <Card
+      className={`mt-[24px] ${className}`}
+      onClick={onClick}
+      onTouchEnd={onTouchEnd}
+    >
       <div className="flex flex-row justify-between gap-2">
         {/* 상단 타이틀 */}
         <div>
@@ -49,19 +55,33 @@ const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
           {/* 아바타들 */}
           <div className="mt-1 flex flex-row">
             {members.map((member, index) => (
-              <div
-                key={index}
-                className={`bg-background z-${(index + 1) * 10} ${index > 0 ? '-ml-3' : ''} flex h-7 w-7 items-center justify-center rounded-full border-2 border-white/10`}
-              >
-                {member}
-              </div>
+              // <div
+              //   key={index}
+              //   className={`bg-background z-${(index + 1) * 10} ${index > 0 ? '-ml-3' : ''} flex h-7 w-7 items-center justify-center rounded-full border-2 border-white/10`}
+              // >
+              //   {member}
+              // </div>
+              <Image
+                //next 고유키
+                key={`${id}-${member}`}
+                src={`/assets/crew/${member}.svg`}
+                alt={member}
+                width={24}
+                height={24}
+              />
             ))}
           </div>
         </div>
-        <span className="font-lufga flex items-baseline text-[33px] font-bold italic">
-          {distance}
-          <span className="ml-1 text-[16px] font-semibold">km</span>
-        </span>
+        {isSuccess ? (
+          <span className="font-lufga flex items-baseline text-[33px] font-bold text-[#32FF76]">
+            완료
+          </span>
+        ) : (
+          <span className="font-lufga flex items-baseline text-[33px] font-bold italic">
+            {distance}
+            <span className="ml-1 text-[16px] font-semibold">km</span>
+          </span>
+        )}
       </div>
       <ProgressBar
         progress={progress}

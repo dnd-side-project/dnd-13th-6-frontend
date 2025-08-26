@@ -5,11 +5,13 @@ interface MemberData {
 }
 
 interface Crew {
-  crewId: string;
+  crewId: number;
   name: string;
-  memberCount: string;
-  isLeader: true;
-  characters: Array<string>;
+  leaderNickname: string;
+  notice: string;
+  memberCount: number;
+  goal: number;
+  code: string;
 }
 
 export type { MemberData, Crew };
