@@ -4,6 +4,8 @@ import ControlButton from '@/components/running/Control/ControlButton';
 import { Pause, Play, Square } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import StopConfirmModal from '@/components/running/Control/StopConfirmModal';
+import api from '@/utils/apis/customAxios';
+import { RUNNING_API } from '@/utils/apis/api';
 
 interface ControlPanelProps {
   type?: string;
@@ -22,15 +24,20 @@ function ControlPanel({
 }: ControlPanelProps) {
   const [isStopModalOpen, setStopModalOpen] = useState(false);
   const router = useRouter();
-
   const handleStart = () => onControl('play');
   const handlePause = () => onControl('pause');
   const handleResume = () => onControl('resume');
   const handleStopClick = () => setStopModalOpen(true);
 
-  const handleConfirmStop = () => {
+  const handleConfirmStop = async () => {
     onControl('stop');
-    router.replace('/run-finish');
+    try {
+      const runningId = localStorage.getItem('runningId') || '';
+      await api.post(RUNNING_API.RUNNING_END(runningId));
+      router.replace('/run-finish');
+    } catch (err) {
+      console.error(err);
+    }
     setStopModalOpen(false);
   };
 
@@ -45,15 +52,15 @@ function ControlPanel({
           {isRunning && !isPaused ? (
             <button
               onClick={handlePause}
-              className="flex h-[64px] items-center justify-center space-x-2 rounded-full bg-gray-70 px-6 py-3"
+              className="bg-gray-70 flex h-[64px] items-center justify-center space-x-2 rounded-full px-6 py-3"
             >
-              <Pause className="h-[36px] w-[36px] fill-gray-10 text-gray-10" />
-              <span className="text-3xl font-bold text-gray-10">{time}</span>
+              <Pause className="fill-gray-10 text-gray-10 h-[36px] w-[36px]" />
+              <span className="text-gray-10 text-3xl font-bold">{time}</span>
             </button>
           ) : (
             <button
               onClick={isPaused ? handleResume : handleStart}
-              className="flex h-[64px] items-center justify-center space-x-2 rounded-full bg-primary px-6 py-3"
+              className="bg-primary flex h-[64px] items-center justify-center space-x-2 rounded-full px-6 py-3"
             >
               <Play className="h-[36px] w-[36px] fill-[#1C1C1E] text-[#1C1C1E]" />
               <span className="text-3xl font-bold text-black">{time}</span>
@@ -61,7 +68,7 @@ function ControlPanel({
           )}
           <button
             onClick={handleStopClick}
-            className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-gray-80"
+            className="bg-gray-80 flex h-[64px] w-[64px] items-center justify-center rounded-full"
           >
             <Square className="h-[25.6px] w-[25.6px] fill-white text-white" />
           </button>
@@ -88,7 +95,7 @@ function ControlPanel({
           </ControlButton>
         )}
         <ControlButton onClick={handleStopClick} type="stop">
-          <Square className="h-[35px] w-[35px] fill-white text-white " />
+          <Square className="h-[35px] w-[35px] fill-white text-white" />
         </ControlButton>
       </div>
       <StopConfirmModal

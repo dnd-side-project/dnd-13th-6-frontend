@@ -9,21 +9,25 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import { useRouter } from 'next/navigation';
 
 function Page() {
-  const [name, setName] = useState('진수한접시');
-
+  const [nickname, setNickname] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const setHandleSave = useSetAtom(headerSaveAtom);
   const setHandleBack = useSetAtom(headerBackAtom);
+
+  useEffect(() => {
+    setNickname(localStorage.getItem('nickname'));
+  }, []);
+
   //TODO:저장버튼 추후 통신 구현
   const actualSave = useCallback(() => {
     router.push('/main');
-  }, []);
+  }, [router]);
   // 값이 변경되었을때 모달 띄우기
   //TODO:배지 비교
   const openSaveModal = useCallback(() => {
     router.push('/main');
-  }, []);
+  }, [router]);
   //layout의 버튼에 함수 연결
   useEffect(() => {
     setHandleSave(() => actualSave);
@@ -63,7 +67,7 @@ function Page() {
 
       <div className="mt-[25px] mb-4 flex items-center justify-center">
         <p className="font-pretendard w-auto bg-transparent text-center text-[22px] font-bold text-white">
-          {name}
+          {nickname}
         </p>
         <span className="font-pretendard mr-2 w-auto bg-transparent text-center text-[22px] font-bold text-white">
           님
@@ -79,7 +83,7 @@ function Page() {
           </p>
         </button>
       </div>
-      <p className="pretendard-title3">진수한접시 님의 보유 배지</p>
+      <p className="pretendard-title3">{nickname} 님의 보유 배지</p>
       <BadgeList />
       <ConfirmModal
         isOpen={isModalOpen}

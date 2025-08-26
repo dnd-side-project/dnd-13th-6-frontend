@@ -8,6 +8,9 @@ import MapView from '@/components/running/MapView/MapView';
 import MainOverview from '@/components/running/OverView/MainOverview';
 import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 import { RunningData } from '@/types/runningTypes';
+import api from '@/utils/apis/customAxios';
+import { RUNNING_API } from '@/utils/apis/api';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 export default function Page() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -23,6 +26,15 @@ export default function Page() {
   const touchEndX = useRef(0);
   const isSwipeActive = useRef(false);
 
+  //백엔드에 시작한다고 알림
+  const startRunning = async () => {
+    const res = await api.post(RUNNING_API.RUNNING_START());
+    localStorage.setItem('runningId', res.data.result.runningId);
+    localStorage.setItem('runnerId', res.data.result.runnerId);
+  };
+  useEffect(() => {
+    startRunning();
+  }, []);
   //받아온 데이터 처리
   const totalDistance = useMemo(() => {
     const sum =
@@ -67,13 +79,6 @@ export default function Page() {
     }
   }, [targetDistance, totalDistance]);
 
-  const postMessageToApp = (type: SEND_MESSAGE_TYPE, data?: string) => {
-    if (window.ReactNativeWebView) {
-      const message = JSON.stringify({ type, data });
-      window.ReactNativeWebView.postMessage(message);
-    }
-  };
-  //todo:테스트용
   //시간 계산
   useEffect(() => {
     if (isRunning && !isPaused) {
@@ -176,7 +181,10 @@ export default function Page() {
       case 'play':
         setIsRunning(true);
         setIsPaused(false);
-        postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_START);
+        const runningId = localStorage.getItem('runningId');
+        const runnerId = localStorage.getItem('runnerId');
+        const data = JSON.stringify({ runningId, runnerId });
+        postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_START, data);
         break;
       case 'pause':
         setIsPaused(true);

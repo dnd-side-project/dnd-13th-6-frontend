@@ -1,12 +1,15 @@
 // lib/customAxios.ts
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-import { AUTH_API } from '@/utils/apis/api';
 import { redirectToLogin } from '@/utils/authRedirect';
+import { tokenRefresh } from '@/utils/apis/auth';
 
 const api: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
-  timeout: 10000
+  // timeout: 10000,
+  headers: {
+    'X-USER-ID': '2'
+  }
 });
 
 // 요청 인터셉터:
@@ -36,11 +39,7 @@ api.interceptors.response.use(
 
       try {
         // HttpOnly refresh token으로 새 액세스 토큰 발급 요청
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}${AUTH_API.REFRESH_TOKEN()}`,
-          {},
-          { withCredentials: true } // 브라우저가 자동으로 refresh token 쿠키를 포함하여 전송
-        );
+        await tokenRefresh();
 
         return api(originalRequest);
       } catch (refreshError) {

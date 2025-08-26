@@ -52,10 +52,9 @@ export const NOTIFICATION_API = {
 };
 export const REWARD_API = {
   CLOVER: () => `/api/rewards/clovers`,
-  BADGE: () => `/api/rewards/badges`
+  BADGE_LIST: () => `/api/rewards/badges`
 };
 export const RUNNING_API = {
-  RUNNING_END: (runningID: string | number) => `/api/runnings/${runningID}/end`,
-  RUNNING_START: (runningID: string | number) =>
-    `/api/runnings/${runningID}/start`
+  RUNNING_END: (runningId: string) => `/api/runnings/${runningId}/end`,
+  RUNNING_START: () => `/api/runnings/start`
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import api from '@/utils/apis/customAxios';
 
 // RN WebView 타입 선언 (이 컴포넌트 파일 안에서만 사용할 경우)
 interface ReactNativeWebView {
@@ -88,11 +88,7 @@ export default function WebViewTestPage() {
 
   const handleButton = async () => {
     try {
-      const data = await axios.get('https://api.runky.store/api/member/me', {
-        headers: {
-          'X-USER-ID': '1'
-        }
-      });
+      const data = await api.get('https://api.runky.store/api/members/me');
       window.alert(data);
     } catch (e) {
       console.error(e);
