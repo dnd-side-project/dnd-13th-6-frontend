@@ -12,6 +12,7 @@ export default function Code() {
 
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
+    console.log(type, data, 'data');
     if (type === MODULE.PUSH) {
       router.push(JSON.parse(data).url);
     }

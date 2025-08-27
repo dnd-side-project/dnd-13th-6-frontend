@@ -70,7 +70,7 @@ function GroupRunningContent() {
 
     // const { publishDestination } = runningStartResponse;
     const stompClient = new Client({
-      webSocketFactory: () => new SockJS('https://api.runky.store/ws'),
+      webSocketFactory: () => new SockJS('https://api.runky.store/ws-stomp'),
       reconnectDelay: 5000,
       debug: msg => console.log('[STOMP DEBUG]:', msg)
     });
@@ -82,7 +82,7 @@ function GroupRunningContent() {
       // 구독 필요 시
       // if (publishDestination) {
       stompClient.subscribe(
-        '/app/runnings/18/location',
+        '/app/runnings/23/location',
         (message: IMessage) => {
           try {
             const parsed = JSON.parse(message.body);

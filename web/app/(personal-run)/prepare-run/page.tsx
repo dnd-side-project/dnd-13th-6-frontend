@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
+import SockJS from 'sockjs-client';
+import { Client, IMessage } from '@stomp/stompjs';
 
 function Page() {
   const [targetDistance, setTargetDistance] = useState('');
@@ -45,6 +47,45 @@ function Page() {
 
     setTargetDistance(val);
   };
+
+  useEffect(() => {
+    // if (!socketUrl || !runningStartResponse) return;
+
+    // const { publishDestination } = runningStartResponse;
+    const stompClient = new Client({
+      webSocketFactory: () => new SockJS('https://api.runky.store/ws'),
+      reconnectDelay: 5000,
+      debug: msg => console.log('[STOMP DEBUG]:', msg)
+    });
+
+    stompClient.onConnect = () => {
+      console.log('✅ Connected to STOMP WebSocket');
+      // setIsConnected(true);
+
+      // 구독 필요 시
+      // if (publishDestination) {
+      stompClient.publish({
+        destination: '/app/runnings/23/location',
+        body: JSON.stringify({
+          lat: 35.97664845766847,
+          lng: 126.99597295767953
+        })
+      });
+      // }
+    };
+
+    stompClient.onDisconnect = () => {
+      console.log('❌ WebSocket disconnected');
+      // setIsConnected(false);
+    };
+
+    stompClient.activate();
+    // clientRef.current = stompClient;
+
+    return () => {
+      stompClient.deactivate();
+    };
+  }, []);
 
   return (
     <div className="relative h-screen">
