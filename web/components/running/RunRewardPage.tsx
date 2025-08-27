@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
 import { MODULE } from '@/utils/apis/api';
-import { postMessageToApp } from '@/utils/webView/message';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 type RewardType = {
   type?: 'personal' | 'crew';

@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import CrewChallengeCard from '@/components/main/CrewChallengeCard';
-import { postMessageToApp } from '@/utils/webView/message';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { MODULE } from '@/utils/apis/api';
 import { Crew } from '@/types/crew';
 import { useLayoutEffect, useState } from 'react';

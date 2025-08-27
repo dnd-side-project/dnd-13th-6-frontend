@@ -4,7 +4,7 @@ import CrewChallengeCard from '@/components/main/CrewChallengeCard'
 import { useState } from 'react';
 import Image from 'next/image';
 import { MODULE } from '@/utils/apis/api';
-import { postMessageToApp } from '@/utils/webView/message';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 
 function JoinSuccess() {
@@ -73,30 +73,35 @@ export default function Page() {
             title="이번 주 크루 챌린지"
             distance={42}
             progress={0.7}
+            id="1"
             members={['A', 'B', 'C', 'D', 'E']}
           />
           <CrewChallengeCard
             title="이번 주 크루 챌린지"
             distance={42}
             progress={0.7}
+            id="1"
             members={['A', 'B', 'C', 'D', 'E']}
           />
           <CrewChallengeCard
             title="이번 주 크루 챌린지"
             distance={42}
             progress={0.7}
+            id="1"
             members={['A', 'B', 'C', 'D', 'E']}
           />
           <CrewChallengeCard
             title="이번 주 크루 챌린지"
             distance={42}
             progress={0.7}
+            id="1"
             members={['A', 'B', 'C', 'D', 'E']}
           />
           <CrewChallengeCard
             title="이번 주 크루 챌린지"
             distance={42}
             progress={0.7}
+            id="1"
             members={['A', 'B', 'C', 'D', 'E']}
           />
        

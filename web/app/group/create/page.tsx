@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { CrewApi } from '@/utils/apis/crewApi';
 import { useRouter } from 'next/navigation';
-import { postMessageToApp } from '@/utils/webView/message';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { MODULE } from '@/utils/apis/api';
 export default function Page() {
   const router = useRouter();
