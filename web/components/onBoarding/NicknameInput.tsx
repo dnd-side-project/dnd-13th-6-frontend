@@ -58,7 +58,7 @@ function NicknameInput({ type }: { type: 'onboarding' | 'profile' }) {
     <>
       <div className="border-gray-60 flex items-center border-b-2">
         <input
-          className="flex-grow bg-transparent outline-none"
+          className="flex-grow bg-transparent text-[20px] font-semibold tracking-[-0.025em] outline-none"
           value={nickname}
           onChange={handleNicknameChange}
           placeholder="닉네임을 입력해주세요"
