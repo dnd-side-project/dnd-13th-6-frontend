@@ -9,6 +9,9 @@ import { useStomp } from '@/hooks/useStomp';
 import type { MemberData } from '@/types/crew';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
+import { Client, IMessage } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import { env } from 'process';
 function CrewMemberProfiles({
   users,
   onClick
@@ -61,39 +64,50 @@ function GroupRunningContent() {
       lat: 37.5615603
     });
   };
-  const { isConnected } = useStomp({
-    socketUrl: `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`,
-    subscribeTopic: '/topic/running/101/location', // 세션 topic (FCM 알림에서 받은 값)
-    onMessage: msg => {
-      console.log('📩 Runner Location:', msg);
-    },
-    connectionHeaders: {
-      'Content-Type': 'application/json',
-      'X-USER-ID': '2'
-    }
-  });
 
-  // const { isConnected: runnerConnected, sendLocation } = useStomp({
-  //   socketUrl: `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`, // Spring WebSocket 엔드포인트
-  //   publishDest: '/app/running/101/location', // 서버에서 받은 publishDest,
-  //   connectionHeaders: {
-  //     'Content-Type': 'application/json',
-  //     'X-USER-ID': '1'
-  //   }
-  // });
+  useEffect(() => {
+    // if (!socketUrl || !runningStartResponse) return;
 
-  // useEffect(() => {
-  //   if (!isConnected) return;
+    // const { publishDestination } = runningStartResponse;
+    const stompClient = new Client({
+      webSocketFactory: () => new SockJS('https://api.runky.store/ws'),
+      reconnectDelay: 5000,
+      debug: msg => console.log('[STOMP DEBUG]:', msg)
+    });
 
-  //   const interval = setInterval(() => {
-  //     const x = 12.3456 + Math.random() * 0.001;
-  //     const y = 78.9012 + Math.random() * 0.001;
-  //     sendLocation({ x, y });
-  //     console.log('📤 Sent Location:', x, y);
-  //   }, 5000);
+    stompClient.onConnect = () => {
+      console.log('✅ Connected to STOMP WebSocket');
+      // setIsConnected(true);
 
-  //   return () => clearInterval(interval);
-  // }, [isConnected, sendLocation]);
+      // 구독 필요 시
+      // if (publishDestination) {
+      stompClient.subscribe(
+        '/app/runnings/18/location',
+        (message: IMessage) => {
+          try {
+            const parsed = JSON.parse(message.body);
+            console.log('📩 Received STOMP message:', parsed);
+            // onMessage?.(parsed);
+          } catch (e) {
+            console.error('❌ Failed to parse STOMP message', e);
+          }
+        }
+      );
+      // }
+    };
+
+    stompClient.onDisconnect = () => {
+      console.log('❌ WebSocket disconnected');
+      // setIsConnected(false);
+    };
+
+    stompClient.activate();
+    // clientRef.current = stompClient;
+
+    return () => {
+      stompClient.deactivate();
+    };
+  }, []);
 
   const sendEmogi = (emojiType: string) => {
     startCloverAnimation();
@@ -108,7 +122,6 @@ function GroupRunningContent() {
           method: 'GET',
           withCredentials: true,
           headers: {
-            'X-USER-ID': '1',
             'Content-Type': 'application/json'
           }
         }

@@ -10,7 +10,7 @@ function Index() {
     <SafeAreaView style={styles.container}>
       <WebView
         style={styles.webview}
-        source={{ uri: `${ENV.WEB_VIEW_URL}/main` }}
+        source={{ uri: `${ENV.WEB_VIEW_URL}/` }}
         // 개발 환경에서만 SSL 오류 무시
         {...(isDev && {
           onShouldStartLoadWithRequest: () => true,

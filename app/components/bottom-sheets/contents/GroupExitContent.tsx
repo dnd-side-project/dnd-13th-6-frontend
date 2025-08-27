@@ -23,8 +23,7 @@ function GroupExitContent({ onClose, crewInfo, isLastUser }: Props) {
         const ret = await fetch(url, {
           method: 'DELETE',
           headers: {
-            'Content-Type': 'application/json',
-            'X-USER-ID': '1'
+            'Content-Type': 'application/json'
           }
         });
         if (ret.ok) {

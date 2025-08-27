@@ -26,8 +26,7 @@ function EditGroupNotificationContent({
       await fetch(url, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
-          'X-USER-ID': '1'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ notice })
       });

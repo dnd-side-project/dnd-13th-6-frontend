@@ -18,6 +18,8 @@ export default function Page() {
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
 
+
+
   useLayoutEffect(() => {
     const init = async () => {
       const response = (await CrewApi.getCrewList()) as APIResponse<{
@@ -25,6 +27,8 @@ export default function Page() {
       }>;
       console.log(response);
       setCrewList(response.result.crews);
+        const accessToken = document.cookie;
+        console.log('accessToken', accessToken);
     };
     init();
   }, []);

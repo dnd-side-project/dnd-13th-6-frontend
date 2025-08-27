@@ -4,7 +4,7 @@ import { redirectToLogin } from '@/utils/authRedirect';
 import { tokenRefresh } from '@/utils/apis/auth';
 
 const api: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_SERVER_BASE_URL,
   withCredentials: true
 });
 
@@ -40,7 +40,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         console.error('토큰 재발급 실패', refreshError);
-        window.location.href="https://kauth.kakao.com/oauth/authorize?client_id=3255efd2af839833b26a422ca203c180&redirect_uri=https://api.runky.store/api/auth/login/oauth2/code/kakao&response_type=code"
+        // window.location.href="https://kauth.kakao.com/oauth/authorize?client_id=3255efd2af839833b26a422ca203c180&redirect_uri=https://api.runky.store/api/auth/login/oauth2/code/kakao&response_type=code"
         redirectToLogin();
         return Promise.reject(refreshError);
       }

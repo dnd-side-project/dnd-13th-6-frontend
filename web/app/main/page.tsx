@@ -37,7 +37,8 @@ export default function Main() {
   const [badgeUrl, setBadgeUrl] = useState<string>('');
   const [cloverCount, setCloverCount] = useState<number>(0);
   const [notification, setNotification] = useState<Notification[]>([]);
-
+  // const accessToken = cookieStore.get('accessToken')?.value;
+  // console.log('accessToken', accessToken);
   const fetchMemberData = async () => {
     try {
       const data = await fetchUserInfo();

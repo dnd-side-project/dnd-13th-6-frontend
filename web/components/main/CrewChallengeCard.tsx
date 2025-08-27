@@ -54,7 +54,7 @@ const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
 
           {/* 아바타들 */}
           <div className="mt-1 flex flex-row">
-            {members.map((member, index) => (
+            {members && members.map((member, index) => (
               // <div
               //   key={index}
               //   className={`bg-background z-${(index + 1) * 10} ${index > 0 ? '-ml-3' : ''} flex h-7 w-7 items-center justify-center rounded-full border-2 border-white/10`}

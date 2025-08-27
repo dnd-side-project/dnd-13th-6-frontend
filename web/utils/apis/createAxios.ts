@@ -4,18 +4,14 @@ export default function createAxios() {
     baseURL: process.env.NEXT_PUBLIC_SERVER_BASE_URL,
     withCredentials: true,
     headers: {
-      'Content-Type': 'application/json',
-      'X-USER-ID': '1'
+      'Content-Type': 'application/json'
     }
   });
 
-  // instance.interceptors.request.use(config => {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //     config.headers.Authorization = `Bearer ${token}`;
-  //   }
-  //   return config;
-  // });
+  instance.interceptors.request.use(config => {
+    console.log(config);
+    return config;
+  });
 
   instance.interceptors.response.use(
     response => {
