@@ -37,3 +37,27 @@ export const API_END_POINT: { [K in keyof APIDefinitions]: APIDefinitions[K] } =
         `${API_SUFFIX}/${MODULE.CREWS}/${crewId}`
     }
   };
+
+export const AUTH_API = {
+  SIGN_UP: () => `/api/auth/signup/complete`,
+  LOG_OUT: () => `/api/auth/logout`,
+  REFRESH_TOKEN: () => `/api/auth/token/refresh`
+} as const;
+
+export const MEMBER_API = {
+  CHANGE_NICKNAME: () => `/api/members/me/nickname`,
+  CHANGE_BADGE: () => `/api/members/me/badge`,
+  MY_BADGE: (memberId: string | number) => `/api/members/${memberId}/badge`,
+  MY_INFO: () => `/api/members/me`
+};
+export const NOTIFICATION_API = {
+  NOTIFICATION_LIST: () => `/api/notifications/recent`
+};
+export const REWARD_API = {
+  CLOVER: () => `/api/rewards/clovers`,
+  BADGE_LIST: () => `/api/rewards/badges`
+};
+export const RUNNING_API = {
+  RUNNING_END: (runningId: string) => `/api/runnings/${runningId}/end`,
+  RUNNING_START: () => `/api/runnings/start`
+};
