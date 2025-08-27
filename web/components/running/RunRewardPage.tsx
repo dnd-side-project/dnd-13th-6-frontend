@@ -18,12 +18,37 @@ export default function RunRewardPage({
 }: RewardType) {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
-
+  const [cloverCount, setCloverCount] = useState(0);
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 100); // 0.1초 후에 나타나기 시작
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (type === 'crew') {
+      setCloverCount(Number(localStorage.getItem('cloverCount')) || 0);
+      // setNickname(localStorage.getItem('nickname') || '');
+    }
+  }, [type]);
+
+  const BottomText = () => {
+    if (cloverCount >= 10) {
+      return (
+        <>
+          현재 <span className="text-golden">{cloverCount}/10</span>개! 가챠{' '}
+          <span className="text-golden">{Math.floor(cloverCount / 10)}</span>번
+          도전 가능!
+        </>
+      );
+    } else if (cloverCount < 10) {
+      return (
+        <>
+          현재 <span className="text-golden">{cloverCount}/10</span>개!{' '}
+          <span className="text-golden">3</span>개만 더 모으면 가챠 도전 가능!
+        </>
+      );
+    }
+  };
   const rewardContent = {
     personal: {
       success: {
@@ -98,14 +123,12 @@ export default function RunRewardPage({
       <div className="w-full pb-9">
         <p className="text-gray-60 font-regular mb-5 text-sm text-[0.9375rem] tracking-[-0.014em]">
           {type === 'personal' ? (
-            <>
-              현재 <span className="text-golden">7/10</span>개!{' '}
-              <span className="text-golden">3</span>개만 더 모으면 가챠 도전
-              가능!
-            </>
+            <BottomText />
           ) : (
             <>
-              <span className="pretendard-headline2 text-golden">[사후르]</span>{' '}
+              <span className="pretendard-headline2 text-golden">
+                {/* {nickname} */}
+              </span>{' '}
               님의 활약으로 팀 목표를 달성했어요 !
             </>
           )}

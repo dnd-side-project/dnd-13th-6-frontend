@@ -25,9 +25,7 @@ export default function Page() {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const isSwipeActive = useRef(false);
-
-  //백엔드에 시작한다고 알림
-  const startRunning = async () => {
+  const fetchStartRunning = async () => {
     try {
       const res = await api.post(RUNNING_API.RUNNING_START());
       localStorage.setItem('runningId', res.data.result.runningId);
@@ -36,8 +34,14 @@ export default function Page() {
       console.error(error);
     }
   };
+
+  //버튼
   useEffect(() => {
-    startRunning();
+    handleControl('play');
+    setTargetDistance(localStorage.getItem('targetDistance') || '0');
+    fetchStartRunning();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   //받아온 데이터 처리
   const totalDistance = useMemo(() => {
@@ -184,12 +188,12 @@ export default function Page() {
     action: 'play' | 'pause' | 'stop' | 'resume'
   ) => {
     const runningId = localStorage.getItem('runningId');
+    const runnerId = localStorage.getItem('runnerId');
 
     switch (action) {
       case 'play':
         setIsRunning(true);
         setIsPaused(false);
-        const runnerId = localStorage.getItem('runnerId');
         const data = JSON.stringify({ runningId, runnerId });
         postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_START, data);
         break;
@@ -209,29 +213,58 @@ export default function Page() {
           totalTime: formatTime(totalTime),
           startTime: startTime.current || 0
         };
-        localStorage.setItem('finishData', JSON.stringify(finishData));
+
+        // 기존 데이터를 안전하게 불러오기
+        let existingData = [];
+        try {
+          // localStorage에서 데이터를 가져와 파싱 시도
+          const storedData = localStorage.getItem('finishData');
+
+          // storedData가 null이 아니고 유효한 JSON 문자열일 경우에만 파싱
+          if (storedData) {
+            existingData = JSON.parse(storedData);
+          }
+        } catch (e) {
+          // 파싱 중 에러가 발생하면 콘솔에 로그를 남기고, 기존 데이터는 빈 배열로 유지
+          console.error("localStorage 'finishData' 파싱 에러:", e);
+          existingData = [];
+        }
+
+        // 새로운 데이터를 추가하여 localStorage에 저장
+        localStorage.setItem(
+          'finishData',
+          JSON.stringify([...existingData, finishData])
+        );
+
         setIsRunning(false);
         setIsPaused(false);
         postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_END);
-        await api.post(RUNNING_API.RUNNING_END(runningId || ''), {
-          totalDistance: totalDistance,
-          durationSeconds: totalTime,
-          avgSpeedMPS: totalDistance / totalTime
-        });
 
-        //totalDistance -> totalDistanceMinutes
-        //durationSeconds -> totalTime
-        //avgSpeedMPS -> totalDistance/totalTime
-
+        const path = runningData.map(data => [data.latitude, data.longitude]);
+        const points = { type: 'LineString', coordinates: path };
+        const pointCount = path.length;
+        const postData = {
+          summary: {
+            totalDistanceMinutes: totalDistance,
+            durationSeconds: totalTime,
+            avgSpeedMPS: totalDistance / totalTime
+          },
+          track: {
+            format: 'JSON',
+            points: JSON.stringify(points),
+            pointCount
+          }
+        };
+        console.log(postData);
+        try {
+          await api.post(RUNNING_API.RUNNING_END(runningId || ''), postData);
+        } catch (error) {
+          console.error(error);
+        }
         break;
     }
   };
-  //버튼
-  useEffect(() => {
-    handleControl('play');
-    setTargetDistance(localStorage.getItem('targetDistance') || '0');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
   return (
     <div
       className="bg-background relative h-screen w-full overflow-hidden text-white"

@@ -28,8 +28,8 @@ function ControlPanel({
   const handleStopClick = () => setStopModalOpen(true);
 
   const handleConfirmStop = async () => {
-    onControl('stop');
     try {
+      onControl('stop');
       router.replace('/run-finish');
     } catch (err) {
       console.error(err);
