@@ -1,10 +1,25 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '@/components/main/Card';
 import { useRouter } from 'next/navigation';
+import api from '@/utils/apis/customAxios';
+import { RUNNING_API } from '@/utils/apis/api';
 
 const TodayStatsCard = () => {
   const router = useRouter();
+  const [todayRun, setTodayRun] = useState();
+  const fetchData = async () => {
+    try {
+      const res = await api.get(RUNNING_API.RUNNING_TODAY());
+      console.log('오늘', res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <Card
       className="relative mt-[24px] pt-[16px] pb-[16px]"
