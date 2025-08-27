@@ -5,11 +5,8 @@ import { tokenRefresh } from '@/utils/apis/auth';
 
 const api: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
+  withCredentials: true
   // timeout: 10000,
-  headers: {
-    'X-USER-ID': '2'
-  }
 });
 
 // 요청 인터셉터:
