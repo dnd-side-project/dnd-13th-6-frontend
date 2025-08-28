@@ -124,7 +124,7 @@ export default function Main() {
       <TodayStatsCard />
       <div className="mt-[24px] flex gap-4">
         <CheerCardWrapper />
-        <GachaCard />
+        <GachaCard cloverCount={cloverCount} />
       </div>
     </>
   );

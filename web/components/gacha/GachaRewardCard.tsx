@@ -5,7 +5,7 @@ import CloverCountChip from '@/components/common/CloverCountChip';
 import Card from '@/components/main/Card';
 import { useRouter } from 'next/navigation';
 
-function GachaRewardCard() {
+function GachaRewardCard({ cloverCount }: { cloverCount: number }) {
   const router = useRouter();
   return (
     <Card
@@ -30,7 +30,7 @@ function GachaRewardCard() {
           className="mr-[8px]"
         />
         <div>
-          <CloverCountChip />
+          <CloverCountChip cloverCount={cloverCount} />
           <p className="whitespace-pre-line">
             {`클로버를 모으면\n랜덤 가챠 1회권 지급!`}
           </p>

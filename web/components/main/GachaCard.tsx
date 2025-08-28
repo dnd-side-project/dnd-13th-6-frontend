@@ -5,7 +5,7 @@ import CloverCountChip from '@/components/common/CloverCountChip';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
-const GachaCard = () => {
+const GachaCard = ({ cloverCount }: { cloverCount: number }) => {
   const router = useRouter();
   return (
     <Card
@@ -32,7 +32,7 @@ const GachaCard = () => {
       />
       <div className="relative z-20">
         <div className="mt-4 flex justify-center">
-          <CloverCountChip />
+          <CloverCountChip cloverCount={cloverCount} />
         </div>
         <div className="mt-3 text-center text-[1.0625rem] leading-[1.4] font-medium tracking-[-0.025em] whitespace-pre-line text-white">
           {`행운배지\n뽑으러가기`}
