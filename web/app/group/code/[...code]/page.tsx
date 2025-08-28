@@ -1,6 +1,8 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import CrewChallengeCard from '@/components/main/CrewChallengeCard';
+import CrewChallengeCard, {
+  CrewChallengeCardProps
+} from '@/components/main/CrewChallengeCard';
 import { useState } from 'react';
 import Image from 'next/image';
 import { MODULE } from '@/utils/apis/api';
