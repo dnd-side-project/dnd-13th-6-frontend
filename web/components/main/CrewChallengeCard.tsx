@@ -3,7 +3,7 @@ import Card from '@/components/main/Card';
 import Image from 'next/image';
 import ProgressBar from '@/components/common/ProgressBar';
 
-interface CrewChallengeCardProps {
+export interface CrewChallengeCardProps {
   title: string;
   distance: number;
   progress: number;

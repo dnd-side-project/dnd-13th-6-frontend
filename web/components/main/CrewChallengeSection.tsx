@@ -1,20 +1,28 @@
 import React from 'react';
 import Image from 'next/image';
-import CrewChallengeCard from './CrewChallengeCard';
+import CrewChallengeCard, { CrewChallengeCardProps } from './CrewChallengeCard';
 
 const CrewChallengeSection = () => {
-  const challenges = [
+  const challenges: CrewChallengeCardProps[] = [
     {
       title: '블랙핑크-뛰어',
       distance: 2.2,
       progress: 70,
-      members: ['a', 'b', 'c']
+      members: ['a', 'b', 'c'],
+      id: '1',
+      goal: 100,
+      runningDistance: 100,
+      isRunning: true
     },
     {
       title: '우리 크루, 이번주도 완주 GO!',
       distance: 2.2,
       progress: 70,
-      members: ['a', 'b', 'c']
+      members: ['a', 'b', 'c'],
+      id: '2',
+      goal: 100,
+      runningDistance: 100,
+      isRunning: true
     }
   ];
   return (
@@ -33,13 +41,7 @@ const CrewChallengeSection = () => {
         </button>
       </div>
       {challenges.map((challenge, index) => (
-        <CrewChallengeCard
-          key={index}
-          title={challenge.title}
-          distance={challenge.distance}
-          progress={challenge.progress}
-          members={challenge.members}
-        />
+        <CrewChallengeCard key={index} {...challenge} />
       ))}
     </>
   );
