@@ -20,13 +20,15 @@ function RunningShare() {
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
     if (type === MODULE.PUSH) {
-      console.log(JSON.parse(data).url);
       router.push(JSON.parse(data).url);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      <Pressable onPress={() => router.push('/(tabs)/(group)/running/23')}>
+        <Text className="text-white">123</Text>
+      </Pressable>
       <WebView
         ref={webviewRef}
         style={styles.webview}

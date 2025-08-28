@@ -57,6 +57,7 @@ function GroupRunningContent() {
       setClovers(prev => prev.filter(c => c.id !== id));
     }, 2000);
   };
+  const [members, setMembers] = useState<MemberData[]>([]);
 
   const [memberData, setMemberData] = useState({
     lat: 35.97664845766847,
@@ -65,7 +66,10 @@ function GroupRunningContent() {
 
   //TODO 멤버 타입 정의
   const onMemberClick = (member: MemberData) => {
-    // const {langtitude, longitude, isRunning=true} = member;
+    setMemberData({
+      lng: 126.8542609,
+      lat: 37.5615603
+    });
 
     stompClient.subscribe('/topic/runnings/23', (message: IMessage) => {
       setMemberData({
@@ -76,7 +80,39 @@ function GroupRunningContent() {
   };
 
   useEffect(() => {
+    // Android
+    const handleAndroidMessage = (event: Event) => {
+      try {
+        const messageEvent = event as MessageEvent;
+        const parsedData = JSON.parse(messageEvent.data);
+        console.log('Android received message:', parsedData);
+        if (parsedData.type === 'SET_CREW_MEMBERS') {
+          setMembers(parsedData.message as MemberData[]);
+        }
+      } catch (error) {
+        console.error('Error parsing message:', error);
+      }
+    };
+
+    // iOS
+    const handleIOSMessage = (event: MessageEvent) => {
+      try {
+        const parsedData = JSON.parse(event.data);
+        console.log('iOS received message:', parsedData);
+        if (parsedData.type === 'SET_CREW_MEMBERS') {
+          setMembers(parsedData.message as MemberData[]);
+        }
+      } catch (error) {
+        console.error('Error parsing message:', error);
+      }
+    };
+
+    document.addEventListener('message', handleAndroidMessage);
+    window.addEventListener('message', handleIOSMessage);
+
     return () => {
+      document.removeEventListener('message', handleAndroidMessage);
+      window.removeEventListener('message', handleIOSMessage);
       stompClient.deactivate();
     };
   }, []);
@@ -106,26 +142,7 @@ function GroupRunningContent() {
 
   return (
     <div className="text-whit relative h-screen w-full overflow-scroll bg-[#313131] px-4">
-      <CrewMemberProfiles
-        users={[
-          {
-            memberId: '1',
-            nickname: '유준호',
-            character: 'clover'
-          },
-          {
-            memberId: '2',
-            nickname: '김철수',
-            character: 'clover'
-          },
-          {
-            memberId: '3',
-            nickname: '이영희',
-            character: 'clover'
-          }
-        ]}
-        onClick={onMemberClick}
-      />
+      <CrewMemberProfiles users={members} onClick={onMemberClick} />
       <div className="relative mt-6 mb-[14px] h-[400px] overflow-y-scroll">
         <GoogleMap path={[{ lat: memberData.lat, lng: memberData.lng }]}>
           <UserMarker
