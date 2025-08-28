@@ -91,7 +91,6 @@ function Index() {
         style={styles.rankingList}
         showsVerticalScrollIndicator={false}
       >
-        {/* <Text> {crewMembers ? crewMembers.members.length : '없음'}</Text> */}
         {crewMembers &&
           crewMembers.members.map(member => (
             <RankingItem

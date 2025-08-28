@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams, withLayoutContext } from 'expo-router';
 import { createContext, useEffect, useLayoutEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BottomSheet from '@/components/bottom-sheets/BottomSheet';
 import EditGroupNotificationContent from '@/components/bottom-sheets/contents/EditGroupNotificationContent';
@@ -25,6 +25,7 @@ import {
 import { ParamListBase, TabNavigationState } from '@react-navigation/native';
 import { Crew, MemberData } from '@/types/crew';
 import { ENV } from '@/utils/app/consts';
+import GroupCodeAlert from '@/components/modal/GroupCodeAlert';
 
 export const CrewContext = createContext<{
   crewInfo: Crew | null;
@@ -119,7 +120,7 @@ export default function Layout() {
   const isCrewLeader = true;
   // CustomAlert 훅
   const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
-
+  const [isGroupCodeAlertVisible, setIsGroupCodeAlertVisible] = useState(false);
   // 각각 개별적으로 바텀시트 훅 호출 배경 블러처리
   const settingsBottomSheet = useBottomSheet({
     snapPoints: ['70%'],
@@ -286,11 +287,28 @@ export default function Layout() {
       style={[styles.container, { paddingTop: insets.top }]}
       className="flex-1 bg-black"
     >
-      <View className="flex-row justify-between px-4 py-[10px]">
+      <View className="flex-row px-4 py-[10px] items-center gap-5">
         <Pressable onPress={() => router.push('/(tabs)/(home)')}>
           <Ionicons name="arrow-back-outline" color={'white'} size={24} />
         </Pressable>
-        <Text className="text-white text-lg font-semibold">크루</Text>
+        <Pressable className="">
+          <Image style={{ width: 24, height: 24 }} />
+        </Pressable>
+        <Text className="text-white text-lg font-semibold flex-grow text-center">
+          크루
+        </Text>
+        <Pressable
+          className="ml-auto"
+          onPress={() => {
+            setIsGroupCodeAlertVisible(true);
+            console.log('click');
+          }}
+        >
+          <Image
+            source={require('@/assets/images/UserPlus.png')}
+            style={{ width: 24, height: 24 }}
+          />
+        </Pressable>
         <Pressable onPress={handleSettingsPress}>
           <Ionicons name="settings-outline" color={'white'} size={24} />
         </Pressable>
@@ -413,6 +431,11 @@ export default function Layout() {
         message={alertConfig?.message || ''}
         buttons={alertConfig?.buttons}
         onClose={hideAlert}
+      />
+      <GroupCodeAlert
+        visible={isGroupCodeAlertVisible}
+        onClose={() => setIsGroupCodeAlertVisible(false)}
+        code={'123456'}
       />
     </View>
   );

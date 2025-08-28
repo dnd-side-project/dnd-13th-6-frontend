@@ -1,6 +1,12 @@
 import { ENV } from '@/utils/app/consts';
 import { useRef, useState } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
+import {
+  Dimensions,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text
+} from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { MODULE } from '@/utils/apis/api';
 import { router } from 'expo-router';
@@ -21,6 +27,9 @@ function RunningShare() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Pressable onPress={() => router.push('/(tabs)/(group)/running/23')}>
+        <Text className="text-white">123</Text>
+      </Pressable>
       <WebView
         ref={webviewRef}
         style={styles.webview}
