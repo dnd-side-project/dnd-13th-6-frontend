@@ -3,25 +3,48 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev:https": "next dev --experimental-https --experimental-https-key ./localhost+2-key.pem --experimental-https-cert ./localhost+2.pem",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/css": "^11.13.5",
+    "@phosphor-icons/react": "^2.1.10",
+    "@stomp/stompjs": "^7.1.1",
+    "@vis.gl/react-google-maps": "^1.5.5",
+    "axios": "^1.11.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.12",
+    "jotai": "^2.13.1",
+    "lucide-react": "^0.536.0",
+    "motion": "^12.23.12",
+    "net": "^1.0.2",
+    "next": "15.4.4",
     "react": "19.1.0",
+    "react-circular-progressbar": "^2.2.0",
+    "react-confetti": "^6.4.0",
     "react-dom": "19.1.0",
-    "next": "15.4.4"
+    "sockjs-client": "^1.6.1",
+    "tailwind": "^4.0.0",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@types/node": "^20.19.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "@types/sockjs-client": "^1.5.4",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.4.4",
-    "@eslint/eslintrc": "^3"
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "tailwindcss": "^4.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
   }
 }
