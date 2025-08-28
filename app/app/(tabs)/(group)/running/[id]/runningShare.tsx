@@ -5,12 +5,15 @@ import WebView from 'react-native-webview';
 import { useWebView } from '@/hooks/useWebView';
 import { MemberData } from '@/types/crew';
 import { POST_MESSAGE_TYPE } from '@/utils/webView/consts';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 function RunningShare() {
   const { webviewRef, postMessage } = useWebView<MemberData[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const initialUrl = ENV.WEB_VIEW_URL + '/group/running';
   const dummyCrewMembers: MemberData[] = [
     {
       nickname: 'leader',
@@ -26,6 +29,16 @@ function RunningShare() {
       postMessage(POST_MESSAGE_TYPE.SET_CREW_MEMBERS, dummyCrewMembers);
     }, 100);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (webviewRef.current) {
+        const script = `window.location.href = '${initialUrl}'; true;`;
+        webviewRef.current.injectJavaScript(script);
+      }
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
       {isLoading && (
@@ -40,7 +53,7 @@ function RunningShare() {
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         onLoadEnd={handleWebViewLoad}
         source={{
-          uri: ENV.WEB_VIEW_URL + '/group/running'
+          uri: initialUrl
         }}
       />
     </View>
