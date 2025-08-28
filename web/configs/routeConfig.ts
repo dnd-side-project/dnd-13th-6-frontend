@@ -79,7 +79,7 @@ export const routeConfigs: Record<string, RouteConfig> = {
     title: '목표 수정',
     showSaveButton: true
   },
-  '/last-run-result': {
+  '/today-run-result': {
     showHeader: true,
     backHref: '/main'
   },

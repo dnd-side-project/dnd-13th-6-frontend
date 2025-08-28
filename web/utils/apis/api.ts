@@ -59,7 +59,8 @@ export const REWARD_API = {
 };
 export const RUNNING_API = {
   RUNNING_END: (runningId: string) => `/api/runnings/${runningId}/end`,
-  RUNNING_START: () => `/api/runnings/start`
+  RUNNING_START: () => `/api/runnings/start`,
+  RUNNING_TODAY: () => `/api/runnings/today`
 };
 
 export const SOCKET_URL = {

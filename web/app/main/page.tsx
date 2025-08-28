@@ -10,7 +10,15 @@ import { fetchUserInfo } from '@/utils/apis/member';
 import api from '@/utils/apis/customAxios';
 import { NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
 import { Notification } from '@/types/notification';
+import { RunningData } from '@/types/runningTypes';
 
+interface FinishDataItem {
+  averagePace: string; // ex: "0'00\""
+  runningData: RunningData[]; // 배열 안에 구체적 타입이 있으면 명시 가능
+  startTime: number; // timestamp (ms)
+  totalDistance: number;
+  totalTime: string; // ex: "00:09"
+}
 const NotificationMockData = [
   {
     id: 101,
@@ -37,8 +45,33 @@ export default function Main() {
   const [badgeUrl, setBadgeUrl] = useState<string>('');
   const [cloverCount, setCloverCount] = useState<number>(0);
   const [notification, setNotification] = useState<Notification[]>([]);
-  // const accessToken = cookieStore.get('accessToken')?.value;
-  // console.log('accessToken', accessToken);
+  const [finishData, setFinishData] = useState([]);
+  // finishData 불러오기
+  useEffect(() => {
+    setFinishData(JSON.parse(localStorage.getItem('finishData') ?? '[]'));
+  }, []);
+
+  if (finishData.length > 0) {
+    // 오늘 날짜 구하기 (로컬 시간 기준)
+    const today = new Date();
+    const todayYear = today.getFullYear();
+    const todayMonth = today.getMonth();
+    const todayDate = today.getDate();
+
+    // 오늘 데이터만 필터링
+    const todayData = finishData.filter((item: FinishDataItem) => {
+      const itemDate = new Date(item.startTime); // 각 아이템의 시간
+      return (
+        itemDate.getFullYear() === todayYear &&
+        itemDate.getMonth() === todayMonth &&
+        itemDate.getDate() === todayDate
+      );
+    });
+
+    console.log(todayData); // 오늘 데이터만 남은 배열
+    localStorage.setItem('finishData', JSON.stringify(todayData));
+  }
+
   const fetchMemberData = async () => {
     try {
       const data = await fetchUserInfo();
@@ -91,7 +124,7 @@ export default function Main() {
       <TodayStatsCard />
       <div className="mt-[24px] flex gap-4">
         <CheerCardWrapper />
-        <GachaCard />
+        <GachaCard cloverCount={cloverCount} />
       </div>
     </>
   );

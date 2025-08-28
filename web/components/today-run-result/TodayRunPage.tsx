@@ -5,8 +5,6 @@ import CircleProgress from '@/components/running/Finish/CircleProgress';
 import FinishOverView from '@/components/running/OverView/FinishOverView';
 import RunningNameInput from '@/components/running/Finish/RunningNameInput';
 import GoogleMap from '@/components/googleMap/GoogleMap';
-import ReactConfetti from 'react-confetti';
-import { useEffect, useState } from 'react';
 import formatTo24H from '@/utils/time/formatTo24H';
 
 type FinishData = {
@@ -20,31 +18,23 @@ type FinishData = {
   startTime: number;
 };
 
-export default function Page() {
-  const [isClient, setIsClient] = useState(false);
-  const [finishData, setFinishData] = useState<FinishData | null>(null);
-  useEffect(() => {
-    setIsClient(true);
-    const data = localStorage.getItem('finishData');
-    if (data) {
-      setFinishData(JSON.parse(data) as FinishData);
-    }
-  }, []);
+// 👇 Props를 받는 방식을 수정했습니다.
+type TodayRunPageProps = {
+  finishData: FinishData;
+};
 
+export default function TodayRunPage({ finishData }: TodayRunPageProps) {
   // RN 에서는 latitude, longitude 맵에서는 lat, long 차이 해결
-  const pathForMap = finishData?.runningData
-    ? finishData.runningData.map(p => ({ lat: p.latitude, lng: p.longitude }))
-    : [{ lat: 37.5665, lng: 126.978 }];
+  let path: { lat: number; lng: number }[] = [];
+  if (finishData?.runningData) {
+    path = finishData.runningData.map(data => ({
+      lat: data.latitude,
+      lng: data.longitude
+    }));
+  }
 
   return (
     <>
-      {isClient && (
-        <ReactConfetti
-          numberOfPieces={200}
-          recycle={false}
-          style={{ zIndex: 9999 }}
-        />
-      )}
       <div className="relative flex flex-grow flex-col text-white">
         <div className="flex flex-col justify-around">
           <div className="flex items-center justify-around gap-8">
@@ -57,7 +47,7 @@ export default function Page() {
             </div>
             <CircleProgress percent={82} />
           </div>
-          <div className="mt-10">
+          <div className="mt-10 mb-10">
             <FinishOverView
               averagePace={finishData?.averagePace}
               time={finishData?.totalTime}
@@ -66,8 +56,9 @@ export default function Page() {
           </div>
         </div>
         {/*지도 55vh 아래*/}
-        <div className="absolute right-0 bottom-0 left-0 h-[50vh]">
-          <GoogleMap height="100%" path={pathForMap} />
+        {/* Removed absolute positioning to allow the map to flow naturally below other content. */}
+        <div className="h-[50vh]">
+          <GoogleMap height="100%" path={path} />
         </div>
       </div>
     </>
