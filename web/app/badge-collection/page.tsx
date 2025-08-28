@@ -7,9 +7,12 @@ import { useSetAtom } from 'jotai';
 import { headerBackAtom, headerSaveAtom } from '@/store/header';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { useRouter } from 'next/navigation';
+import api from '@/utils/apis/customAxios';
+import { REWARD_API } from '@/utils/apis/api';
 
 function Page() {
   const [nickname, setNickname] = useState<string | null>(null);
+  const [cloverCount, setCloverCount] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const setHandleSave = useSetAtom(headerSaveAtom);
@@ -17,6 +20,20 @@ function Page() {
 
   useEffect(() => {
     setNickname(localStorage.getItem('nickname'));
+  }, []);
+
+  useEffect(() => {
+    const getClover = async () => {
+      try {
+        const res = await api.get(`${REWARD_API.CLOVER()}`);
+        const clover = res.data.result.count;
+        setCloverCount(clover);
+        localStorage.setItem('cloverCount', clover);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getClover();
   }, []);
 
   //TODO:저장버튼 추후 통신 구현
@@ -54,7 +71,7 @@ function Page() {
   return (
     <div>
       <div className="mb-[26px]">
-        <GachaRewardCard />
+        <GachaRewardCard cloverCount={cloverCount} />
       </div>
       <div className="bg-gray-90 mx-auto flex h-37 w-37 items-center justify-center rounded-full">
         <Image
