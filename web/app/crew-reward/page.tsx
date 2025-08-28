@@ -1,10 +1,15 @@
 import React from 'react';
 import RunRewardPage from '@/components/running/RunRewardPage';
 
-function Page(props: {
-  searchParams: { type: 'crew' | 'personal'; isSuccess: 'true' | 'false' };
-}) {
-  const { type, isSuccess } = props.searchParams;
+type PageProps = {
+  searchParams: {
+    type?: 'crew' | 'personal';
+    isSuccess?: 'true' | 'false';
+  };
+};
+
+function Page({ searchParams }: PageProps) {
+  const { type, isSuccess } = searchParams;
   return <RunRewardPage type={type} isSuccess={isSuccess === 'true'} />;
 }
 
