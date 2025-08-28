@@ -10,8 +10,7 @@ const useFetch = <T>(url: string, options?: RequestInit) => {
     try {
       const res = await fetch(`${ENV.API_BASE_URL}/${url}`, {
         headers: {
-          'Content-Type': 'application/json',
-          'X-USER-ID': '1'
+          'Content-Type': 'application/json'
         },
         ...options
       });

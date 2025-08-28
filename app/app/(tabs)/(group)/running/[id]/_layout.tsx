@@ -145,7 +145,6 @@ export default function Layout() {
 
   // 바텀시트 핸들러들
   const handleSettingsPress = () => settingsBottomSheet.present();
-  const handleExitProgress = () => groupExitBottomSheet.present();
   const handleEditMemberPress = () => editMemberBottomSheet.present();
   const handleEditNoticePress = () => editNoticeBottomSheet.present();
   const { showSuccess } = useToast();

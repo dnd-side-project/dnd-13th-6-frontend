@@ -93,9 +93,12 @@ export default function GroupCodeAlert({
             </Pressable>
           </View>
           <View className="flex flex-row gap-1 justify-center">
-            {code.split('').map(item => {
+            {code.split('').map((item, index) => {
               return (
-                <View className="bg-gray10 rounded-lg px-[15px] py-[14px] bg-gray90 flex-1">
+                <View
+                  key={`groupCode-${index}`}
+                  className="bg-gray10 rounded-lg px-[15px] py-[14px] bg-gray90 flex-1"
+                >
                   <Text className="text-center text-gray20 text-2xl font-semibold">
                     {item}
                   </Text>

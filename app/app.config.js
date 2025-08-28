@@ -31,6 +31,7 @@ export default {
       }
     },
     "android": {
+      "useNextNotificationsApi": true,
       "package": "com.runky.dnd",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
@@ -38,6 +39,7 @@ export default {
         "backgroundColor": "#ffffff"
       },
       "permissions": [
+   
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.RECORD_AUDIO",
@@ -83,6 +85,15 @@ export default {
           "locationAlwaysPermission": "백그라운드에서도 위치 기반 서비스를 제공하기 위해 필요합니다.",
           "isIosBackgroundLocationEnabled": true,
           "isAndroidBackgroundLocationEnabled": true
+        }
+      ],
+      "@react-native-firebase/app",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
       ]
     ],

@@ -1,8 +1,5 @@
-import useFetch from '@/hooks/useFetch';
-import { Crew, MemberData } from '@/types/crew';
-import { API_END_POINT } from '@/utils/apis/api';
 import { useLocalSearchParams } from 'expo-router';
-import { createContext, useContext, useLayoutEffect } from 'react';
+import { useContext } from 'react';
 import {
   Alert,
   Pressable,
@@ -12,7 +9,6 @@ import {
   View,
   Image
 } from 'react-native';
-import { Swipeable } from 'react-native-gesture-handler';
 import { CrewContext } from './_layout';
 
 interface RankingItemProps {

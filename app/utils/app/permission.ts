@@ -1,7 +1,7 @@
 import * as Location from 'expo-location';
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+// import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
 function handleRegistrationError(errorMessage: string) {
@@ -34,33 +34,30 @@ const getBackgroundLocationPermission = async () => {
 };
 
 async function registerForPushNotificationsAsync() {
-  if (!Constants.isDevice) {
-    console.log('실제 기기에서만 작동합니다.');
-    return null;
-  }
-
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
-  if (finalStatus !== 'granted') {
-    alert('푸시 알림 권한이 필요합니다.');
-    return null;
-  }
-
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX
-    });
-  }
-
-  // Expo SDK 53에서 FCM 토큰 발급
-  const token = (await Notifications.getDevicePushTokenAsync()).data;
-  console.log('FCM Token:', token);
-  return token;
+  // if (!Constants.isDevice) {
+  //   console.log('실제 기기에서만 작동합니다.');
+  //   return null;
+  // }
+  // const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  // let finalStatus = existingStatus;
+  // if (existingStatus !== 'granted') {
+  //   const { status } = await Notifications.requestPermissionsAsync();
+  //   finalStatus = status;
+  // }
+  // if (finalStatus !== 'granted') {
+  //   alert('푸시 알림 권한이 필요합니다.');
+  //   return null;
+  // }
+  // if (Platform.OS === 'android') {
+  //   await Notifications.setNotificationChannelAsync('default', {
+  //     name: 'default',
+  //     importance: Notifications.AndroidImportance.MAX
+  //   });
+  // }
+  // // Expo SDK 53에서 FCM 토큰 발급
+  // const token = (await Notifications.getDevicePushTokenAsync()).data;
+  // console.log('FCM Token:', token);
+  // return token;
 }
 
 export {
