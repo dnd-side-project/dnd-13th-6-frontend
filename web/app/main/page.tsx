@@ -8,9 +8,10 @@ import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 import GachaCard from '@/components/main/GachaCard';
 import { fetchUserInfo } from '@/utils/apis/member';
 import api from '@/utils/apis/customAxios';
-import { NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
+import { MODULE, NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
 import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 interface FinishDataItem {
   averagePace: string; // ex: "0'00\""
@@ -46,6 +47,28 @@ export default function Main() {
   const [cloverCount, setCloverCount] = useState<number>(0);
   const [notification, setNotification] = useState<Notification[]>([]);
   const [finishData, setFinishData] = useState([]);
+
+  useEffect(() => {
+    const cookie = document.cookie;
+    const cookieArray = cookie.split(';');
+    const accessToken = cookieArray.find(cookie =>
+      cookie.startsWith('accessToken=')
+    );
+    const refreshToken = cookieArray.find(cookie =>
+      cookie.startsWith('refreshToken=')
+    );
+    console.log('accessToken:', accessToken, 'refreshToken:', refreshToken);
+    const refreshTokenValue = refreshToken?.split('=')[1];
+    const accessTokenValue = accessToken?.split('=')[1];
+
+    postMessageToApp(
+      MODULE.AUTH,
+      JSON.stringify({
+        accessToken: accessTokenValue,
+        refreshToken: refreshTokenValue
+      })
+    );
+  }, []);
   // finishData 불러오기
   useEffect(() => {
     setFinishData(JSON.parse(localStorage.getItem('finishData') ?? '[]'));
