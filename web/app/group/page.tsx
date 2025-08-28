@@ -18,21 +18,18 @@ export default function Page() {
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
 
-
-
   useLayoutEffect(() => {
     const init = async () => {
       const response = (await CrewApi.getCrewList()) as APIResponse<{
         crews: Crew[];
       }>;
-      console.log(response);
+      console.log(response.result.crews, 'response');
       setCrewList(response.result.crews);
-        const accessToken = document.cookie;
-        console.log('accessToken', accessToken);
+      const accessToken = document.cookie;
+      console.log('accessToken', accessToken);
     };
     init();
   }, []);
-
   return (
     <div className="flex h-[calc(100vh-60px)] w-full flex-col">
       <div className="flex flex-grow flex-col gap-5 overflow-y-scroll p-4">
@@ -42,8 +39,15 @@ export default function Page() {
             id={crew.crewId}
             title={crew.name}
             distance={42}
-            progress={0.7}
-            members={crew.characters}
+            progress={
+              isNaN(crew.runningDistance / crew.goal)
+                ? 0
+                : Math.round((crew.runningDistance / crew.goal) * 100)
+            }
+            goal={crew.goal}
+            runningDistance={crew.runningDistance}
+            isRunning={crew.isRunning}
+            members={crew.badgeImageUrls}
             className="border !border-[#00FF63]"
             onClick={() => onMove(`/(tabs)/(group)/running/${crew.crewId}`)}
           >

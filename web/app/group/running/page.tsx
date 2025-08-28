@@ -34,10 +34,17 @@ function CrewMemberProfiles({
   );
 }
 
+const stompClient = new Client({
+  webSocketFactory: () =>
+    new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
+  reconnectDelay: 5000
+});
+
 function GroupRunningContent() {
   const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
   const searchParams = useSearchParams();
   const crewId = searchParams.get('q');
+
   //TODO 크루 ID를 통해 크루 조회
 
   // 클로버 애니메이션
@@ -59,51 +66,16 @@ function GroupRunningContent() {
   //TODO 멤버 타입 정의
   const onMemberClick = (member: MemberData) => {
     // const {langtitude, longitude, isRunning=true} = member;
-    setMemberData({
-      lng: 126.8542609,
-      lat: 37.5615603
+
+    stompClient.subscribe('/topic/runnings/23', (message: IMessage) => {
+      setMemberData({
+        lng: 126.8542609,
+        lat: 37.5615603
+      });
     });
   };
 
   useEffect(() => {
-    // if (!socketUrl || !runningStartResponse) return;
-
-    // const { publishDestination } = runningStartResponse;
-    const stompClient = new Client({
-      webSocketFactory: () => new SockJS('https://api.runky.store/ws-stomp'),
-      reconnectDelay: 5000,
-      debug: msg => console.log('[STOMP DEBUG]:', msg)
-    });
-
-    stompClient.onConnect = () => {
-      console.log('✅ Connected to STOMP WebSocket');
-      // setIsConnected(true);
-
-      // 구독 필요 시
-      // if (publishDestination) {
-      stompClient.subscribe(
-        '/app/runnings/23/location',
-        (message: IMessage) => {
-          try {
-            const parsed = JSON.parse(message.body);
-            console.log('📩 Received STOMP message:', parsed);
-            // onMessage?.(parsed);
-          } catch (e) {
-            console.error('❌ Failed to parse STOMP message', e);
-          }
-        }
-      );
-      // }
-    };
-
-    stompClient.onDisconnect = () => {
-      console.log('❌ WebSocket disconnected');
-      // setIsConnected(false);
-    };
-
-    stompClient.activate();
-    // clientRef.current = stompClient;
-
     return () => {
       stompClient.deactivate();
     };

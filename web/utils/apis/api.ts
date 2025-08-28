@@ -61,3 +61,10 @@ export const RUNNING_API = {
   RUNNING_END: (runningId: string) => `/api/runnings/${runningId}/end`,
   RUNNING_START: () => `/api/runnings/start`
 };
+
+export const SOCKET_URL = {
+  RUNNING_PUBLISH: (runningId: string | number) =>
+    `/app/runnings/${runningId}/location`,
+  RUNNING_SUBSCRIBE: (runningId: string | number) =>
+    `/topic/runnings/${runningId}`
+};

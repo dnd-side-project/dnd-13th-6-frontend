@@ -9,7 +9,10 @@ interface Crew {
   name: string;
   memberCount: string;
   isLeader: true;
-  characters: Array<string>;
+  badgeImageUrls: Array<string>;
+  goal: number;
+  runningDistance: number;
+  isRunning: true;
 }
 
 export type { MemberData, Crew };
