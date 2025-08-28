@@ -77,12 +77,13 @@ export default function Main() {
       const data = await fetchUserInfo();
       console.log(data);
       if (data) {
-        const { nickname, badgeUrl } = data;
+        const { nickname, badgeUrl, userId } = data;
         //  localStorage 동기화
         setNickname(nickname || '');
         setBadgeUrl(badgeUrl || '');
         localStorage.setItem('nickname', nickname);
         localStorage.setItem('badgeUrl', badgeUrl);
+        localStorage.setItem('userId', userId);
       }
     } catch (err) {
       console.error(err);
@@ -94,7 +95,7 @@ export default function Main() {
       const clover = res.data.result.count;
       setCloverCount(clover);
       localStorage.setItem('cloverCount', clover);
-      console.log(clover);
+      console.log('clover', clover);
     } catch (err) {
       console.log(err);
     }
