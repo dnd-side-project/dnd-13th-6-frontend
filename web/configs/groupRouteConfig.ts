@@ -8,13 +8,13 @@ export interface RouteConfig {
 export const routeConfigs: Record<string, RouteConfig> = {
   '/group': {
     showHeader: true,
-    backHref: '/group',
-    title: '초대 코드 입력'
+    backHref: '/app/home',
+    title: '크루'
   },
   '/group/code': {
     showHeader: true,
     backHref: '/group',
-    title: '크루'
+    title: '초대 코드 입력'
   },
   '/group/code/invite': {
     showHeader: false,
