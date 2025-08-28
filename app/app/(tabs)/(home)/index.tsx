@@ -1,29 +1,17 @@
-import { router } from 'expo-router';
-import {
-  Dimensions,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text
-} from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
+import { ENV } from '@/utils/app/consts';
+import { WebView } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function Index() {
+  const isDev = __DEV__;
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable
-        style={styles.runningButton}
-        onPress={() => router.push('/(tabs)/(single-running)')}
-      >
-        <Text style={styles.runningButtonText}>달리기 시작하기</Text>
-      </Pressable>
-      <Pressable
-        style={styles.runningButton}
-        onPress={() => router.push('/(tabs)/(group-running)')}
-      >
-        <Text style={styles.runningButtonText}>그룹 달리기 조회</Text>
-      </Pressable>
+      <WebView
+        style={styles.webview}
+        source={{ uri: `${ENV.WEB_VIEW_URL}/main` }}
+      />
     </SafeAreaView>
   );
 }
@@ -33,13 +21,12 @@ export default Index;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    width: windowWidth,
+    height: windowHeight
   },
   webview: {
     flex: 1,
-    width: windowWidth,
-    height: windowHeight
+    backgroundColor: '#333333'
   },
   runningButton: {
     backgroundColor: 'gray',

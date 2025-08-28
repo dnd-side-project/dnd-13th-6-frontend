@@ -5,17 +5,17 @@ import React, { useEffect, useState } from 'react';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
 import { MODULE } from '@/utils/apis/api';
-import { postMessageToApp } from '@/utils/webView/message';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 type RewardType = {
   type?: 'personal' | 'crew';
   isSuccess?: 'true' | 'false';
 };
 
-export default function RunRewardPage({ type }: RewardType) {
-  const [isSuccess] = useState(true);
-  const [nickname, setNickname] = useState<string>('');
-
+export default function RunRewardPage({
+  type = 'crew',
+  isSuccess = 'true'
+}: RewardType) {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
   const [cloverCount, setCloverCount] = useState(0);
@@ -27,7 +27,7 @@ export default function RunRewardPage({ type }: RewardType) {
   useEffect(() => {
     if (type === 'crew') {
       setCloverCount(Number(localStorage.getItem('cloverCount')) || 0);
-      setNickname(localStorage.getItem('nickname') || '');
+      // setNickname(localStorage.getItem('nickname') || '');
     }
   }, [type]);
 
@@ -127,7 +127,7 @@ export default function RunRewardPage({ type }: RewardType) {
           ) : (
             <>
               <span className="pretendard-headline2 text-golden">
-                {nickname}
+                {/* {nickname} */}
               </span>{' '}
               님의 활약으로 팀 목표를 달성했어요 !
             </>

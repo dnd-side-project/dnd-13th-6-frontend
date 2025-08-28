@@ -1,55 +1,90 @@
-import { useEffect, useRef, useState } from "react";
-import { Client, IMessage } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
+'use client';
 
-interface UseStompOptions {
-  url: string; // ex) "http://localhost:8080/ws"
-  subscribeUrl: string; // ex) "/topic/messages"
-  publishUrl: string; // ex) "/app/chat"
-  onMessage?: (message: string) => void;
+import { useEffect, useRef, useState, useCallback } from 'react';
+import SockJS from 'sockjs-client';
+import { Client, IMessage } from '@stomp/stompjs';
+
+interface UseStompWebSocketProps {
+  socketUrl: string; // ex) "http://localhost:8080/ws"
+  publishDest?: string; // 메시지를 보낼 Destination
+  subscribeTopic?: string; // 구독할 Topic
+  connectionHeaders?: Record<string, string>; // 연결 시 사용할 헤더
+  onMessage?: (msg: string) => void; // 구독 메시지 처리 콜백
 }
 
-export function useStomp({ url, subscribeUrl, publishUrl, onMessage }: UseStompOptions) {
+interface LocationPayload {
+  x: number;
+  y: number;
+}
+
+export function useStomp({
+  socketUrl,
+  publishDest,
+  subscribeTopic,
+  onMessage,
+  connectionHeaders
+}: UseStompWebSocketProps) {
   const clientRef = useRef<Client | null>(null);
-  const [connected, setConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
+  // ✅ WebSocket 연결
   useEffect(() => {
-    const socket = new SockJS(url);
-    const client = new Client({
-      webSocketFactory: () => socket,
-      debug: (str) => console.log(str),
-      reconnectDelay: 5000,
-      onConnect: () => {
-        console.log("✅ Connected to STOMP");
-        setConnected(true);
+    if (!socketUrl) return;
 
-        client.subscribe(subscribeUrl, (msg: IMessage) => {
-          if (msg.body && onMessage) {
-            onMessage(msg.body);
-          }
-        });
-      },
-      onDisconnect: () => {
-        setConnected(false);
-      },
+    const stompClient = new Client({
+      webSocketFactory: () => new SockJS(socketUrl),
+      reconnectDelay: 5000,
+      debug: msg => console.log('[STOMP DEBUG]:', msg),
+      ...connectionHeaders
     });
 
-    client.activate();
-    clientRef.current = client;
+    stompClient.onConnect = () => {
+      console.log('✅ Connected');
+      setIsConnected(true);
+
+      // 구독 처리
+      if (subscribeTopic) {
+        stompClient.subscribe(subscribeTopic, (message: IMessage) => {
+          try {
+            const parsed = JSON.parse(message.body);
+            onMessage?.(parsed);
+          } catch (e) {
+            console.error('❌ Failed to parse STOMP message', e);
+          }
+        });
+      }
+    };
+
+    stompClient.onDisconnect = () => {
+      console.log('❌ Disconnected');
+      setIsConnected(false);
+    };
+
+    stompClient.activate();
+    clientRef.current = stompClient;
 
     return () => {
-      client.deactivate();
+      stompClient.deactivate();
     };
-  }, [url, subscribeUrl, onMessage]);
+  }, [socketUrl, subscribeTopic, onMessage]);
 
-  const publish = (body: string) => {
-    if (clientRef.current && connected) {
+  // ✅ 위치 전송 (Runner)
+  const sendLocation = useCallback(
+    (location: LocationPayload) => {
+      if (!clientRef.current?.connected || !publishDest) return;
+
       clientRef.current.publish({
-        destination: publishUrl,
-        body,
+        destination: publishDest,
+        body: JSON.stringify({
+          type: 'LOCATION',
+          runnerId: 101,
+          ...location,
+          timestamp: Date.now()
+        })
       });
-    }
-  };
+    },
+    [publishDest]
+  );
 
-  return { connected, publish };
+  return { isConnected, sendLocation };
 }

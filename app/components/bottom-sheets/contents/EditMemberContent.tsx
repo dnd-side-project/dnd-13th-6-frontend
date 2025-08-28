@@ -1,66 +1,42 @@
 import Checkbox from '@/components/Checkbox';
-import Grid from '@/components/ui/Grid';
 import { useMemo, useState } from 'react';
-import { Alert, Text, View } from 'react-native';
-import Button from '../../../components/Button';
-import { useCustomAlert } from '@/hooks/useCustomAlert';
+import { Text, View } from 'react-native';
+import Button from '@/components/Button';
+import { MemberData } from '@/types/crew';
 interface EditMemberContentProps {
   type: 'editMember' | 'editOwner';
   onClose: () => void;
-  onPress: () => void | Promise<void>;
+  onPress: (member: MemberData) => void | Promise<void>;
+  crewMembers: { members: MemberData[] } | null;
 }
-const data = [
-  {
-    id: '1',
-    name: '홍길동'
-  },
-
-  {
-    id: '2',
-    name: '홍길동'
-  },
-
-  {
-    id: '3',
-    name: '홍길동'
-  },
-
-  {
-    id: '4',
-    name: '홍길동'
-  },
-
-  {
-    id: '5',
-    name: '홍길동'
-  }
-];
 
 export function MemberSelectContainer({
-  selectedMemberId,
-  setSelectedMemberId
+  selectedMember,
+  setSelectMember,
+  crewMembers
 }: {
-  selectedMemberId: string | null;
-  setSelectedMemberId: (memberId: string) => void;
+  selectedMember: MemberData | null;
+  setSelectMember: (member: MemberData) => void;
+  crewMembers: { members: MemberData[] };
 }) {
-  const renderItem = (item: any) => {
+  const renderItem = (item: MemberData) => {
     return (
       <View
+        key={item.memberId}
         className="flex flex-row items-center justify-left gap-2 py-4"
-        key={item.id}
       >
         <Checkbox
-          checked={item.id === selectedMemberId}
-          onPress={() => setSelectedMemberId(item.id)}
+          checked={item.memberId === selectedMember?.memberId}
+          onPress={() => setSelectMember(item)}
         />
-        <Text className="text-gray20 text-headline1">{item.name}</Text>
+        <Text className="text-gray20 text-headline1">{item.nickname}</Text>
       </View>
     );
   };
 
   return (
     <View className="bg-black rounded-2xl mt-4 px-4 py-[14px]">
-      {data.map(renderItem)}
+      {crewMembers.members.map(renderItem)}
     </View>
   );
 }
@@ -68,9 +44,10 @@ export function MemberSelectContainer({
 export default function EditMemberContent({
   type,
   onClose,
-  onPress
+  onPress,
+  crewMembers
 }: EditMemberContentProps) {
-  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  const [selectedMember, setSelectedMember] = useState<MemberData | null>(null);
 
   const isEdit = useMemo<boolean>(() => {
     return type === 'editMember';
@@ -93,15 +70,22 @@ export default function EditMemberContent({
           <Text className="font-medium mt-2 text-gray40">{`현재 리더는 [사후르]님입니다.\n새로운 리더를 지정해주세요.`}</Text>
         </>
       )}
-      <MemberSelectContainer
-        selectedMemberId={selectedMemberId}
-        setSelectedMemberId={setSelectedMemberId}
-      />
+      {crewMembers && (
+        <MemberSelectContainer
+          selectedMember={selectedMember}
+          setSelectMember={setSelectedMember}
+          crewMembers={crewMembers}
+        />
+      )}
       <Button
         className={`${
           isEdit ? 'bg-red' : 'bg-main'
         } rounded-xl py-[14px] text-body1 mt-6`}
-        onPress={onPress}
+        onPress={() => {
+          if (selectedMember) {
+            onPress(selectedMember);
+          }
+        }}
       >
         <Text
           className={`text-center text-headline1 ${

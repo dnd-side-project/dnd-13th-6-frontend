@@ -3,7 +3,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs, useSegments } from 'expo-router';
 import React from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, Image } from 'react-native';
 
 const hideTabBarScreens = ['(single-running)', '(group-running)'];
 
@@ -24,7 +24,8 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           display: isHideTabBar ? 'none' : 'flex'
-        }
+        },
+        tabBarActiveTintColor: '#31FF76'
         // tabBarButton: (props) => <AnimatedTabBarButton {...props} />,
       }}
     >
@@ -42,29 +43,30 @@ export default function TabLayout() {
         options={{
           title: '그룹',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="leaf" color={color} />
+            <Image
+              tintColor={color}
+              source={require('../../assets/images/UsersThree.png')}
+              style={{ width: 28, height: 28 }}
+            />
           )
         }}
       />
       <Tabs.Screen
         name="(my-info)"
         options={{
-          title: '내정보',
+          title: '캘린더',
           tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="person-circle" color={color} />
+            <Image
+              tintColor={color}
+              source={require('../../assets/images/CalendarBlank.png')}
+              style={{ width: 28, height: 28 }}
+            />
           )
         }}
       />
       <Tabs.Screen
         name="(single-running)"
         options={{
-          href: null // 탭바에는 표시 안 함
-        }}
-      />
-      <Tabs.Screen
-        name="(group-running)"
-        options={{
-          tabBarLabel: () => null,
           href: null // 탭바에는 표시 안 함
         }}
       />

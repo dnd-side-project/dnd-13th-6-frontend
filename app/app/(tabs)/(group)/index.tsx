@@ -1,6 +1,12 @@
 import { ENV } from '@/utils/app/consts';
 import { useRef, useState } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
+import {
+  Dimensions,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text
+} from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { MODULE } from '@/utils/apis/api';
 import { router } from 'expo-router';
@@ -14,6 +20,7 @@ function RunningShare() {
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
     if (type === MODULE.PUSH) {
+      console.log(JSON.parse(data).url);
       router.push(JSON.parse(data).url);
     }
   };
@@ -44,7 +51,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    paddingHorizontal: 16
   },
   webview: {
     flex: 1,
