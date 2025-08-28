@@ -9,12 +9,12 @@ import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 type RewardType = {
   type?: 'personal' | 'crew';
-  isSuccess?: 'true' | 'false';
+  isSuccess?: boolean;
 };
 
 export default function RunRewardPage({
   type = 'crew',
-  isSuccess = 'true'
+  isSuccess = true
 }: RewardType) {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
@@ -44,7 +44,8 @@ export default function RunRewardPage({
       return (
         <>
           현재 <span className="text-golden">{cloverCount}/10</span>개!{' '}
-          <span className="text-golden">3</span>개만 더 모으면 가챠 도전 가능!
+          <span className="text-golden">{10 - cloverCount}</span>개만 더 모으면
+          가챠 도전 가능!
         </>
       );
     }
@@ -78,12 +79,12 @@ export default function RunRewardPage({
 
   const onMove = () => {
     const data = {
-      type: MODULE.PUSH,
       url: '/(tabs)/(home)'
     };
     router.push('/group');
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
+
   return (
     <div className="relative flex h-full flex-col items-center bg-[#201F22] text-center text-white">
       <div className="flex-grow pt-10">
