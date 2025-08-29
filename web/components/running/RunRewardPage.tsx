@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/common/Button';
-import { useRouter } from 'next/navigation';
 import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
@@ -20,7 +19,7 @@ export default function RunRewardPage({
   remainingDistance
 }: RewardType) {
   const [visible, setVisible] = useState(false);
-  const router = useRouter();
+  const [nickname, setNickname] = useState('');
   const [cloverCount, setCloverCount] = useState(0);
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 100); // 0.1초 후에 나타나기 시작
@@ -30,7 +29,7 @@ export default function RunRewardPage({
   useEffect(() => {
     if (type === 'crew') {
       setCloverCount(Number(localStorage.getItem('cloverCount')) || 0);
-      // setNickname(localStorage.getItem('nickname') || '');
+      setNickname(localStorage.getItem('nickname') || '');
     }
   }, [type]);
 
@@ -54,7 +53,7 @@ export default function RunRewardPage({
         );
       }
     } else {
-      if (remainingDistance >= 0) {
+      if (remainingDistance && remainingDistance >= 0) {
         return (
           <>
             현재{' '}
@@ -146,7 +145,7 @@ export default function RunRewardPage({
           ) : (
             <>
               <span className="pretendard-headline2 text-golden">
-                {/* {nickname} */}
+                {nickname}
               </span>{' '}
               님의 활약으로 팀 목표를 달성했어요 !
             </>
