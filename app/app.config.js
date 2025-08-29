@@ -24,9 +24,11 @@ export default {
             }
           }
         },
-        "NSLocationWhenInUseUsageDescription": "앱 사용 중 위치를 사용합니다.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "백그라운드에서도 위치를 사용합니다.",
-        "NSLocationUsageDescription": "백그라운드에서도 위치를 사용합니다.",
+        "NSLocationWhenInUseUsageDescription": "러닝 활동을 추적하고 경로를 기록하기 위해 위치 정보가 필요합니다.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
+        "NSLocationAlwaysUsageDescription": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
+        "NSLocationUsageDescription": "러닝 활동을 추적하고 경로를 기록하기 위해 위치 정보가 필요합니다.",
+        "isIosBackgroundLocationEnabled": true,
         "UIBackgroundModes": ["location"]
       }
     },
@@ -81,9 +83,9 @@ export default {
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "이 앱은 위치 기반 서비스를 제공하기 위해 위치 정보가 필요합니다.",
-          "locationWhenInUsePermission": "이 앱은 현재 위치를 확인하기 위해 위치 정보가 필요합니다.",
-          "locationAlwaysPermission": "백그라운드에서도 위치 기반 서비스를 제공하기 위해 필요합니다.",
+          "locationAlwaysAndWhenInUsePermission": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
+          "locationWhenInUsePermission": "러닝 활동을 추적하고 경로를 기록하기 위해 위치 정보가 필요합니다.",
+          "locationAlwaysPermission": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
           "isIosBackgroundLocationEnabled": true,
           "isAndroidBackgroundLocationEnabled": true
         }

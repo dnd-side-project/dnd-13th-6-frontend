@@ -144,7 +144,6 @@ function Index() {
   const { webviewRef, postMessage } = useWebView<RunningData>();
   const { resetTrigger } = useWebViewReset();
   const initialUrl = ENV.WEB_VIEW_URL + '/prepare-run';
-  const mockLocationRef = useRef<Location.LocationObject | null>(null);
 
   const setGpsStatus = async () => {
     const providerStatus = await Location.getProviderStatusAsync();
@@ -153,39 +152,7 @@ function Index() {
     );
   };
 
-  const getMockLocation = (): Location.LocationObject => {
-    if (mockLocationRef.current === null) {
-      mockLocationRef.current = {
-        coords: {
-          latitude: 37.5665, // 서울 시청 위도
-          longitude: 126.978, // 서울 시청 경도
-          altitude: 0,
-          accuracy: 5,
-          altitudeAccuracy: 5,
-          heading: 0,
-          speed: 0
-        },
-        timestamp: Date.now()
-      };
-    } else {
-      mockLocationRef.current = {
-        ...mockLocationRef.current,
-        coords: {
-          ...mockLocationRef.current.coords,
-          // 5초마다 약 14m 이동 (10km/h)
-          latitude: mockLocationRef.current.coords.latitude + 0.00009,
-          longitude: mockLocationRef.current.coords.longitude + 0.000114
-        },
-        timestamp: Date.now()
-      };
-    }
-    return mockLocationRef.current;
-  };
-
   const getLocation = async () => {
-    if (__DEV__) {
-      return getMockLocation();
-    }
     return Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.Low
     });
@@ -199,7 +166,7 @@ function Index() {
         const runningData =
           (await getStorage<RunningData[]>(STORAGE_KEY.RUNNING_DATA)) || [];
         const location = await getLocation();
-
+        console.log('location', location);
         setGpsStatus();
         const { latitude, longitude } = location.coords;
 
