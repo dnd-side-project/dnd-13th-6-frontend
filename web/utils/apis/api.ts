@@ -75,3 +75,7 @@ export const SOCKET_URL = {
   RUNNING_SUBSCRIBE: (runningId: string | number) =>
     `/topic/runnings/${runningId}`
 };
+
+export const CREW_API = {
+  MEMBER_RUNNING: () => `/api/crews/member/running`
+};

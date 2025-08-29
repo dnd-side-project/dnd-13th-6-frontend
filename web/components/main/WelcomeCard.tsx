@@ -28,6 +28,7 @@ const WelcomeCard = ({
 }) => {
   const router = useRouter();
   const date = new Date();
+
   return (
     <Card
       className="relative mt-[36px] overflow-visible"
