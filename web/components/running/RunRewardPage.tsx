@@ -3,21 +3,23 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/common/Button';
-import { useRouter } from 'next/navigation';
 import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 type RewardType = {
   type?: 'personal' | 'crew';
   isSuccess?: boolean;
+  targetDistance?: number;
+  remainingDistance?: number;
 };
 
 export default function RunRewardPage({
   type = 'crew',
-  isSuccess = true
+  isSuccess = true,
+  remainingDistance
 }: RewardType) {
   const [visible, setVisible] = useState(false);
-  const router = useRouter();
+  const [nickname, setNickname] = useState('');
   const [cloverCount, setCloverCount] = useState(0);
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 100); // 0.1초 후에 나타나기 시작
@@ -27,34 +29,49 @@ export default function RunRewardPage({
   useEffect(() => {
     if (type === 'crew') {
       setCloverCount(Number(localStorage.getItem('cloverCount')) || 0);
-      // setNickname(localStorage.getItem('nickname') || '');
+      setNickname(localStorage.getItem('nickname') || '');
     }
   }, [type]);
 
   const BottomText = () => {
-    if (cloverCount >= 10) {
-      return (
-        <>
-          현재 <span className="text-golden">{cloverCount}/10</span>개! 가챠{' '}
-          <span className="text-golden">{Math.floor(cloverCount / 10)}</span>번
-          도전 가능!
-        </>
-      );
-    } else if (cloverCount < 10) {
-      return (
-        <>
-          현재 <span className="text-golden">{cloverCount}/10</span>개!{' '}
-          <span className="text-golden">{10 - cloverCount}</span>개만 더 모으면
-          가챠 도전 가능!
-        </>
-      );
+    if (type === 'crew') {
+      if (cloverCount >= 10) {
+        return (
+          <>
+            현재 <span className="text-golden">{cloverCount}/10</span>개! 가챠{' '}
+            <span className="text-golden">{Math.floor(cloverCount / 10)}</span>
+            번 도전 가능!
+          </>
+        );
+      } else if (cloverCount < 10) {
+        return (
+          <>
+            현재 <span className="text-golden">{cloverCount}/10</span>개!{' '}
+            <span className="text-golden">{10 - cloverCount}</span>개만 더
+            모으면 가챠 도전 가능!
+          </>
+        );
+      }
+    } else {
+      if (remainingDistance && remainingDistance >= 0) {
+        return (
+          <>
+            현재{' '}
+            <span className="text-golden">목표까지{remainingDistance}</span>KM{' '}
+            <span className="text-golden">{10 - cloverCount}</span> 더 뛰면
+            클로버 획득 가능!
+          </>
+        );
+      } else {
+        <></>;
+      }
     }
   };
 
   const rewardContent = {
     personal: {
       success: {
-        title: '오늘도 수고 많으셨어요!\n오늘의 행운이 도착했어요!',
+        title: '이번 주도 수고 많으셨어요!\n오늘의 행운이 도착했어요!',
         image: '/assets/lucky-stamp/four-leaf-clover.svg'
       },
       failure: {
@@ -129,7 +146,7 @@ export default function RunRewardPage({
           ) : (
             <>
               <span className="pretendard-headline2 text-golden">
-                {/* {nickname} */}
+                {nickname}
               </span>{' '}
               님의 활약으로 팀 목표를 달성했어요 !
             </>
