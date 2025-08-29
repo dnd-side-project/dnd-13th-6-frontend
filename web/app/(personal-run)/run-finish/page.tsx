@@ -10,6 +10,8 @@ import ReactConfetti from 'react-confetti';
 import { useEffect, useState } from 'react';
 import formatTo24H from '@/utils/time/formatTo24H';
 import Button from '@/components/common/Button';
+import api from '@/utils/apis/customAxios';
+import { RUNNING_API } from '@/utils/apis/api';
 
 type FinishData = {
   runningData: {
@@ -25,19 +27,48 @@ type FinishData = {
 export default function Page() {
   const navi = useRouter();
   const [isClient, setIsClient] = useState(false);
-  const [finishData, setFinishData] = useState<FinishData | null>(null);
+  const [finishData, setFinishData] = useState<FinishData[] | null>([]);
+  const [weeklyRunDistance, setWeeklyRunDistance] = useState<number>(0);
+  const [, setTargetDistance] = useState<number>(0);
+
+  const getWeeklyRunDistance = async () => {
+    try {
+      const res = await api.get(RUNNING_API.WEEKLY_RUNNINGS());
+      setWeeklyRunDistance(res.data.result.totalDistanceKm);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     setIsClient(true);
+    getWeeklyRunDistance();
+    setTargetDistance(Number(localStorage.getItem('weeklyGoalDistance')));
+
     const data = localStorage.getItem('finishData');
     if (data) {
-      setFinishData(JSON.parse(data) as FinishData);
+      const parsedData = JSON.parse(data) as FinishData[];
+      setFinishData(parsedData);
     }
   }, []);
 
-  // RN 에서는 latitude, longitude 맵에서는 lat, long 차이 해결
-  const pathForMap = finishData?.runningData
-    ? finishData.runningData.map(p => ({ lat: p.latitude, lng: p.longitude }))
+  // 배열에서 최근 데이터 선택
+  const latestFinishData = finishData?.[finishData.length - 1];
+
+  // 맵 경로
+  const pathForMap = latestFinishData?.runningData
+    ? latestFinishData.runningData.map(p => ({
+        lat: p.latitude,
+        lng: p.longitude
+      }))
     : [{ lat: 37.5665, lng: 126.978 }];
+
+  // 주간 달리기 진행률
+  const WeeklyRunPercent = () => {
+    return weeklyRunDistance !== 0 && latestFinishData
+      ? Math.floor((latestFinishData.totalDistance / weeklyRunDistance) * 100)
+      : 0;
+  };
 
   return (
     <>
@@ -54,24 +85,25 @@ export default function Page() {
             <div className="flex flex-col items-start justify-center">
               <RunningNameInput />
               <MainOverview
-                type={'finish'}
-                distance={finishData?.totalDistance}
+                type="finish"
+                distance={latestFinishData?.totalDistance}
               />
             </div>
-            <CircleProgress percent={82} />
+            <CircleProgress percent={WeeklyRunPercent()} />
           </div>
           <FinishOverView
-            averagePace={finishData?.averagePace}
-            time={finishData?.totalTime}
-            startTime={formatTo24H(finishData?.startTime || 0)}
+            averagePace={latestFinishData?.averagePace}
+            time={latestFinishData?.totalTime}
+            startTime={formatTo24H(latestFinishData?.startTime || 0)}
           />
         </div>
-        {/*지도 55vh 아래*/}
+
+        {/* 지도 55vh 아래 */}
         <div className="absolute right-0 bottom-0 left-0 h-[55vh]">
           <GoogleMap height="100%" path={pathForMap} />
         </div>
 
-        {/*종료버튼*/}
+        {/* 종료 버튼 */}
         <div className="absolute right-0 bottom-0 left-0 w-full bg-transparent p-4">
           <Button
             onClickAction={() => navi.push('/lucky-stamp')}

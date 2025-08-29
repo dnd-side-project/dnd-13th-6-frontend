@@ -8,7 +8,7 @@ import { headerBackAtom, headerSaveAtom } from '@/store/header';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { useRouter } from 'next/navigation';
 import api from '@/utils/apis/customAxios';
-import { REWARD_API } from '@/utils/apis/api';
+import { MEMBER_API, REWARD_API } from '@/utils/apis/api';
 
 function Page() {
   const [nickname, setNickname] = useState<string | null>(null);
@@ -16,18 +16,16 @@ function Page() {
   const [cloverCount, setCloverCount] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [badgeUrl, setBadgeUrl] = useState<string>('');
+  const [badgeId, setBadgeId] = useState<string>('');
   const router = useRouter();
   const setHandleSave = useSetAtom(headerSaveAtom);
   const setHandleBack = useSetAtom(headerBackAtom);
-
   useEffect(() => {
     setNickname(localStorage.getItem('nickname'));
     setBadgeUrl(localStorage.getItem('badgeUrl') || '');
     setDefaultBadgeUrl(localStorage.getItem('badgeUrl') || '');
-
     getClover();
   }, []);
-
   const getClover = async () => {
     try {
       const res = await api.get(`${REWARD_API.CLOVER()}`);
@@ -40,7 +38,15 @@ function Page() {
   };
 
   //TODO:저장버튼 추후 통신 구현
-  const actualSave = useCallback(() => {}, []);
+  const actualSave = useCallback(async () => {
+    try {
+      await api.patch(`${MEMBER_API.CHANGE_BADGE()}`, {
+        badgeId: Number(badgeId)
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, [badgeId]);
 
   const isChanged = useCallback(
     () => defaultBadgeUrl !== badgeUrl,
@@ -53,15 +59,20 @@ function Page() {
       router.back();
     }
   }, [isChanged, router]);
+
+  const handleSave = useCallback(() => {
+    actualSave();
+    router.back();
+  }, [router, actualSave]);
   //layout의 버튼에 함수 연결
   useEffect(() => {
-    setHandleSave(() => actualSave);
+    setHandleSave(() => handleSave);
     setHandleBack(() => handleBack);
     return () => {
       setHandleSave(undefined);
       setHandleBack(undefined);
     };
-  }, [setHandleSave, actualSave, setHandleBack, handleBack]);
+  }, [setHandleSave, handleSave, setHandleBack, handleBack]);
 
   const handleOverlayClick = () => {
     setIsModalOpen(false);
@@ -112,7 +123,11 @@ function Page() {
         </button>
       </div>
       <p className="pretendard-title3">{nickname} 님의 보유 배지</p>
-      <BadgeList mainBadge={badgeUrl} setMainBadge={setBadgeUrl} />
+      <BadgeList
+        setMainBadge={setBadgeUrl}
+        badgeUrl={badgeUrl}
+        setBadgeId={setBadgeId}
+      />
       <ConfirmModal
         isOpen={isModalOpen}
         onOverlayClick={handleOverlayClick}
