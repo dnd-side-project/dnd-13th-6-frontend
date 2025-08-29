@@ -77,5 +77,5 @@ export const SOCKET_URL = {
 };
 
 export const CREW_API = {
-  MEMBER_RUNNING: () => `/api/crews/member/running`
+  MEMBER_RUNNING: () => `/api/crews/members/running`
 };
