@@ -8,13 +8,19 @@ import { REWARD_API } from '@/utils/apis/api';
 interface Badges {
   badge: string;
 }
-function BadgeList() {
+function BadgeList({
+  mainBadge,
+  setMainBadge
+}: {
+  mainBadge: string;
+  setMainBadge: (badge: string) => void;
+}) {
   const [badges, setBadges] = useState<Badges[]>([]);
   const fetchBadge = async () => {
     try {
       const res = await api.get(REWARD_API.BADGE_LIST());
       setBadges(res.data.result.badges);
-      console.log(res.data.result.badges);
+      console.log('가진 뱃지개수:', res.data);
     } catch (err) {
       console.error(err);
     }
@@ -23,23 +29,17 @@ function BadgeList() {
   useEffect(() => {
     fetchBadge();
   }, []);
-
   return (
     <div className="mt-6 grid grid-cols-3 gap-4">
-      <BadgeItem />
-
-      <LockBadgeItem />
-
-      <LockBadgeItem />
-      <LockBadgeItem />
-
-      <LockBadgeItem />
-
-      <LockBadgeItem />
-
-      <LockBadgeItem />
-
-      <LockBadgeItem />
+      {badges.length > 0 &&
+        badges.map(badge => (
+          <button onClick={() => setMainBadge(badge.badge)} key={badge.badge}>
+            <BadgeItem badge={badge.badge} />
+          </button>
+        ))}
+      {Array.from({ length: 12 - badges.length }).map((_, i) => (
+        <LockBadgeItem key={i} />
+      ))}
     </div>
   );
 }

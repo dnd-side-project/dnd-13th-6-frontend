@@ -55,12 +55,18 @@ export const NOTIFICATION_API = {
 };
 export const REWARD_API = {
   CLOVER: () => `/api/rewards/clovers`,
-  BADGE_LIST: () => `/api/rewards/badges`
+  BADGE_LIST: () => `/api/rewards/badges`,
+  GACHA: () => `/api/rewards/gotcha`
 };
 export const RUNNING_API = {
   RUNNING_END: (runningId: string) => `/api/runnings/${runningId}/end`,
   RUNNING_START: () => `/api/runnings/start`,
-  RUNNING_TODAY: () => `/api/runnings/today`
+  RUNNING_TODAY: () => `/api/runnings/today`,
+  WEEKLY_RUNNINGS: () => `/api/runnings/me/weekly/total-distance`
+};
+export const GOAL_API = {
+  GET_TARGET_DISTANCE: () => '/api/goals/me',
+  CHANGE_TARGET_DISTANCE: () => '/api/goals/me'
 };
 
 export const SOCKET_URL = {

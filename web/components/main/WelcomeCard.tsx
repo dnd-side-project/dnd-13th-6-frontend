@@ -46,13 +46,15 @@ const WelcomeCard = ({
         </div>
         <div>
           {/*todo: 뱃지 url 에 맞게 수정해야함.*/}
-          <Image
-            src={'/assets/icon/pig.svg'}
-            alt={'character'}
-            width={180}
-            height={180}
-            className="absolute -top-10 right-0 left-39 rotate-20"
-          />
+          {badgeUrl !== '' && (
+            <Image
+              src={badgeUrl}
+              alt={'character'}
+              width={180}
+              height={180}
+              className="absolute -top-10 right-0 left-39 rotate-20"
+            />
+          )}
         </div>
       </div>
     </Card>

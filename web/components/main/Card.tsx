@@ -1,10 +1,10 @@
 import { twMerge } from 'tailwind-merge';
 
-export default function Card({
+export default function wCard({
   children,
   className,
   onClick,
-  onTouchEnd,
+  onTouchEnd
 }: {
   children: React.ReactNode;
   className?: string;

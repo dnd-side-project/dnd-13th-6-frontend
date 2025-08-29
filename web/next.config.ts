@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true // 빌드 시 ESLint 경고/에러 무시
   },
   images: {
-    domains: ['picsum.photos']
+    domains: ['picsum.photos', 'runky-bucket.s3.ap-northeast-2.amazonaws.com']
   }
   /* config options here */
 };
