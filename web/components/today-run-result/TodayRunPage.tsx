@@ -1,7 +1,6 @@
 'use client';
 import MainOverview from '@/components/running/OverView/MainOverview';
 import 'react-circular-progressbar/dist/styles.css';
-import CircleProgress from '@/components/running/Finish/CircleProgress';
 import FinishOverView from '@/components/running/OverView/FinishOverView';
 import RunningNameInput from '@/components/running/Finish/RunningNameInput';
 import GoogleMap from '@/components/googleMap/GoogleMap';
@@ -45,7 +44,6 @@ export default function TodayRunPage({ finishData }: TodayRunPageProps) {
                 distance={finishData?.totalDistance}
               />
             </div>
-            <CircleProgress percent={82} />
           </div>
           <div className="mt-10 mb-10">
             <FinishOverView
@@ -58,7 +56,7 @@ export default function TodayRunPage({ finishData }: TodayRunPageProps) {
         {/*지도 55vh 아래*/}
         {/* Removed absolute positioning to allow the map to flow naturally below other content. */}
         <div className="h-[50vh]">
-          <GoogleMap height="100%" path={path} />
+          <GoogleMap height="100%" path={path} type={'todayResult'} />
         </div>
       </div>
     </>
