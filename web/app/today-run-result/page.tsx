@@ -30,7 +30,7 @@ function Page() {
       {finishData ? (
         finishData.map(data => {
           return (
-            <div className="h-[calc(100vh-59vh)]" key={data.startTime}>
+            <div className="h-screen" key={data.startTime}>
               <TodayRunPage finishData={data} />
             </div>
           );
