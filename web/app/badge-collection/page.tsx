@@ -46,7 +46,7 @@ function Page() {
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [badgeId]);
 
   const isChanged = useCallback(
     () => defaultBadgeUrl !== badgeUrl,
@@ -56,18 +56,23 @@ function Page() {
     if (isChanged()) {
       setIsModalOpen(true);
     } else {
-      router.back();
+      router.push('/main');
     }
   }, [isChanged, router]);
+
+  const handleSave = useCallback(() => {
+    actualSave();
+    router.back();
+  }, [router, actualSave]);
   //layout의 버튼에 함수 연결
   useEffect(() => {
-    setHandleSave(() => actualSave);
+    setHandleSave(() => handleSave);
     setHandleBack(() => handleBack);
     return () => {
       setHandleSave(undefined);
       setHandleBack(undefined);
     };
-  }, [setHandleSave, actualSave, setHandleBack, handleBack]);
+  }, [setHandleSave, handleSave, setHandleBack, handleBack]);
 
   const handleOverlayClick = () => {
     setIsModalOpen(false);

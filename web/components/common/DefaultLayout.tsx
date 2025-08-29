@@ -27,7 +27,8 @@ export default function DefaultLayout({
     <div className="flex h-screen flex-col">
       {showHeader && (
         <>
-          <div className="h-[59px] flex-none" />
+          {/* 전부 SafeArea로 변경해서 더 이상 필요 없음 */}
+          {/* <div className="h-[59px] flex-none" /> */}
           <header className="flex items-center">
             {backHref && (
               <div className="p-4">

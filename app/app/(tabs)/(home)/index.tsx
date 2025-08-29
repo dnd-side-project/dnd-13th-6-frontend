@@ -3,24 +3,43 @@ import { ENV } from '@/utils/app/consts';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { MODULE } from '@/utils/apis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useWebViewReset } from '../_layout';
+import { useEffect, useRef } from 'react';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function Index() {
-  const isDev = __DEV__;
+  const webViewRef = useRef<WebView>(null);
+  const { resetTrigger } = useWebViewReset();
+  const initialUrl = `${ENV.WEB_VIEW_URL}/main`;
 
   const handleMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
     if (data.type === MODULE.AUTH) {
       AsyncStorage.setItem('accessToken', data.accessToken);
     }
+    if (data.nickName) {
+      AsyncStorage.setItem('nickName', data.nickName);
+    }
+    if (data.userId) {
+      AsyncStorage.setItem('userId', data.userId);
+    }
   };
+
+  // 탭 전환 시 WebView URI 초기화
+  useEffect(() => {
+    if (resetTrigger > 0 && webViewRef.current) {
+      const script = `window.location.href = '${initialUrl}'; true;`;
+      webViewRef.current.injectJavaScript(script);
+    }
+  }, [resetTrigger]);
 
   return (
     <SafeAreaView style={styles.container}>
       <WebView
+        ref={webViewRef}
         style={styles.webview}
-        source={{ uri: `${ENV.WEB_VIEW_URL}/main` }}
+        source={{ uri: initialUrl }}
         onMessage={handleMessage}
       />
     </SafeAreaView>
@@ -31,9 +50,7 @@ export default Index;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: windowWidth,
-    height: windowHeight
+    flex: 1
   },
   webview: {
     flex: 1,

@@ -87,5 +87,8 @@ export const routeConfigs: Record<string, RouteConfig> = {
     showHeader: true,
     backHref: '/badge-collection',
     title: '프로필'
+  },
+  '/calendar': {
+    showHeader: true
   }
 };

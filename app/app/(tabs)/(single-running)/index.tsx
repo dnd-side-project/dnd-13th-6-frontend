@@ -21,12 +21,14 @@ import {
   AppState,
   Dimensions,
   Image,
+  SafeAreaView,
   StyleSheet,
   Text,
   View
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
+import { useWebViewReset } from '../_layout';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -140,7 +142,8 @@ function Index() {
   >('waiting');
 
   const { webviewRef, postMessage } = useWebView<RunningData>();
-  const mockLocationRef = useRef<Location.LocationObject | null>(null);
+  const { resetTrigger } = useWebViewReset();
+  const initialUrl = ENV.WEB_VIEW_URL + '/prepare-run';
 
   const setGpsStatus = async () => {
     const providerStatus = await Location.getProviderStatusAsync();
@@ -149,39 +152,7 @@ function Index() {
     );
   };
 
-  const getMockLocation = (): Location.LocationObject => {
-    if (mockLocationRef.current === null) {
-      mockLocationRef.current = {
-        coords: {
-          latitude: 37.5665, // 서울 시청 위도
-          longitude: 126.978, // 서울 시청 경도
-          altitude: 0,
-          accuracy: 5,
-          altitudeAccuracy: 5,
-          heading: 0,
-          speed: 0
-        },
-        timestamp: Date.now()
-      };
-    } else {
-      mockLocationRef.current = {
-        ...mockLocationRef.current,
-        coords: {
-          ...mockLocationRef.current.coords,
-          // 5초마다 약 14m 이동 (10km/h)
-          latitude: mockLocationRef.current.coords.latitude + 0.00009,
-          longitude: mockLocationRef.current.coords.longitude + 0.000114
-        },
-        timestamp: Date.now()
-      };
-    }
-    return mockLocationRef.current;
-  };
-
   const getLocation = async () => {
-    if (__DEV__) {
-      return getMockLocation();
-    }
     return Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.Low
     });
@@ -195,7 +166,7 @@ function Index() {
         const runningData =
           (await getStorage<RunningData[]>(STORAGE_KEY.RUNNING_DATA)) || [];
         const location = await getLocation();
-
+        console.log('location', location);
         setGpsStatus();
         const { latitude, longitude } = location.coords;
 
@@ -315,8 +286,17 @@ function Index() {
     };
     init();
   }, []);
+
+  // 탭 전환 시 WebView URI 초기화
+  useEffect(() => {
+    if (resetTrigger > 0 && webviewRef.current) {
+      const script = `window.location.href = '${initialUrl}'; true;`;
+      webviewRef.current.injectJavaScript(script);
+    }
+  }, [resetTrigger]);
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Chip style={[styles.chip, { top: insets.top + 30 }]}>
         <View style={styles.chipContent}>
           <Image
@@ -357,10 +337,10 @@ function Index() {
         }}
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         source={{
-          uri: ENV.WEB_VIEW_URL + '/prepare-run'
+          uri: initialUrl
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
