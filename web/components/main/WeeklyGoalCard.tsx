@@ -4,7 +4,8 @@ import Card from '@/components/main/Card';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
 import api from '@/utils/apis/customAxios';
-import { GOAL_API, RUNNING_API } from '@/utils/apis/api';
+import { GOAL_API, MODULE, RUNNING_API } from '@/utils/apis/api';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 const WeeklyGoalCard = () => {
   const [goalDistance, setGoalDistance] = useState<number>(0);
@@ -15,7 +16,9 @@ const WeeklyGoalCard = () => {
       setGoalDistance(res.data.result.goal);
       localStorage.setItem('weeklyGoalDistance', res.data.result.goal);
       console.log('목표거리', res.data);
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
   const getWeeklyRunDistance = async () => {
     try {
@@ -33,6 +36,14 @@ const WeeklyGoalCard = () => {
 
   const remainingDistance = goalDistance - weeklyRunDistance;
   const router = useRouter();
+
+  const onMove = () => {
+    const data = {
+      type: MODULE.PUSH,
+      url: '/(tabs)/(single-running)'
+    };
+    postMessageToApp(MODULE.PUSH, JSON.stringify(data));
+  };
   return (
     <Card
       className="relative mt-[24px] py-[28px]"
@@ -72,9 +83,7 @@ const WeeklyGoalCard = () => {
       </div>
       <Button
         className="mt-5 h-12 w-full text-[0.9375rem] leading-[1.5] font-bold tracking-[-0.025em] text-black"
-        onClickAction={() => {
-          router.push('/prepare-run');
-        }}
+        onClickAction={onMove}
       >
         시작하기
       </Button>
