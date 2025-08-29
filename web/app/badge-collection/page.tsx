@@ -60,8 +60,8 @@ function Page() {
     }
   }, [isChanged, router]);
 
-  const handleSave = useCallback(() => {
-    actualSave();
+  const handleSave = useCallback(async () => {
+    await actualSave();
     router.push('/main');
   }, [router, actualSave]);
   //layout의 버튼에 함수 연결
@@ -79,11 +79,11 @@ function Page() {
   };
   const handleCloseModal = () => {
     handleOverlayClick();
-    router.back();
+    router.push('/main');
   };
 
-  const handleConfirm = () => {
-    actualSave();
+  const handleConfirm = async () => {
+    await actualSave();
     handleCloseModal();
   };
 
