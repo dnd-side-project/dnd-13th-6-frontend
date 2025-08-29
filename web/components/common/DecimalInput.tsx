@@ -43,7 +43,7 @@ const DecimalInput = ({
     <input
       ref={ref}
       className={className}
-      type="text"
+      type="number"
       placeholder={placeholder}
       inputMode="decimal"
       value={value}
