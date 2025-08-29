@@ -62,7 +62,7 @@ function Page() {
 
   const handleSave = useCallback(() => {
     actualSave();
-    router.back();
+    router.push('/main');
   }, [router, actualSave]);
   //layout의 버튼에 함수 연결
   useEffect(() => {
