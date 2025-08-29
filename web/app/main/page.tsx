@@ -7,11 +7,12 @@ import TodayStatsCard from '@/components/main/TodayStatsCard';
 import GachaCard from '@/components/main/GachaCard';
 import { fetchUserInfo } from '@/utils/apis/member';
 import api from '@/utils/apis/customAxios';
-import { NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
+import { MODULE, NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
 import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
 import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
-import { useRouter } from 'next/navigation';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+
 interface FinishDataItem {
   averagePace: string; // ex: "0'00\""
   runningData: RunningData[]; // 배열 안에 구체적 타입이 있으면 명시 가능
@@ -29,11 +30,7 @@ export default function Main() {
   const router = useRouter();
   // finishData 불러오기
   useEffect(() => {
-    //accessToken 콘솔에 테스트
-    const match = document.cookie.match(/(^|;\s*)accessToken=([^;]+)/);
-    const accessToken = match ? match[2] : '';
-    console.log('accessToken:', accessToken);
-
+    postMessageToApp(MODULE.AUTH);
     setFinishData(JSON.parse(localStorage.getItem('finishData') ?? '[]'));
   }, []);
 
