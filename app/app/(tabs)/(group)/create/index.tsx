@@ -14,6 +14,7 @@ export default function Code() {
     const { type, data } = JSON.parse(event.nativeEvent.data);
     console.log(type, data, 'data');
     if (type === MODULE.PUSH) {
+      console.log(data, 'data');
       router.push(JSON.parse(data).url);
     }
   };
@@ -24,7 +25,7 @@ export default function Code() {
         style={styles.webview}
         ref={webviewRef}
         keyboardDisplayRequiresUserAction={false}
-        source={{ uri: ENV.WEB_VIEW_URL + '/group/code' }}
+        source={{ uri: ENV.WEB_VIEW_URL + '/group/create' }}
         onLoadEnd={() => setIsLoading(false)}
         onLoadStart={() => setIsLoading(true)}
         scrollEnabled={true}

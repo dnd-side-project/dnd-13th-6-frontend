@@ -1,26 +1,28 @@
 import { useState, useEffect } from 'react';
 import { ENV } from '@/utils/app/consts';
+import { APIResponse } from '@/types/genericTypes';
 
-const useFetch = (url: string) => {
-  const [data, setData] = useState(null);
+const useFetch = <T>(url: string, options?: RequestInit) => {
+  const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>();
 
   const fetchData = async () => {
     try {
-      console.log(`${ENV.API_BASE_URL}${url}`);
-      const res = await fetch(`${ENV.API_BASE_URL}${url}`, {
+      const res = await fetch(`${ENV.API_BASE_URL}/${url}`, {
         headers: {
-          'Content-Type': 'application/json',
-          'X-USER-ID': '1'
-        }
+          'Content-Type': 'application/json'
+        },
+        ...options
       });
-      const result = await res.json();
+      const result = (await res.json()) as APIResponse<T>;
       if (res.ok) {
-        setData(result);
+        // console.log(result.result.members);
+        setData(result.result);
         setError(null);
       } else {
         throw result;
       }
+      return result.result;
     } catch (error: unknown) {
       console.log(error);
       setError(error as Error);

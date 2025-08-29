@@ -9,7 +9,6 @@ function GroupExitContent({ onClose }: Props) {
   const [reaseon, setReaseon] = useState<string>('');
 
   const onConfirm = () => {
-    console.log('onConfirm');
     onClose();
   };
   return (

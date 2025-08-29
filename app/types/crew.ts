@@ -5,14 +5,13 @@ interface MemberData {
 }
 
 interface Crew {
-  crewId: string;
+  crewId: number;
   name: string;
-  memberCount: string;
-  isLeader: true;
-  badgeImageUrls: Array<string>;
+  leaderNickname: string;
+  notice: string;
+  memberCount: number;
   goal: number;
-  runningDistance: number;
-  isRunning: true;
+  code: string;
 }
 
 export type { MemberData, Crew };

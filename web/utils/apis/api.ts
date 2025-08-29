@@ -4,7 +4,7 @@ export const API_VERSION_PREFIX = 'api/v1';
 export const MODULE = {
   AUTH: `auth`,
   USERS: 'users',
-  CREWS: `${API_SUFFIX}/crews`,
+  CREWS: `crews`,
   GOALS: 'goals',
   REWARDS: 'rewards',
   PUSH: 'push',
@@ -12,28 +12,31 @@ export const MODULE = {
   RUNNER: 'runner',
   RUNNINGS: 'runnings',
   CALENDAR: 'calendar'
-};
+} as const;
 
-interface CrewAPI {
-  GET_CREW_LIST: () => string;
-  CREATE_CREW: () => string;
-  JOIN_CREW: () => string;
-  GET_CREW_DETAIL: (crewId: number) => string;
+// ✅ 모듈별 API 타입 정의
+interface APIDefinitions {
+  CREWS: {
+    GET_CREW_LIST: () => string;
+    CREATE_CREW: () => string;
+    JOIN_CREW: () => string;
+    GET_CREW_DETAIL: (crewId: number) => string;
+  };
+  // ✅ 다른 모듈도 여기에 추가 가능
+  // AUTH: { LOGIN: () => string; LOGOUT: () => string; }
 }
 
-const enum Controller {
-  CREWS = 'crews'
-}
-
-export const API_END_POINT: Record<Controller, CrewAPI> = {
-  [Controller.CREWS]: {
-    GET_CREW_LIST: () => `${API_VERSION_PREFIX}/${MODULE.CREWS}`,
-    CREATE_CREW: () => `${API_VERSION_PREFIX}/${MODULE.CREWS}`,
-    JOIN_CREW: () => `${API_VERSION_PREFIX}/${MODULE.CREWS}/join`,
-    GET_CREW_DETAIL: (crewId: number) =>
-      `${API_VERSION_PREFIX}/${MODULE.CREWS}/${crewId}`
-  }
-};
+// ✅ API_END_POINT 타입 = MODULE의 key 중에서 정의된 API만 포함
+export const API_END_POINT: { [K in keyof APIDefinitions]: APIDefinitions[K] } =
+  {
+    CREWS: {
+      GET_CREW_LIST: () => `${API_SUFFIX}/${MODULE.CREWS}`,
+      CREATE_CREW: () => `${API_SUFFIX}/${MODULE.CREWS}`,
+      JOIN_CREW: () => `${API_SUFFIX}/${MODULE.CREWS}/join`,
+      GET_CREW_DETAIL: (crewId: number) =>
+        `${API_SUFFIX}/${MODULE.CREWS}/${crewId}`
+    }
+  };
 
 export const AUTH_API = {
   SIGN_UP: () => `/api/auth/signup/complete`,
@@ -64,4 +67,11 @@ export const RUNNING_API = {
 export const GOAL_API = {
   GET_TARGET_DISTANCE: () => '/api/goals/me',
   CHANGE_TARGET_DISTANCE: () => '/api/goals/me'
+};
+
+export const SOCKET_URL = {
+  RUNNING_PUBLISH: (runningId: string | number) =>
+    `/app/runnings/${runningId}/location`,
+  RUNNING_SUBSCRIBE: (runningId: string | number) =>
+    `/topic/runnings/${runningId}`
 };

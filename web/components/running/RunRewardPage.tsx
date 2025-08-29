@@ -5,17 +5,17 @@ import React, { useEffect, useState } from 'react';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
 import { MODULE } from '@/utils/apis/api';
-import { postMessageToApp } from '@/utils/webView/message';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 type RewardType = {
   type?: 'personal' | 'crew';
-  isSuccess?: 'true' | 'false';
+  isSuccess?: boolean;
 };
 
-export default function RunRewardPage({ type }: RewardType) {
-  const [isSuccess] = useState(true);
-  const [nickname, setNickname] = useState<string>('');
-
+export default function RunRewardPage({
+  type = 'crew',
+  isSuccess = true
+}: RewardType) {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
   const [cloverCount, setCloverCount] = useState(0);
@@ -27,7 +27,7 @@ export default function RunRewardPage({ type }: RewardType) {
   useEffect(() => {
     if (type === 'crew') {
       setCloverCount(Number(localStorage.getItem('cloverCount')) || 0);
-      setNickname(localStorage.getItem('nickname') || '');
+      // setNickname(localStorage.getItem('nickname') || '');
     }
   }, [type]);
 
@@ -44,7 +44,8 @@ export default function RunRewardPage({ type }: RewardType) {
       return (
         <>
           현재 <span className="text-golden">{cloverCount}/10</span>개!{' '}
-          <span className="text-golden">3</span>개만 더 모으면 가챠 도전 가능!
+          <span className="text-golden">{10 - cloverCount}</span>개만 더 모으면
+          가챠 도전 가능!
         </>
       );
     }
@@ -78,12 +79,12 @@ export default function RunRewardPage({ type }: RewardType) {
 
   const onMove = () => {
     const data = {
-      type: MODULE.PUSH,
       url: '/(tabs)/(home)'
     };
     router.push('/group');
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
+
   return (
     <div className="relative flex h-full flex-col items-center bg-[#201F22] text-center text-white">
       <div className="flex-grow pt-10">
@@ -127,7 +128,7 @@ export default function RunRewardPage({ type }: RewardType) {
           ) : (
             <>
               <span className="pretendard-headline2 text-golden">
-                {nickname}
+                {/* {nickname} */}
               </span>{' '}
               님의 활약으로 팀 목표를 달성했어요 !
             </>

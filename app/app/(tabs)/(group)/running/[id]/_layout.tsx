@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { router, useLocalSearchParams, withLayoutContext } from 'expo-router';
+import { createContext, useEffect, useLayoutEffect, useState } from 'react';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BottomSheet from '@/components/bottom-sheets/BottomSheet';
 import EditGroupNotificationContent from '@/components/bottom-sheets/contents/EditGroupNotificationContent';
@@ -12,23 +12,41 @@ import SelectNewCrewContent from '@/components/bottom-sheets/contents/SelectNewC
 import Chip from '@/components/chips/Chip';
 import ProgressBar from '@/components/ProgressBar';
 import { useBottomSheet } from '@/hooks/useBottomSheet';
-import { TobTab } from '@/components/TobTab';
 import CustomAlert from '@/components/modal/CustomAlert';
 import { useCustomAlert } from '@/hooks/useCustomAlert';
 import { useToast } from '@/contexts/ToastContext';
+import useFetch from '@/hooks/useFetch';
+import { API_END_POINT } from '@/utils/apis/api';
+import {
+  createMaterialTopTabNavigator,
+  MaterialTopTabNavigationEventMap,
+  MaterialTopTabNavigationOptions
+} from '@react-navigation/material-top-tabs';
+import { ParamListBase, TabNavigationState } from '@react-navigation/native';
+import { Crew, MemberData } from '@/types/crew';
+import { ENV } from '@/utils/app/consts';
+import GroupCodeAlert from '@/components/modal/GroupCodeAlert';
 
-const GroupInfo = () => {
+export const CrewContext = createContext<{
+  crewInfo: Crew | null;
+  crewMembers: { members: MemberData[] } | null;
+}>({
+  crewInfo: null,
+  crewMembers: null
+});
+
+const GroupInfo = ({ crewInfo }: { crewInfo: Crew }) => {
   return (
     <View>
       <View>
-        <Text style={styles.GroupInfoTitle}>방 제목 최대 몇 글자까지</Text>
+        <Text style={styles.GroupInfoTitle}>{crewInfo.name}</Text>
         <View style={styles.GroupNotificationContainer}>
           <Ionicons name="megaphone-outline" color={'white'} size={19} />
           <Text
             className="text-gray40 font-semibold"
             style={styles.GroupNotificationText}
           >
-            매일매일 열심히 하자 (공지 및 방 설명)
+            {crewInfo.notice ? crewInfo.notice : ''}
           </Text>
         </View>
       </View>
@@ -36,7 +54,7 @@ const GroupInfo = () => {
   );
 };
 
-const GroupGoal = ({ onProgressPress }: { onProgressPress: () => void }) => {
+const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
   return (
     <View style={styles.GroupGoalContainer}>
       <Chip
@@ -47,7 +65,7 @@ const GroupGoal = ({ onProgressPress }: { onProgressPress: () => void }) => {
           alignSelf: 'flex-start'
         }}
       >
-        <Text style={{ color: '#32FF76', fontSize: 13, textAlign: 'center' }}>
+        <Text className="text-main text-body3 text-center">
           시작한지 + 12일째
         </Text>
       </Chip>
@@ -62,31 +80,47 @@ const GroupGoal = ({ onProgressPress }: { onProgressPress: () => void }) => {
   );
 };
 
-const MaterialTobTabItems = [
-  {
-    name: 'index',
-    options: {
-      title: '랭킹'
-    }
+const MaterialTopTabsScreenOptions: MaterialTopTabNavigationOptions = {
+  tabBarStyle: {
+    backgroundColor: '#313131',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24
   },
-  {
-    name: 'runningShare',
-    options: {
-      title: '러닝 공유'
-    }
-  }
-];
+  tabBarLabelStyle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textTransform: 'none' // 이 옵션을 추가하여 title이 그대로 표시되도록 함
+  },
+  tabBarActiveTintColor: '#fff',
+  tabBarInactiveTintColor: '#999', // 비활성 탭 색상 추가
+  tabBarIndicatorStyle: {
+    backgroundColor: '#E5E5EA',
+    height: 4,
+    width: '45%',
+    marginHorizontal: 12
+  },
+  tabBarShowLabel: true
+};
+
+const { Navigator } = createMaterialTopTabNavigator();
+
+export const MaterialTopTabs = withLayoutContext<
+  MaterialTopTabNavigationOptions,
+  typeof Navigator,
+  TabNavigationState<ParamListBase>,
+  MaterialTopTabNavigationEventMap
+>(Navigator);
 
 export default function Layout() {
   const insets = useSafeAreaInsets();
   const [editMemberType, setEditMemberType] = useState<
     'editMember' | 'editOwner'
   >('editMember');
-
+  const { id: crewId } = useLocalSearchParams();
   const isCrewLeader = true;
   // CustomAlert 훅
   const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
-
+  const [isGroupCodeAlertVisible, setIsGroupCodeAlertVisible] = useState(false);
   // 각각 개별적으로 바텀시트 훅 호출 배경 블러처리
   const settingsBottomSheet = useBottomSheet({
     snapPoints: ['70%'],
@@ -111,42 +145,93 @@ export default function Layout() {
 
   // 바텀시트 핸들러들
   const handleSettingsPress = () => settingsBottomSheet.present();
-  const handleProgressPress = () => groupExitBottomSheet.present();
   const handleEditMemberPress = () => editMemberBottomSheet.present();
   const handleEditNoticePress = () => editNoticeBottomSheet.present();
-  const handleGroupInfoPress = () => editMemberBottomSheet.present();
   const { showSuccess } = useToast();
-  const isAdminUser = true;
+  const [isAdminUser, setIsAdminUser] = useState(false);
   //그룹 나가기
-  const onGroupExit = () => {
-    settingsBottomSheet.close();
-    handleProgressPress();
+  const onGroupExit = async () => {
+    try {
+      if (crewInfo) {
+        const url = `${ENV.API_BASE_URL}/${API_END_POINT.CREWS.DELETE_CREW(
+          crewInfo.crewId
+        )}`;
+        const ret = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        if (ret.ok) {
+          router.push('/(tabs)/(group)');
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const onEditMember = (type: 'editMember' | 'editOwner', memberId: string) => {
+  const {
+    data: crewInfo,
+    error: creInfoError,
+    fetchData: crewInfoFetchData
+  } = useFetch<Crew>(API_END_POINT.CREWS.GET_CREW_DETAIL(crewId as string), {
+    method: 'GET'
+  });
+  const {
+    data: crewMembers,
+    error: crewMembersError,
+    fetchData: crewMembersFetchData
+  } = useFetch<{ members: MemberData[] }>(
+    API_END_POINT.CREWS.GET_CREW_MEMBERS(crewId as string),
+    {
+      method: 'GET'
+    }
+  );
+
+  const onEditMember = (
+    type: 'editMember' | 'editOwner',
+    member: MemberData
+  ) => {
     if (type === 'editMember') {
       showAlert({
-        message: `${memberId}님을\n 크루에서 내보낼까요?`,
+        message: `${member.nickname}님을\n 크루에서 내보낼까요?`,
         buttons: [
           {
             text: '아니오',
             className: 'bg-gray70 py-4 rounded-md',
             textClassName: 'text-white text-headline1',
-            onPress: () => {
-              showSuccess('크루 나가기 완료');
-            }
+            onPress: () => {}
           },
           {
             text: '네, 내보낼게요',
             className: 'bg-red py-4 rounded-md',
             textClassName: 'text-white text-headline1',
-            onPress: hideAlert
+            onPress: async () => {
+              const { error: isError, fetchData: deleteMemberFetchData } =
+                useFetch<string>(
+                  API_END_POINT.CREWS.DELETE_CREW_MEMBER(
+                    crewId as string,
+                    member.memberId
+                  ),
+                  {
+                    method: 'DELETE'
+                  }
+                );
+              await deleteMemberFetchData();
+              if (isError) {
+                showSuccess('크루 나가기 실패');
+              } else {
+                showSuccess('크루 나가기 완료');
+              }
+              hideAlert();
+            }
           }
         ]
       });
     } else {
       showAlert({
-        message: `${memberId}님께\n 크루 리더를 위임할까요?`,
+        message: `${member.nickname}님께\n 크루 리더를 위임할까요?`,
         buttons: [
           {
             text: '아니오',
@@ -178,19 +263,51 @@ export default function Layout() {
     handleEditNoticePress();
   };
 
+  useLayoutEffect(() => {
+    const init = async () => {
+      await Promise.all([crewInfoFetchData(), crewMembersFetchData()]).then(
+        ([creInfo]) => {
+          setIsAdminUser(creInfo?.leaderNickname === 'leader');
+        }
+      );
+      // setCrewInfo(creInfo);
+      // setCrewMembers(crewMembers);
+    };
+    init();
+  }, []);
+
+  const contextValue = {
+    crewInfo,
+    crewMembers
+  };
+
   return (
     <View
-      style={[
-        styles.container,
-        { paddingTop: insets.top, backgroundColor: '#000' }
-      ]}
-      className="flex-1"
+      style={[styles.container, { paddingTop: insets.top }]}
+      className="flex-1 bg-black"
     >
-      <View className="flex-row justify-between px-4 py-[10px]">
+      <View className="flex-row px-4 py-[10px] items-center gap-5">
         <Pressable onPress={() => router.push('/(tabs)/(home)')}>
           <Ionicons name="arrow-back-outline" color={'white'} size={24} />
         </Pressable>
-        <Text className="text-white text-lg font-semibold">크루</Text>
+        <Pressable className="">
+          <Image style={{ width: 24, height: 24 }} />
+        </Pressable>
+        <Text className="text-white text-lg font-semibold flex-grow text-center">
+          크루
+        </Text>
+        <Pressable
+          className="ml-auto"
+          onPress={() => {
+            setIsGroupCodeAlertVisible(true);
+            console.log('click');
+          }}
+        >
+          <Image
+            source={require('@/assets/images/UserPlus.png')}
+            style={{ width: 24, height: 24 }}
+          />
+        </Pressable>
         <Pressable onPress={handleSettingsPress}>
           <Ionicons name="settings-outline" color={'white'} size={24} />
         </Pressable>
@@ -204,12 +321,22 @@ export default function Layout() {
         }}
         className="flex-grow-0"
       >
-        <GroupInfo />
-        <GroupGoal onProgressPress={handleProgressPress} />
+        {crewInfo && (
+          <>
+            <GroupInfo crewInfo={crewInfo} />
+            <GroupGoal crewInfo={crewInfo} />
+          </>
+        )}
       </View>
-
-      <TobTab items={MaterialTobTabItems} />
-
+      <CrewContext.Provider value={contextValue}>
+        <MaterialTopTabs screenOptions={MaterialTopTabsScreenOptions}>
+          <MaterialTopTabs.Screen name="index" options={{ title: '랭킹' }} />
+          <MaterialTopTabs.Screen
+            name="runningShare"
+            options={{ title: '러닝 공유' }}
+          />
+        </MaterialTopTabs>
+      </CrewContext.Provider>
       <View
         style={{
           backgroundColor: '#313131',
@@ -224,7 +351,6 @@ export default function Layout() {
           <Text style={styles.startButtonText}>운동 시작하기</Text>
         </Pressable>
       </View>
-
       {/* 설정 BottomSheet */}
       <BottomSheet
         ref={settingsBottomSheet.bottomSheetRef}
@@ -233,24 +359,39 @@ export default function Layout() {
         <GroupSettingContent
           isAdminUser={isAdminUser}
           onClose={settingsBottomSheet.close}
-          onExitPress={onGroupExit}
+          onExitPress={() => {
+            if (crewMembers?.members.length === 1) {
+              console.log('1');
+              onGroupExit();
+            } else {
+              groupExitBottomSheet.present();
+            }
+          }}
           onEditMemberPress={() => onEditGroupInfo('editMember')}
           onEditGroupInfoPress={() => onEditGroupInfo('editOwner')}
           onEditNoticePress={onEditNotice}
         />
       </BottomSheet>
-
       <BottomSheet
         ref={groupExitBottomSheet.bottomSheetRef}
         {...groupExitBottomSheet.config}
       >
-        {isCrewLeader ? (
-          <SelectNewCrewContent onClose={groupExitBottomSheet.close} />
+        {crewInfo?.leaderNickname === 'leader' ? (
+          <SelectNewCrewContent
+            onClose={() => {
+              groupExitBottomSheet.close();
+              setEditMemberType('editOwner');
+              editMemberBottomSheet.present();
+            }}
+          />
         ) : (
-          <GroupExitContent onClose={groupExitBottomSheet.close} />
+          <GroupExitContent
+            crewInfo={crewInfo}
+            isLastUser={crewMembers?.members.length === 1}
+            onClose={groupExitBottomSheet.close}
+          />
         )}
       </BottomSheet>
-
       {isAdminUser && (
         <>
           {/* 멤버 탈퇴 및 그룹장 위임 bottomSheet */}
@@ -261,7 +402,10 @@ export default function Layout() {
             <EditMemberContent
               type={editMemberType}
               onClose={editMemberBottomSheet.close}
-              onPress={() => onEditMember(editMemberType, '1')}
+              crewMembers={crewMembers}
+              onPress={(member: MemberData) =>
+                onEditMember(editMemberType, member)
+              }
             />
           </BottomSheet>
           {/* 공지 변경 bottomSheet */}
@@ -270,7 +414,12 @@ export default function Layout() {
             {...editNoticeBottomSheet.config}
           >
             <EditGroupNotificationContent
-              onClose={editNoticeBottomSheet.close}
+              crewId={crewId as string}
+              prevNotice={crewInfo?.notice || ''}
+              onClose={() => {
+                crewInfoFetchData();
+                editNoticeBottomSheet.close();
+              }}
             />
           </BottomSheet>
         </>
@@ -281,6 +430,11 @@ export default function Layout() {
         message={alertConfig?.message || ''}
         buttons={alertConfig?.buttons}
         onClose={hideAlert}
+      />
+      <GroupCodeAlert
+        visible={isGroupCodeAlertVisible}
+        onClose={() => setIsGroupCodeAlertVisible(false)}
+        code={'123456'}
       />
     </View>
   );
@@ -343,24 +497,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 20
-  },
-  // BottomSheet 관련 스타일들
-  bottomSheetItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 15,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    backgroundColor: '#404040'
-  },
-  runningOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 15,
-    paddingVertical: 20,
-    paddingHorizontal: 15,
-    backgroundColor: '#404040',
-    borderRadius: 8
   }
 });

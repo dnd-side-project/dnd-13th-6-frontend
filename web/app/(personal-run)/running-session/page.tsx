@@ -9,8 +9,16 @@ import MainOverview from '@/components/running/OverView/MainOverview';
 import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 import { RunningData } from '@/types/runningTypes';
 import api from '@/utils/apis/customAxios';
-import { RUNNING_API } from '@/utils/apis/api';
+import { RUNNING_API, SOCKET_URL } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+
+const stompClient = new Client({
+  webSocketFactory: () =>
+    new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
+  reconnectDelay: 5000
+});
 
 export default function Page() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -123,6 +131,18 @@ export default function Page() {
             ...prev,
             { ...data.message, timestamp: data.timestamp }
           ]);
+          //SOCKET PUBLISH
+          stompClient.publish({
+            destination: SOCKET_URL.RUNNING_PUBLISH(
+              localStorage.getItem('runningId')!
+            ),
+            body: JSON.stringify({
+              x: data.message.latitude,
+              y: data.message.longitude,
+              timestamp: Date.now()
+            }),
+            headers: { 'content-type': 'application/json' }
+          });
         }
       } catch (error) {
         console.error('error:', error);
@@ -264,6 +284,15 @@ export default function Page() {
         break;
     }
   };
+
+  //STOMP
+  useEffect(() => {
+    stompClient.activate();
+
+    return () => {
+      stompClient.deactivate();
+    };
+  }, []);
 
   return (
     <div

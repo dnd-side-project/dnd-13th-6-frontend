@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useLayoutEffect, useEffect } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Image from 'next/image';
@@ -8,7 +8,10 @@ import UserMarker from '@/components/googleMap/UserMarker';
 import { useStomp } from '@/hooks/useStomp';
 import type { MemberData } from '@/types/crew';
 import { useSearchParams } from 'next/navigation';
-
+import axios from 'axios';
+import { Client, IMessage } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import { env } from 'process';
 function CrewMemberProfiles({
   users,
   onClick
@@ -17,7 +20,7 @@ function CrewMemberProfiles({
   onClick: (user: MemberData) => void;
 }) {
   return (
-    <div className="flex gap-4 overflow-x-scroll mt-6">
+    <div className="mt-6 flex gap-4 overflow-x-scroll">
       {users.map((user, index) => (
         <ProfileImage
           key={index}
@@ -31,14 +34,19 @@ function CrewMemberProfiles({
   );
 }
 
+const stompClient = new Client({
+  webSocketFactory: () =>
+    new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
+  reconnectDelay: 5000
+});
+
 function GroupRunningContent() {
   const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
   const searchParams = useSearchParams();
+  const crewId = searchParams.get('q');
+
   //TODO 크루 ID를 통해 크루 조회
-  console.log(searchParams.get('q'));
-  
-  // ... existing code ...
-  
+
   // 클로버 애니메이션
   const startCloverAnimation = () => {
     const id = Date.now();
@@ -49,6 +57,7 @@ function GroupRunningContent() {
       setClovers(prev => prev.filter(c => c.id !== id));
     }, 2000);
   };
+  const [members, setMembers] = useState<MemberData[]>([]);
 
   const [memberData, setMemberData] = useState({
     lat: 35.97664845766847,
@@ -57,54 +66,84 @@ function GroupRunningContent() {
 
   //TODO 멤버 타입 정의
   const onMemberClick = (member: MemberData) => {
-    // const {langtitude, longitude, isRunning=true} = member;
     setMemberData({
       lng: 126.8542609,
       lat: 37.5615603
     });
+
+    stompClient.subscribe('/topic/runnings/23', (message: IMessage) => {
+      setMemberData({
+        lng: 126.8542609,
+        lat: 37.5615603
+      });
+    });
   };
 
-  const { connected, publish } = useStomp({
-    url: process.env.NEXT_PUBLIC_SERVER_BASE_URL + '/ws',
-    subscribeUrl: '/topic/group-running',
-    publishUrl: '/app/group-running',
-    onMessage: message => {
-      const data = JSON.parse(message);
-      setMemberData({
-        lat: data.lat,
-        lng: data.lng
-      });
-    }
-  });
+  useEffect(() => {
+    // Android
+    const handleAndroidMessage = (event: Event) => {
+      try {
+        const messageEvent = event as MessageEvent;
+        const parsedData = JSON.parse(messageEvent.data);
+        console.log('Android received message:', parsedData);
+        if (parsedData.type === 'SET_CREW_MEMBERS') {
+          setMembers(parsedData.message as MemberData[]);
+        }
+      } catch (error) {
+        console.error('Error parsing message:', error);
+      }
+    };
+
+    // iOS
+    const handleIOSMessage = (event: MessageEvent) => {
+      try {
+        const parsedData = JSON.parse(event.data);
+        console.log('iOS received message:', parsedData);
+        if (parsedData.type === 'SET_CREW_MEMBERS') {
+          setMembers(parsedData.message as MemberData[]);
+        }
+      } catch (error) {
+        console.error('Error parsing message:', error);
+      }
+    };
+
+    document.addEventListener('message', handleAndroidMessage);
+    window.addEventListener('message', handleIOSMessage);
+
+    return () => {
+      document.removeEventListener('message', handleAndroidMessage);
+      window.removeEventListener('message', handleIOSMessage);
+      stompClient.deactivate();
+    };
+  }, []);
 
   const sendEmogi = (emojiType: string) => {
     startCloverAnimation();
-    publish(emojiType);
+    // publish(emojiType);
   };
 
-  return (
-    <div className="relative h-screen w-full bg-[#313131] text-whit px-4  overflow-scroll">
-      <CrewMemberProfiles
-        users={[
-          {
-            memberId: '1',
-            nickname: '유준호',
-            character: 'clover'
-          },
-          {
-            memberId: '2',
-            nickname: '김철수',
-            character: 'clover'
-          },
-          {
-            memberId: '3',
-            nickname: '이영희',
-            character: 'clover'
+  useLayoutEffect(() => {
+    const init = async () => {
+      const users = axios(
+        `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/crews/${crewId}/members`,
+        {
+          method: 'GET',
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
           }
-        ]}
-        onClick={onMemberClick}
-      />
-      <div className="mt-6 overflow-y-scroll h-[400px] relative mb-[14px]">
+        }
+      );
+      console.log('users', users);
+      // ... existing code ...
+    };
+    init();
+  });
+
+  return (
+    <div className="text-whit relative h-screen w-full overflow-scroll bg-[#313131] px-4">
+      <CrewMemberProfiles users={members} onClick={onMemberClick} />
+      <div className="relative mt-6 mb-[14px] h-[400px] overflow-y-scroll">
         <GoogleMap path={[{ lat: memberData.lat, lng: memberData.lng }]}>
           <UserMarker
             lat={memberData.lat}
@@ -114,43 +153,43 @@ function GroupRunningContent() {
         </GoogleMap>
         <button
           onClick={() => sendEmogi('clover')}
-          className="absolute right-2 bottom-2 z-10 px-4 py-2 rounded-full bg-black/50 ml-auto text-white flex items-center gap-2"
+          className="absolute right-2 bottom-2 z-10 ml-auto flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 text-white"
         >
-          <div className="relative w-5 h-5 max-h-15">
+          <div className="relative h-5 max-h-15 w-5">
             <Image src="/assets/clover.png" alt="clover" fill />
 
-              {/* 클릭 시 생성되는 클로버 애니메이션 */}
-              {/* 처음에는 흐리게* */}
-              <div className="absolute left-2 top-0 w-5 h-5 pointer-events-none">
-                <AnimatePresence>
-                  {clovers.map(c => (
-                    <motion.div
-                      key={c.id}
-                      initial={{ y: 0, scale: 3, opacity: 0.3 }}
-                      animate={{
-                        y: -100, // 위로 이동
-                        x: 50,
-                        scale: 12,
-                        opacity: 1,
-                        //오른쪽으로 기울어짐
-                        rotate: 45
-                      }}
-                      transition={{ duration: 0.5 }}
-                      className="absolute left-1/2 top-0 -translate-x-1/2"
-                    >
-                      <Image
-                        src="/assets/clover-142.png"
-                        alt="clover"
-                        width={142}
-                        height={142}
-                      />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
+            {/* 클릭 시 생성되는 클로버 애니메이션 */}
+            {/* 처음에는 흐리게* */}
+            <div className="pointer-events-none absolute top-0 left-2 h-5 w-5">
+              <AnimatePresence>
+                {clovers.map(c => (
+                  <motion.div
+                    key={c.id}
+                    initial={{ y: 0, scale: 3, opacity: 0.3 }}
+                    animate={{
+                      y: -100, // 위로 이동
+                      x: 50,
+                      scale: 12,
+                      opacity: 1,
+                      //오른쪽으로 기울어짐
+                      rotate: 45
+                    }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute top-0 left-1/2 -translate-x-1/2"
+                  >
+                    <Image
+                      src="/assets/clover-142.png"
+                      alt="clover"
+                      width={142}
+                      height={142}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
-            <div>행운 보내기</div>
-          </button>
+          </div>
+          <div>행운 보내기</div>
+        </button>
       </div>
     </div>
   );
