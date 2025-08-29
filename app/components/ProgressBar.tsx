@@ -30,6 +30,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   style,
   showPercentage = true
 }) => {
+  console.log(progress, 'progress');
   const animatedProgress = useRef(new Animated.Value(0)).current;
   const { width: windowWidth } = useWindowDimensions();
   const [layoutWidth, setLayoutWidth] = useState<number | null>(null);

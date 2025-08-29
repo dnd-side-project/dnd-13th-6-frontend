@@ -72,10 +72,19 @@ const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
       <View>
         <Text style={styles.GroupGoalText}>최종 목표까지</Text>
         <Text style={[styles.GroupGoalText, { marginTop: 5 }]}>
-          <Text style={styles.RemainingGoalText}>0.7KM</Text> 남았어요!
+          <Text style={styles.RemainingGoalText}>
+            {crewInfo.goal - crewInfo.runningDistance}KM
+          </Text>{' '}
+          남았어요!
         </Text>
       </View>
-      <ProgressBar progress={40} />
+      <ProgressBar
+        progress={
+          isNaN(crewInfo.runningDistance / crewInfo.goal)
+            ? 0
+            : (crewInfo.runningDistance / crewInfo.goal) * 100
+        }
+      />
     </View>
   );
 };
@@ -300,7 +309,6 @@ export default function Layout() {
           className="ml-auto"
           onPress={() => {
             setIsGroupCodeAlertVisible(true);
-            console.log('click');
           }}
         >
           <Image
@@ -361,7 +369,6 @@ export default function Layout() {
           onClose={settingsBottomSheet.close}
           onExitPress={() => {
             if (crewMembers?.members.length === 1) {
-              console.log('1');
               onGroupExit();
             } else {
               groupExitBottomSheet.present();
@@ -376,7 +383,7 @@ export default function Layout() {
         ref={groupExitBottomSheet.bottomSheetRef}
         {...groupExitBottomSheet.config}
       >
-        {crewInfo?.leaderNickname === 'leader' ? (
+        {crewInfo?.leaderNickname === '유준호' ? (
           <SelectNewCrewContent
             onClose={() => {
               groupExitBottomSheet.close();
@@ -434,7 +441,7 @@ export default function Layout() {
       <GroupCodeAlert
         visible={isGroupCodeAlertVisible}
         onClose={() => setIsGroupCodeAlertVisible(false)}
-        code={'123456'}
+        code={crewInfo?.code || ''}
       />
     </View>
   );

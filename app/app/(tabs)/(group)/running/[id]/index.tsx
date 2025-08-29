@@ -33,30 +33,8 @@ const rankStyle = (rank: number) => {
 };
 
 const RankingItem: React.FC<RankingItemProps> = ({ name, rank, imageUrl }) => {
-  // 왼쪽 스와이프 액션 (삭제)
-  const renderRightActions = () => {
-    return (
-      <View style={styles.leftAction}>
-        <Pressable
-          style={styles.deleteButton}
-          onPress={() => {
-            Alert.alert('삭제', `${name}의 정보를 편집합니다.`);
-          }}
-        >
-          <Text style={styles.deleteButtonText}>삭제</Text>
-        </Pressable>
-      </View>
-    );
-  };
-
   const rankClass = rankStyle(rank);
   return (
-    // <Swipeable
-    //   friction={2}
-    //   leftThreshold={80}
-    //   rightThreshold={80}
-    //   renderRightActions={renderRightActions}
-    // >
     <View style={styles.rankingItem}>
       <View style={styles.rankBadge} className={rankClass}>
         <Text style={styles.rankText}>{rank}</Text>
@@ -70,7 +48,6 @@ const RankingItem: React.FC<RankingItemProps> = ({ name, rank, imageUrl }) => {
         <Text style={styles.nameText}>{name}</Text>
       </View>
     </View>
-    // </Swipeable>
   );
 };
 
@@ -79,7 +56,7 @@ function Index() {
   const handleDelete = (name: string) => {};
 
   const { crewInfo, crewMembers } = useContext(CrewContext);
-
+  console.log(crewMembers, 'crewMembers');
   return (
     <View style={styles.container}>
       <Text style={styles.title}>이번 주의 크루 MVP는?</Text>
@@ -92,7 +69,7 @@ function Index() {
             <RankingItem
               key={member.memberId}
               name={member.nickname}
-              imageUrl={member.character}
+              imageUrl={member.badgeImageUrl}
               rank={1}
               distance="5.2km"
               onDelete={() => handleDelete(member.nickname)}

@@ -1,7 +1,10 @@
 interface MemberData {
   memberId: string;
   nickname: string;
-  character: string;
+  badgeImageUrl: string;
+  isRunning: boolean;
+  runningDistance: number;
+  sub: string;
 }
 
 interface Crew {
@@ -12,6 +15,6 @@ interface Crew {
   memberCount: number;
   goal: number;
   code: string;
+  runningDistance: number;
 }
-
 export type { MemberData, Crew };

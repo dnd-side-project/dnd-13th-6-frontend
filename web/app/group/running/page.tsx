@@ -5,13 +5,11 @@ import GoogleMap from '@/components/googleMap/GoogleMap';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import UserMarker from '@/components/googleMap/UserMarker';
-import { useStomp } from '@/hooks/useStomp';
 import type { MemberData } from '@/types/crew';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { env } from 'process';
 function CrewMemberProfiles({
   users,
   onClick
@@ -24,9 +22,13 @@ function CrewMemberProfiles({
       {users.map((user, index) => (
         <ProfileImage
           key={index}
-          onClick={() => onClick(user)}
-          isRunning={true}
-          profileImageUrl={'/assets/clover.png'}
+          onClick={() => {
+            if (user.isRunning) {
+              onClick(user);
+            }
+          }}
+          isRunning={user.isRunning}
+          profileImageUrl={user.badgeImageUrl}
           alt="user"
         />
       ))}
@@ -58,23 +60,25 @@ function GroupRunningContent() {
     }, 2000);
   };
   const [members, setMembers] = useState<MemberData[]>([]);
-
-  const [memberData, setMemberData] = useState({
+  const [member, setMember] = useState<MemberData | null>(null);
+  const [memberLocation, setMemberLocation] = useState({
     lat: 35.97664845766847,
     lng: 126.99597295767953
   });
 
   //TODO 멤버 타입 정의
   const onMemberClick = (member: MemberData) => {
-    setMemberData({
-      lng: 126.8542609,
-      lat: 37.5615603
-    });
+    setMember(member);
 
-    stompClient.subscribe('/topic/runnings/23', (message: IMessage) => {
-      setMemberData({
-        lng: 126.8542609,
-        lat: 37.5615603
+    stompClient.subscribe(member.sub, (message: IMessage) => {
+      const data: {
+        x: number;
+        y: number;
+        timestamp: number;
+      } = JSON.parse(message.body);
+      setMemberLocation({
+        lng: data.x,
+        lat: data.y
       });
     });
   };
@@ -98,7 +102,6 @@ function GroupRunningContent() {
     const handleIOSMessage = (event: MessageEvent) => {
       try {
         const parsedData = JSON.parse(event.data);
-        console.log('iOS received message:', parsedData);
         if (parsedData.type === 'SET_CREW_MEMBERS') {
           setMembers(parsedData.message as MemberData[]);
         }
@@ -134,7 +137,6 @@ function GroupRunningContent() {
           }
         }
       );
-      console.log('users', users);
       // ... existing code ...
     };
     init();
@@ -144,12 +146,16 @@ function GroupRunningContent() {
     <div className="text-whit relative h-screen w-full overflow-scroll bg-[#313131] px-4">
       <CrewMemberProfiles users={members} onClick={onMemberClick} />
       <div className="relative mt-6 mb-[14px] h-[400px] overflow-y-scroll">
-        <GoogleMap path={[{ lat: memberData.lat, lng: memberData.lng }]}>
-          <UserMarker
-            lat={memberData.lat}
-            lng={memberData.lng}
-            imageUrl={'/assets/clover.png'}
-          />
+        <GoogleMap
+          path={[{ lat: memberLocation.lat, lng: memberLocation.lng }]}
+        >
+          {member && (
+            <UserMarker
+              lat={memberLocation.lat}
+              lng={memberLocation.lng}
+              imageUrl={member.badgeImageUrl}
+            />
+          )}
         </GoogleMap>
         <button
           onClick={() => sendEmogi('clover')}

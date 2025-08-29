@@ -29,9 +29,6 @@ function RunningShare() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable onPress={() => router.push('/(tabs)/(group)/running/23')}>
-        <Text className="text-white">123</Text>
-      </Pressable>
       <WebView
         ref={webviewRef}
         style={styles.webview}
