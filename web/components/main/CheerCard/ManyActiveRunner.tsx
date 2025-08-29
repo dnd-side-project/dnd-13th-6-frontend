@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ManyActiveRunner() {
+function ManyActiveRunner({ runningUser }: { runningUser: string[] }) {
   const members = ['a', 'b', 'c', 'd', 'e'];
   return (
     <div className="relative z-20 -mx-2 flex flex-col items-center justify-center pt-1">
@@ -15,7 +15,7 @@ function ManyActiveRunner() {
         ))}
       </div>
       <div className="z-10 mt-5 text-center text-[1.0625rem] leading-[1.5] font-bold tracking-[-0.025em]">
-        현재 <span className="text-primary z-10">크루원 5명</span>
+        현재 <span className="text-primary z-10">{runningUser.length}</span>
         <span className="whitespace-pre-line text-white">
           {`이\n 뛰고있어요!\n함께 응원해요!`}
         </span>
