@@ -12,6 +12,7 @@ import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
 import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import { useRouter } from 'next/navigation';
 
 interface FinishDataItem {
   averagePace: string; // ex: "0'00\""
