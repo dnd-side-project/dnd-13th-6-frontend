@@ -1,20 +1,10 @@
-import { useLocalSearchParams } from 'expo-router';
-import { useContext } from 'react';
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Image
-} from 'react-native';
+import { useContext, useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 import { CrewContext } from './_layout';
 
 interface RankingItemProps {
   name: string;
   rank: number;
-  distance: string;
   onDelete?: () => void;
   imageUrl: string;
 }
@@ -52,10 +42,17 @@ const RankingItem: React.FC<RankingItemProps> = ({ name, rank, imageUrl }) => {
 };
 
 function Index() {
-  const { id: crewId } = useLocalSearchParams();
   const handleDelete = (name: string) => {};
+  const [duration, setDuration] = useState<number>(0);
+  const { crewMembers, crewInfo } = useContext(CrewContext);
 
-  const { crewMembers } = useContext(CrewContext);
+  useEffect(() => {
+    const createdAt = new Date(crewInfo?.createdAt || '');
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - createdAt.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    setDuration(diffDays);
+  }, []);
   return (
     <ScrollView
       style={styles.container}
@@ -65,16 +62,17 @@ function Index() {
       <Text style={styles.title}>이번 주의 크루 MVP는?</Text>
       <View style={styles.rankingList}>
         {crewMembers &&
-          crewMembers.members.map(member => (
-            <RankingItem
-              key={member.memberId}
-              name={member.nickname}
-              imageUrl={member.badgeImageUrl}
-              rank={1}
-              distance="5.2km"
-              onDelete={() => handleDelete(member.nickname)}
-            />
-          ))}
+          crewMembers.members
+            .sort((a, b) => b.runningDistance - a.runningDistance)
+            .map((member, index) => (
+              <RankingItem
+                key={member.memberId}
+                name={member.nickname}
+                imageUrl={member.badgeImageUrl}
+                rank={index + 1}
+                onDelete={() => handleDelete(member.nickname)}
+              />
+            ))}
       </View>
     </ScrollView>
   );
@@ -127,44 +125,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#fff',
     marginBottom: 4
-  },
-  distanceText: {
-    fontSize: 14,
-    color: '#666'
-  },
-  // 오른쪽 스와이프 액션 (삭제)
-  rightAction: {
-    width: 80,
-    backgroundColor: '#FF4444',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 12
-  },
-  deleteButton: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  deleteButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold'
-  },
-  // 왼쪽 스와이프 액션 (편집)
-  leftAction: {
-    width: 80,
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  leaveButton: {},
-  leaveButtonText: {
-    color: 'red',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'semibold',
-    textDecorationLine: 'underline',
-    marginTop: 10
   }
 });

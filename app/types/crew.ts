@@ -18,5 +18,6 @@ interface Crew {
   code: string;
   runningDistance: number;
   isLeader: boolean;
+  createdAt: string;
 }
 export type { MemberData, Crew };

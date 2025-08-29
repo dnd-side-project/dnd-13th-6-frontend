@@ -130,7 +130,7 @@ export default function Layout() {
     'editMember' | 'editOwner'
   >('editMember');
   const { id: crewId } = useLocalSearchParams();
-  const nickName = AsyncStorage.getItem('nickName');
+  const [duration, setDuration] = useState<number>(0);
   // CustomAlert 훅
   const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
   const [isGroupCodeAlertVisible, setIsGroupCodeAlertVisible] = useState(false);
@@ -191,6 +191,7 @@ export default function Layout() {
       method: 'GET'
     }
   );
+
   const { data: crewMembers, fetchData: crewMembersFetchData } = useFetch<{
     members: MemberData[];
   }>(API_END_POINT.CREWS.GET_CREW_MEMBERS(crewId as string), {
@@ -297,7 +298,10 @@ export default function Layout() {
           <Ionicons name="arrow-back-outline" color={'white'} size={24} />
         </Pressable>
         <Pressable className="">
-          <Image style={{ width: 24, height: 24 }} />
+          <Image
+            // source={require('@/assets/images/Crew.png')}
+            className="w-6 h-6"
+          />
         </Pressable>
         <Text className="text-white text-lg font-semibold flex-grow text-center">
           크루
@@ -359,7 +363,6 @@ export default function Layout() {
           onClose={settingsBottomSheet.close}
           onExitPress={() => {
             if (crewMembers?.members.length === 1) {
-              console.log('here');
               onGroupExit();
             } else {
               groupExitBottomSheet.present();

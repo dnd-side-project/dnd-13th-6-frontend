@@ -8,7 +8,7 @@ export interface RouteConfig {
 export const routeConfigs: Record<string, RouteConfig> = {
   '/group': {
     showHeader: true,
-    backHref: '/app/home',
+    backHref: '/back',
     title: '크루'
   },
   '/group/code': {
@@ -23,12 +23,12 @@ export const routeConfigs: Record<string, RouteConfig> = {
   },
   '/group/running': {
     showHeader: false,
-    backHref: '/main',
+    backHref: '/back',
     title: '그룹 달리기 조회'
   },
   '/group/create': {
     showHeader: true,
-    backHref: '/group',
+    backHref: '/back',
     title: '크루 만들기'
   }
 };
