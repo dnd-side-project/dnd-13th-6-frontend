@@ -27,6 +27,7 @@ export default function Main() {
   const [cloverCount, setCloverCount] = useState<number>(0);
   const [notification, setNotification] = useState<Notification[]>([]);
   const [finishData, setFinishData] = useState([]);
+  const router = useRouter();
   // finishData 불러오기
   useEffect(() => {
     postMessageToApp(MODULE.AUTH);
@@ -114,6 +115,7 @@ export default function Main() {
   }, []);
   return (
     <>
+      <button onClick={() => router.push('/login')}>로그인</button>
       <MainHeader notification={notification} />
       <WelcomeCard nickname={nickname} badgeUrl={badgeUrl} />
       <WeeklyGoalCard />

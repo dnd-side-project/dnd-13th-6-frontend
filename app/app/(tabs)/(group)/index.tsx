@@ -10,6 +10,7 @@ import {
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { MODULE } from '@/utils/apis/api';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -19,7 +20,9 @@ function RunningShare() {
 
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
-    if (type === MODULE.PUSH) {
+    if (type === MODULE.AUTH) {
+      AsyncStorage.setItem('accessToken', data.accessToken);
+    } else if (type === MODULE.PUSH) {
       router.push(JSON.parse(data).url);
     }
   };

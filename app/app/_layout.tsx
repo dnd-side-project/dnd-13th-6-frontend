@@ -20,7 +20,7 @@ import * as Updates from 'expo-updates';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-// import * as Notifications from 'expo-notifications';
+import * as Notifications from 'expo-notifications';
 import { ToastProvider } from '@/contexts/ToastContext';
 import ToastContainer from '@/components/ToastContainer';
 import * as Device from 'expo-device';
@@ -172,15 +172,15 @@ export default function RootLayout() {
         setInited(true);
       }
 
-      // const receivedSubscription =
-      //   Notifications.addNotificationReceivedListener(notification => {
-      //     console.log('알림 수신:', notification);
-      //   });
+      const receivedSubscription =
+        Notifications.addNotificationReceivedListener(notification => {
+          console.log('알림 수신:', notification);
+        });
 
-      // const responseSubscription =
-      //   Notifications.addNotificationResponseReceivedListener(response => {
-      //     console.log('알림 클릭:', response);
-      //   });
+      const responseSubscription =
+        Notifications.addNotificationResponseReceivedListener(response => {
+          console.log('알림 클릭:', response);
+        });
 
       return () => {
         // receivedSubscription.remove();
