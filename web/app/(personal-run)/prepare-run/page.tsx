@@ -58,7 +58,7 @@ function Page() {
     const handleMessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
-        if (data.type === 'RUNNING_PREPARE') {
+        if (data.message.type === 'RUNNING_PREPARE') {
           setPosition(JSON.parse(data.message) as Position);
         }
       } catch (error) {
