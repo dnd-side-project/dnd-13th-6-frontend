@@ -7,13 +7,16 @@ import { REWARD_API } from '@/utils/apis/api';
 
 interface Badges {
   badge: string;
+  badgeId: string;
 }
 function BadgeList({
-  mainBadge,
-  setMainBadge
+  badgeUrl,
+  setMainBadge,
+  setBadgeId
 }: {
-  mainBadge: string;
+  badgeUrl: string;
   setMainBadge: (badge: string) => void;
+  setBadgeId: (id: string) => void;
 }) {
   const [badges, setBadges] = useState<Badges[]>([]);
   const fetchBadge = async () => {
@@ -33,7 +36,14 @@ function BadgeList({
     <div className="mt-6 grid grid-cols-3 gap-4">
       {badges.length > 0 &&
         badges.map(badge => (
-          <button onClick={() => setMainBadge(badge.badge)} key={badge.badge}>
+          <button
+            onClick={() => {
+              setMainBadge(badge.badge);
+              setBadgeId(badge.badgeId);
+            }}
+            key={badge.badge}
+            className={` ${badgeUrl === badge.badge && 'border-primary border-[1px]'} `}
+          >
             <BadgeItem badge={badge.badge} />
           </button>
         ))}
