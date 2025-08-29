@@ -14,6 +14,7 @@ const getGeoLocationPermission = async () => {
   try {
     let { status: foregroundPermission } =
       await Location.requestForegroundPermissionsAsync();
+    console.log(foregroundPermission);
     if (foregroundPermission !== 'granted') {
       throw new Error('위치 권한이 필요합니다');
     }

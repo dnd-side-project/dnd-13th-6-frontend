@@ -1,9 +1,7 @@
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs, useSegments } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Dimensions, Image } from 'react-native';
+import { Image } from 'react-native';
 
 const hideTabBarScreens = ['(single-running)', '(group-running)'];
 

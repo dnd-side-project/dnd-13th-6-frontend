@@ -42,13 +42,8 @@ function BadgeList({
               setBadgeId(badge.badgeId);
             }}
             key={badge.badge}
-            className={`relative ${
-              badgeUrl === badge.badge
-                ? 'shadow-[0_0_0_1px_theme(colors.primary)] rounded-3xl'
-                : ''
-            }`}
           >
-            <BadgeItem badge={badge.badge} />
+            <BadgeItem badge={badge.badge} badgeUrl={badgeUrl} />
           </button>
         ))}
       {Array.from({ length: 12 - badges.length }).map((_, i) => (

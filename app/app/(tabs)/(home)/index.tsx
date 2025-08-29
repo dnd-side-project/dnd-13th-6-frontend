@@ -5,6 +5,7 @@ import { MODULE } from '@/utils/apis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useWebViewReset } from '../_layout';
 import { useEffect, useRef } from 'react';
+import { router } from 'expo-router';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -15,8 +16,12 @@ function Index() {
 
   const handleMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
+    console.log('data', data);
     if (data.type === MODULE.AUTH) {
       AsyncStorage.setItem('accessToken', data.accessToken);
+    } else if (data.type === MODULE.PUSH) {
+      const { type, url } = JSON.parse(data.data);
+      router.push(url);
     }
     if (data.nickName) {
       AsyncStorage.setItem('nickName', data.nickName);

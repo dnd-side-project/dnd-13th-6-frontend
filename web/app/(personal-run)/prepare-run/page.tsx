@@ -4,10 +4,18 @@ import GoogleMap from '@/components/googleMap/GoogleMap';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
 
+interface Position {
+  lat: number;
+  lng: number;
+}
 function Page() {
   const [targetDistance, setTargetDistance] = useState('');
   const router = useRouter();
   const [onFocus, setOnFocus] = useState(false);
+  const [position, setPosition] = useState<Position>({
+    lat: 37.5665,
+    lng: 126.978
+  });
   useEffect(() => {
     const storedTargetDistance = localStorage.getItem('targetDistance');
     if (storedTargetDistance !== null) {
@@ -45,14 +53,36 @@ function Page() {
 
     setTargetDistance(val);
   };
+  //이벤트 등록
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.message.type === 'RUNNING_PREPARE') {
+          setPosition({
+            lat: data.message.lat,
+            lng: data.message.lng
+          });
+        }
+      } catch (error) {
+        console.error('error:', error);
+      }
+    };
+    // Android
+    document.addEventListener('message', handleMessage as EventListener);
+    // iOS
+    window.addEventListener('message', handleMessage);
+    return () => {
+      //Android
+      document.removeEventListener('message', handleMessage as EventListener);
+      //iOS
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
 
   return (
     <div className="relative h-screen">
-      <GoogleMap
-        height={'100vh'}
-        path={[{ lat: 37.5665, lng: 126.978 }]}
-        type="prepare"
-      />
+      <GoogleMap height={'100vh'} path={[position]} type="prepare" />
 
       {/* 하단 카드 */}
       <div
