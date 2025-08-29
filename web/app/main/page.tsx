@@ -12,8 +12,6 @@ import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
 import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
-import { useRouter } from 'next/navigation';
-
 interface FinishDataItem {
   averagePace: string; // ex: "0'00\""
   runningData: RunningData[]; // 배열 안에 구체적 타입이 있으면 명시 가능
@@ -28,7 +26,6 @@ export default function Main() {
   const [cloverCount, setCloverCount] = useState<number>(0);
   const [notification, setNotification] = useState<Notification[]>([]);
   const [finishData, setFinishData] = useState([]);
-  const router = useRouter();
   // finishData 불러오기
   useEffect(() => {
     postMessageToApp(MODULE.AUTH);
@@ -116,7 +113,6 @@ export default function Main() {
   }, []);
   return (
     <>
-      <button onClick={() => router.push('/login')}>로그인</button>
       <MainHeader notification={notification} />
       <WelcomeCard nickname={nickname} badgeUrl={badgeUrl} />
       <WeeklyGoalCard />

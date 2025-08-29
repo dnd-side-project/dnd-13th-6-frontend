@@ -21,12 +21,14 @@ import {
   AppState,
   Dimensions,
   Image,
+  SafeAreaView,
   StyleSheet,
   Text,
   View
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
+import { useWebViewReset } from '../_layout';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -140,6 +142,8 @@ function Index() {
   >('waiting');
 
   const { webviewRef, postMessage } = useWebView<RunningData>();
+  const { resetTrigger } = useWebViewReset();
+  const initialUrl = ENV.WEB_VIEW_URL + '/prepare-run';
   const mockLocationRef = useRef<Location.LocationObject | null>(null);
 
   const setGpsStatus = async () => {
@@ -315,8 +319,17 @@ function Index() {
     };
     init();
   }, []);
+
+  // 탭 전환 시 WebView URI 초기화
+  useEffect(() => {
+    if (resetTrigger > 0 && webviewRef.current) {
+      const script = `window.location.href = '${initialUrl}'; true;`;
+      webviewRef.current.injectJavaScript(script);
+    }
+  }, [resetTrigger]);
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Chip style={[styles.chip, { top: insets.top + 30 }]}>
         <View style={styles.chipContent}>
           <Image
@@ -357,10 +370,10 @@ function Index() {
         }}
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         source={{
-          uri: ENV.WEB_VIEW_URL + '/prepare-run'
+          uri: initialUrl
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

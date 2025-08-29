@@ -1,18 +1,30 @@
-interface MemberData {
-  memberId: string;
-  nickname: string;
-  character: string;
-}
+type MemberData =
+  | {
+      memberId: string;
+      nickname: string;
+      badgeImageUrl: string;
+      isRunning: true;
+      runningDistance: number;
+      sub: string;
+    }
+  | {
+      memberId: string;
+      nickname: string;
+      badgeImageUrl: string;
+      isRunning: false;
+      runningDistance: number;
+      sub: null;
+    };
 
 interface Crew {
   crewId: string;
   name: string;
   memberCount: string;
-  isLeader: true;
+  isLeader: boolean;
   badgeImageUrls: Array<string>;
   goal: number;
   runningDistance: number;
-  isRunning: true;
+  isRunning: boolean;
 }
 
 export type { MemberData, Crew };

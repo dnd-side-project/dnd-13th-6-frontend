@@ -1,8 +1,9 @@
 import Checkbox from '@/components/Checkbox';
-import { useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import Button from '@/components/Button';
 import { MemberData } from '@/types/crew';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 interface EditMemberContentProps {
   type: 'editMember' | 'editOwner';
   onClose: () => void;
@@ -13,13 +14,18 @@ interface EditMemberContentProps {
 export function MemberSelectContainer({
   selectedMember,
   setSelectMember,
-  crewMembers
+  crewMembers,
+  myNickname
 }: {
   selectedMember: MemberData | null;
   setSelectMember: (member: MemberData) => void;
   crewMembers: { members: MemberData[] };
+  myNickname: string | null;
 }) {
   const renderItem = (item: MemberData) => {
+    if (myNickname === item.nickname) {
+      return null;
+    }
     return (
       <View
         key={item.memberId}
@@ -48,34 +54,57 @@ export default function EditMemberContent({
   crewMembers
 }: EditMemberContentProps) {
   const [selectedMember, setSelectedMember] = useState<MemberData | null>(null);
-
+  const [myNickname, setMyNickname] = useState<string>('');
   const isEdit = useMemo<boolean>(() => {
     return type === 'editMember';
   }, [type]);
 
+  useLayoutEffect(() => {
+    const getMyNickname = async () => {
+      const nickname = await AsyncStorage.getItem('nickName');
+      setMyNickname(nickname || '');
+    };
+    getMyNickname();
+  }, []);
+
+  const isDisabled = useMemo(() => {
+    return (
+      crewMembers !== null &&
+      crewMembers.members.filter(member => member.nickname !== myNickname)
+        .length === 0
+    );
+  }, [crewMembers, myNickname]);
+
   return (
     <View className="mb-4">
-      {type === 'editMember' ? (
+      {!isDisabled ? (
         <>
-          <Text className="text-white text-title3">
-            어떤 멤버를 탈퇴시킬까요?
-          </Text>
-          <Text className="font-medium mt-2 text-gray40">{`한번 삭제된 기록은 복구할 수 없으니\n신중하게 진행해주세요.`}</Text>
+          {type === 'editMember' ? (
+            <>
+              <Text className="text-white text-title3">
+                어떤 멤버를 탈퇴시킬까요?
+              </Text>
+              <Text className="font-medium mt-2 text-gray40">{`한번 삭제된 기록은 복구할 수 없으니\n신중하게 진행해주세요.`}</Text>
+            </>
+          ) : (
+            <>
+              <Text className="text-white text-title3">
+                새 크루 리더를 지정해주세요.
+              </Text>
+              <Text className="font-medium mt-2 text-gray40">{`현재 리더는 [사후르]님입니다.\n새로운 리더를 지정해주세요.`}</Text>
+            </>
+          )}
+          <MemberSelectContainer
+            selectedMember={selectedMember}
+            setSelectMember={setSelectedMember}
+            crewMembers={crewMembers!}
+            myNickname={myNickname || ''}
+          />
         </>
       ) : (
-        <>
-          <Text className="text-white text-title3">
-            새 크루 리더를 지정해주세요.
-          </Text>
-          <Text className="font-medium mt-2 text-gray40">{`현재 리더는 [사후르]님입니다.\n새로운 리더를 지정해주세요.`}</Text>
-        </>
-      )}
-      {crewMembers && (
-        <MemberSelectContainer
-          selectedMember={selectedMember}
-          setSelectMember={setSelectedMember}
-          crewMembers={crewMembers}
-        />
+        <Text className="text-white text-title3">
+          {type === 'editMember' ? '내보낼' : '위임할'} 멤버가 없습니다.
+        </Text>
       )}
       <Button
         className={`${
@@ -86,6 +115,7 @@ export default function EditMemberContent({
             onPress(selectedMember);
           }
         }}
+        disabled={isDisabled}
       >
         <Text
           className={`text-center text-headline1 ${

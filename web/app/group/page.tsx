@@ -23,7 +23,6 @@ export default function Page() {
         crews: Crew[];
       }>;
       setCrewList(response.result.crews);
-      const accessToken = document.cookie;
     };
     init();
   }, []);

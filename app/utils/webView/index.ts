@@ -1,6 +1,5 @@
 import { Platform } from 'react-native';
 import { WebViewMessageEvent } from 'react-native-webview';
-import { POST_MESSAGE_TYPE } from './consts';
 
 const generatePostMessage = (type: string, data: any) => {
   const message = {

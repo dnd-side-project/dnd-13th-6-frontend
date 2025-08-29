@@ -1,12 +1,6 @@
 import { ENV } from '@/utils/app/consts';
 import { useRef, useState } from 'react';
-import {
-  Dimensions,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text
-} from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { MODULE } from '@/utils/apis/api';
 import { router } from 'expo-router';
@@ -15,36 +9,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 function RunningShare() {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const webviewRef = useRef<WebView>(null);
-
+  const [webViewKey, setWebViewKey] = useState(0);
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
     if (type === MODULE.AUTH) {
       AsyncStorage.setItem('accessToken', data.accessToken);
     } else if (type === MODULE.PUSH) {
-      router.push(JSON.parse(data).url);
+      const url = JSON.parse(data).url;
+      if (url === 'back') {
+        router.back();
+      }
+      // webviewRef.current?.goBack();
+      else router.push(JSON.parse(data).url);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable onPress={() => router.push('/(tabs)/(group)/running/23')}>
-        <Text className="text-white">123</Text>
-      </Pressable>
       <WebView
         ref={webviewRef}
+        key={webViewKey}
         style={styles.webview}
         keyboardDisplayRequiresUserAction={false}
         source={{ uri: ENV.WEB_VIEW_URL + '/group' }}
-        onLoadEnd={() => setIsLoading(false)}
-        onLoadStart={() => setIsLoading(true)}
-        scrollEnabled={true}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        allowsLinkPreview={false}
         onMessage={receiveMessage}
-        allowsBackForwardNavigationGestures={true}
       />
     </SafeAreaView>
   );
