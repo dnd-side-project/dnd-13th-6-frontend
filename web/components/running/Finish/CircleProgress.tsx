@@ -3,7 +3,7 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 
 function CircleProgress({ percent }: { percent: number }) {
   return (
-    <div className="relative w-[110px] h-[110px]">
+    <div className="relative h-[110px] w-[110px]">
       <CircularProgressbar
         value={percent}
         strokeWidth={8}
@@ -27,9 +27,9 @@ function CircleProgress({ percent }: { percent: number }) {
           }
         }}
       />
-      <div className="absolute inset-0 flex items-center justify-center text-gray-20 font-bold">
+      <div className="text-gray-20 absolute inset-0 flex items-center justify-center font-bold">
         <div className="align-baseline italic">
-          <span className="text-3xl font-lufga">{percent}</span>
+          <span className="font-lufga text-3xl">{percent}</span>
           <span className="text-1xl font-lufga">%</span>
         </div>
       </div>

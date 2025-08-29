@@ -10,6 +10,8 @@ import ReactConfetti from 'react-confetti';
 import { useEffect, useState } from 'react';
 import formatTo24H from '@/utils/time/formatTo24H';
 import Button from '@/components/common/Button';
+import api from '@/utils/apis/customAxios';
+import { RUNNING_API } from '@/utils/apis/api';
 
 type FinishData = {
   runningData: {
@@ -26,8 +28,22 @@ export default function Page() {
   const navi = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [finishData, setFinishData] = useState<FinishData | null>(null);
+  const [weeklyRunDistance, setWeeklyRunDistance] = useState<number>(0);
+  const [targetDistance, setTargetDistance] = useState<number>(0);
+  const getWeeklyRunDistance = async () => {
+    try {
+      const res = await api.get(RUNNING_API.WEEKLY_RUNNINGS());
+      setWeeklyRunDistance(res.data.result.totalDistanceKm);
+      console.log('뛴거리', res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     setIsClient(true);
+    getWeeklyRunDistance();
+    setTargetDistance(Number(localStorage.getItem('weeklyGoalDistance')));
     const data = localStorage.getItem('finishData');
     if (data) {
       setFinishData(JSON.parse(data) as FinishData);
@@ -39,6 +55,11 @@ export default function Page() {
     ? finishData.runningData.map(p => ({ lat: p.latitude, lng: p.longitude }))
     : [{ lat: 37.5665, lng: 126.978 }];
 
+  const WeeklyRunPercent = () => {
+    return weeklyRunDistance !== 0
+      ? Math.floor((targetDistance / weeklyRunDistance) * 100)
+      : 0;
+  };
   return (
     <>
       {isClient && (
@@ -58,7 +79,7 @@ export default function Page() {
                 distance={finishData?.totalDistance}
               />
             </div>
-            <CircleProgress percent={82} />
+            <CircleProgress percent={WeeklyRunPercent()} />
           </div>
           <FinishOverView
             averagePace={finishData?.averagePace}

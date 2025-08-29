@@ -27,14 +27,17 @@ function Page() {
   }, []);
   return (
     <>
-      {finishData &&
+      {finishData ? (
         finishData.map(data => {
           return (
             <div className="h-screen" key={data.startTime}>
               <TodayRunPage finishData={data} />
             </div>
           );
-        })}
+        })
+      ) : (
+        <div className="pretendard-headline1">오늘 달린 데이터가 없습니다.</div>
+      )}
     </>
   );
 }

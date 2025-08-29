@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Card from '@/components/main/Card';
-import ProgressBar from '@/components/common/ProgressBar';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
 import api from '@/utils/apis/customAxios';
@@ -31,8 +30,8 @@ const WeeklyGoalCard = () => {
     getGoalDistance();
     getWeeklyRunDistance();
   }, []);
+
   const remainingDistance = goalDistance - weeklyRunDistance;
-  const progress = (weeklyRunDistance / goalDistance) * 100;
   const router = useRouter();
   return (
     <Card
@@ -54,12 +53,7 @@ const WeeklyGoalCard = () => {
           </div>
         </div>
       </div>
-      <ProgressBar
-        progress={progress}
-        className="mt-[16px] h-[8px]"
-        backgroundStyle="bg-background"
-        barStyle="bg-gradient-to-r from-primary to-[#69b4ff]"
-      />
+
       <div className="mt-[14px] flex items-center justify-between">
         <p className="text-gray-30 text-[1.0625rem] leading-[1.5] font-medium tracking-[-0.025em]">
           현재까지 달린 거리
