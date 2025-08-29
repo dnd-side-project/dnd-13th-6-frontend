@@ -42,7 +42,11 @@ function BadgeList({
               setBadgeId(badge.badgeId);
             }}
             key={badge.badge}
-            className={` ${badgeUrl === badge.badge && 'border-primary border-[1px]'} `}
+            className={`relative ${
+              badgeUrl === badge.badge
+                ? 'shadow-[0_0_0_1px_theme(colors.primary)] rounded-3xl'
+                : ''
+            }`}
           >
             <BadgeItem badge={badge.badge} />
           </button>
