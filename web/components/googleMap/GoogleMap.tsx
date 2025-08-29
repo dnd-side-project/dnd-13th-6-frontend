@@ -101,6 +101,7 @@ export default function GoogleMap({
             disableDefaultUI={true}
             gestureHandling="greedy"
             mapId="DEMO_MAP_ID"
+            controlled={type !== 'todayResult'}
             style={{ height: '100%' }}
             colorScheme="DARK"
             onDragstart={handleDragStart}
@@ -110,7 +111,7 @@ export default function GoogleMap({
               <>
                 <AdvancedMarker position={position} title="My location">
                   <div
-                    className="w-6 h-6 border-4 border-white  rounded-full bg-primary"
+                    className="bg-primary h-6 w-6 rounded-full border-4 border-white"
                     style={{ transform: 'translateY(10px)' }}
                   />
                 </AdvancedMarker>
