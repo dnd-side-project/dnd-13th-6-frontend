@@ -4,14 +4,13 @@ import MainHeader from '@/components/main/MainHeader';
 import WelcomeCard from '@/components/main/WelcomeCard';
 import WeeklyGoalCard from '@/components/main/WeeklyGoalCard';
 import TodayStatsCard from '@/components/main/TodayStatsCard';
-import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 import GachaCard from '@/components/main/GachaCard';
 import { fetchUserInfo } from '@/utils/apis/member';
 import api from '@/utils/apis/customAxios';
-import { MODULE, NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
+import { NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
 import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
-import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 
 interface FinishDataItem {
   averagePace: string; // ex: "0'00\""
@@ -20,55 +19,13 @@ interface FinishDataItem {
   totalDistance: number;
   totalTime: string; // ex: "00:09"
 }
-const NotificationMockData = [
-  {
-    id: 101,
-    title: '런닝',
-    text: '완주GO의 진수님이 런닝을 시작했어요!',
-    senderId: 20,
-    read: false,
-    createdAt: '2025-08-23T10:00:20Z',
-    template: {
-      code: 'RUN_START',
-      version: 1,
-      locale: 'ko-KR',
-      raw: '$\{CREW_NAME}의 ${NICKNAME} 님이 런닝을 시작했어요!',
-      variables: {
-        CREW_NAME: '완주GO',
-        NICKNAME: '진수'
-      },
-      emphasize: ['CREW_NAME', 'NICKNAME']
-    }
-  }
-];
+
 export default function Main() {
   const [nickname, setNickname] = useState<string>('');
   const [badgeUrl, setBadgeUrl] = useState<string>('');
   const [cloverCount, setCloverCount] = useState<number>(0);
   const [notification, setNotification] = useState<Notification[]>([]);
   const [finishData, setFinishData] = useState([]);
-
-  useEffect(() => {
-    const cookie = document.cookie;
-    const cookieArray = cookie.split(';');
-    const accessToken = cookieArray.find(cookie =>
-      cookie.startsWith('accessToken=')
-    );
-    const refreshToken = cookieArray.find(cookie =>
-      cookie.startsWith('refreshToken=')
-    );
-    console.log('accessToken:', accessToken, 'refreshToken:', refreshToken);
-    const refreshTokenValue = refreshToken?.split('=')[1];
-    const accessTokenValue = accessToken?.split('=')[1];
-
-    postMessageToApp(
-      MODULE.AUTH,
-      JSON.stringify({
-        accessToken: accessTokenValue,
-        refreshToken: refreshTokenValue
-      })
-    );
-  }, []);
   // finishData 불러오기
   useEffect(() => {
     setFinishData(JSON.parse(localStorage.getItem('finishData') ?? '[]'));
@@ -100,12 +57,13 @@ export default function Main() {
       const data = await fetchUserInfo();
       console.log(data);
       if (data) {
-        const { nickname, badgeUrl } = data;
+        const { nickname, badgeUrl, userId } = data;
         //  localStorage 동기화
         setNickname(nickname || '');
         setBadgeUrl(badgeUrl || '');
         localStorage.setItem('nickname', nickname);
         localStorage.setItem('badgeUrl', badgeUrl);
+        localStorage.setItem('userId', userId);
       }
     } catch (err) {
       console.error(err);
@@ -117,23 +75,36 @@ export default function Main() {
       const clover = res.data.result.count;
       setCloverCount(clover);
       localStorage.setItem('cloverCount', clover);
-      console.log(clover);
+      console.log('clover', clover);
     } catch (err) {
       console.log(err);
     }
   };
   const fetchNotification = async () => {
-    const res = await api.get(NOTIFICATION_API.NOTIFICATION_LIST());
-    console.log(res.data.result.values);
-    setNotification(res.data.result.values);
+    try {
+      const res = await api.get(NOTIFICATION_API.NOTIFICATION_LIST());
+      const fetched: Notification[] = res.data.result.values;
 
-    //todo:나중에 완료되면 켜야함
-    // localStorage.setItem(
-    //   'notification',
-    //   JSON.stringify(res.data.result.values)
-    // );
-    localStorage.setItem('notification', JSON.stringify(NotificationMockData));
-    setNotification(NotificationMockData);
+      // 기존 localStorage 알림 불러오기
+      const stored: Notification[] = JSON.parse(
+        localStorage.getItem('notification') || '[]'
+      );
+
+      // 기존 read 상태 반영
+      const merged = fetched.map(f => {
+        const prev = stored.find(
+          s =>
+            s.createdAt === f.createdAt && s.template.code === f.template.code
+        );
+        return prev ? { ...f, read: prev.read } : f;
+      });
+
+      // 최신 알림 저장
+      localStorage.setItem('notification', JSON.stringify(merged));
+      setNotification(merged);
+    } catch (err) {
+      console.error('알림 불러오기 실패:', err);
+    }
   };
 
   useEffect(() => {
