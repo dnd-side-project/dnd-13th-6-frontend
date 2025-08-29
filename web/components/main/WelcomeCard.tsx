@@ -21,10 +21,12 @@ function formatKoreanDate(date: Date): string {
 }
 const WelcomeCard = ({
   nickname,
-  badgeUrl
+  badgeUrl,
+  badgeId
 }: {
   nickname: string;
   badgeUrl: string;
+  badgeId: number;
 }) => {
   const router = useRouter();
   const date = new Date();
@@ -51,8 +53,8 @@ const WelcomeCard = ({
             <Image
               src={badgeUrl}
               alt={'character'}
-              width={180}
-              height={180}
+              width={badgeId === 4 ? 100 : 180}
+              height={badgeId === 4 ? 100 : 180}
               className="absolute -top-10 right-0 left-39 rotate-20"
             />
           )}

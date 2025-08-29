@@ -12,6 +12,7 @@ import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
 import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import { useRouter } from 'next/navigation';
 interface FinishDataItem {
   averagePace: string; // ex: "0'00\""
   runningData: RunningData[]; // 배열 안에 구체적 타입이 있으면 명시 가능
@@ -23,9 +24,11 @@ interface FinishDataItem {
 export default function Main() {
   const [nickname, setNickname] = useState<string>('');
   const [badgeUrl, setBadgeUrl] = useState<string>('');
+  const [badgeId, setBadgeId] = useState<number>(0);
   const [cloverCount, setCloverCount] = useState<number>(0);
   const [notification, setNotification] = useState<Notification[]>([]);
   const [finishData, setFinishData] = useState([]);
+  const router = useRouter();
   // finishData 불러오기
   useEffect(() => {
     postMessageToApp(MODULE.AUTH);
@@ -58,10 +61,11 @@ export default function Main() {
       const data = await fetchUserInfo();
       console.log(data);
       if (data) {
-        const { nickname, badgeUrl, userId } = data;
+        const { nickname, badgeUrl, userId, badgeId } = data;
         //  localStorage 동기화
         setNickname(nickname || '');
         setBadgeUrl(badgeUrl || '');
+        setBadgeId(badgeId || 0);
         localStorage.setItem('nickname', nickname);
         localStorage.setItem('badgeUrl', badgeUrl);
         localStorage.setItem('userId', userId);
@@ -113,8 +117,9 @@ export default function Main() {
   }, []);
   return (
     <>
+      <button onClick={() => router.push('/login')}>로그인</button>
       <MainHeader notification={notification} />
-      <WelcomeCard nickname={nickname} badgeUrl={badgeUrl} />
+      <WelcomeCard nickname={nickname} badgeUrl={badgeUrl} badgeId={badgeId} />
       <WeeklyGoalCard />
       <TodayStatsCard />
       <div className="mt-[24px] flex gap-4">

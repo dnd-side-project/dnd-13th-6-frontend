@@ -189,7 +189,7 @@ export default function RootLayout() {
     };
     init();
   }, []);
-
+  // getGeoLocationPermission()x`
   // 준비 완료 시 네이티브 스플래시 숨기고 오버레이 페이드아웃
   useEffect(() => {
     const animateOut = async () => {

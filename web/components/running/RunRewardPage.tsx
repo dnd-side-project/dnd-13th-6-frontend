@@ -11,7 +11,7 @@ type RewardType = {
   type?: 'personal' | 'crew';
   isSuccess?: boolean;
   targetDistance?: number;
-  remainingDistance: number;
+  remainingDistance?: number;
 };
 
 export default function RunRewardPage({
@@ -96,19 +96,11 @@ export default function RunRewardPage({
     : rewardContent[type].failure;
 
   const onMove = () => {
-    if (type === 'crew') {
-      const data = {
-        url: '/(tabs)/(home)'
-      };
-      router.push('/group');
-      postMessageToApp(MODULE.PUSH, JSON.stringify(data));
-    } else {
-      const data = {
-        url: '/(tabs)/(home)'
-      };
-      router.push('/home');
-      postMessageToApp(MODULE.PUSH, JSON.stringify(data));
-    }
+    const data = {
+      url: '/(tabs)/(home)'
+    };
+    // router.push('/main');
+    postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
 
   return (

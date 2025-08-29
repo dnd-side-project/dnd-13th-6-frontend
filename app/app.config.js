@@ -22,13 +22,13 @@ export default {
               "NSExceptionMinimumTLSVersion": "1.0",
               "NSExceptionRequiresForwardSecrecy": false
             }
-          }
+          },
         },
-        "NSLocationWhenInUseUsageDescription": "러닝 활동을 추적하고 경로를 기록하기 위해 위치 정보가 필요합니다.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
-        "NSLocationAlwaysUsageDescription": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
-        "NSLocationUsageDescription": "러닝 활동을 추적하고 경로를 기록하기 위해 위치 정보가 필요합니다.",
-        "isIosBackgroundLocationEnabled": true,
+          "NSLocationWhenInUseUsageDescription": "러닝 활동을 추적하고 경로를 기록하기 위해 위치 정보가 필요합니다.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
+  "NSLocationAlwaysUsageDescription": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
+  "NSLocationUsageDescription": "러닝 활동을 추적하고 경로를 기록하기 위해 위치 정보가 필요합니다.",
+  "isIosBackgroundLocationEnabled": true,
         "UIBackgroundModes": ["location"]
       }
     },
@@ -54,10 +54,11 @@ export default {
         "android.permission.RECORD_AUDIO",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.ACCESS_MEDIA_LOCATION"
+        "android.permission.ACCESS_MEDIA_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
       ],
       "edgeToEdgeEnabled": true,
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
     },
     "extra": {
       "eas": {
@@ -70,16 +71,6 @@ export default {
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#000000"
-        }
-      ],
       [
         "expo-location",
         {
@@ -88,6 +79,16 @@ export default {
           "locationAlwaysPermission": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
           "isIosBackgroundLocationEnabled": true,
           "isAndroidBackgroundLocationEnabled": true
+        }
+      ],
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#000000"
         }
       ],
       "@react-native-firebase/app",
