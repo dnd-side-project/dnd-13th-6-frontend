@@ -7,10 +7,11 @@ import TodayStatsCard from '@/components/main/TodayStatsCard';
 import GachaCard from '@/components/main/GachaCard';
 import { fetchUserInfo } from '@/utils/apis/member';
 import api from '@/utils/apis/customAxios';
-import { NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
+import { MODULE, NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
 import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
 import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 interface FinishDataItem {
   averagePace: string; // ex: "0'00\""
@@ -28,10 +29,7 @@ export default function Main() {
   const [finishData, setFinishData] = useState([]);
   // finishData 불러오기
   useEffect(() => {
-    //accessToken 콘솔에 테스트
-    const match = document.cookie.match(/(^|;\s*)accessToken=([^;]+)/);
-    const accessToken = match ? match[2] : '';
-    console.log('accessToken:', accessToken);
+    postMessageToApp(MODULE.AUTH);
     setFinishData(JSON.parse(localStorage.getItem('finishData') ?? '[]'));
   }, []);
 
