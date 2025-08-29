@@ -5,7 +5,7 @@ import NotificationCard from '@/components/notification/NotificationCard';
 
 const flagPennantIcon = <FlagPennant size={20} color={'#F2F2F7'} />;
 
-const iconMap = {
+const IconMap = {
   CHEER: <Clover size={20} color={'#F2F2F7'} />,
   PERSONAL_GOAL_ACHIEVED: flagPennantIcon,
   PERSONAL_GOAL_FAILED: flagPennantIcon,
@@ -15,16 +15,19 @@ const iconMap = {
   RUN_STARTED: flagPennantIcon
 };
 
-type IconCode = keyof typeof iconMap;
+type IconCode = keyof typeof IconMap;
 
 interface Notification {
-  createdAt: string; // 또는 startedAt
+  id: number;
+  title: string;
+  text: string;
+  senderId: number | null;
+  createdAt: string;
   read: boolean;
-  template: {
-    code: IconCode;
+  message: {
+    type: IconCode;
     raw: string;
     variables: { [key: string]: string | number };
-    emphasize: string[];
   };
 }
 
@@ -63,25 +66,25 @@ export default function Page() {
     };
   }, []);
 
-  const formatTitle = (
-    raw: string,
-    variables: { [key: string]: string | number }
-  ) => {
-    return raw.replace(/\$\{(\w+)\}/g, (_, key) => {
-      const value = variables[key];
-      return value !== undefined ? String(value) : '';
-    });
-  };
+  // const formatTitle = (
+  //   raw: string,
+  //   variables: { [key: string]: string | number }
+  // ) => {
+  //   return raw.replace(/\$\{(\w+)\}/g, (_, key) => {
+  //     const value = variables[key];
+  //     return value !== undefined ? String(value) : '';
+  //   });
+  // };
 
   return (
     <>
       {notifications && notifications.length > 0 ? (
-        notifications.map((item, index) => (
+        notifications.map(item => (
           <NotificationCard
-            key={index}
+            key={item.id}
+            icon={IconMap[item.message.type]}
             isNew={!item.read}
-            icon={iconMap[item.template.code]}
-            title={formatTitle(item.template.raw, item.template.variables)}
+            title={item.text}
             time={formatTimeAgo(item.createdAt)}
           />
         ))

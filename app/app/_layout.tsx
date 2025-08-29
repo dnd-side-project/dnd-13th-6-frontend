@@ -18,7 +18,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Animated, StyleSheet, View } from 'react-native';
+import { Alert, Animated, Platform, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Notifications from 'expo-notifications';
 import { ToastProvider } from '@/contexts/ToastContext';
@@ -26,6 +26,7 @@ import ToastContainer from '@/components/ToastContainer';
 import * as Device from 'expo-device';
 import 'react-native-reanimated';
 import './global.css';
+import { ENV } from '@/utils/app/consts';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -172,6 +173,16 @@ export default function RootLayout() {
         setInited(true);
       }
 
+      Notifications.getDevicePushTokenAsync().then(token => {
+        fetch(`${ENV.API_BASE_URL}/api/device-tokens`, {
+          method: 'POST',
+          body: JSON.stringify({
+            token: token.data,
+            deviceType: Platform.OS
+          })
+        });
+      });
+
       const receivedSubscription =
         Notifications.addNotificationReceivedListener(notification => {
           console.log('알림 수신:', notification);
@@ -183,8 +194,16 @@ export default function RootLayout() {
         });
 
       return () => {
-        // receivedSubscription.remove();
-        // responseSubscription.remove();
+        receivedSubscription.remove();
+        responseSubscription.remove();
+        Notifications.getDevicePushTokenAsync().then(token => {
+          fetch(`${ENV.API_BASE_URL}/api/device-tokens`, {
+            method: 'DELETE',
+            body: JSON.stringify({
+              token: token.data
+            })
+          });
+        });
       };
     };
     init();

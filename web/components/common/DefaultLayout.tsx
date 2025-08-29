@@ -28,7 +28,7 @@ export default function DefaultLayout({
       {showHeader && (
         <>
           {/* 전부 SafeArea로 변경해서 더 이상 필요 없음 */}
-          {/* <div className="h-[59px] flex-none" /> */}
+          <div className="h-[20px] flex-none" />
           <header className="flex items-center">
             {backHref && (
               <div className="p-4">
