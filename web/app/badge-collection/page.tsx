@@ -12,48 +12,56 @@ import { REWARD_API } from '@/utils/apis/api';
 
 function Page() {
   const [nickname, setNickname] = useState<string | null>(null);
+  const [defaultBadgeUrl, setDefaultBadgeUrl] = useState<string>('');
   const [cloverCount, setCloverCount] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [badgeUrl, setBadgeUrl] = useState<string>('');
   const router = useRouter();
   const setHandleSave = useSetAtom(headerSaveAtom);
   const setHandleBack = useSetAtom(headerBackAtom);
 
   useEffect(() => {
     setNickname(localStorage.getItem('nickname'));
-  }, []);
+    setBadgeUrl(localStorage.getItem('badgeUrl') || '');
+    setDefaultBadgeUrl(localStorage.getItem('badgeUrl') || '');
 
-  useEffect(() => {
-    const getClover = async () => {
-      try {
-        const res = await api.get(`${REWARD_API.CLOVER()}`);
-        const clover = res.data.result.count;
-        setCloverCount(clover);
-        localStorage.setItem('cloverCount', clover);
-      } catch (err) {
-        console.log(err);
-      }
-    };
     getClover();
   }, []);
 
+  const getClover = async () => {
+    try {
+      const res = await api.get(`${REWARD_API.CLOVER()}`);
+      const clover = res.data.result.count;
+      setCloverCount(clover);
+      localStorage.setItem('cloverCount', clover);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   //TODO:저장버튼 추후 통신 구현
-  const actualSave = useCallback(() => {
-    router.push('/main');
-  }, [router]);
-  // 값이 변경되었을때 모달 띄우기
-  //TODO:배지 비교
-  const openSaveModal = useCallback(() => {
-    router.push('/main');
-  }, [router]);
+  const actualSave = useCallback(() => {}, []);
+
+  const isChanged = useCallback(
+    () => defaultBadgeUrl !== badgeUrl,
+    [defaultBadgeUrl, badgeUrl]
+  );
+  const handleBack = useCallback(() => {
+    if (isChanged()) {
+      setIsModalOpen(true);
+    } else {
+      router.back();
+    }
+  }, [isChanged, router]);
   //layout의 버튼에 함수 연결
   useEffect(() => {
     setHandleSave(() => actualSave);
-    setHandleBack(() => openSaveModal);
+    setHandleBack(() => handleBack);
     return () => {
       setHandleSave(undefined);
       setHandleBack(undefined);
     };
-  }, [setHandleSave, openSaveModal, setHandleBack, actualSave]);
+  }, [setHandleSave, actualSave, setHandleBack, handleBack]);
 
   const handleOverlayClick = () => {
     setIsModalOpen(false);
@@ -74,12 +82,15 @@ function Page() {
         <GachaRewardCard cloverCount={cloverCount} />
       </div>
       <div className="bg-gray-90 mx-auto flex h-37 w-37 items-center justify-center rounded-full">
-        <Image
-          src="/assets/icon/pig.svg"
-          alt="캐릭터"
-          width={120}
-          height={120}
-        />
+        {badgeUrl !== '' && (
+          <Image
+            src={badgeUrl}
+            alt="캐릭터"
+            width={120}
+            height={120}
+            className="h-auto max-h-[100px] w-auto max-w-[100px] object-contain"
+          />
+        )}
       </div>
 
       <div className="mt-[25px] mb-4 flex items-center justify-center">
@@ -101,7 +112,7 @@ function Page() {
         </button>
       </div>
       <p className="pretendard-title3">{nickname} 님의 보유 배지</p>
-      <BadgeList />
+      <BadgeList mainBadge={badgeUrl} setMainBadge={setBadgeUrl} />
       <ConfirmModal
         isOpen={isModalOpen}
         onOverlayClick={handleOverlayClick}

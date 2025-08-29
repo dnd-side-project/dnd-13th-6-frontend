@@ -5,25 +5,41 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import { useSetAtom } from 'jotai/index';
 import { headerBackAtom, headerSaveAtom } from '@/store/header';
 import { useRouter } from 'next/navigation';
+import api from '@/utils/apis/customAxios';
+import { GOAL_API } from '@/utils/apis/api';
 
 function Page() {
   const router = useRouter();
-  const [targetDistance, setTargetDistance] = useState('3.00');
-  const defaultDistance = '3.00';
+  const [changedDistance, setChangedDistance] = useState('3.0');
+  const [weeklyTargetDistance, setWeeklyTargetDistance] = useState('0');
+  useEffect(() => {
+    const weeklyGoal = localStorage.getItem('weeklyGoalDistance');
+    setWeeklyTargetDistance(weeklyGoal || '0');
+    setChangedDistance(weeklyGoal || '0');
+  }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const setHandleSave = useSetAtom(headerSaveAtom);
   const setHandleBack = useSetAtom(headerBackAtom);
+  const changeTargetDistance = useCallback(async () => {
+    try {
+      await api.patch(GOAL_API.CHANGE_TARGET_DISTANCE(), {
+        goal: Number(changedDistance)
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, [changedDistance]);
   const actualSave = useCallback(() => {
-    // TODO: Add API call to save the name
-    console.log('Saved:', targetDistance);
-  }, [targetDistance]);
+    changeTargetDistance();
+    console.log('Saved:', changedDistance);
+  }, [changedDistance, changeTargetDistance]);
   const openSaveModal = useCallback(() => {
-    if (defaultDistance !== targetDistance) {
+    if (weeklyTargetDistance !== changedDistance) {
       setIsModalOpen(true);
     } else {
       router.push('/main');
     }
-  }, [router, defaultDistance, targetDistance]);
+  }, [router, weeklyTargetDistance, changedDistance]);
 
   useEffect(() => {
     setHandleSave(() => openSaveModal);
@@ -50,17 +66,17 @@ function Page() {
       <div>
         <div className="mt-[10vh] flex flex-col items-center">
           <p className="headline inline-block text-xl text-white/80">
-            주간 목표 거리
+            다음주 주간 목표 거리
           </p>
           <div className="flex items-center">
             <div className="mt-10 flex items-end space-x-2">
               <DecimalInput
                 className="font-lufga border-gray-60 align-center w-50 [appearance:textfield] border-b-2 bg-transparent text-center text-7xl font-extrabold text-white italic focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                value={targetDistance}
-                onChange={setTargetDistance}
+                value={changedDistance}
+                onChange={setChangedDistance}
                 onBlur={() => {
-                  if (targetDistance !== '') {
-                    setTargetDistance(parseFloat(targetDistance).toFixed(2));
+                  if (changedDistance !== '0') {
+                    setChangedDistance(parseFloat(changedDistance).toFixed(2));
                   }
                 }}
               />

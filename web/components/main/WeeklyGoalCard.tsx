@@ -1,11 +1,38 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '@/components/main/Card';
 import ProgressBar from '@/components/common/ProgressBar';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
+import api from '@/utils/apis/customAxios';
+import { GOAL_API, RUNNING_API } from '@/utils/apis/api';
 
 const WeeklyGoalCard = () => {
+  const [goalDistance, setGoalDistance] = useState<number>(0);
+  const [weeklyRunDistance, setWeeklyRunDistance] = useState<number>(0);
+  const getGoalDistance = async () => {
+    try {
+      const res = await api.get(GOAL_API.GET_TARGET_DISTANCE());
+      setGoalDistance(res.data.result.goal);
+      localStorage.setItem('weeklyGoalDistance', res.data.result.goal);
+      console.log('목표거리', res.data);
+    } catch (err) {}
+  };
+  const getWeeklyRunDistance = async () => {
+    try {
+      const res = await api.get(RUNNING_API.WEEKLY_RUNNINGS());
+      setWeeklyRunDistance(res.data.result.totalDistanceKm);
+      console.log('뛴거리', res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getGoalDistance();
+    getWeeklyRunDistance();
+  }, []);
+  const remainingDistance = goalDistance - weeklyRunDistance;
+  const progress = (weeklyRunDistance / goalDistance) * 100;
   const router = useRouter();
   return (
     <Card
@@ -19,7 +46,7 @@ const WeeklyGoalCard = () => {
           </p>
           <div className="flex items-center">
             <p className="text-primary font-lufga text-[2.0625rem] leading-[1.4] font-bold tracking-[0] italic">
-              15km
+              {goalDistance}km
             </p>
             <p className="text-gray-20 ml-2 text-[1.5rem] leading-[1.4] font-bold tracking-[-0.025em]">
               달리기
@@ -28,7 +55,7 @@ const WeeklyGoalCard = () => {
         </div>
       </div>
       <ProgressBar
-        progress={70}
+        progress={progress}
         className="mt-[16px] h-[8px]"
         backgroundStyle="bg-background"
         barStyle="bg-gradient-to-r from-primary to-[#69b4ff]"
@@ -38,7 +65,7 @@ const WeeklyGoalCard = () => {
           현재까지 달린 거리
         </p>
         <p className="font-lufga itailic text-gray-20 text-[1.1875rem] leading-[1.4] font-medium tracking-[-0.025em] italic">
-          10km
+          {weeklyRunDistance}km
         </p>
       </div>
       <div className="mt-[8px] flex items-center justify-between">
@@ -46,7 +73,7 @@ const WeeklyGoalCard = () => {
           목표까지 남은 거리
         </p>
         <p className="font-lufga text-gray-20 text-[1.1875rem] leading-[1.4] font-medium tracking-[-0.025em] italic">
-          5km
+          {remainingDistance}km
         </p>
       </div>
       <Button
