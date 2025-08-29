@@ -9,18 +9,19 @@ import ManyActiveRunner from '@/components/main/CheerCard/ManyActiveRunner';
 import api from '@/utils/apis/customAxios';
 import { CREW_API, MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import { RunningUser } from '@/types/runningUser';
 
 const CheerCardWrapper = () => {
-  const [runningUser, setRunningUser] = useState([]);
+  const [runningUser, setRunningUser] = useState<RunningUser[]>([]);
   const [count] = useState(runningUser?.length);
   const fetchRunningUser = async () => {
     const res = await api.get(CREW_API.MEMBER_RUNNING());
-    setRunningUser(res.data.result.nicknames);
+    setRunningUser(res.data.result.runningMembers);
   };
   useEffect(() => {
     fetchRunningUser();
   }, []);
-  const renderRunnerComponent = (runningUser: string[]) => {
+  const renderRunnerComponent = (runningUser: RunningUser[]) => {
     switch (count) {
       case 0:
         return <NoActiveRunner />;
