@@ -3,14 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { ChatTeardropDots, Clover, FlagPennant } from '@phosphor-icons/react';
 import NotificationCard from '@/components/notification/NotificationCard';
 
+const flagPennantIcon = <FlagPennant size={20} color={'#F2F2F7'} />;
+
 const iconMap = {
   CHEER: <Clover size={20} color={'#F2F2F7'} />,
-  PERSONAL_GOAL_ACHIEVED: <FlagPennant size={20} color={'#F2F2F7'} />,
-  PERSONAL_GOAL_FAILED: <FlagPennant size={20} color={'#F2F2F7'} />,
-  CREW_GOAL_ACHIEVED: <FlagPennant size={20} color={'#F2F2F7'} />,
-  CREW_GOAL_FAILED: <FlagPennant size={20} color={'#F2F2F7'} />,
+  PERSONAL_GOAL_ACHIEVED: flagPennantIcon,
+  PERSONAL_GOAL_FAILED: flagPennantIcon,
+  CREW_GOAL_ACHIEVED: flagPennantIcon,
+  CREW_GOAL_FAILED: flagPennantIcon,
   CREW_DISBANDED: <ChatTeardropDots size={20} color={'#F2F2F7'} />,
-  RUN_STARTED: <FlagPennant size={20} color={'#F2F2F7'} />
+  RUN_STARTED: flagPennantIcon
 };
 
 type IconCode = keyof typeof iconMap;
