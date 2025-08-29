@@ -11,7 +11,6 @@ function BadgeItem({ badge, badgeUrl }: { badge: string; badgeUrl: string }) {
           : ''
       }\``}
     >
-      className={}
       <Image
         src={badge}
         alt="캐릭터"
