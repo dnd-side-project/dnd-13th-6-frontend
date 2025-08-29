@@ -16,10 +16,11 @@ function Index() {
 
   const handleMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
+    console.log('data', data);
     if (data.type === MODULE.AUTH) {
       AsyncStorage.setItem('accessToken', data.accessToken);
     } else if (data.type === MODULE.PUSH) {
-      const url = data.url;
+      const { type, url } = JSON.parse(data.data);
       router.push(url);
     }
     if (data.nickName) {
