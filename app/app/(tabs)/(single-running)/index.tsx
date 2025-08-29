@@ -141,7 +141,9 @@ function Index() {
     'granted' | 'waiting' | 'denied'
   >('waiting');
 
-  const { webviewRef, postMessage } = useWebView<RunningData>();
+  const { webviewRef, postMessage } = useWebView<
+    RunningData | { lat: number; lng: number }
+  >();
   const { resetTrigger } = useWebViewReset();
   const initialUrl = ENV.WEB_VIEW_URL + '/prepare-run';
 
@@ -332,7 +334,12 @@ function Index() {
       <WebView
         ref={webviewRef}
         onMessage={receiveMessage}
-        onLoadEnd={() => {
+        onLoadEnd={async () => {
+          const location = await getLocation();
+          postMessage(POST_MESSAGE_TYPE.MESSAGE, {
+            lat: location.coords.latitude,
+            lng: location.coords.longitude
+          });
           setIsLoading(false);
         }}
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
