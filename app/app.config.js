@@ -32,6 +32,7 @@ export default {
     },
     "android": {
       "useNextNotificationsApi": true,
+      
       "package": "com.runky.dnd",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
