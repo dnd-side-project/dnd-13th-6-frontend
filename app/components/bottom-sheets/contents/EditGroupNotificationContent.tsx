@@ -2,6 +2,7 @@ import Button from '@/components/Button';
 import useFetch from '@/hooks/useFetch';
 import { API_END_POINT } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 
@@ -23,13 +24,16 @@ function EditGroupNotificationContent({
       const url = `${ENV.API_BASE_URL}/${API_END_POINT.CREWS.UPDATE_CREW_NOTICE(
         crewId as string
       )}`;
-      await fetch(url, {
+      const token = await AsyncStorage.getItem('accessToken');
+      const res = await fetch(url, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Cookie: `accessToken=${token}`
         },
         body: JSON.stringify({ notice })
       });
+      console.log(res, 'res');
       onClose();
     } catch (error) {
       console.log(error);

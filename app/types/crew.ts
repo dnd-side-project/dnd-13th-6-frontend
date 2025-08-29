@@ -5,6 +5,7 @@ interface MemberData {
   isRunning: boolean;
   runningDistance: number;
   sub: string;
+  isLeader: boolean;
 }
 
 interface Crew {
@@ -16,5 +17,6 @@ interface Crew {
   goal: number;
   code: string;
   runningDistance: number;
+  isLeader: boolean;
 }
 export type { MemberData, Crew };

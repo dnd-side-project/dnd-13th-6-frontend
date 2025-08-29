@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams, withLayoutContext } from 'expo-router';
-import { createContext, useEffect, useLayoutEffect, useState } from 'react';
+import { createContext, useLayoutEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BottomSheet from '@/components/bottom-sheets/BottomSheet';
@@ -26,6 +26,7 @@ import { ParamListBase, TabNavigationState } from '@react-navigation/native';
 import { Crew, MemberData } from '@/types/crew';
 import { ENV } from '@/utils/app/consts';
 import GroupCodeAlert from '@/components/modal/GroupCodeAlert';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const CrewContext = createContext<{
   crewInfo: Crew | null;
@@ -46,7 +47,7 @@ const GroupInfo = ({ crewInfo }: { crewInfo: Crew }) => {
             className="text-gray40 font-semibold"
             style={styles.GroupNotificationText}
           >
-            {crewInfo.notice ? crewInfo.notice : ''}
+            {crewInfo.notice ? crewInfo.notice : '등록된 공지가 없습니다.'}
           </Text>
         </View>
       </View>
@@ -95,6 +96,9 @@ const MaterialTopTabsScreenOptions: MaterialTopTabNavigationOptions = {
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24
   },
+  tabBarIndicatorContainerStyle: {
+    minHeight: 1200
+  },
   tabBarLabelStyle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -126,7 +130,7 @@ export default function Layout() {
     'editMember' | 'editOwner'
   >('editMember');
   const { id: crewId } = useLocalSearchParams();
-  const isCrewLeader = true;
+  const nickName = AsyncStorage.getItem('nickName');
   // CustomAlert 훅
   const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
   const [isGroupCodeAlertVisible, setIsGroupCodeAlertVisible] = useState(false);
@@ -168,7 +172,8 @@ export default function Layout() {
         const ret = await fetch(url, {
           method: 'DELETE',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Cookie: `accessToken=${await AsyncStorage.getItem('accessToken')}`
           }
         });
         if (ret.ok) {
@@ -180,23 +185,17 @@ export default function Layout() {
     }
   };
 
-  const {
-    data: crewInfo,
-    error: creInfoError,
-    fetchData: crewInfoFetchData
-  } = useFetch<Crew>(API_END_POINT.CREWS.GET_CREW_DETAIL(crewId as string), {
-    method: 'GET'
-  });
-  const {
-    data: crewMembers,
-    error: crewMembersError,
-    fetchData: crewMembersFetchData
-  } = useFetch<{ members: MemberData[] }>(
-    API_END_POINT.CREWS.GET_CREW_MEMBERS(crewId as string),
+  const { data: crewInfo, fetchData: crewInfoFetchData } = useFetch<Crew>(
+    API_END_POINT.CREWS.GET_CREW_DETAIL(crewId as string),
     {
       method: 'GET'
     }
   );
+  const { data: crewMembers, fetchData: crewMembersFetchData } = useFetch<{
+    members: MemberData[];
+  }>(API_END_POINT.CREWS.GET_CREW_MEMBERS(crewId as string), {
+    method: 'GET'
+  });
 
   const onEditMember = (
     type: 'editMember' | 'editOwner',
@@ -275,12 +274,10 @@ export default function Layout() {
   useLayoutEffect(() => {
     const init = async () => {
       await Promise.all([crewInfoFetchData(), crewMembersFetchData()]).then(
-        ([creInfo]) => {
-          setIsAdminUser(creInfo?.leaderNickname === 'leader');
+        ([crewInfo]) => {
+          setIsAdminUser(crewInfo?.isLeader || true);
         }
       );
-      // setCrewInfo(creInfo);
-      // setCrewMembers(crewMembers);
     };
     init();
   }, []);
@@ -327,7 +324,6 @@ export default function Layout() {
           paddingBottom: 26,
           backgroundColor: '#000'
         }}
-        className="flex-grow-0"
       >
         {crewInfo && (
           <>
@@ -345,13 +341,7 @@ export default function Layout() {
           />
         </MaterialTopTabs>
       </CrewContext.Provider>
-      <View
-        style={{
-          backgroundColor: '#313131',
-          paddingBottom: 21,
-          paddingHorizontal: 18
-        }}
-      >
+      <View className="bg-gray py-[18px] px-[14px]">
         <Pressable
           style={styles.startButton}
           onPress={() => router.push('/(tabs)/(single-running)')}
@@ -369,6 +359,7 @@ export default function Layout() {
           onClose={settingsBottomSheet.close}
           onExitPress={() => {
             if (crewMembers?.members.length === 1) {
+              console.log('here');
               onGroupExit();
             } else {
               groupExitBottomSheet.present();
@@ -383,7 +374,7 @@ export default function Layout() {
         ref={groupExitBottomSheet.bottomSheetRef}
         {...groupExitBottomSheet.config}
       >
-        {crewInfo?.leaderNickname === '유준호' ? (
+        {isAdminUser ? (
           <SelectNewCrewContent
             onClose={() => {
               groupExitBottomSheet.close();

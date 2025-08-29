@@ -7,12 +7,16 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function Index() {
-  const isDev = __DEV__;
-
   const handleMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
     if (data.type === MODULE.AUTH) {
       AsyncStorage.setItem('accessToken', data.accessToken);
+    }
+    if (data.nickName) {
+      AsyncStorage.setItem('nickName', data.nickName);
+    }
+    if (data.userId) {
+      AsyncStorage.setItem('userId', data.userId);
     }
   };
 
@@ -31,9 +35,7 @@ export default Index;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: windowWidth,
-    height: windowHeight
+    flex: 1
   },
   webview: {
     flex: 1,

@@ -15,11 +15,11 @@ function CodePad({
     const value = event.key;
     const index = code.findIndex(char => char === '');
     const newCode = [...code];
-    if (event.key === 'Backspace' && (index > 0 || index === -1)) {
-      newCode[index === -1 ? 5 : index - 1] = '';
-      setCode(newCode);
-      return;
-    }
+    // if (event.key === 'Backspace' && (index > 0 || index === -1)) {
+    //   newCode[index === -1 ? 5 : index - 1] = '';
+    //   setCode(newCode);
+    //   return;
+    // }
     if (index === -1) return; // 모든 칸이 채워져 있으면 무시
 
     newCode[index] = value.at(-1) || ''; // 마지막 문자만 사용
@@ -31,8 +31,8 @@ function CodePad({
       {code.map((char, idx) => (
         <input
           key={idx}
-          type="number"
-          inputMode="numeric"
+          type="text"
+          inputMode="text"
           name={`code-${idx}`}
           value={char}
           onChange={() => {}}

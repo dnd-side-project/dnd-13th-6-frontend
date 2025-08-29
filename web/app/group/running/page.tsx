@@ -42,13 +42,8 @@ const stompClient = new Client({
   reconnectDelay: 5000
 });
 
-function GroupRunningContent() {
+const SendCloverButton = ({ member }: { member: MemberData }) => {
   const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
-  const searchParams = useSearchParams();
-  const crewId = searchParams.get('q');
-
-  //TODO 크루 ID를 통해 크루 조회
-
   // 클로버 애니메이션
   const startCloverAnimation = () => {
     const id = Date.now();
@@ -59,6 +54,70 @@ function GroupRunningContent() {
       setClovers(prev => prev.filter(c => c.id !== id));
     }, 2000);
   };
+
+  const sendEmogi = (emojiType: string) => {
+    if (!member?.isRunning) {
+      return;
+    }
+    startCloverAnimation();
+    const runningId = member?.sub.split('/').at(-1);
+    axios.post(
+      `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/runnings/${runningId}/cheers`,
+      {
+        receiverId: member?.memberId,
+        message: emojiType
+      }
+    );
+  };
+  return (
+    <button
+      onClick={() => sendEmogi('clover')}
+      className="absolute right-2 bottom-2 z-10 ml-auto flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 text-white"
+    >
+      <div className="relative h-5 max-h-15 w-5">
+        <Image src="/assets/clover.png" alt="clover" fill />
+
+        {/* 클릭 시 생성되는 클로버 애니메이션 */}
+        {/* 처음에는 흐리게* */}
+        <div className="pointer-events-none absolute top-0 left-2 h-5 w-5">
+          <AnimatePresence>
+            {clovers.map(c => (
+              <motion.div
+                key={c.id}
+                initial={{ y: 0, scale: 3, opacity: 0.3 }}
+                animate={{
+                  y: -100, // 위로 이동
+                  x: 50,
+                  scale: 12,
+                  opacity: 1,
+                  //오른쪽으로 기울어짐
+                  rotate: 45
+                }}
+                transition={{ duration: 0.5 }}
+                className="absolute top-0 left-1/2 -translate-x-1/2"
+              >
+                <Image
+                  src="/assets/clover-142.png"
+                  alt="clover"
+                  width={142}
+                  height={142}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </div>
+      <div>행운 보내기</div>
+    </button>
+  );
+};
+
+function GroupRunningContent() {
+  const searchParams = useSearchParams();
+  const crewId = searchParams.get('q');
+
+  //TODO 크루 ID를 통해 크루 조회
+
   const [members, setMembers] = useState<MemberData[]>([]);
   const [member, setMember] = useState<MemberData | null>(null);
   const [memberLocation, setMemberLocation] = useState({
@@ -69,7 +128,9 @@ function GroupRunningContent() {
   //TODO 멤버 타입 정의
   const onMemberClick = (member: MemberData) => {
     setMember(member);
-
+    if (!member.isRunning) {
+      return;
+    }
     stompClient.subscribe(member.sub, (message: IMessage) => {
       const data: {
         x: number;
@@ -89,7 +150,6 @@ function GroupRunningContent() {
       try {
         const messageEvent = event as MessageEvent;
         const parsedData = JSON.parse(messageEvent.data);
-        console.log('Android received message:', parsedData);
         if (parsedData.type === 'SET_CREW_MEMBERS') {
           setMembers(parsedData.message as MemberData[]);
         }
@@ -120,14 +180,9 @@ function GroupRunningContent() {
     };
   }, []);
 
-  const sendEmogi = (emojiType: string) => {
-    startCloverAnimation();
-    // publish(emojiType);
-  };
-
   useLayoutEffect(() => {
     const init = async () => {
-      const users = axios(
+      axios(
         `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/crews/${crewId}/members`,
         {
           method: 'GET',
@@ -137,13 +192,12 @@ function GroupRunningContent() {
           }
         }
       );
-      // ... existing code ...
     };
     init();
   });
 
   return (
-    <div className="text-whit relative h-screen w-full overflow-scroll bg-[#313131] px-4">
+    <div className="text-whit l relative h-full w-full bg-[#313131] px-4">
       <CrewMemberProfiles users={members} onClick={onMemberClick} />
       <div className="relative mt-6 mb-[14px] h-[400px] overflow-y-scroll">
         <GoogleMap
@@ -157,45 +211,7 @@ function GroupRunningContent() {
             />
           )}
         </GoogleMap>
-        <button
-          onClick={() => sendEmogi('clover')}
-          className="absolute right-2 bottom-2 z-10 ml-auto flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 text-white"
-        >
-          <div className="relative h-5 max-h-15 w-5">
-            <Image src="/assets/clover.png" alt="clover" fill />
-
-            {/* 클릭 시 생성되는 클로버 애니메이션 */}
-            {/* 처음에는 흐리게* */}
-            <div className="pointer-events-none absolute top-0 left-2 h-5 w-5">
-              <AnimatePresence>
-                {clovers.map(c => (
-                  <motion.div
-                    key={c.id}
-                    initial={{ y: 0, scale: 3, opacity: 0.3 }}
-                    animate={{
-                      y: -100, // 위로 이동
-                      x: 50,
-                      scale: 12,
-                      opacity: 1,
-                      //오른쪽으로 기울어짐
-                      rotate: 45
-                    }}
-                    transition={{ duration: 0.5 }}
-                    className="absolute top-0 left-1/2 -translate-x-1/2"
-                  >
-                    <Image
-                      src="/assets/clover-142.png"
-                      alt="clover"
-                      width={142}
-                      height={142}
-                    />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          </div>
-          <div>행운 보내기</div>
-        </button>
+        {member && <SendCloverButton member={member} />}
       </div>
     </div>
   );
@@ -203,7 +219,7 @@ function GroupRunningContent() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<div>로딩 중...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <GroupRunningContent />
     </Suspense>
   );

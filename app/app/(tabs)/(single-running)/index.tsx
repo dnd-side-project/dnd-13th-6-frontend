@@ -21,6 +21,7 @@ import {
   AppState,
   Dimensions,
   Image,
+  SafeAreaView,
   StyleSheet,
   Text,
   View
@@ -316,7 +317,7 @@ function Index() {
     init();
   }, []);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Chip style={[styles.chip, { top: insets.top + 30 }]}>
         <View style={styles.chipContent}>
           <Image
@@ -360,7 +361,7 @@ function Index() {
           uri: ENV.WEB_VIEW_URL + '/prepare-run'
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

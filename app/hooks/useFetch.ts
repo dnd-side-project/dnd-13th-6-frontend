@@ -10,7 +10,6 @@ const useFetch = <T>(url: string, options?: RequestInit) => {
   const fetchData = async () => {
     try {
       const token = await AsyncStorage.getItem('accessToken');
-      console.log('token', token);
       const res = await fetch(`${ENV.API_BASE_URL}/${url}`, {
         headers: {
           'Content-Type': 'application/json',

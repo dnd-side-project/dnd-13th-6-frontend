@@ -55,15 +55,15 @@ function Index() {
   const { id: crewId } = useLocalSearchParams();
   const handleDelete = (name: string) => {};
 
-  const { crewInfo, crewMembers } = useContext(CrewContext);
-  console.log(crewMembers, 'crewMembers');
+  const { crewMembers } = useContext(CrewContext);
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ minHeight: 750 }}
+    >
       <Text style={styles.title}>이번 주의 크루 MVP는?</Text>
-      <ScrollView
-        style={styles.rankingList}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.rankingList}>
         {crewMembers &&
           crewMembers.members.map(member => (
             <RankingItem
@@ -75,8 +75,8 @@ function Index() {
               onDelete={() => handleDelete(member.nickname)}
             />
           ))}
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -85,7 +85,6 @@ export default Index;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: '100%',
     backgroundColor: '#313131',
     paddingBottom: 26
   },
