@@ -67,6 +67,7 @@ export default function RunRewardPage({
       }
     }
   };
+
   const rewardContent = {
     personal: {
       success: {
@@ -74,7 +75,7 @@ export default function RunRewardPage({
         image: '/assets/lucky-stamp/four-leaf-clover.svg'
       },
       failure: {
-        title: '꾸준함이 곧 행운이에요!\n이번 주도 화이팅',
+        title: '클로버는 놓쳤지만, 꾸준함이 곧 행운이에요.\uD83C\uDF31',
         image: '/assets/lucky-stamp/disabled-four-leaf-clover.svg'
       }
     },
