@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 interface Character {
   image: string;
+  id: string;
 }
 
 interface CharacterCarouselProps {
@@ -46,7 +47,6 @@ function CharacterCarousel({
 
   const itemWidth = 201;
   const itemGap = 32;
-
   return (
     <div className="flex flex-grow flex-col items-center justify-center">
       <div
@@ -64,7 +64,7 @@ function CharacterCarousel({
         >
           {characters.map((character, i) => (
             <div
-              key={i}
+              key={character.id}
               className="flex-shrink-0"
               style={{ width: `${itemWidth}px` }}
             >
@@ -84,9 +84,9 @@ function CharacterCarousel({
       </div>
 
       <div className="mt-[3vh] flex gap-[3vw]">
-        {characters.map((_, i) => (
+        {characters.map((character, i) => (
           <div
-            key={i}
+            key={character.id}
             className={`h-[14px] w-[14px] rounded-full transition-all ${
               index === i ? 'bg-primary' : 'bg-gray-60'
             }`}
