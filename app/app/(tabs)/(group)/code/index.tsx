@@ -1,5 +1,6 @@
 import { MODULE } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
@@ -12,8 +13,9 @@ export default function Code() {
 
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
-    console.log(type, data, 'data');
-    if (type === MODULE.PUSH) {
+    if (type === MODULE.AUTH) {
+      AsyncStorage.setItem('accessToken', data.accessToken);
+    } else if (type === MODULE.PUSH) {
       router.push(JSON.parse(data).url);
     }
   };
