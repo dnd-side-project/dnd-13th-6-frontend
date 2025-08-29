@@ -4,15 +4,21 @@ import ProgressBar from '@/components/common/ProgressBar';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
 import CharacterCarousel from '@/components/onBoarding/CharacterCarousel';
+import { MEMBER_API } from '@/utils/apis/api';
+import api from '@/utils/apis/customAxios';
 
 function Page() {
   const router = useRouter();
-  const [index, setIndex] = useState(0);
   const characters = [
-    { image: 'pig', url: 'https://test.image.com' },
-    { image: 'elephant', url: 'https://text.image.com' }
+    { image: 'pig', id: '1' },
+    { image: 'elephant', id: '2' }
   ];
 
+  const [selectedId, setSelectedId] = useState(0);
+  const handleNext = async () => {
+    await api.patch(MEMBER_API.CHANGE_BADGE(), { badgeId: selectedId + 1 });
+    router.push('/onboarding/setup-target');
+  };
   return (
     <div className="flex flex-grow flex-col justify-between overflow-hidden">
       <div>
@@ -24,8 +30,8 @@ function Page() {
 
       <CharacterCarousel
         characters={characters}
-        index={index}
-        setIndex={setIndex}
+        index={selectedId}
+        setIndex={setSelectedId}
       />
 
       <div className="mb-[4vh] flex items-center justify-center text-center whitespace-pre-line">
@@ -35,12 +41,7 @@ function Page() {
           }
         </p>
       </div>
-      <Button
-        className="mb-5 h-15 w-full"
-        onClickAction={() => {
-          router.push('/onboarding/setup-target');
-        }}
-      >
+      <Button className="mb-5 h-15 w-full" onClickAction={handleNext}>
         다음으로
       </Button>
     </div>

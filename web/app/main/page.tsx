@@ -28,6 +28,10 @@ export default function Main() {
   const [finishData, setFinishData] = useState([]);
   // finishData 불러오기
   useEffect(() => {
+    //accessToken 콘솔에 테스트
+    const match = document.cookie.match(/(^|;\s*)accessToken=([^;]+)/);
+    const accessToken = match ? match[2] : '';
+    console.log('accessToken:', accessToken);
     setFinishData(JSON.parse(localStorage.getItem('finishData') ?? '[]'));
   }, []);
 
