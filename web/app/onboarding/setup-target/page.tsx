@@ -15,6 +15,7 @@ function Page() {
       await api.patch(GOAL_API.CHANGE_TARGET_DISTANCE(), {
         goal: Number(targetDistance)
       });
+      router.push('/onboarding/onboarding-finish');
     } catch (error) {
       console.error(error);
     }
@@ -57,13 +58,7 @@ function Page() {
           }
         </p>
       </div>
-      <Button
-        className="mb-5 h-15 w-full"
-        onClickAction={() => {
-          changeTargetDistance();
-          router.push('/onboarding/onboarding-finish');
-        }}
-      >
+      <Button className="mb-5 h-15 w-full" onClickAction={changeTargetDistance}>
         시작하기
       </Button>
     </div>
