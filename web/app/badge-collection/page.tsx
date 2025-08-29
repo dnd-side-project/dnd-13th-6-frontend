@@ -56,7 +56,7 @@ function Page() {
     if (isChanged()) {
       setIsModalOpen(true);
     } else {
-      router.back();
+      router.push('/main');
     }
   }, [isChanged, router]);
 
