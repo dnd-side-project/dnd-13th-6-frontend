@@ -59,7 +59,10 @@ function Page() {
       try {
         const data = JSON.parse(event.data);
         if (data.message.type === 'RUNNING_PREPARE') {
-          setPosition(JSON.parse(data.message) as Position);
+          setPosition({
+            lat: data.message.lat,
+            lng: data.message.lng
+          });
         }
       } catch (error) {
         console.error('error:', error);

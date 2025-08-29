@@ -337,16 +337,11 @@ function Index() {
         onLoadEnd={async () => {
           // try {
           const location = await getLocation();
-          const { latitude, longitude } = location.coords;
-          webviewRef.current?.postMessage(
-            JSON.stringify({
-              type: SEND_MESSAGE_TYPE.RUNNING_PREPARE,
-              message: JSON.stringify({
-                lat: 0.123456,
-                lng: 1.123456
-              })
-            })
-          );
+          postMessage(POST_MESSAGE_TYPE.MESSAGE, {
+            type: SEND_MESSAGE_TYPE.RUNNING_PREPARE,
+            lat: location.coords.latitude,
+            lng: location.coords.longitude
+          });
           setIsLoading(false);
           // }
         }}
