@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-function OneActiveRunner() {
+function OneActiveRunner({ runningUser }: { runningUser: string[] }) {
   return (
     <div className="relative z-20 flex-col pt-1">
       <div className="flex justify-center">
@@ -15,7 +15,7 @@ function OneActiveRunner() {
         </div>
       </div>
       <div className="z-10 mt-5 justify-self-center text-center font-bold">
-        <span className="text-primary z-10">인생한접시</span>
+        <span className="text-primary z-10">{runningUser[0]}</span>
         <span className="whitespace-pre-line text-white">
           {`님이
 뛰고 있어요!
