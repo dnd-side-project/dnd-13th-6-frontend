@@ -17,7 +17,7 @@ function formatClover(count: number) {
 function CloverCountChip({ cloverCount }: { cloverCount: number }) {
   console.log('chip내부 클로버', cloverCount);
   return (
-    <div className="bg-primary mb-2 max-w-[80px] min-w-[70px] overflow-hidden rounded-full p-1 text-center leading-[1.4] tracking-[-0.025em] text-black/70">
+    <div className="bg-primary mb-2 max-w-[100px] min-w-[70px] overflow-hidden rounded-full p-1 text-center leading-[1.4] tracking-[-0.025em] text-black/70">
       <span className="text-[1.0625rem] font-semibold">
         {formatClover(cloverCount)}
       </span>
