@@ -81,7 +81,7 @@ export default function RunRewardPage({
     const data = {
       url: '/(tabs)/(home)'
     };
-    router.push('/group');
+    // router.push('/main');
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
 
