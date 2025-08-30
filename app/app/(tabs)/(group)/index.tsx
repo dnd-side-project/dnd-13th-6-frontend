@@ -20,7 +20,6 @@ function RunningShare() {
       }
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;
-//   console.log('url', url);
       if (url === '/(tabs)/(home)') {
         setWebViewKey(prev => prev + 1);
       }
