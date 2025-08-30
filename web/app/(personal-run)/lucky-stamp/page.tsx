@@ -17,7 +17,7 @@ export default function LuckyStampPage() {
       setTargetDistance(targetRes.data.result.goal);
       setWeeklyRun(weeklyRunRes.data.result.totalDistanceKm);
       const calSuccess =
-        targetRes.data.result.goal - weeklyRunRes.data.result.totalDistanceKm >=
+        weeklyRunRes.data.result.totalDistanceKm - targetRes.data.result.goal >=
         1;
       setIsSuccess(calSuccess);
     } catch (error) {
