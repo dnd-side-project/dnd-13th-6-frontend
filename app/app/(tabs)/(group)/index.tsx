@@ -13,11 +13,15 @@ function RunningShare() {
   const [webViewKey, setWebViewKey] = useState(0);
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
+    console.log('type', data);
     if (type === MODULE.AUTH) {
-      AsyncStorage.setItem('accessToken', data.accessToken);
+      if (data?.accessToken) {
+        AsyncStorage.setItem('accessToken', data.accessToken);
+      }
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;
-      if (url === 'back') {
+      if (url === '/(tabs)/(home)') {
+        setWebViewKey(prev => prev + 1);
         router.back();
       }
       // webviewRef.current?.goBack();

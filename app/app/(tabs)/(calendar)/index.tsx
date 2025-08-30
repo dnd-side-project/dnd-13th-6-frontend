@@ -1,4 +1,4 @@
-import { Dimensions, View } from 'react-native';
+import { Dimensions, View, Text, SafeAreaView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRef } from 'react';
 import WebView from 'react-native-webview';
@@ -10,14 +10,13 @@ function Index() {
   const inset = useSafeAreaInsets();
   const webviewRef = useRef<WebView>(null);
   return (
-    <View style={{ paddingTop: inset.top, paddingBottom: inset.bottom }}>
+    <SafeAreaView style={styles.container}>
       <WebView
         ref={webviewRef}
         style={styles.webview}
-        keyboardDisplayRequiresUserAction={false}
-        source={{ uri: ENV.WEB_VIEW_URL + '/calendar' }}
+        source={{ uri: 'https://web.runky.store' + '/calendar' }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -25,15 +24,10 @@ export default Index;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16
+    flex: 1
   },
   webview: {
     flex: 1,
-    height: windowHeight,
-    width: windowWidth,
-    backgroundColor: '#313131'
+    backgroundColor: '#333333'
   }
 });
