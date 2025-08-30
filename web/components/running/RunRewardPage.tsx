@@ -57,9 +57,8 @@ export default function RunRewardPage({
         return (
           <>
             현재{' '}
-            <span className="text-golden">목표까지{remainingDistance}</span>KM{' '}
-            <span className="text-golden">{10 - cloverCount}</span> 더 뛰면
-            클로버 획득 가능!
+            <span className="text-golden">목표까지{remainingDistance}KM</span>{' '}
+            더 뛰면 클로버 획득 가능!
           </>
         );
       } else {
