@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { routeConfigs } from '@/configs/groupRouteConfig';
 import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import router from 'next/router';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

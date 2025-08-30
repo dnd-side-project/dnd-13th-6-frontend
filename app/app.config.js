@@ -25,11 +25,11 @@ export default {
           },
         },
           "NSLocationWhenInUseUsageDescription": "러닝 활동을 추적하고 경로를 기록하기 위해 위치 정보가 필요합니다.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
-  "NSLocationAlwaysUsageDescription": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
-  "NSLocationUsageDescription": "러닝 활동을 추적하고 경로를 기록하기 위해 위치 정보가 필요합니다.",
-  "isIosBackgroundLocationEnabled": true,
-        "UIBackgroundModes": ["location"]
+          "NSLocationAlwaysAndWhenInUseUsageDescription": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
+          "NSLocationAlwaysUsageDescription": "백그라운드에서도 러닝 활동을 연속적으로 추적하기 위해 위치 정보가 필요합니다.",
+          "NSLocationUsageDescription": "러닝 활동을 추적하고 경로를 기록하기 위해 위치 정보가 필요합니다.",
+          "isIosBackgroundLocationEnabled": true,
+          "UIBackgroundModes": ["location"]
       }
     },
     "android": {
