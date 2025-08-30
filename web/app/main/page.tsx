@@ -117,7 +117,6 @@ export default function Main() {
   }, []);
   return (
     <>
-      <button onClick={() => router.push('/login')}>로그인</button>
       <MainHeader notification={notification} />
       <WelcomeCard nickname={nickname} badgeUrl={badgeUrl} badgeId={badgeId} />
       <WeeklyGoalCard />
