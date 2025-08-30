@@ -20,12 +20,11 @@ function RunningShare() {
       }
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;
+      console.log('url', url);
       if (url === '/(tabs)/(home)') {
         setWebViewKey(prev => prev + 1);
-        router.back();
       }
-      // webviewRef.current?.goBack();
-      else router.push(JSON.parse(data).url);
+      router.push(url);
     }
   };
 
@@ -36,7 +35,7 @@ function RunningShare() {
         key={webViewKey}
         style={styles.webview}
         keyboardDisplayRequiresUserAction={false}
-        source={{ uri: ENV.WEB_VIEW_URL + '/group' }}
+        source={{ uri: ENV.WEB_VIEW_URL + '/group/running' }}
         onMessage={receiveMessage}
       />
     </SafeAreaView>
