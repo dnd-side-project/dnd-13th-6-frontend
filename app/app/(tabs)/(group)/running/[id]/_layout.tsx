@@ -293,6 +293,20 @@ export default function Layout() {
       style={[styles.container, { paddingTop: insets.top }]}
       className="flex-1 bg-black"
     >
+      <View className="flex-row items-center gap-2 px-4 py-[10px] w-full justify-between border border-red-100">
+        <Pressable onPress={() => router.push('/(tabs)/(home)')}>
+          <Ionicons name="arrow-back-outline" color={'white'} size={16} />
+        </Pressable>
+        <Text className="text-white text-lg flex-1 self-center flex-grow text-center">
+          크루
+        </Text>
+        <Pressable
+          onPress={() => router.push('/(tabs)/(home)')}
+          className="hidden"
+        >
+          <Ionicons name="arrow-back-outline" color={'white'} size={16} />
+        </Pressable>
+      </View>
       <View className="flex-row px-4 py-[10px] items-center gap-5">
         <Pressable onPress={() => router.push('/(tabs)/(home)')}>
           <Ionicons name="arrow-back-outline" color={'white'} size={24} />
