@@ -35,7 +35,7 @@ function CrewMemberProfiles({
     </div>
   );
 }
-
+console.log('group/running');
 const stompClient = new Client({
   webSocketFactory: () =>
     new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),

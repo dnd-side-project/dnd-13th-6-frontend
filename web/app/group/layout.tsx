@@ -5,24 +5,31 @@ import { usePathname } from 'next/navigation';
 import { routeConfigs } from '@/configs/groupRouteConfig';
 import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   console.log('pathname', pathname);
   // URL별 뒤로가기 링크
-  const config = routeConfigs[pathname] || routeConfigs['/group/running'];
+  const config = useMemo(() => {
+    return routeConfigs[pathname] || routeConfigs['/group/running'];
+  }, [pathname]);
+  // const config = routeConfigs[pathname] || routeConfigs['/group/running'];
   const { backHref, title, showHeader } = config;
-
   const handleBack = () => {
     const data = {
       type: MODULE.PUSH,
       url: '/(tabs)/(home)'
     };
-    console.log('data', data);
-    // router.push('/group');
+    router.push('/group');
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
+
+  // useEffect(() => {
+
+  // },[pathname])
   return (
     <>
       {showHeader && (
