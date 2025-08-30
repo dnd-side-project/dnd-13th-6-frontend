@@ -8,7 +8,7 @@ export interface RouteConfig {
 export const routeConfigs: Record<string, RouteConfig> = {
   '/group': {
     showHeader: true,
-    backHref: '/back',
+    backHref: '/app/home',
     title: '크루'
   },
   '/group/code': {

@@ -18,7 +18,9 @@ function Index() {
     const data = JSON.parse(event.nativeEvent.data);
     console.log('data', data);
     if (data.type === MODULE.AUTH) {
-      AsyncStorage.setItem('accessToken', data.accessToken);
+      if (data?.accessToken) {
+        AsyncStorage.setItem('accessToken', data.accessToken);
+      }
     } else if (data.type === MODULE.PUSH) {
       const { type, url } = JSON.parse(data.data);
       router.push(url);

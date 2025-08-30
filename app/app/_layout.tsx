@@ -166,7 +166,7 @@ export default function RootLayout() {
     const init = async () => {
       try {
         await getGeoLocationPermission();
-        await getBackgroundLocationPermission();
+        // await getBackgroundLocationPermission();
       } catch (error: unknown) {
         Alert.alert((error as Error).message);
       } finally {

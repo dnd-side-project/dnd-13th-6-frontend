@@ -17,7 +17,9 @@ export default function Code() {
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
     if (type === MODULE.AUTH) {
-      AsyncStorage.setItem('accessToken', data.accessToken);
+      if (data?.accessToken) {
+        AsyncStorage.setItem('accessToken', data.accessToken);
+      }
     } else if (type === MODULE.PUSH) {
       router.push(JSON.parse(data).url);
     }
