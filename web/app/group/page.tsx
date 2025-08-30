@@ -15,6 +15,7 @@ export default function Page() {
       type: MODULE.PUSH,
       url: url
     };
+    console.log('url', url);
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
   useLayoutEffect(() => {

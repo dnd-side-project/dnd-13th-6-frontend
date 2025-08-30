@@ -9,6 +9,7 @@ import router from 'next/router';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  console.log('pathname', pathname);
   // URL별 뒤로가기 링크
   const config = routeConfigs[pathname] || routeConfigs['/group/running'];
   const { backHref, title, showHeader } = config;
@@ -18,6 +19,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       type: MODULE.PUSH,
       url: '/(tabs)/(home)'
     };
+    console.log('data', data);
+    // router.push('/group');
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
   return (

@@ -22,8 +22,8 @@ export const routeConfigs: Record<string, RouteConfig> = {
     title: '초대 코드 입력'
   },
   '/group/running': {
-    showHeader: false,
-    backHref: '/back',
+    showHeader: true,
+    backHref: '/app/home',
     title: '그룹 달리기 조회'
   },
   '/group/create': {
