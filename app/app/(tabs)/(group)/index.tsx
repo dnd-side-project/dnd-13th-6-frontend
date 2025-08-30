@@ -35,7 +35,7 @@ function RunningShare() {
         key={webViewKey}
         style={styles.webview}
         keyboardDisplayRequiresUserAction={false}
-        source={{ uri: ENV.WEB_VIEW_URL + '/group/running' }}
+        source={{ uri: ENV.WEB_VIEW_URL + '/group' }}
         onMessage={receiveMessage}
       />
     </SafeAreaView>
