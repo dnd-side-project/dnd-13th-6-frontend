@@ -20,12 +20,11 @@ function RunningShare() {
       }
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;
+//   console.log('url', url);
       if (url === '/(tabs)/(home)') {
         setWebViewKey(prev => prev + 1);
-        router.back();
       }
-      // webviewRef.current?.goBack();
-      else router.push(JSON.parse(data).url);
+      router.push(url);
     }
   };
 
