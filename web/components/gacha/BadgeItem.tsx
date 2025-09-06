@@ -12,7 +12,7 @@ function BadgeItem({ badge, badgeUrl }: { badge: string; badgeUrl: string }) {
       }\``}
     >
       <Image
-        src={`@/assets/clover.png`}
+        src={badge}
         alt="캐릭터"
         width={100}
         height={100}
