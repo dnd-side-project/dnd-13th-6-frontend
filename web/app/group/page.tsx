@@ -30,6 +30,31 @@ export default function Page() {
   return (
     <div className="flex h-[calc(100vh-60px)] w-full flex-col">
       <div className="flex flex-grow flex-col gap-5 overflow-y-scroll p-4">
+        <CrewChallengeCard
+          id={'1'}
+          title={'이번 주 크루 챌린지'}
+          distance={42}
+          progress={isNaN(1 / 100) ? 0 : Math.round((1 / 100) * 100)}
+          goal={100}
+          runningDistance={1}
+          isRunning={true}
+          members={[
+            'https://picsum.photos/200/300',
+            'https://picsum.photos/200/300',
+            'https://picsum.photos/200/300'
+          ]}
+          className="border !border-[#00FF63]"
+          onClick={() => onMove(`/(tabs)/(group)/running/1`)}
+        >
+          <button
+            className="mt-4 w-full rounded-2xl bg-[#48484A]"
+            onClick={() => router.push('/crew-reward?type=crew&isSuccess=true')}
+          >
+            <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
+              저번 주 결과 보기
+            </div>
+          </button>
+        </CrewChallengeCard>
         {crewList.map(crew => (
           <CrewChallengeCard
             key={crew.crewId}

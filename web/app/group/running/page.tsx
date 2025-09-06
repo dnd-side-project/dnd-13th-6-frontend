@@ -35,7 +35,6 @@ function CrewMemberProfiles({
     </div>
   );
 }
-console.log('group/running');
 const stompClient = new Client({
   webSocketFactory: () =>
     new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
@@ -197,7 +196,7 @@ function GroupRunningContent() {
   });
 
   return (
-    <div className="text-whit l relative h-full w-full bg-[#313131] px-4">
+    <div className="text-whit l relative h-full w-full px-4">
       <CrewMemberProfiles users={members} onClick={onMemberClick} />
       <div className="relative mt-6 mb-[14px] h-[400px] overflow-y-scroll">
         <GoogleMap

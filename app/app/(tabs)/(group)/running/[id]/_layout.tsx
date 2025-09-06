@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams, withLayoutContext } from 'expo-router';
-import { createContext, useLayoutEffect, useState } from 'react';
+import { createContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BottomSheet from '@/components/bottom-sheets/BottomSheet';
@@ -280,6 +280,12 @@ export default function Layout() {
     init();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      console.log('cleanup');
+    };
+  }, []);
+
   const contextValue = {
     crewInfo,
     crewMembers
@@ -288,17 +294,18 @@ export default function Layout() {
   return (
     <View style={[{ paddingTop: insets.top }]} className="flex-1 bg-black">
       <View className="flex-row px-4 py-[10px] items-center gap-5">
-        <Pressable onPress={() => router.push('/(tabs)/(home)')}>
+        <Pressable
+          onPress={() => {
+            router.replace('/(tabs)/(group)');
+          }}
+        >
           <Ionicons name="arrow-back-outline" color={'white'} size={24} />
         </Pressable>
         <Pressable className="">
-          <Image
-            // source={require('@/assets/images/Crew.png')}
-            className="w-6 h-6"
-          />
+          <Image className="w-6 h-6" />
         </Pressable>
         <Text className="text-white text-lg font-semibold flex-grow text-center">
-          크루
+          크루123123
         </Text>
         <Pressable
           className="ml-auto"

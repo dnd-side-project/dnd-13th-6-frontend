@@ -1,30 +1,47 @@
-import Image from 'next/image'
+import Image from 'next/image';
 import { profile } from 'node:console';
- 
+
 interface Props {
   profileImageUrl: string;
-  isRunning?: boolean,
-  alt: string,
-  onClick:() => void
+  isRunning?: boolean;
+  alt: string;
+  onClick: () => void;
 }
 
 function ProfileImage({
   profileImageUrl,
-  isRunning= false,
+  isRunning = false,
   alt,
   onClick
 }: Props) {
-
   return (
-    <button onClick={onClick} className={`rounded-full shrink-0 relative w-15 h-15 ${isRunning ? 'bg-gradient-to-r from-[#32FF76] to-[#6EE7FF] ' : ''}`}>
-      <Image
-        src={profileImageUrl}
-        fill={true}
-        className="p-1 w-full rounded-full"
-        alt={alt}
-      />
+    <button
+      onClick={onClick}
+      className="relative h-15 w-15 shrink-0 rounded-full"
+    >
+      {isRunning ? (
+        // Gradient border container
+        <div className="h-full w-full rounded-full bg-gradient-to-r from-[#32FF76] to-[#6EE7FF] p-0.5">
+          <div className="h-full w-full overflow-hidden rounded-full bg-[#cacaca]">
+            <Image
+              src={profileImageUrl}
+              fill={true}
+              className="h-full w-full object-cover"
+              alt={alt}
+            />
+          </div>
+        </div>
+      ) : (
+        // No gradient - normal image
+        <Image
+          src={profileImageUrl}
+          fill={true}
+          className="h-full w-full rounded-full object-cover"
+          alt={alt}
+        />
+      )}
     </button>
-  )
+  );
 }
 
-export default ProfileImage
+export default ProfileImage;

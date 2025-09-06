@@ -43,7 +43,7 @@ function RunningShare() {
   );
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 justify-between items-center">
       {isLoading && (
         <ActivityIndicator
           size="large"
@@ -53,6 +53,7 @@ function RunningShare() {
       )}
       <WebView
         ref={webviewRef}
+        className="flex-1 bg-black"
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         onLoadEnd={handleWebViewLoad}
         source={{
@@ -66,11 +67,6 @@ function RunningShare() {
 export default RunningShare;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
   webview: {
     flex: 1,
     height: windowHeight,

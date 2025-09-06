@@ -23,13 +23,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       type: MODULE.PUSH,
       url: '/(tabs)/(home)'
     };
-    router.push('/group');
+    router.replace('/main');
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
-
-  // useEffect(() => {
-
-  // },[pathname])
   return (
     <>
       {showHeader && (
