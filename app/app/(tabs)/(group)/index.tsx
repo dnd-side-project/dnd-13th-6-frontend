@@ -29,7 +29,7 @@ function RunningShare() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 align-center justify-between py-4">
       <WebView
         ref={webviewRef}
         key={webViewKey}
@@ -45,12 +45,6 @@ function RunningShare() {
 export default RunningShare;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16
-  },
   webview: {
     flex: 1,
     height: windowHeight,

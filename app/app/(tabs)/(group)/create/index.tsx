@@ -34,8 +34,9 @@ export default function Code() {
   }, [resetTrigger]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 justify-between items-center">
       <WebView
+        className="flex-1 bg-gray"
         style={styles.webview}
         ref={webviewRef}
         keyboardDisplayRequiresUserAction={false}
@@ -54,15 +55,8 @@ export default function Code() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
   webview: {
-    flex: 1,
     height: windowHeight,
-    width: windowWidth,
-    backgroundColor: '#313131'
+    width: windowWidth
   }
 });

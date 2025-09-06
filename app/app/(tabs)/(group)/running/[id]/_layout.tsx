@@ -40,13 +40,10 @@ const GroupInfo = ({ crewInfo }: { crewInfo: Crew }) => {
   return (
     <View>
       <View>
-        <Text style={styles.GroupInfoTitle}>{crewInfo.name}</Text>
-        <View style={styles.GroupNotificationContainer}>
+        <Text className="text-white text-2xl font-bold">{crewInfo.name}</Text>
+        <View className="flex flex-row items-center gap-[10px] mt-5 bg-gray70 rounded-lg px-3 py-2">
           <Ionicons name="megaphone-outline" color={'white'} size={19} />
-          <Text
-            className="text-gray40 font-semibold"
-            style={styles.GroupNotificationText}
-          >
+          <Text className="text-gray40 font-semibold">
             {crewInfo.notice ? crewInfo.notice : '등록된 공지가 없습니다.'}
           </Text>
         </View>
@@ -57,7 +54,7 @@ const GroupInfo = ({ crewInfo }: { crewInfo: Crew }) => {
 
 const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
   return (
-    <View style={styles.GroupGoalContainer}>
+    <View className="p-[18px] bg-gray rounded-xl mt-4 flex justify-between gap-4">
       <Chip
         style={{
           backgroundColor: '#000',
@@ -71,9 +68,9 @@ const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
         </Text>
       </Chip>
       <View>
-        <Text style={styles.GroupGoalText}>최종 목표까지</Text>
-        <Text style={[styles.GroupGoalText, { marginTop: 5 }]}>
-          <Text style={styles.RemainingGoalText}>
+        <Text className="text-lg font-bold text-white">최종 목표까지</Text>
+        <Text className="text-lg font-bold text-white mt-1">
+          <Text className="text-main rounded-xl py-[18px]">
             {crewInfo.goal - crewInfo.runningDistance}KM
           </Text>{' '}
           남았어요!
@@ -130,7 +127,7 @@ export default function Layout() {
     'editMember' | 'editOwner'
   >('editMember');
   const { id: crewId } = useLocalSearchParams();
-  const [duration, setDuration] = useState<number>(0);
+  // const [duration, setDuration] = useState<number>(0);
   // CustomAlert 훅
   const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
   const [isGroupCodeAlertVisible, setIsGroupCodeAlertVisible] = useState(false);
@@ -289,24 +286,7 @@ export default function Layout() {
   };
 
   return (
-    <View
-      style={[styles.container, { paddingTop: insets.top }]}
-      className="flex-1 bg-black"
-    >
-      <View className="flex-row items-center gap-2 px-4 py-[10px] w-full justify-between border border-red-100">
-        <Pressable onPress={() => router.push('/(tabs)/(home)')}>
-          <Ionicons name="arrow-back-outline" color={'white'} size={16} />
-        </Pressable>
-        <Text className="text-white text-lg flex-1 self-center flex-grow text-center">
-          크루
-        </Text>
-        <Pressable
-          onPress={() => router.push('/(tabs)/(home)')}
-          className="hidden"
-        >
-          <Ionicons name="arrow-back-outline" color={'white'} size={16} />
-        </Pressable>
-      </View>
+    <View style={[{ paddingTop: insets.top }]} className="flex-1 bg-black">
       <View className="flex-row px-4 py-[10px] items-center gap-5">
         <Pressable onPress={() => router.push('/(tabs)/(home)')}>
           <Ionicons name="arrow-back-outline" color={'white'} size={24} />
@@ -361,10 +341,12 @@ export default function Layout() {
       </CrewContext.Provider>
       <View className="bg-gray py-[18px] px-[14px]">
         <Pressable
-          style={styles.startButton}
+          className="bg-main text-center py-[18px] rounded-xl"
           onPress={() => router.push('/(tabs)/(single-running)')}
         >
-          <Text style={styles.startButtonText}>운동 시작하기</Text>
+          <Text className="text-[20px] text-gray font-bold text-center">
+            운동 시작하기
+          </Text>
         </Pressable>
       </View>
       {/* 설정 BottomSheet */}
@@ -454,63 +436,3 @@ export default function Layout() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000'
-  },
-  GroupInfoTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff'
-  },
-  GroupNotificationContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginTop: 20,
-    backgroundColor: '#313131',
-    paddingBlock: 8,
-    paddingInline: 12,
-    borderRadius: 10
-  },
-  GroupNotificationText: {
-    borderRadius: 10,
-    flexGrow: 1
-  },
-  GroupGoalContainer: {
-    padding: 18,
-    backgroundColor: '#313131',
-    borderRadius: 12,
-    marginTop: 17,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    gap: 14
-  },
-  GroupGoalText: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: '#fff'
-  },
-  RemainingGoalText: {
-    color: '#32FF76',
-    fontSize: 28,
-    fontWeight: 'bold'
-  },
-
-  startButton: {
-    backgroundColor: '#31FF76',
-    textAlign: 'center',
-    paddingVertical: 18,
-    borderRadius: 12
-  },
-  startButtonText: {
-    color: '#313131',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 20
-  }
-});
