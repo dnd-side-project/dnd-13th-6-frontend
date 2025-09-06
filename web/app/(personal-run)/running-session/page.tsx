@@ -132,17 +132,17 @@ export default function Page() {
             { ...data.message, timestamp: data.timestamp }
           ]);
           //SOCKET PUBLISH
-          stompClient.publish({
-            destination: SOCKET_URL.RUNNING_PUBLISH(
-              localStorage.getItem('runningId')!
-            ),
-            body: JSON.stringify({
-              x: data.message.latitude,
-              y: data.message.longitude,
-              timestamp: Date.now()
-            }),
-            headers: { 'content-type': 'application/json' }
-          });
+          // stompClient.publish({
+          //   destination: SOCKET_URL.RUNNING_PUBLISH(
+          //     localStorage.getItem('runningId')!
+          //   ),
+          //   body: JSON.stringify({
+          //     x: data.message.latitude,
+          //     y: data.message.longitude,
+          //     timestamp: Date.now()
+          //   }),
+          //   headers: { 'content-type': 'application/json' }
+          // });
         }
       } catch (error) {
         console.error('error:', error);
