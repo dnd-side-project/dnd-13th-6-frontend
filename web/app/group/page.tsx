@@ -20,10 +20,15 @@ export default function Page() {
   };
   useLayoutEffect(() => {
     const init = async () => {
-      const response = (await CrewApi.getCrewList()) as APIResponse<{
-        crews: Crew[];
-      }>;
-      setCrewList(response.result.crews);
+      try {
+        const response = (await CrewApi.getCrewList()) as APIResponse<{
+          crews: Crew[];
+        }>;
+        console.log('response', response);
+        setCrewList(response.result.crews);
+      } catch (error) {
+        console.error(error);
+      }
     };
     init();
   }, []);
@@ -38,11 +43,7 @@ export default function Page() {
           goal={100}
           runningDistance={1}
           isRunning={true}
-          members={[
-            'https://picsum.photos/200/300',
-            'https://picsum.photos/200/300',
-            'https://picsum.photos/200/300'
-          ]}
+          members={['https://picsum.photos/200/300']}
           className="border !border-[#00FF63]"
           onClick={() => onMove(`/(tabs)/(group)/running/1`)}
         >

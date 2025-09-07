@@ -5,13 +5,11 @@ import { router } from 'expo-router';
 import { useRef, useState, useEffect } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
-import { useWebViewReset } from '../../_layout';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 export default function Code() {
   const webviewRef = useRef<WebView>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { resetTrigger } = useWebViewReset();
   const initialUrl = ENV.WEB_VIEW_URL + '/group/code';
 
   const receiveMessage = (event: WebViewMessageEvent) => {
@@ -24,14 +22,6 @@ export default function Code() {
       router.push(JSON.parse(data).url);
     }
   };
-
-  // 탭 전환 시 WebView URI 초기화
-  useEffect(() => {
-    if (resetTrigger > 0 && webviewRef.current) {
-      const script = `window.location.href = '${initialUrl}'; true;`;
-      webviewRef.current.injectJavaScript(script);
-    }
-  }, [resetTrigger]);
 
   return (
     <SafeAreaView className="flex-1 justify-between items-center">

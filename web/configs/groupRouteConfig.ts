@@ -28,7 +28,7 @@ export const routeConfigs: Record<string, RouteConfig> = {
   },
   '/group/create': {
     showHeader: true,
-    backHref: '/back',
+    backHref: '/group',
     title: '크루 만들기'
   }
 };

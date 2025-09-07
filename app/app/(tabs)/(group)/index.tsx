@@ -13,7 +13,6 @@ function RunningShare() {
   const [webViewKey, setWebViewKey] = useState(0);
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
-    console.log('type', data);
     if (type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);
@@ -30,6 +29,7 @@ function RunningShare() {
   return (
     <SafeAreaView className="flex-1 align-center justify-between py-4">
       <WebView
+        className="flex-1 bg-gray"
         ref={webviewRef}
         key={webViewKey}
         style={styles.webview}
@@ -45,9 +45,7 @@ export default RunningShare;
 
 const styles = StyleSheet.create({
   webview: {
-    flex: 1,
     height: windowHeight,
-    width: windowWidth,
-    backgroundColor: '#313131'
+    width: windowWidth
   }
 });

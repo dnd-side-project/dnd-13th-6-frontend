@@ -13,7 +13,8 @@ const useFetch = <T>(url: string, options?: RequestInit) => {
       const res = await fetch(`${ENV.API_BASE_URL}/${url}`, {
         headers: {
           'Content-Type': 'application/json',
-          Cookie: `accessToken=${token}`
+          // Cookie: `accessToken=${token}`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4YzI5MmRjZi1mMWNmLTQwZWYtYjQ4Ny0yZDgyZWRhMGM2OTEiLCJzdWIiOiIxMCIsImlhdCI6MTc1NzI2MzcxMSwiZXhwIjoxNzU3MzUwMTExLCJyb2xlIjoiVVNFUiJ9.LuRR5c0_SqokZvp6t3TNvgfJ7SMTCHjGP0tkXVw9SZw`
         },
         ...options
       });

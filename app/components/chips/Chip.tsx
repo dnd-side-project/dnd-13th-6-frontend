@@ -1,24 +1,20 @@
-import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, StyleProp, ViewStyle } from 'react-native';
 
 interface Props {
   children: React.ReactNode;
   onPress?: () => void;
+  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function Chip({ children, onPress, style }: Props) {
+export default function Chip({ children, onPress, className, style }: Props) {
   return (
-    <Pressable onPress={onPress} style={[styles.container, style]}>
+    <Pressable
+      onPress={onPress}
+      style={style}
+      className={`w-auto px-3 py-[10px] rounded-full ${className}`}
+    >
       {children}
     </Pressable>
   );
 }
-//children크기만큼만 차지하도록
-const styles = StyleSheet.create({
-  container: {
-    width: 'auto',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 100
-  }
-});

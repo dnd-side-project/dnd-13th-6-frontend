@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Tabs, useSegments } from 'expo-router';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { router, Tabs, useSegments } from 'expo-router';
+import React, { createContext, useEffect, useState } from 'react';
 import { Image } from 'react-native';
 
 const hideTabBarScreens = ['(single-running)', '(group-running)'];
@@ -13,8 +13,6 @@ export const WebViewResetContext = createContext<{
   resetTrigger: 0,
   triggerReset: () => {}
 });
-
-export const useWebViewReset = () => useContext(WebViewResetContext);
 
 export default function TabLayout() {
   const segments = useSegments(); // usePathname 대신 useSegments 사용
@@ -70,6 +68,11 @@ export default function TabLayout() {
         />
         <Tabs.Screen
           name="(group)"
+          listeners={{
+            tabPress: e => {
+              router.push('/(tabs)/(group)');
+            }
+          }}
           options={{
             title: '그룹',
             tabBarIcon: ({ color }) => (

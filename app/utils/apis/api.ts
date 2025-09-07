@@ -1,5 +1,5 @@
 const API_SUFFIX = 'api';
-export const API_VERSION_PREFIX = 'api/v1';
+export const API_VERSION_PREFIX = '/dev/api/v1';
 
 export const MODULE = {
   AUTH: `auth`,

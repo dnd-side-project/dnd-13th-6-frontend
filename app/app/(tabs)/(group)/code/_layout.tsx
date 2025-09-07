@@ -10,7 +10,6 @@ export default function CalendarLayout() {
     });
 
     return () => {
-      // cleanup: 탭바를 다시 보이게 함
       navigation.getParent()?.setOptions({
         tabBarStyle: { display: 'flex' }
       });

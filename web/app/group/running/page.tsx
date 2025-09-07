@@ -181,16 +181,14 @@ function GroupRunningContent() {
 
   useLayoutEffect(() => {
     const init = async () => {
-      axios(
-        `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/crews/${crewId}/members`,
-        {
-          method: 'GET',
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json'
-          }
+      axios(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/crews/6/members`, {
+        method: 'GET',
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
-      );
+      });
     };
     init();
   });

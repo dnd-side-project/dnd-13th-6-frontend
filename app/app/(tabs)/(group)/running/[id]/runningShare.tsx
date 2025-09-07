@@ -1,12 +1,6 @@
 import { ENV } from '@/utils/app/consts';
-import { useContext, useEffect, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  View
-} from 'react-native';
+import { useContext, useState } from 'react';
+import { ActivityIndicator, Dimensions, StyleSheet, View } from 'react-native';
 import WebView from 'react-native-webview';
 import { useWebView } from '@/hooks/useWebView';
 import { MemberData } from '@/types/crew';
@@ -53,7 +47,7 @@ function RunningShare() {
       )}
       <WebView
         ref={webviewRef}
-        className="flex-1 bg-black"
+        className="flex-1 bg-gray"
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         onLoadEnd={handleWebViewLoad}
         source={{
@@ -68,9 +62,7 @@ export default RunningShare;
 
 const styles = StyleSheet.create({
   webview: {
-    flex: 1,
     height: windowHeight,
-    width: windowWidth,
-    backgroundColor: '#313131'
+    width: windowWidth
   }
 });

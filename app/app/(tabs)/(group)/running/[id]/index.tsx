@@ -1,11 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
+import { ScrollView, Text, View, Image } from 'react-native';
 import { CrewContext } from './_layout';
 
 interface RankingItemProps {
   name: string;
   rank: number;
-  onDelete?: () => void;
   imageUrl: string;
 }
 
@@ -26,7 +25,11 @@ const RankingItem: React.FC<RankingItemProps> = ({ name, rank, imageUrl }) => {
   const rankClass = rankStyle(rank);
   return (
     <View className="flex flex-row items-center justify-start bg-gray p-4 gap-4">
-      <View style={styles.rankBadge} className={rankClass}>
+      <View
+        className={
+          rankClass + ' w-7 h-7 rounded-xl justify-center items-center'
+        }
+      >
         <Text className="text-headline1 text-white">{rank}</Text>
       </View>
       <Image
@@ -42,7 +45,6 @@ const RankingItem: React.FC<RankingItemProps> = ({ name, rank, imageUrl }) => {
 };
 
 function Index() {
-  const handleDelete = (name: string) => {};
   const [duration, setDuration] = useState<number>(0);
   const { crewMembers, crewInfo } = useContext(CrewContext);
 
@@ -72,7 +74,6 @@ function Index() {
                 name={member.nickname}
                 imageUrl={member.badgeImageUrl}
                 rank={index + 1}
-                onDelete={() => handleDelete(member.nickname)}
               />
             ))}
       </View>
@@ -82,12 +83,12 @@ function Index() {
 
 export default Index;
 
-const styles = StyleSheet.create({
-  rankBadge: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-});
+// const styles = StyleSheet.create({
+//   rankBadge: {
+//     width: 28,
+//     height: 28,
+//     borderRadius: 14,
+//     justifyContent: 'center',
+//     alignItems: 'center'
+//   }
+// });
