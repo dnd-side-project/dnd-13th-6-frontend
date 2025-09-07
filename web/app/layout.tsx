@@ -1,7 +1,7 @@
+import './globals.css';
 import ClientLayoutWrapper from '@/components/common/ClientLayoutWrapper'; // 새로 만든 컴포넌트 import
 import { lufga, pretendard } from '@/fonts/fonts';
 import React from 'react';
-import './globals.css';
 
 export const metadata = {
   title: 'Runky'
