@@ -24,11 +24,9 @@ export default function DefaultLayout({
   const handleBack = useAtomValue(headerBackAtom);
   const router = useRouter();
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-full flex-col">
       {showHeader && (
-        <>
-          {/* 전부 SafeArea로 변경해서 더 이상 필요 없음 */}
-          <div className="h-[20px] flex-none" />
+        <div className="sticky top-0 z-10 bg-background pt-[env(safe-area-inset-top)]">
           <header className="flex items-center">
             {backHref && (
               <div className="p-4">
@@ -64,10 +62,15 @@ export default function DefaultLayout({
               </button>
             )}
           </header>
-        </>
+        </div>
       )}
 
-      <main className={showHeader ? 'flex flex-1 flex-col px-4 pb-4' : ''}>
+      <main
+        className={          showHeader
+            ? 'flex flex-1 flex-col overflow-y-auto px-4 pb-4'
+            : 'h-full overflow-y-auto pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
+        }
+      >
         {children}
       </main>
     </div>

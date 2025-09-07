@@ -8,7 +8,7 @@ import { Notification } from '@/types/notification';
 const MainHeader = ({ notification }: { notification: Notification[] }) => {
   const router = useRouter();
   return (
-    <div className="flex w-full items-center justify-between">
+    <div className="flex w-full items-center justify-between pt-4">
       <Image src={'/assets/LOGO.svg'} alt={'logo'} width={92} height={29} />
       <button
         className="relative"
