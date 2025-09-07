@@ -24,7 +24,7 @@ export default function DefaultLayout({
   const handleBack = useAtomValue(headerBackAtom);
   const router = useRouter();
   return (
-    <div className="flex h-full flex-col ">
+    <div className="flex h-full flex-col">
       {showHeader && (
         <div className="sticky top-0 z-10 bg-background pt-[env(safe-area-inset-top)]">
           <header className="flex items-center">
