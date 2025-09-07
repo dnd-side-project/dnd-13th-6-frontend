@@ -5,7 +5,11 @@ import { tokenRefresh } from '@/utils/apis/auth';
 
 const api: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_BASE_URL,
-  withCredentials: true
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4YzI5MmRjZi1mMWNmLTQwZWYtYjQ4Ny0yZDgyZWRhMGM2OTEiLCJzdWIiOiIxMCIsImlhdCI6MTc1NzI2MzcxMSwiZXhwIjoxNzU3MzUwMTExLCJyb2xlIjoiVVNFUiJ9.LuRR5c0_SqokZvp6t3TNvgfJ7SMTCHjGP0tkXVw9SZw`
+  }
 });
 
 // 요청 인터셉터:

@@ -96,14 +96,14 @@ export default function CustomAlert({
           <View className="pb-6">
             {title && (
               <Text
-                className="text-lg font-bold text-center mb-4"
+                className="text-title3 text-center mb-4"
                 style={{ color: '#32FF76' }}
               >
                 {title}
               </Text>
             )}
             <Text
-              className="text-[22px] font-bold text-center"
+              className="text-title3 text-center"
               style={{ color: '#FFFFFF' }}
             >
               {message}
@@ -116,7 +116,7 @@ export default function CustomAlert({
               buttons.map((button, index) => (
                 <Pressable
                   key={index}
-                  className={`flex-1 py-4 px-4 text-headline1 rounded-xl items-center justify-center ${button.className}`}
+                  className={`flex-1 p-1 text-headline1 rounded-xl items-center justify-center ${button.className}`}
                   onPress={() => handleButtonPress(button)}
                 >
                   <Text

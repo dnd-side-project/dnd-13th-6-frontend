@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import * as TaskManager from 'expo-task-manager';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -28,7 +28,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
-import { useWebViewReset } from '../_layout';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -144,7 +143,6 @@ function Index() {
   const { webviewRef, postMessage } = useWebView<
     RunningData | { type: string; lat: number; lng: number } | string
   >();
-  const { resetTrigger } = useWebViewReset();
   const initialUrl = ENV.WEB_VIEW_URL + '/prepare-run';
 
   const setGpsStatus = async () => {
@@ -168,7 +166,6 @@ function Index() {
         const runningData =
           (await getStorage<RunningData[]>(STORAGE_KEY.RUNNING_DATA)) || [];
         const location = await getLocation();
-        console.log('location', location);
         setGpsStatus();
         const { latitude, longitude } = location.coords;
 
@@ -289,18 +286,13 @@ function Index() {
     init();
   }, []);
 
-  // 탭 전환 시 WebView URI 초기화
-  useEffect(() => {
-    if (resetTrigger > 0 && webviewRef.current) {
-      const script = `window.location.href = '${initialUrl}'; true;`;
-      webviewRef.current.injectJavaScript(script);
-    }
-  }, [resetTrigger]);
-
   return (
-    <SafeAreaView style={styles.container}>
-      <Chip style={[styles.chip, { top: insets.top + 30 }]}>
-        <View style={styles.chipContent}>
+    <SafeAreaView className="flex-1 items-center justify-between relative">
+      <Chip
+        className="bg-black/50 absolute z-[100] left-4"
+        style={[{ top: insets.top + 30 }]}
+      >
+        <View className="flex flex-row items-center gap-2">
           <Image
             source={
               isGPSEnabled === 'granted'
@@ -311,7 +303,7 @@ function Index() {
             }
             style={{ width: 16, height: 16 }}
           />
-          <Text style={styles.chipText}>
+          <Text className="text-[14px] text-white">
             {isGPSEnabled === 'granted'
               ? 'GPS 연결됨'
               : isGPSEnabled === 'waiting'
@@ -323,27 +315,16 @@ function Index() {
       {isLoading && (
         <ActivityIndicator
           color="#32FF76"
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: windowHeight
-          }}
+          className="flex-1 justify-center items-center"
+          style={[{ height: windowHeight }]}
         />
       )}
       <WebView
         ref={webviewRef}
+        className="flex-1 bg-gray"
         onMessage={receiveMessage}
-        onLoadEnd={async () => {
-          // try {
-          const location = await getLocation();
-          postMessage(POST_MESSAGE_TYPE.MESSAGE, {
-            type: SEND_MESSAGE_TYPE.RUNNING_PREPARE,
-            lat: location.coords.latitude,
-            lng: location.coords.longitude
-          });
+        onLoadEnd={() => {
           setIsLoading(false);
-          // }
         }}
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         source={{
@@ -357,33 +338,8 @@ function Index() {
 export default Index;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    position: 'relative'
-  },
   webview: {
-    flex: 1,
     width: windowWidth,
-    height: windowHeight,
-    position: 'relative'
-  },
-  //웹뷰 기준으로 띄우기 위해 절대 위치 사용
-  chip: {
-    backgroundColor: 'rgba(28, 28, 30, 0.5)',
-    position: 'absolute',
-    zIndex: 100,
-    left: 16
-  },
-  chipContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8
-  },
-  chipText: {
-    color: '#fff',
-    opacity: 1,
-    fontSize: 14
+    height: windowHeight
   }
 });

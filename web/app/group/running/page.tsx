@@ -35,7 +35,6 @@ function CrewMemberProfiles({
     </div>
   );
 }
-console.log('group/running');
 const stompClient = new Client({
   webSocketFactory: () =>
     new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
@@ -182,22 +181,20 @@ function GroupRunningContent() {
 
   useLayoutEffect(() => {
     const init = async () => {
-      axios(
-        `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/crews/${crewId}/members`,
-        {
-          method: 'GET',
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json'
-          }
+      axios(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/crews/6/members`, {
+        method: 'GET',
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
-      );
+      });
     };
     init();
   });
 
   return (
-    <div className="text-whit l relative h-full w-full bg-[#313131] px-4">
+    <div className="text-whit l relative h-full w-full px-4">
       <CrewMemberProfiles users={members} onClick={onMemberClick} />
       <div className="relative mt-6 mb-[14px] h-[400px] overflow-y-scroll">
         <GoogleMap

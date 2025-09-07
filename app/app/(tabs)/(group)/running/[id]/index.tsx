@@ -1,11 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
+import { ScrollView, Text, View, Image } from 'react-native';
 import { CrewContext } from './_layout';
 
 interface RankingItemProps {
   name: string;
   rank: number;
-  onDelete?: () => void;
   imageUrl: string;
 }
 
@@ -25,24 +24,27 @@ const rankStyle = (rank: number) => {
 const RankingItem: React.FC<RankingItemProps> = ({ name, rank, imageUrl }) => {
   const rankClass = rankStyle(rank);
   return (
-    <View style={styles.rankingItem}>
-      <View style={styles.rankBadge} className={rankClass}>
-        <Text style={styles.rankText}>{rank}</Text>
+    <View className="flex flex-row items-center justify-start bg-gray p-4 gap-4">
+      <View
+        className={
+          rankClass + ' w-7 h-7 rounded-xl justify-center items-center'
+        }
+      >
+        <Text className="text-headline1 text-white">{rank}</Text>
       </View>
       <Image
         source={{ uri: imageUrl }}
-        style={{ width: 50, height: 50, borderRadius: 100 }}
+        className="w-14 h-14 rounded-full"
         alt={name}
       />
-      <View style={styles.itemContent}>
-        <Text style={styles.nameText}>{name}</Text>
+      <View className="flex-1 justify-center">
+        <Text className="text-body1 text-white">{name}</Text>
       </View>
     </View>
   );
 };
 
 function Index() {
-  const handleDelete = (name: string) => {};
   const [duration, setDuration] = useState<number>(0);
   const { crewMembers, crewInfo } = useContext(CrewContext);
 
@@ -55,12 +57,14 @@ function Index() {
   }, []);
   return (
     <ScrollView
-      style={styles.container}
+      className="flex-1 bg-gray pb-6"
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ minHeight: 750 }}
     >
-      <Text style={styles.title}>이번 주의 크루 MVP는?</Text>
-      <View style={styles.rankingList}>
+      <Text className="text-title3 text-white ml-4 mt-9 ">
+        이번 주의 크루 MVP는?
+      </Text>
+      <View className="flex-1">
         {crewMembers &&
           crewMembers.members
             .sort((a, b) => b.runningDistance - a.runningDistance)
@@ -70,7 +74,6 @@ function Index() {
                 name={member.nickname}
                 imageUrl={member.badgeImageUrl}
                 rank={index + 1}
-                onDelete={() => handleDelete(member.nickname)}
               />
             ))}
       </View>
@@ -80,50 +83,12 @@ function Index() {
 
 export default Index;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#313131',
-    paddingBottom: 26
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginLeft: 16,
-    color: 'white',
-    marginTop: 36,
-    marginVertical: 15
-  },
-  rankingList: {
-    flex: 1
-  },
-  rankingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 80,
-    backgroundColor: '#313131',
-    paddingHorizontal: 15,
-    gap: 15
-  },
-  rankBadge: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  rankText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold'
-  },
-  itemContent: {
-    flex: 1
-  },
-  nameText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-    marginBottom: 4
-  }
-});
+// const styles = StyleSheet.create({
+//   rankBadge: {
+//     width: 28,
+//     height: 28,
+//     borderRadius: 14,
+//     justifyContent: 'center',
+//     alignItems: 'center'
+//   }
+// });

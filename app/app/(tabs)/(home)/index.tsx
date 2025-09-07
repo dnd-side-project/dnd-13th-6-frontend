@@ -1,22 +1,17 @@
-import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { ENV } from '@/utils/app/consts';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { MODULE } from '@/utils/apis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useWebViewReset } from '../_layout';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { router } from 'expo-router';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 function Index() {
   const webViewRef = useRef<WebView>(null);
-  const { resetTrigger } = useWebViewReset();
   const initialUrl = `${ENV.WEB_VIEW_URL}/main`;
 
   const handleMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
-    console.log('data', data);
     if (data.type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);
@@ -33,19 +28,11 @@ function Index() {
     }
   };
 
-  // 탭 전환 시 WebView URI 초기화
-  useEffect(() => {
-    if (resetTrigger > 0 && webViewRef.current) {
-      const script = `window.location.href = '${initialUrl}'; true;`;
-      webViewRef.current.injectJavaScript(script);
-    }
-  }, [resetTrigger]);
-
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1">
       <WebView
         ref={webViewRef}
-        style={styles.webview}
+        className="flex-1 bg-gray"
         source={{ uri: initialUrl }}
         onMessage={handleMessage}
       />
@@ -54,24 +41,3 @@ function Index() {
 }
 
 export default Index;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  webview: {
-    flex: 1,
-    backgroundColor: '#333333'
-  },
-  runningButton: {
-    backgroundColor: 'gray',
-    borderRadius: 100,
-    paddingVertical: 10,
-    paddingHorizontal: 20
-  },
-  runningButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold'
-  }
-});

@@ -12,6 +12,7 @@ import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
 import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface FinishDataItem {
   averagePace: string; // ex: "0'00\""
@@ -28,10 +29,26 @@ export default function Main() {
   const [cloverCount, setCloverCount] = useState<number>(0);
   const [notification, setNotification] = useState<Notification[]>([]);
   const [finishData, setFinishData] = useState([]);
+  const router = useRouter();
   // finishData 불러오기
   useEffect(() => {
     postMessageToApp(MODULE.AUTH);
     setFinishData(JSON.parse(localStorage.getItem('finishData') ?? '[]'));
+
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      const params = new URLSearchParams(hash);
+      const accessToken = params.get('accessToken');
+      const refreshToken = params.get('refreshToken');
+
+      if (accessToken && refreshToken) {
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+
+        // URL 정리
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    }
   }, []);
 
   if (finishData.length > 0) {
@@ -116,6 +133,7 @@ export default function Main() {
   }, []);
   return (
     <>
+      <button onClick={() => router.push('/login')}>로그인</button>
       <MainHeader notification={notification} />
       <WelcomeCard nickname={nickname} badgeUrl={badgeUrl} badgeId={badgeId} />
       <WeeklyGoalCard />

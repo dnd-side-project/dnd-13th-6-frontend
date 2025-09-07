@@ -33,7 +33,6 @@ function EditGroupNotificationContent({
         },
         body: JSON.stringify({ notice })
       });
-      console.log(res, 'res');
       onClose();
     } catch (error) {
       console.log(error);

@@ -8,9 +8,8 @@ export const useWebView = <T>() => {
 
   const postMessage = (type: string, data: T) => {
     const message = generatePostMessage(type, data);
-    console.log('message', message);
+    // console.log('message', message);
     if (webviewRef.current) {
-      console.log('message', message);
       webviewRef.current.postMessage(message);
     }
   };
