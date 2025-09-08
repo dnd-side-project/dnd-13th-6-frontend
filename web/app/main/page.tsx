@@ -32,9 +32,8 @@ export default function Main() {
   const router = useRouter();
   // finishData 불러오기
   useEffect(() => {
-    postMessageToApp(MODULE.AUTH);
     setFinishData(JSON.parse(localStorage.getItem('finishData') ?? '[]'));
-
+    
     const hash = window.location.hash.substring(1);
     if (hash) {
       const params = new URLSearchParams(hash);
@@ -44,11 +43,13 @@ export default function Main() {
       if (accessToken && refreshToken) {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-
+        
+        
         // URL 정리
         window.history.replaceState(null, '', window.location.pathname);
       }
     }
+    postMessageToApp(MODULE.AUTH);
   }, []);
 
   if (finishData.length > 0) {
