@@ -66,16 +66,6 @@ export default function Page() {
     };
   }, []);
 
-  // const formatTitle = (
-  //   raw: string,
-  //   variables: { [key: string]: string | number }
-  // ) => {
-  //   return raw.replace(/\$\{(\w+)\}/g, (_, key) => {
-  //     const value = variables[key];
-  //     return value !== undefined ? String(value) : '';
-  //   });
-  // };
-
   return (
     <>
       {notifications && notifications.length > 0 ? (
