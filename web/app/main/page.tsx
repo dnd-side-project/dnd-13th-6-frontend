@@ -15,6 +15,7 @@ import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNotification } from '@/utils/queries/notification';
+import { queryKeys } from '@/utils/queries/queryKeys';
 interface FinishDataItem {
   averagePace: string; // ex: "0'00"
   runningData: RunningData[]; // 배열 안에 구체적 타입이 있으면 명시 가능
@@ -37,12 +38,12 @@ export default function Main() {
   >([]);
   //사용자 정보
   const { data: userInfo, isSuccess: isUserInfoSucess } = useQuery<UserInfo>({
-    queryKey: ['userInfo'],
+    queryKey: queryKeys.member.info(),
     queryFn: fetchUserInfo
   });
   //클로버 개수
   const { data: cloverCount, isSuccess: isCloverCountSucess } = useQuery({
-    queryKey: ['cloverCount'],
+    queryKey: queryKeys.reward.cloverCount(),
     queryFn: async () => {
       const res = await api.get(`${REWARD_API.CLOVER()}`);
       return res.data.result.count;
@@ -52,7 +53,7 @@ export default function Main() {
   const { data: notifications, isSuccess: isNotificationSucess } = useQuery<
     Notification[]
   >({
-    queryKey: ['notifications'],
+    queryKey: queryKeys.notification.all,
     queryFn: fetchNotification,
     staleTime: 0, // 데이터를 가져오자마자 stale 상태로 만듦
     gcTime: 0 // 컴포넌트가 사라지면 캐시를 즉시 삭제
@@ -82,8 +83,7 @@ export default function Main() {
       );
       const merged = fetched.map(f => {
         const prev = stored.find(
-          s =>
-            s.id === f.id && s.template?.code === f.template?.code
+          s => s.id === f.id && s.template?.code === f.template?.code
         );
         return prev ? { ...f, read: prev.read } : { ...f, read: false };
       });
