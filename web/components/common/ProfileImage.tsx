@@ -21,14 +21,11 @@ function ProfileImage({
     >
       {isRunning ? (
         // Gradient border container
-        <div className="h-full w-full rounded-full bg-gradient-to-r from-[#32FF76] to-[#6EE7FF] p-0.5">
-          <div className="h-full w-full overflow-hidden rounded-full bg-[#cacaca]">
-            <Image
-              src={profileImageUrl}
-              fill={true}
-              className="h-full w-full object-cover"
-              alt={alt}
-            />
+        <div
+          className={`h-full w-full rounded-full ${isRunning ? 'bg-gradient-to-r from-[#32FF76] to-[#6EE7FF]' : 'bg-[#cacaca]'} p-0.5`}
+        >
+          <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-[#cacaca]">
+            <Image src={profileImageUrl} width={48} height={48} alt={alt} />
           </div>
         </div>
       ) : (

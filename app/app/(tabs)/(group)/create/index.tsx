@@ -2,7 +2,7 @@ import { MODULE } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
@@ -39,6 +39,7 @@ export default function Code() {
         allowsLinkPreview={false}
         onMessage={receiveMessage}
         allowsBackForwardNavigationGestures={true}
+           mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );

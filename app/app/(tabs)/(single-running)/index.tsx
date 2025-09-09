@@ -330,6 +330,7 @@ function Index() {
         source={{
           uri: initialUrl
         }}
+           mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );

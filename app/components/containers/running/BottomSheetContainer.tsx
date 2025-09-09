@@ -66,7 +66,8 @@ export default function BottomSheetContainer({
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            Cookie: `accessToken=${await AsyncStorage.getItem('accessToken')}`
+            Cookie: `accessToken=${await AsyncStorage.getItem('accessToken')}`,
+            Authorization: `Bearer ${await AsyncStorage.getItem('accessToken')}`
           }
         });
         if (ret.ok) {

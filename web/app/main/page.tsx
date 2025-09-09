@@ -12,7 +12,7 @@ import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
 import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface FinishDataItem {
   averagePace: string; // ex: "0'00\""
@@ -33,23 +33,27 @@ export default function Main() {
   // finishData 불러오기
   useEffect(() => {
     setFinishData(JSON.parse(localStorage.getItem('finishData') ?? '[]'));
-    
+
     const hash = window.location.hash.substring(1);
     if (hash) {
       const params = new URLSearchParams(hash);
+      console.log('params', params);
       const accessToken = params.get('accessToken');
       const refreshToken = params.get('refreshToken');
-
+      console.log('accessToken', accessToken);
+      console.log('refreshToken', refreshToken);
       if (accessToken && refreshToken) {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        
-        
+
         // URL 정리
         window.history.replaceState(null, '', window.location.pathname);
       }
+      postMessageToApp(
+        MODULE.AUTH,
+        JSON.stringify({ accessToken, refreshToken })
+      );
     }
-    postMessageToApp(MODULE.AUTH);
   }, []);
 
   if (finishData.length > 0) {
@@ -116,7 +120,7 @@ export default function Main() {
       const merged = fetched.map(f => {
         const prev = stored.find(
           s =>
-            s.createdAt === f.createdAt && s.template.code === f.template.code
+            s.createdAt === f.createdAt && s.template?.code === f.template?.code
         );
         return prev ? { ...f, read: prev.read } : f;
       });
@@ -134,7 +138,7 @@ export default function Main() {
   }, []);
   return (
     <>
-      <button onClick={() => router.push('/login')}>로그인</button>
+      {/* <button onClick={() => router.push('/login')}>로그인</button> */}
       <MainHeader notification={notification} />
       <WelcomeCard nickname={nickname} badgeUrl={badgeUrl} badgeId={badgeId} />
       <WeeklyGoalCard />
