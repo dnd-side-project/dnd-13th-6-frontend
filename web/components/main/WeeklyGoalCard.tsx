@@ -1,38 +1,23 @@
 'use client';
-import React, { useEffect, useState } from 'react';
 import Card from '@/components/main/Card';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
-import api from '@/utils/apis/customAxios';
-import { GOAL_API, MODULE, RUNNING_API } from '@/utils/apis/api';
+import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import { useQuery } from '@tanstack/react-query';
+import { getGoalDistance } from '@/utils/queries/goal';
+import { getWeeklyRunDistance } from '@/utils/queries/running';
+import { queryKeys } from '@/utils/queries/queryKeys';
+export default function WeeklyGoalCard() {
+  const { data: goalDistance } = useQuery({
+    queryKey: queryKeys.goal.goalDistance(),
+    queryFn: getGoalDistance
+  });
 
-const WeeklyGoalCard = () => {
-  const [goalDistance, setGoalDistance] = useState<number>(0);
-  const [weeklyRunDistance, setWeeklyRunDistance] = useState<number>(0);
-  const getGoalDistance = async () => {
-    try {
-      const res = await api.get(GOAL_API.GET_TARGET_DISTANCE());
-      setGoalDistance(res.data.result.goal);
-      localStorage.setItem('weeklyGoalDistance', res.data.result.goal);
-      console.log('목표거리', res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const getWeeklyRunDistance = async () => {
-    try {
-      const res = await api.get(RUNNING_API.WEEKLY_RUNNINGS());
-      setWeeklyRunDistance(res.data.result.totalDistanceKm);
-      console.log('뛴거리', res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    getGoalDistance();
-    getWeeklyRunDistance();
-  }, []);
+  const { data: weeklyRunDistance } = useQuery({
+    queryKey: queryKeys.running.weekly(),
+    queryFn: getWeeklyRunDistance
+  });
 
   const remainingDistance = goalDistance - weeklyRunDistance;
   const router = useRouter();
@@ -89,6 +74,4 @@ const WeeklyGoalCard = () => {
       </Button>
     </Card>
   );
-};
-
-export default WeeklyGoalCard;
+}
