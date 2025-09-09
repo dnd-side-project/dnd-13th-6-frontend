@@ -9,3 +9,7 @@ export const runningEnd = async (runningId: string) => {
   const res = await api.post(RUNNING_API.RUNNING_END(runningId));
   return res.data;
 };
+export const getWeeklyRunDistance = async () => {
+  const res = await api.get(RUNNING_API.WEEKLY_RUNNINGS());
+  return res.data.result.totalDistanceKm;
+}

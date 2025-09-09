@@ -11,8 +11,10 @@ export const updateNickname = async (nickname: string) => {
   });
   return res.data;
 };
-export const updateBadge = async () => {
-  const res = await api.patch(MEMBER_API.CHANGE_BADGE());
+export const updateBadge = async (badgeId: number) => {
+  const res = await api.patch(MEMBER_API.CHANGE_BADGE(), {
+    badgeId
+  });
   return res.data;
 };
 
