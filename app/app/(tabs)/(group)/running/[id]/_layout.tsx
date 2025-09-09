@@ -152,8 +152,6 @@ export default function Layout() {
   });
 
   const handleSettingsPress = () => {
-    console.log('handleSettingsPress', settingsBottomSheet);
-    console.log(settingsBottomSheet.bottomSheetRef);
     settingsBottomSheet.present();
   };
 

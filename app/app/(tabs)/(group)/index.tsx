@@ -1,10 +1,10 @@
+import { MODULE } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
-import { MODULE } from '@/utils/apis/api';
-import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -22,6 +22,7 @@ function RunningShare() {
       if (url === '/(tabs)/(home)') {
         setWebViewKey(prev => prev + 1);
       }
+      console.log('url', url);
       router.push(url);
     }
   };
@@ -36,6 +37,7 @@ function RunningShare() {
         keyboardDisplayRequiresUserAction={false}
         source={{ uri: ENV.WEB_VIEW_URL + '/group' }}
         onMessage={receiveMessage}
+           mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );
