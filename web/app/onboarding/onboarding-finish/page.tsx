@@ -21,7 +21,7 @@ function Page() {
         <div className="flex flex-col items-center">
           <p className="text-gray-20 mt-[51px] inline-block justify-center text-center text-[26px] leading-[35px] font-bold tracking-[-0.025em] whitespace-pre-line">
             <Image
-              src="/assets/LOGO.png"
+              src="/assets/LOGO.svg"
               alt="onboarding3"
               width={88}
               height={28}
