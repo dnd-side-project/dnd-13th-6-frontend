@@ -176,10 +176,7 @@ export default function Layout() {
             setIsGroupCodeAlertVisible(true);
           }}
         >
-          <Image
-            source={require('@/assets/images/UserPlus.png')}
-            style={{ width: 24, height: 24 }}
-          />
+          <Ionicons name="person-add-outline" color={'white'} size={24} />
         </Pressable>
         <Pressable onPress={handleSettingsPress}>
           <Ionicons name="settings-outline" color={'white'} size={24} />
