@@ -28,6 +28,7 @@ const TodayStatsCard = () => {
     if (!distanceMeters || !durationSeconds) return "-'--''"; // 0일 때 표시
     const paceSec = durationSeconds / (distanceMeters / 1000);
     const min = Math.floor(paceSec / 60);
+    if (min >= 50) return "-'--''";
     const sec = Math.round(paceSec % 60);
     return `${min}'${sec.toString().padStart(2, '0')}''`;
   };
