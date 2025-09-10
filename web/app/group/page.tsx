@@ -32,6 +32,18 @@ export default function Page() {
     init();
   }, []);
 
+  const moveResultPage = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    crew: Crew
+  ) => {
+    e.stopPropagation();
+    const type = 'crew';
+    const isSuccess =
+      crew.goal > 0 &&
+      Math.round((crew.runningDistance / crew.goal) * 100) >= 100;
+    router.push(`/crew-reward?type=${type}&isSuccess=${isSuccess}`);
+  };
+
   return (
     <div className="border-main flex h-screen w-full flex-col">
       <div className="flex flex-grow flex-col gap-5 overflow-y-scroll p-4">
@@ -54,9 +66,7 @@ export default function Page() {
           >
             <button
               className="mt-4 w-full rounded-2xl bg-[#48484A]"
-              onClick={() =>
-                router.push('/crew-reward?type=crew&isSuccess=true')
-              }
+              onClick={e => moveResultPage(e, crew)}
             >
               <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
                 저번 주 결과 보기
@@ -64,7 +74,7 @@ export default function Page() {
             </button>
           </CrewChallengeCard>
         ))}
-        <div className="mb-4 flex gap-3 bg-none">
+        <div className="mb flex gap-3 bg-none">
           <button
             className="flex-1 rounded-2xl bg-[#48484A]"
             onClick={() => onMove('/(tabs)/(group)/create')}
