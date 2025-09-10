@@ -37,36 +37,6 @@ export default function Page() {
     }
   };
 
-  const [stompClient] = useState(
-    () =>
-      new Client({
-        webSocketFactory: () =>
-          new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
-        // 또는 직접 WebSocket 사용시:
-        // brokerURL: `${process.env.NEXT_PUBLIC_SERVER_BASE_URL?.replace(/^http/, 'ws')}/ws`,
-        reconnectDelay: 5000,
-        heartbeatIncoming: 4000,
-        heartbeatOutgoing: 4000,
-        debug: str => {
-          console.log('🔧 개인 러닝 STOMP DEBUG:', str);
-        },
-        onConnect: () => {
-          console.log('🔌 개인 러닝 STOMP 연결 성공');
-          const token = localStorage.getItem('accessToken');
-          console.log('🆔 Access Token:', token?.substring(0, 20) + '...');
-          console.log('🌐 서버 URL:', process.env.NEXT_PUBLIC_SERVER_BASE_URL);
-        },
-        onDisconnect: () => {
-          console.log('❌ 개인 러닝 STOMP 연결 해제');
-        },
-        onStompError: frame => {
-          console.error('❌ 개인 러닝 STOMP 에러:', frame);
-        },
-        connectHeaders: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      })
-  );
   //버튼
   useEffect(() => {
     handleControl('play');
@@ -146,6 +116,33 @@ export default function Page() {
 
   //이벤트 등록
   useEffect(() => {
+    const stompClient = new Client({
+        webSocketFactory: () =>
+          new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
+        // 또는 직접 WebSocket 사용시:
+        // brokerURL: `${process.env.NEXT_PUBLIC_SERVER_BASE_URL?.replace(/^http/, 'ws')}/ws`,
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        debug: str => {
+          console.log('🔧 개인 러닝 STOMP DEBUG:', str);
+        },
+        onConnect: () => {
+          console.log('🔌 개인 러닝 STOMP 연결 성공');
+          const token = localStorage.getItem('accessToken');
+          console.log('🆔 Access Token:', token?.substring(0, 20) + '...');
+          console.log('🌐 서버 URL:', process.env.NEXT_PUBLIC_SERVER_BASE_URL);
+        },
+        onDisconnect: () => {
+          console.log('❌ 개인 러닝 STOMP 연결 해제');
+        },
+        onStompError: frame => {
+          console.error('❌ 개인 러닝 STOMP 에러:', frame);
+        },
+        connectHeaders: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
     stompClient.activate();
 
     // STOMP 연결 상태 확인
@@ -390,9 +387,6 @@ export default function Page() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="absolute top-0 left-0 font-bold text-white">
-        {localStorage.getItem('runningId')}
-      </div>
       <div
         className="flex h-full w-[200%] transition-transform duration-300 ease-in-out"
         style={{ transform: `translateX(-${currentPage * 50}%)` }}
