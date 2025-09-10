@@ -64,7 +64,7 @@ export default function Page() {
             </button>
           </CrewChallengeCard>
         ))}
-        <div className="flex gap-3 bg-none">
+        <div className="mb-4 flex gap-3 bg-none">
           <button
             className="flex-1 rounded-2xl bg-[#48484A]"
             onClick={() => onMove('/(tabs)/(group)/create')}
