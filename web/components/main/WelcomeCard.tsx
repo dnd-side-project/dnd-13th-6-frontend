@@ -38,7 +38,7 @@ const WelcomeCard = ({
         router.push('/badge-collection');
       }}
     >
-      <div className="flex items-center justify-start">
+      <div className="flex items-center justify-between">
         <div>
           <p className="mb-2 text-[1.0625rem] leading-[150%] font-medium tracking-tight text-white/70">
             {formatKoreanDate(date)}
@@ -47,15 +47,20 @@ const WelcomeCard = ({
             {`안녕하세요,\n${nickname}님`}
           </p>
         </div>
-        <div>
+        <div
+          className="relative -mt-16 rotate-20"
+          style={{
+            width: badgeId === 4 ? 80 : 166,
+            height: badgeId === 4 ? 80 : 166
+          }}
+        >
           {/*todo: 뱃지 url 에 맞게 수정해야함.*/}
           {badgeUrl !== '' && (
             <Image
               src={badgeUrl}
               alt={'character'}
-              width={badgeId === 4 ? 100 : 180}
-              height={badgeId === 4 ? 100 : 180}
-              className="absolute -top-10 right-0 left-39 rotate-20"
+              fill
+              className="object-contain"
             />
           )}
         </div>
