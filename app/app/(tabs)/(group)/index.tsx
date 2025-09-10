@@ -22,7 +22,6 @@ function RunningShare() {
       if (url === '/(tabs)/(home)') {
         setWebViewKey(prev => prev + 1);
       }
-      console.log('url', url);
       router.push(url);
     }
   };

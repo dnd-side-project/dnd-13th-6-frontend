@@ -30,7 +30,7 @@ export default function Page() {
   return (
     <form
       onSubmit={onSubmit}
-      className="mt-6 flex h-[calc(100vh-90px)] w-full flex-col px-4"
+      className="mt-6 flex h-[calc(100vh-90px)] w-full flex-col p-4"
     >
       <div className="pretendard-title1 text-gray20 w-full">
         크루 정보를 입력해주세요.
@@ -54,7 +54,7 @@ export default function Page() {
       <button
         type="submit"
         disabled={crewName.length < 1 || crewName.length > 10}
-        className="bg-primary title-5 justify-self-end rounded-2xl py-[18px] text-center text-black disabled:opacity-20"
+        className="bg-primary pretendard-title5 justify-self-end rounded-2xl py-[18px] text-center text-black disabled:opacity-20"
       >
         크루 만들기
       </button>
