@@ -49,8 +49,7 @@ const MaterialTopTabsScreenOptions: MaterialTopTabNavigationOptions = {
   tabBarIndicatorStyle: {
     backgroundColor: '#E5E5EA',
     height: 4,
-    width: '45%',
-    marginHorizontal: 12
+    width: '45%'
   },
   tabBarShowLabel: true
 };

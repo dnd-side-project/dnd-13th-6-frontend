@@ -3,13 +3,13 @@ import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useRef } from 'react';
-import { SafeAreaView } from 'react-native';
+import { Pressable, SafeAreaView, Text } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 
 function Index() {
   const webViewRef = useRef<WebView>(null);
   const initialUrl = `${ENV.WEB_VIEW_URL}/main`;
-
+  console.log('initialUrl', initialUrl);
   const handleMessage = async (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
     console.log('data', data);
@@ -34,12 +34,17 @@ function Index() {
 
   return (
     <SafeAreaView className="flex-1">
+      <Pressable
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        onPress={() => router.push('/(tabs)/(group)/code')}
+      >
+        <Text className="text-white">Test</Text>
+      </Pressable>
       <WebView
         ref={webViewRef}
         className="flex-1 bg-gray"
         source={{ uri: initialUrl }}
         onMessage={handleMessage}
-           mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );

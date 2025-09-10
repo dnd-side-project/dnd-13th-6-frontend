@@ -258,7 +258,7 @@ function GroupRunningContent() {
   }, [crewId]);
 
   return (
-    <div className="text-whit l relative h-full w-full px-4">
+    <div className="relative -mt-6 h-[500px] w-full bg-[#313131] px-4 text-white">
       {members && (
         <CrewMemberProfiles users={members} onClick={onMemberClick} />
       )}

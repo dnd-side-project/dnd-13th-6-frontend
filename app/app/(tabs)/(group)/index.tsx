@@ -3,7 +3,7 @@ import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, View } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 
 const windowWidth = Dimensions.get('window').width;
@@ -28,16 +28,19 @@ function RunningShare() {
   };
 
   return (
-    <SafeAreaView className="flex-1 align-center justify-between py-4">
+    <SafeAreaView
+      style={styles.container}
+      className="flex-1 align-center justify-between py-4"
+    >
       <WebView
-        className="flex-1 bg-gray"
+        className="flex-1 h-full bg-gray border"
         ref={webviewRef}
         key={webViewKey}
         style={styles.webview}
         keyboardDisplayRequiresUserAction={false}
         source={{ uri: ENV.WEB_VIEW_URL + '/group' }}
         onMessage={receiveMessage}
-           mixedContentMode="always" // HTTP 리소스 허용
+        mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );
@@ -46,8 +49,12 @@ function RunningShare() {
 export default RunningShare;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   webview: {
-    height: windowHeight,
-    width: windowWidth
+    flex: 1,
+    width: windowWidth,
+    height: windowHeight
   }
 });
