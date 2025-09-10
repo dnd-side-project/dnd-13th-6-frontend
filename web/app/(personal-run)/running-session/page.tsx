@@ -327,7 +327,7 @@ export default function Page() {
         const finishData = {
           runningData,
           averagePace: averagePace,
-          totalDistance: totalDistance,
+          totalDistance: totalDistance * 1000,
           totalTime: formatTime(totalTime),
           startTime: startTime.current || 0
         };
