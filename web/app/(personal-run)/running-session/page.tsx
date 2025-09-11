@@ -229,7 +229,8 @@ export default function Page() {
         const finishData = {
           runningData,
           averagePace: averagePace,
-          totalDistance: totalDistance,
+          totalDistance: totalDistance * 1000, // Convert totalDistance from km to meters
+
           totalTime: formatTime(totalTime),
           startTime: startTime.current || 0
         };
@@ -265,9 +266,9 @@ export default function Page() {
         const pointCount = path.length;
         const postData = {
           summary: {
-            totalDistanceMinutes: totalDistance,
+            totalDistanceMeters: totalDistance * 1000,
             durationSeconds: totalTime,
-            avgSpeedMPS: totalDistance / totalTime
+            avgSpeedMPS: (totalDistance * 1000) / totalTime
           },
           track: {
             format: 'JSON',
