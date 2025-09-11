@@ -229,7 +229,7 @@ export default function Page() {
         const finishData = {
           runningData,
           averagePace: averagePace,
-          totalDistance: totalDistance * 1000, // Convert totalDistance from km to meters
+          totalDistance: totalDistance,
 
           totalTime: formatTime(totalTime),
           startTime: startTime.current || 0
