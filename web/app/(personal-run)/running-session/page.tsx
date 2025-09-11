@@ -266,7 +266,7 @@ export default function Page() {
         const pointCount = path.length;
         const postData = {
           summary: {
-            totalDistanceMeters: totalDistance * 1000,
+            totalDistanceMinutes: totalDistance * 1000,
             durationSeconds: totalTime,
             avgSpeedMPS: (totalDistance * 1000) / totalTime
           },
