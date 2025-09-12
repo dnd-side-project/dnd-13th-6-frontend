@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
@@ -9,6 +9,11 @@ import { updateNickname } from '@/utils/apis/member';
 function NicknameInput({ type }: { type: 'onboarding' | 'profile' }) {
   const [nickname, setNickname] = useState('');
   const router = useRouter();
+  useEffect(() => {
+    if (type === 'profile') {
+      setNickname(localStorage.getItem('nickname') || '');
+    }
+  }, [type]);
 
   const [helpMessage, setHelpMessage] = useState('');
   const passMessage = '✔ 사용가능한 닉네임입니다.';
