@@ -23,7 +23,6 @@ function RunningShare() {
 
   useEffect(() => {
     if (crewMembers && webviewRef.current) {
-      console.log('here', crewMembers.members);
       setIsLoading(false);
       postMessage(POST_MESSAGE_TYPE.SET_CREW_MEMBERS, crewMembers.members);
     }
@@ -66,10 +65,9 @@ function RunningShare() {
         className="flex-1 bg-gray"
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         onLoadEnd={handleWebViewLoad}
-           mixedContentMode="always" // HTTP 리소스 허용
+        mixedContentMode="always" // HTTP 리소스 허용
         source={{
           uri: initialUrl
-          
         }}
       />
     </View>

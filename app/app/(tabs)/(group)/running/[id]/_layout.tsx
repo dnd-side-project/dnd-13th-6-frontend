@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams, withLayoutContext } from 'expo-router';
-import { createContext, useLayoutEffect, useState } from 'react';
+import { createContext, useLayoutEffect, useMemo, useState } from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Chip from '@/components/chips/Chip';
@@ -71,6 +71,12 @@ const GroupInfo = ({ crewInfo }: { crewInfo: Crew }) => {
 };
 
 const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
+  const progress = useMemo(() => {
+    if (Math.floor(crewInfo.goal) === 0) return 100;
+    const result =
+      Math.floor(crewInfo.runningDistance) / Math.floor(crewInfo.goal);
+    return isNaN(result) || result === Infinity ? 0 : result * 100;
+  }, [crewInfo.runningDistance, crewInfo.goal]);
   return (
     <View className="p-[18px] bg-gray rounded-xl mt-4 flex justify-between gap-4">
       <Chip className="bg-black px-[8px] py-[3px] self-start">
@@ -82,18 +88,13 @@ const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
         <Text className="text-headline1 text-white">최종 목표까지</Text>
         <Text className="text-headline1 text-white mt-1">
           <Text className="text-main rounded-xl py-[18px]">
-            {crewInfo.goal - crewInfo.runningDistance}KM
+            {Math.floor(crewInfo.goal - crewInfo.runningDistance)}
+            KM
           </Text>{' '}
           남았어요!
         </Text>
       </View>
-      <ProgressBar
-        progress={
-          isNaN(crewInfo.runningDistance / crewInfo.goal)
-            ? 0
-            : (crewInfo.runningDistance / crewInfo.goal) * 100
-        }
-      />
+      <ProgressBar progress={progress} />
     </View>
   );
 };
@@ -132,7 +133,8 @@ export default function Layout() {
     const init = async () => {
       await Promise.all([crewInfoFetchData(), crewMembersFetchData()]).then(
         ([crewInfo]) => {
-          setIsAdminUser(crewInfo?.isLeader || true);
+          console.log('crewInfo', crewInfo);
+          setIsAdminUser(!!crewInfo?.isLeader);
         }
       );
     };
