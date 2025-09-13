@@ -1,7 +1,8 @@
 import api from '@/utils/apis/customAxios';
 import { MEMBER_API } from '@/utils/apis/api';
 
-export const fetchUserInfo = async () => {
+//유저 정보
+export const getUserInfo = async () => {
   const res = await api.get(`${MEMBER_API.MY_INFO()}`);
   return res.data.result;
 };
@@ -11,6 +12,8 @@ export const updateNickname = async (nickname: string) => {
   });
   return res.data;
 };
+
+//뱃지
 export const updateBadge = async (badgeId: number) => {
   const res = await api.patch(MEMBER_API.CHANGE_BADGE(), {
     badgeId
@@ -18,7 +21,7 @@ export const updateBadge = async (badgeId: number) => {
   return res.data;
 };
 
-export const fetchBadge = async (memberId: string) => {
+export const getBadge = async (memberId: string) => {
   const res = await api.get(MEMBER_API.MY_BADGE(memberId));
   return res.data;
 };

@@ -1,26 +1,20 @@
 'use client';
+import React from 'react';
 import Card from '@/components/main/Card';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
 import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
-import { useQuery } from '@tanstack/react-query';
-import { getGoalDistance } from '@/utils/queries/goal';
-import { getWeeklyRunDistance } from '@/utils/queries/running';
-import { queryKeys } from '@/utils/queries/queryKeys';
-export default function WeeklyGoalCard() {
-  const { data: goalDistance } = useQuery({
-    queryKey: queryKeys.goal.goalDistance(),
-    queryFn: getGoalDistance
-  });
+import { useWeeklyGoal } from '@/hooks/queries/useWeeklyGoal';
 
-  const { data: weeklyRunDistance } = useQuery({
-    queryKey: queryKeys.running.weekly(),
-    queryFn: getWeeklyRunDistance
-  });
-
-  const remainingDistance = goalDistance - weeklyRunDistance;
+const WeeklyGoalCard = () => {
   const router = useRouter();
+
+  const { data: weeklyData } = useWeeklyGoal();
+
+  const goalDistance = weeklyData?.goalDistance ?? 0;
+  const weeklyRunDistance = weeklyData?.weeklyRunDistance ?? 0;
+  const remainingDistance = goalDistance - weeklyRunDistance;
 
   const onMove = () => {
     const data = {
@@ -29,6 +23,7 @@ export default function WeeklyGoalCard() {
     };
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
+
   return (
     <Card
       className="relative mt-[24px] py-[28px]"
@@ -74,4 +69,6 @@ export default function WeeklyGoalCard() {
       </Button>
     </Card>
   );
-}
+};
+
+export default WeeklyGoalCard;

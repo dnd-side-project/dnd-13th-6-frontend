@@ -1,33 +1,16 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
-import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
-import { registerWithNickname } from '@/utils/apis/auth';
-import { updateNickname } from '@/utils/queries/member';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { queryKeys } from '@/utils/queries/queryKeys';
+import { useSetNickname } from '@/hooks/queries/useSetNickname';
 
 function NicknameInput({ type }: { type: 'onboarding' | 'profile' }) {
   const [nickname, setNickname] = useState('');
-  const router = useRouter();
-  const queryClient = useQueryClient();
 
   const [helpMessage, setHelpMessage] = useState('');
   const passMessage = '✔ 사용가능한 닉네임입니다.';
 
-  const mutationFn =
-    type === 'onboarding' ? registerWithNickname : updateNickname;
-
-  const { mutate, isPending, isSuccess, isError, error } = useMutation({
-    mutationFn,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.member.info() });
-      const destination =
-        type === 'onboarding' ? '/onboarding/select-character' : '/main';
-      router.push(destination);
-    }
-  });
+  const { mutate, isPending, isSuccess, isError, error } = useSetNickname(type);
 
   useEffect(() => {
     if (isError && error) {

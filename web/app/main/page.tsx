@@ -5,17 +5,16 @@ import WelcomeCard from '@/components/main/WelcomeCard';
 import WeeklyGoalCard from '@/components/main/WeeklyGoalCard';
 import TodayStatsCard from '@/components/main/TodayStatsCard';
 import GachaCard from '@/components/main/GachaCard';
-import { fetchUserInfo } from '@/utils/queries/member';
-import api from '@/utils/apis/customAxios';
-import { MODULE, NOTIFICATION_API, REWARD_API } from '@/utils/apis/api';
 import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
 import CheerCardWrapper from '@/components/main/CheerCard/CheerCardWrapper';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
-import { fetchNotification } from '@/utils/queries/notification';
-import { queryKeys } from '@/utils/queries/queryKeys';
+import { MODULE } from '@/utils/apis/api';
+import { useUserInfo } from '@/hooks/queries/useUserInfo';
+import { useCloverCount } from '@/hooks/queries/useCloverCount';
+import { useNotifications } from '@/hooks/queries/useNotifications';
+
 interface FinishDataItem {
   averagePace: string; // ex: "0'00"
   runningData: RunningData[]; // 배열 안에 구체적 타입이 있으면 명시 가능
@@ -23,41 +22,19 @@ interface FinishDataItem {
   totalDistance: number;
   totalTime: string; // ex: "00:09"
 }
-interface UserInfo {
-  nickname: string;
-  badgeUrl: string;
-  userId: string;
-  badgeId: number;
-}
 
 export default function Main() {
-  const [finishData, setFinishData] = useState([]);
+  const [, setFinishData] = useState([]);
   const router = useRouter();
   const [displayNotifications, setDisplayNotifications] = useState<
     Notification[]
   >([]);
   //사용자 정보
-  const { data: userInfo, isSuccess: isUserInfoSucess } = useQuery<UserInfo>({
-    queryKey: queryKeys.member.info(),
-    queryFn: fetchUserInfo
-  });
+  const { data: userInfo } = useUserInfo();
   //클로버 개수
-  const { data: cloverCount, isSuccess: isCloverCountSucess } = useQuery({
-    queryKey: queryKeys.reward.cloverCount(),
-    queryFn: async () => {
-      const res = await api.get(`${REWARD_API.CLOVER()}`);
-      return res.data.result.count;
-    }
-  });
+  const { data: cloverCount } = useCloverCount();
 
-  const { data: notifications, isSuccess: isNotificationSucess } = useQuery<
-    Notification[]
-  >({
-    queryKey: queryKeys.notification.all,
-    queryFn: fetchNotification,
-    staleTime: 0, // 데이터를 가져오자마자 stale 상태로 만듦
-    gcTime: 0 // 컴포넌트가 사라지면 캐시를 즉시 삭제
-  });
+  const { data: notifications } = useNotifications();
 
   useEffect(() => {
     if (userInfo) {

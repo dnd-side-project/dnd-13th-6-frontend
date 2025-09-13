@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import GachaRewardCard from '@/components/gacha/GachaRewardCard';
 import Image from 'next/image';
 import BadgeList from '@/components/gacha/BadgeList';
@@ -7,50 +7,40 @@ import { useSetAtom } from 'jotai';
 import { headerBackAtom, headerSaveAtom } from '@/store/header';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { useRouter } from 'next/navigation';
-import api from '@/utils/apis/customAxios';
-import { MEMBER_API, REWARD_API } from '@/utils/apis/api';
+import { useUserInfo } from '@/hooks/queries/useUserInfo';
+import { useCloverCount } from '@/hooks/queries/useCloverCount';
+import { useChangeBadge } from '@/hooks/queries/useChangeBadge';
 
 function Page() {
-  const [nickname, setNickname] = useState<string | null>(null);
-  const [defaultBadgeUrl, setDefaultBadgeUrl] = useState<string>('');
-  const [cloverCount, setCloverCount] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [badgeUrl, setBadgeUrl] = useState<string>('');
   const [badgeId, setBadgeId] = useState<string>('');
   const router = useRouter();
   const setHandleSave = useSetAtom(headerSaveAtom);
   const setHandleBack = useSetAtom(headerBackAtom);
-  useEffect(() => {
-    setNickname(localStorage.getItem('nickname'));
-    setBadgeUrl(localStorage.getItem('badgeUrl') || '');
-    setDefaultBadgeUrl(localStorage.getItem('badgeUrl') || '');
-    getClover();
-  }, []);
-  const getClover = async () => {
-    try {
-      const res = await api.get(`${REWARD_API.CLOVER()}`);
-      const clover = res.data.result.count;
-      setCloverCount(clover);
-      localStorage.setItem('cloverCount', clover);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
-  //TODO:저장버튼 추후 통신 구현
-  const actualSave = useCallback(async () => {
-    try {
-      await api.patch(`${MEMBER_API.CHANGE_BADGE()}`, {
-        badgeId: Number(badgeId)
-      });
-    } catch (error) {
-      console.error(error);
+  const { data: userInfo } = useUserInfo();
+  const isInitialized = useRef(false);
+
+  useEffect(() => {
+    if (userInfo && !isInitialized.current) {
+      setBadgeUrl(userInfo.badgeUrl || '');
+      isInitialized.current = true;
     }
-  }, [badgeId]);
+  }, [userInfo]);
+  const { data: cloverCount } = useCloverCount();
+
+  const { mutateAsync: changeBadge } = useChangeBadge();
+
+  const actualSave = useCallback(async () => {
+    if (badgeId) {
+      await changeBadge(Number(badgeId));
+    }
+  }, [badgeId, changeBadge]);
 
   const isChanged = useCallback(
-    () => defaultBadgeUrl !== badgeUrl,
-    [defaultBadgeUrl, badgeUrl]
+    () => userInfo?.badgeUrl !== badgeUrl,
+    [userInfo, badgeUrl]
   );
   const handleBack = useCallback(() => {
     if (isChanged()) {
@@ -64,7 +54,7 @@ function Page() {
     await actualSave();
     router.push('/main');
   }, [router, actualSave]);
-  //layout의 버튼에 함수 연결
+
   useEffect(() => {
     setHandleSave(() => handleSave);
     setHandleBack(() => handleBack);
@@ -90,7 +80,7 @@ function Page() {
   return (
     <div>
       <div className="mb-[26px]">
-        <GachaRewardCard cloverCount={cloverCount} />
+        <GachaRewardCard cloverCount={cloverCount || 0} />
       </div>
       <div className="bg-gray-90 mx-auto flex h-37 w-37 items-center justify-center rounded-full">
         {badgeUrl !== '' && (
@@ -106,7 +96,7 @@ function Page() {
 
       <div className="mt-[25px] mb-4 flex items-center justify-center">
         <p className="font-pretendard w-auto bg-transparent text-center text-[22px] font-bold text-white">
-          {nickname}
+          {userInfo?.nickname}
         </p>
         <span className="font-pretendard mr-2 w-auto bg-transparent text-center text-[22px] font-bold text-white">
           님
@@ -122,7 +112,7 @@ function Page() {
           </p>
         </button>
       </div>
-      <p className="pretendard-title3">{nickname} 님의 보유 배지</p>
+      <p className="pretendard-title3">{userInfo?.nickname} 님의 보유 배지</p>
       <BadgeList
         setMainBadge={setBadgeUrl}
         badgeUrl={badgeUrl}

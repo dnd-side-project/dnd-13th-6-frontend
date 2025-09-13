@@ -1,16 +1,11 @@
 'use client';
 import React, { useState } from 'react';
 import ProgressBar from '@/components/common/ProgressBar';
-import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
 import CharacterCarousel from '@/components/onBoarding/CharacterCarousel';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateBadge } from '@/utils/queries/member';
-import { queryKeys } from '@/utils/queries/queryKeys';
+import { useOnboardingUpdateBadge } from '@/hooks/queries/useOnboardingUpdateBadge';
 
 function Page() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
   const characters = [
     { image: 'pig', id: '1' },
     { image: 'elephant', id: '2' }
@@ -18,13 +13,7 @@ function Page() {
 
   const [selectedId, setSelectedId] = useState(0);
 
-  const { mutate: changeBadge, isPending } = useMutation({
-    mutationFn: updateBadge,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.member.info() });
-      router.push('/onboarding/setup-target');
-    }
-  });
+  const { mutate: changeBadge, isPending } = useOnboardingUpdateBadge();
 
   const handleNext = () => {
     changeBadge(selectedId + 1);

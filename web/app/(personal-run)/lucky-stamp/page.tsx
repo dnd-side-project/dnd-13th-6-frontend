@@ -2,21 +2,13 @@
 
 import React from 'react';
 import RunRewardPage from '@/components/running/RunRewardPage';
-import { useQuery } from '@tanstack/react-query';
-import { getGoalDistance } from '@/utils/queries/goal';
-import { getWeeklyRunDistance } from '@/utils/queries/running';
-import { queryKeys } from '@/utils/queries/queryKeys';
+import { useGoalDistance } from '@/hooks/queries/useGoalDistance';
+import { useWeeklyRunDistance } from '@/hooks/queries/useWeeklyRunDistance';
 
 export default function LuckyStampPage() {
-  const { data: targetDistance = 0, isLoading: isGoalLoading } = useQuery({
-    queryKey: queryKeys.goal.goalDistance(),
-    queryFn: getGoalDistance,
-  });
+  const { data: targetDistance = 0, isLoading: isGoalLoading } = useGoalDistance();
 
-  const { data: weeklyRun = 0, isLoading: isWeeklyRunLoading } = useQuery({
-    queryKey: queryKeys.running.weekly(),
-    queryFn: getWeeklyRunDistance,
-  });
+  const { data: weeklyRun = 0, isLoading: isWeeklyRunLoading } = useWeeklyRunDistance();
 
   if (isGoalLoading || isWeeklyRunLoading) {
     // You can return a loading spinner here
