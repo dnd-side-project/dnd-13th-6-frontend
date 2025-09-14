@@ -12,13 +12,16 @@ function Index() {
   const initialUrl = `${ENV.WEB_VIEW_URL}/main`;
   const handleMessage = async (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
-    console.log('data', data);
     if (data.type === MODULE.AUTH) {
       if (data?.accessToken) {
-        console.log('accessToken', data.accessToken);
         AsyncStorage.setItem('accessToken', data.accessToken);
-        const accessToken = await AsyncStorage.getItem('accessToken');
-        console.log('accessToken', accessToken);
+        AsyncStorage.setItem(
+          'user',
+          JSON.stringify({
+            nickname: data.nickName,
+            userId: data.userId
+          })
+        );
       }
     } else if (data.type === MODULE.PUSH) {
       const { type, url } = JSON.parse(data.data);

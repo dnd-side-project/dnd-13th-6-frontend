@@ -226,6 +226,8 @@ export default function Layout() {
           settingsBottomSheet={settingsBottomSheet}
           crewId={crewId as string}
           crewInfoFetchData={crewInfoFetchData}
+          showAlert={showAlert}
+          hideAlert={hideAlert}
         />
       )}
       <CustomAlert

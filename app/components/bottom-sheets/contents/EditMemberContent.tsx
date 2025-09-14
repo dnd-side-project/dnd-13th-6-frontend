@@ -56,15 +56,15 @@ export default function EditMemberContent({
   crewMembers
 }: EditMemberContentProps) {
   const [selectedMember, setSelectedMember] = useState<MemberData | null>(null);
-  const [myNickname, setMyNickname] = useState<string>('');
+  const [myNickname, setMyNickname] = useState<string | null>(null);
   const isEdit = useMemo<boolean>(() => {
     return type === 'editMember';
   }, [type]);
 
   useLayoutEffect(() => {
     const getMyNickname = async () => {
-      const nickname = await AsyncStorage.getItem('nickName');
-      setMyNickname(nickname || '');
+      const user = await AsyncStorage.getItem('user');
+      setMyNickname(user ? JSON.parse(user).nickname : '');
     };
     getMyNickname();
   }, []);
@@ -81,11 +81,12 @@ export default function EditMemberContent({
     <View className="mb-4">
       {!isDisabled ? (
         <>
-          {type === 'editMember' ? (
+          {isEdit ? (
             <>
               <Text className="text-white text-title3">
-                새 크루 리더를 지정해주세요.
+                어떤 멤버를 탈퇴시킬까요? 새 크루 리더를 지정해주세요.
               </Text>
+              <Text className="font-medium mt-2 text-gray40">{`한번 삭제된 기록은 복구할 수 없으니\n신중하게 진행해주세요.`}</Text>
               <Text className="font-medium mt-2 text-gray40">{`현재 리더는 [${crewInfo.leaderNickname}]님입니다.\n새로운 리더를 지정해주세요.`}</Text>
             </>
           ) : (
