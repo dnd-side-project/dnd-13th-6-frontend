@@ -181,15 +181,25 @@ export default function BottomSheetContainer({
           <SelectNewCrewContent
             onClose={() => {
               groupExitBottomSheet.close();
+              editMemberBottomSheet.present();
+            }}
+            onConfirm={() => {
+              groupExitBottomSheet.close();
               setEditMemberType('editOwner');
               editMemberBottomSheet.present();
             }}
           />
         ) : (
-          <GroupExitContent
-            crewInfo={crewInfo}
-            isLastUser={crewMembers?.members.length === 1}
-            onClose={groupExitBottomSheet.close}
+          <SelectNewCrewContent
+            onClose={() => {
+              groupExitBottomSheet.close();
+              editMemberBottomSheet.present();
+            }}
+            onConfirm={() => {
+              groupExitBottomSheet.close();
+              setEditMemberType('editOwner');
+              editMemberBottomSheet.present();
+            }}
           />
         )}
       </BottomSheet>
@@ -207,6 +217,7 @@ export default function BottomSheetContainer({
               onPress={(member: MemberData) =>
                 onEditMember(editMemberType, member)
               }
+              crewInfo={crewInfo}
             />
           </BottomSheet>
           {/* 공지 변경 bottomSheet */}

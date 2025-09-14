@@ -2,13 +2,14 @@ import Checkbox from '@/components/Checkbox';
 import { useLayoutEffect, useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import Button from '@/components/Button';
-import { MemberData } from '@/types/crew';
+import { Crew, MemberData } from '@/types/crew';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 interface EditMemberContentProps {
   type: 'editMember' | 'editOwner';
   onClose: () => void;
   onPress: (member: MemberData) => void | Promise<void>;
-  crewMembers: { members: MemberData[] } | null;
+  crewMembers: { members: MemberData[] };
+  crewInfo: Crew;
 }
 
 export function MemberSelectContainer({
@@ -48,6 +49,7 @@ export function MemberSelectContainer({
 }
 
 export default function EditMemberContent({
+  crewInfo,
   type,
   onClose,
   onPress,
@@ -82,16 +84,16 @@ export default function EditMemberContent({
           {type === 'editMember' ? (
             <>
               <Text className="text-white text-title3">
-                어떤 멤버를 탈퇴시킬까요?
+                새 크루 리더를 지정해주세요.
               </Text>
-              <Text className="font-medium mt-2 text-gray40">{`한번 삭제된 기록은 복구할 수 없으니\n신중하게 진행해주세요.`}</Text>
+              <Text className="font-medium mt-2 text-gray40">{`현재 리더는 [${crewInfo.leaderNickname}]님입니다.\n새로운 리더를 지정해주세요.`}</Text>
             </>
           ) : (
             <>
               <Text className="text-white text-title3">
                 새 크루 리더를 지정해주세요.
               </Text>
-              <Text className="font-medium mt-2 text-gray40">{`현재 리더는 [사후르]님입니다.\n새로운 리더를 지정해주세요.`}</Text>
+              <Text className="font-medium mt-2 text-gray40">{`현재 리더는 [${crewInfo.leaderNickname}]님입니다.\n새로운 리더를 지정해주세요.`}</Text>
             </>
           )}
           <MemberSelectContainer

@@ -84,16 +84,24 @@ const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
           시작한지 + 12일째
         </Text>
       </Chip>
-      <View>
-        <Text className="text-headline1 text-white">최종 목표까지</Text>
-        <Text className="text-headline1 text-white mt-1">
-          <Text className="text-main rounded-xl py-[18px]">
-            {Math.floor(crewInfo.goal - crewInfo.runningDistance)}
-            KM
-          </Text>{' '}
-          남았어요!
-        </Text>
-      </View>
+      {crewInfo.goal - crewInfo.runningDistance > 0 ? (
+        <View>
+          <Text className="text-headline1 text-white">최종 목표까지</Text>
+          <Text className="text-headline1 text-white mt-1">
+            <Text className="text-main rounded-xl py-[18px]">
+              {Math.floor(crewInfo.goal - crewInfo.runningDistance)}
+              KM
+            </Text>{' '}
+            남았어요!
+          </Text>
+        </View>
+      ) : (
+        <View>
+          <Text className="text-headline1 text-white rounded-xl py-[18px]">
+            주간 목표를 달성했어요!
+          </Text>
+        </View>
+      )}
       <ProgressBar progress={progress} />
     </View>
   );
@@ -133,7 +141,6 @@ export default function Layout() {
     const init = async () => {
       await Promise.all([crewInfoFetchData(), crewMembersFetchData()]).then(
         ([crewInfo]) => {
-          console.log('crewInfo', crewInfo);
           setIsAdminUser(!!crewInfo?.isLeader);
         }
       );
@@ -211,27 +218,16 @@ export default function Layout() {
           </Text>
         </Pressable>
       </View>
-      <BottomSheetContainer
-        crewInfo={
-          crewInfo || {
-            crewId: 0,
-            name: '',
-            leaderNickname: '',
-            notice: '',
-            code: '',
-            createdAt: '',
-            memberCount: 0,
-            goal: 0,
-            runningDistance: 0,
-            isLeader: false
-          }
-        }
-        crewMembers={crewMembers || { members: [] }}
-        isAdminUser={isAdminUser}
-        settingsBottomSheet={settingsBottomSheet}
-        crewId={crewId as string}
-        crewInfoFetchData={crewInfoFetchData}
-      />
+      {crewInfo && crewMembers && (
+        <BottomSheetContainer
+          crewInfo={crewInfo}
+          crewMembers={crewMembers}
+          isAdminUser={isAdminUser}
+          settingsBottomSheet={settingsBottomSheet}
+          crewId={crewId as string}
+          crewInfoFetchData={crewInfoFetchData}
+        />
+      )}
       <CustomAlert
         visible={visible}
         title={alertConfig?.title}

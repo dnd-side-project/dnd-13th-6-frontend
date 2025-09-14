@@ -200,7 +200,6 @@ function GroupRunningContent() {
       }
     };
 
-    // STOMP 클라이언트 생성
     document.addEventListener('message', handleAndroidMessage);
     window.addEventListener('message', handleIOSMessage);
 
@@ -222,6 +221,8 @@ function GroupRunningContent() {
     init();
     return () => {
       stompClient.deactivate();
+      setMemberLocation([]);
+      setMember(null);
     };
   }, [crewId]);
 
