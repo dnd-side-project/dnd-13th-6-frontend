@@ -47,13 +47,13 @@ function NicknameInput({ type }: { type: 'onboarding' | 'profile' }) {
       }
     }
   };
-  // const handlePost = () => {
-  //   if (type === 'onboarding') {
-  //     router.push('/onboarding/select-character');
-  //   } else {
-  //     router.push('/main');
-  //   }
-  // };
+  const handlePost = () => {
+    if (type === 'onboarding') {
+      router.push('/onboarding/select-character');
+    } else {
+      router.push('/main');
+    }
+  };
   return (
     <>
       <div className="border-gray-60 flex items-center border-b-2">
