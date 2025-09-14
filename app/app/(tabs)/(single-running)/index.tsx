@@ -1,4 +1,3 @@
-import Chip from '@/components/chips/Chip';
 import { useWebView } from '@/hooks/useWebView';
 import { RunningData } from '@/types/runnintTypes';
 import { MODULE } from '@/utils/apis/api';
@@ -20,14 +19,12 @@ import {
   Alert,
   AppState,
   Dimensions,
-  Image,
   SafeAreaView,
-  StyleSheet,
-  Text,
-  View
+  StyleSheet
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
+import GpsInfoChip from '@/components/chips/GpsInfoChip';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -129,7 +126,7 @@ const stopBackgroundLocation = async () => {
     );
   }
 };
-
+const initialUrl = ENV.WEB_VIEW_URL + '/prepare-run';
 function Index() {
   const insets = useSafeAreaInsets();
   const [intervalId, setIntervalId] = useState<number | null>(null);
@@ -143,7 +140,6 @@ function Index() {
   const { webviewRef, postMessage } = useWebView<
     RunningData | { type: string; lat: number; lng: number } | string
   >();
-  const initialUrl = ENV.WEB_VIEW_URL + '/prepare-run';
 
   const setGpsStatus = async () => {
     const providerStatus = await Location.getProviderStatusAsync();
@@ -286,32 +282,23 @@ function Index() {
     init();
   }, []);
 
+  const onLoadEnd = async () => {
+    const location = await getLocation();
+    const { latitude, longitude } = location.coords;
+    setIsLoading(false);
+    postMessage(POST_MESSAGE_TYPE.MESSAGE, {
+      type: SEND_MESSAGE_TYPE.RUNNING_PREPARE,
+      lat: latitude,
+      lng: longitude
+    });
+  };
+
   return (
     <SafeAreaView className="flex-1 items-center justify-between relative">
-      <Chip
-        className="bg-black/50 absolute z-[100] left-4"
+      <GpsInfoChip
+        isGPSEnabled={isGPSEnabled}
         style={[{ top: insets.top + 30 }]}
-      >
-        <View className="flex flex-row items-center gap-2">
-          <Image
-            source={
-              isGPSEnabled === 'granted'
-                ? require('@/assets/images/ellipse-green.png')
-                : isGPSEnabled === 'waiting'
-                ? require('@/assets/images/ellipse-yellow.png')
-                : require('@/assets/images/ellipse-red.png')
-            }
-            style={{ width: 16, height: 16 }}
-          />
-          <Text className="text-[14px] text-white">
-            {isGPSEnabled === 'granted'
-              ? 'GPS 연결됨'
-              : isGPSEnabled === 'waiting'
-              ? 'GPS 연결중'
-              : 'GPS 연결 실패'}
-          </Text>
-        </View>
-      </Chip>
+      />
       {isLoading && (
         <ActivityIndicator
           color="#32FF76"
@@ -323,14 +310,12 @@ function Index() {
         ref={webviewRef}
         className="flex-1 bg-gray"
         onMessage={receiveMessage}
-        onLoadEnd={() => {
-          setIsLoading(false);
-        }}
+        onLoadEnd={onLoadEnd}
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         source={{
           uri: initialUrl
         }}
-           mixedContentMode="always" // HTTP 리소스 허용
+        mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );
