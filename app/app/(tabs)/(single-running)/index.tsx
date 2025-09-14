@@ -132,6 +132,7 @@ function Index() {
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isGpsInfoVisible, setIsGpsInfoVisible] = useState<boolean>(false);
   //TODO.. 위치 표시 UI 추가시 구현
   const [isGPSEnabled, setIsGPSEnabled] = useState<
     'granted' | 'waiting' | 'denied'
@@ -143,6 +144,7 @@ function Index() {
 
   const setGpsStatus = async () => {
     const providerStatus = await Location.getProviderStatusAsync();
+    setIsGpsInfoVisible(providerStatus.locationServicesEnabled);
     setIsGPSEnabled(
       providerStatus.locationServicesEnabled ? 'granted' : 'denied'
     );
@@ -194,7 +196,14 @@ function Index() {
         setIsRunning(true);
         postGeoLocation();
         break;
+      case SEND_MESSAGE_TYPE.RUNNING_PAUSE:
+        if (intervalId) clearInterval(intervalId);
+        setIntervalId(null);
+        setIsRunning(false);
+        stopBackgroundLocation();
+        break;
       case SEND_MESSAGE_TYPE.RUNNING_END:
+        setIsGpsInfoVisible(false);
         if (intervalId) clearInterval(intervalId);
         setIntervalId(null);
         setIsRunning(false);
@@ -202,12 +211,6 @@ function Index() {
         //TODO.. 운동 종료 로직 추가
         setStorage(STORAGE_KEY.RUNNING_DATA, []);
         setStorage(STORAGE_KEY.RUNNING_PENDING_MESSAGES, []);
-        break;
-      case SEND_MESSAGE_TYPE.RUNNING_PAUSE:
-        if (intervalId) clearInterval(intervalId);
-        setIntervalId(null);
-        setIsRunning(false);
-        stopBackgroundLocation();
         break;
       case MODULE.PUSH:
         const { type, data } = JSON.parse(event.nativeEvent.data);
@@ -295,10 +298,12 @@ function Index() {
 
   return (
     <SafeAreaView className="flex-1 items-center justify-between relative">
-      <GpsInfoChip
-        isGPSEnabled={isGPSEnabled}
-        style={[{ top: insets.top + 30 }]}
-      />
+      {isGpsInfoVisible && (
+        <GpsInfoChip
+          isGPSEnabled={isGPSEnabled}
+          style={[{ top: insets.top + 30 }]}
+        />
+      )}
       {isLoading && (
         <ActivityIndicator
           color="#32FF76"
