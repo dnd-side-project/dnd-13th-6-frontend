@@ -12,12 +12,20 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_WEBVIEW_URL": "https://web.runky.store",
+        "EXPO_PUBLIC_SERVER_BASE_URL": "https://api.runky.store"
       }
     },
     "production": {
       "autoIncrement": true,
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_WEBVIEW_URL": "https://web.runky.store",
+        "EXPO_PUBLIC_SERVER_BASE_URL": "https://api.runky.store"
       }
     }
   },

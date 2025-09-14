@@ -82,13 +82,3 @@ function Index() {
 }
 
 export default Index;
-
-// const styles = StyleSheet.create({
-//   rankBadge: {
-//     width: 28,
-//     height: 28,
-//     borderRadius: 14,
-//     justifyContent: 'center',
-//     alignItems: 'center'
-//   }
-// });

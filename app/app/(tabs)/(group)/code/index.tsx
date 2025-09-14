@@ -10,7 +10,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function Code() {
   const webviewRef = useRef<WebView>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const initialUrl = ENV.WEB_VIEW_URL + '/group/code';
+  const initialUrl = `${ENV.WEB_VIEW_URL}/group/code`;
 
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
@@ -39,7 +39,7 @@ export default function Code() {
         allowsLinkPreview={false}
         onMessage={receiveMessage}
         allowsBackForwardNavigationGestures={true}
-           mixedContentMode="always" // HTTP 리소스 허용
+        mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );
