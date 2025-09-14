@@ -37,7 +37,7 @@ export default function BottomSheetContainer({
     'editMember' | 'editOwner'
   >('editMember');
 
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
 
   const groupExitBottomSheet = useBottomSheet({
     snapPoints: ['70%'],
@@ -112,9 +112,11 @@ export default function BottomSheetContainer({
                   member.memberId
                 );
                 if (response.ok) {
-                  showSuccess(`${member.nickname}님을 크루에서 내보냈어요.`);
-                } else {
                   showSuccess(
+                    `${member.nickname}님을 크루에서 ${'내보냈어요.'}`
+                  );
+                } else {
+                  showError(
                     `${member.nickname}님을 크루에서 내보내는데 실패했어요.`
                   );
                 }
@@ -147,7 +149,16 @@ export default function BottomSheetContainer({
             text: '네, 위임할게요',
             className: 'bg-main py-4 rounded-md',
             textClassName: 'text-white text-headline1',
-            onPress: () => {
+            onPress: async () => {
+              const response = await CrewApi.delegateCrewLeader(
+                crewId,
+                member.memberId
+              );
+              if (response.ok) {
+                showSuccess(`${member.nickname}님으로 위임했어요.`);
+              } else {
+                showError(`${member.nickname}님으로 위임하는데 실패했어요.`);
+              }
               hideAlert();
               editMemberBottomSheet.close();
               settingsBottomSheet.close();

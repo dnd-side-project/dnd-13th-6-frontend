@@ -12,6 +12,21 @@ const deleteCrewMember = async (crewId: string, memberId: string) => {
   });
 };
 
+const delegateCrewLeader = async (crewId: string, memberId: string) => {
+  const token = await AsyncStorage.getItem('accessToken');
+  return fetch(API_END_POINT.CREWS.DELEGATE_CREW_LEADER(crewId), {
+    method: 'POST',
+    body: JSON.stringify({
+      newLeaderId: memberId
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  });
+};
+
 export const CrewApi = {
-  deleteCrewMember
+  deleteCrewMember,
+  delegateCrewLeader
 };
