@@ -8,11 +8,12 @@ import MapView from '@/components/running/MapView/MapView';
 import MainOverview from '@/components/running/OverView/MainOverview';
 import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 import { RunningData } from '@/types/runningTypes';
-import api from '@/utils/apis/customAxios';
-import { RUNNING_API, SOCKET_URL } from '@/utils/apis/api';
+import { SOCKET_URL } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { useStartRunning } from '@/hooks/queries/useStartRunning';
+import { useEndRunning } from '@/hooks/queries/useEndRunning';
 
 const stompClient = new Client({
   webSocketFactory: () =>
@@ -30,24 +31,18 @@ export default function Page() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // setInterval ID를 저장할 useRef
   const [targetDistance, setTargetDistance] = useState('0');
 
+  const { mutate: startRunningMutate } = useStartRunning();
+  const { mutate: endRunningMutate } = useEndRunning();
+
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const isSwipeActive = useRef(false);
-  const fetchStartRunning = async () => {
-    try {
-      const res = await api.post(RUNNING_API.RUNNING_START());
-      localStorage.setItem('runningId', res.data.result.runningId);
-      localStorage.setItem('runnerId', res.data.result.runnerId);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   //버튼
   useEffect(() => {
     handleControl('play');
     setTargetDistance(localStorage.getItem('targetDistance') || '0');
-    fetchStartRunning();
+    startRunningMutate();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -275,12 +270,7 @@ export default function Page() {
             pointCount
           }
         };
-        console.log(postData);
-        try {
-          await api.post(RUNNING_API.RUNNING_END(runningId || ''), postData);
-        } catch (error) {
-          console.error(error);
-        }
+        endRunningMutate({ runningId: runningId || '', postData });
         break;
     }
   };
