@@ -14,7 +14,6 @@ import { MODULE } from '@/utils/apis/api';
 import { useUserInfo } from '@/hooks/queries/useUserInfo';
 import { useCloverCount } from '@/hooks/queries/useCloverCount';
 import { useNotifications } from '@/hooks/queries/useNotifications';
-
 interface FinishDataItem {
   averagePace: string; // ex: "0'00"
   runningData: RunningData[]; // 배열 안에 구체적 타입이 있으면 명시 가능
@@ -33,24 +32,7 @@ export default function Main() {
   const { data: userInfo } = useUserInfo();
   //클로버 개수
   const { data: cloverCount } = useCloverCount();
-
   const { data: notifications } = useNotifications();
-
-  useEffect(() => {
-    if (userInfo) {
-      const { nickname, badgeUrl, userId } = userInfo;
-      localStorage.setItem('nickname', nickname || '');
-      localStorage.setItem('badgeUrl', badgeUrl || '');
-      localStorage.setItem('userId', userId || '');
-    }
-  }, [userInfo]);
-
-  useEffect(() => {
-    // cloverCount가 0일 수도 있으므로 undefined가 아닌지 확인
-    if (typeof cloverCount !== 'undefined') {
-      localStorage.setItem('cloverCount', String(cloverCount));
-    }
-  }, [cloverCount]);
 
   useEffect(() => {
     if (notifications) {

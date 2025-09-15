@@ -7,6 +7,6 @@ export const gacha = async () => {
 };
 
 export const getCloverCount = async () => {
-  const res = await api.get(REWARD_API.GET_CLOVER());
-  return res.data.result.clover;
+  const res = await api.get(REWARD_API.CLOVER());
+  return res.data.result.count;
 };
