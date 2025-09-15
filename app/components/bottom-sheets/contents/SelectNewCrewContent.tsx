@@ -1,16 +1,11 @@
-import { useState } from 'react';
 import { Text, View } from 'react-native';
 import Button from '../../../components/Button';
 interface Props {
   onClose: () => void;
+  onConfirm: () => void;
 }
 
-function GroupExitContent({ onClose }: Props) {
-  const [reaseon, setReaseon] = useState<string>('');
-
-  const onConfirm = () => {
-    onClose();
-  };
+function SelectNewCrewContent({ onClose, onConfirm }: Props) {
   return (
     <View className="mb-4">
       <Text className="text-white text-title3">
@@ -30,4 +25,4 @@ function GroupExitContent({ onClose }: Props) {
   );
 }
 
-export default GroupExitContent;
+export default SelectNewCrewContent;

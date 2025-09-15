@@ -8,27 +8,27 @@ export interface RouteConfig {
 export const routeConfigs: Record<string, RouteConfig> = {
   '/group': {
     showHeader: true,
-    backHref: '/app/home',
+    backHref: '/native/(tabs)/(home)',
     title: '크루'
   },
   '/group/code': {
     showHeader: true,
-    backHref: '/group',
+    backHref: '/native/(tabs)/(group)',
     title: '초대 코드 입력'
   },
   '/group/code/invite': {
     showHeader: false,
-    backHref: '/group/code',
+    backHref: '/native/(tabs)/(group)',
     title: '초대 코드 입력'
   },
   '/group/running': {
     showHeader: false,
-    backHref: '/app/home',
+    backHref: '/native/(tabs)/(home)',
     title: '그룹 달리기 조회'
   },
   '/group/create': {
     showHeader: true,
-    backHref: '/group',
+    backHref: '/native/(tabs)/(group)',
     title: '크루 만들기'
   }
 };

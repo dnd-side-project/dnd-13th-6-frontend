@@ -1,6 +1,5 @@
 import EditGroupNotificationContent from '@/components/bottom-sheets/contents/EditGroupNotificationContent';
 import EditMemberContent from '@/components/bottom-sheets/contents/EditMemberContent';
-import GroupExitContent from '@/components/bottom-sheets/contents/GroupExitContent';
 import GroupSettingContent from '@/components/bottom-sheets/contents/GroupSettingContent';
 import SelectNewCrewContent from '@/components/bottom-sheets/contents/SelectNewCrewContent';
 import { useBottomSheet } from '@/hooks/useBottomSheet';
@@ -8,19 +7,21 @@ import { Crew, MemberData } from '@/types/crew';
 import BottomSheet from '@/components/bottom-sheets/BottomSheet';
 import { useState } from 'react';
 import { useToast } from '@/contexts/ToastContext';
-import { useCustomAlert } from '@/hooks/useCustomAlert';
+import { AlertConfig, useCustomAlert } from '@/hooks/useCustomAlert';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useFetch from '@/hooks/useFetch';
 import { API_END_POINT } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
-import { Text } from 'react-native';
+import { CrewApi } from '@/utils/apis/crewApi';
 export default function BottomSheetContainer({
   crewInfo,
   crewMembers,
   isAdminUser,
   settingsBottomSheet,
   crewId,
+  showAlert,
+  hideAlert,
   crewInfoFetchData
 }: {
   crewInfo: Crew;
@@ -28,14 +29,15 @@ export default function BottomSheetContainer({
   isAdminUser: boolean;
   settingsBottomSheet: any;
   crewId: string;
+  showAlert: (config: AlertConfig) => void;
+  hideAlert: () => void;
   crewInfoFetchData: () => void;
 }) {
   const [editMemberType, setEditMemberType] = useState<
     'editMember' | 'editOwner'
   >('editMember');
 
-  const { showAlert, hideAlert } = useCustomAlert();
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
 
   const groupExitBottomSheet = useBottomSheet({
     snapPoints: ['70%'],
@@ -66,7 +68,8 @@ export default function BottomSheetContainer({
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            Cookie: `accessToken=${await AsyncStorage.getItem('accessToken')}`
+            Cookie: `accessToken=${await AsyncStorage.getItem('accessToken')}`,
+            Authorization: `Bearer ${await AsyncStorage.getItem('accessToken')}`
           }
         });
         if (ret.ok) {
@@ -82,7 +85,9 @@ export default function BottomSheetContainer({
     type: 'editMember' | 'editOwner',
     member: MemberData
   ) => {
+    settingsBottomSheet.close();
     if (type === 'editMember') {
+      editMemberBottomSheet.close();
       showAlert({
         message: `${member.nickname}님을\n 크루에서 내보낼까요?`,
         buttons: [
@@ -90,30 +95,37 @@ export default function BottomSheetContainer({
             text: '아니오',
             className: 'bg-gray70 py-4 rounded-md',
             textClassName: 'text-white text-headline1',
-            onPress: () => {}
+            onPress: () => {
+              hideAlert();
+              editMemberBottomSheet.close();
+              settingsBottomSheet.close();
+            }
           },
           {
             text: '네, 내보낼게요',
             className: 'bg-red py-4 rounded-md',
             textClassName: 'text-white text-headline1',
             onPress: async () => {
-              const { error: isError, fetchData: deleteMemberFetchData } =
-                useFetch<string>(
-                  API_END_POINT.CREWS.DELETE_CREW_MEMBER(
-                    crewId,
-                    member.memberId
-                  ),
-                  {
-                    method: 'DELETE'
-                  }
+              try {
+                const response = await CrewApi.deleteCrewMember(
+                  crewId,
+                  member.memberId
                 );
-              await deleteMemberFetchData();
-              if (isError) {
-                showSuccess('크루 나가기 실패');
-              } else {
-                showSuccess('크루 나가기 완료');
+                if (response.ok) {
+                  showSuccess(
+                    `${member.nickname}님을 크루에서 ${'내보냈어요.'}`
+                  );
+                } else {
+                  showError(
+                    `${member.nickname}님을 크루에서 내보내는데 실패했어요.`
+                  );
+                }
+                hideAlert();
+              } catch (error) {
+                console.log('error', error);
+              } finally {
+                editMemberBottomSheet.close();
               }
-              hideAlert();
             }
           }
         ]
@@ -127,14 +139,30 @@ export default function BottomSheetContainer({
             className: 'bg-gray70 py-4 rounded-md',
             textClassName: 'text-white text-headline1',
             onPress: () => {
-              showSuccess('크루 리더가 [닉네임]으로 변경됐어요.');
+              showSuccess(`크루 리더가 [${member.nickname}]으로 변경됐어요.`);
+              hideAlert();
+              editMemberBottomSheet.close();
+              settingsBottomSheet.close();
             }
           },
           {
             text: '네, 위임할게요',
             className: 'bg-main py-4 rounded-md',
             textClassName: 'text-white text-headline1',
-            onPress: hideAlert
+            onPress: async () => {
+              const response = await CrewApi.delegateCrewLeader(
+                crewId,
+                member.memberId
+              );
+              if (response.ok) {
+                showSuccess(`${member.nickname}님으로 위임했어요.`);
+              } else {
+                showError(`${member.nickname}님으로 위임하는데 실패했어요.`);
+              }
+              hideAlert();
+              editMemberBottomSheet.close();
+              settingsBottomSheet.close();
+            }
           }
         ]
       });
@@ -153,6 +181,7 @@ export default function BottomSheetContainer({
   };
   return (
     <>
+      {/* 그룹 설정 bottomSheet */}
       <BottomSheet
         ref={settingsBottomSheet.bottomSheetRef}
         {...settingsBottomSheet.config}
@@ -180,15 +209,25 @@ export default function BottomSheetContainer({
           <SelectNewCrewContent
             onClose={() => {
               groupExitBottomSheet.close();
+              editMemberBottomSheet.present();
+            }}
+            onConfirm={() => {
+              groupExitBottomSheet.close();
               setEditMemberType('editOwner');
               editMemberBottomSheet.present();
             }}
           />
         ) : (
-          <GroupExitContent
-            crewInfo={crewInfo}
-            isLastUser={crewMembers?.members.length === 1}
-            onClose={groupExitBottomSheet.close}
+          <SelectNewCrewContent
+            onClose={() => {
+              groupExitBottomSheet.close();
+              editMemberBottomSheet.present();
+            }}
+            onConfirm={() => {
+              groupExitBottomSheet.close();
+              setEditMemberType('editOwner');
+              editMemberBottomSheet.present();
+            }}
           />
         )}
       </BottomSheet>
@@ -206,6 +245,7 @@ export default function BottomSheetContainer({
               onPress={(member: MemberData) =>
                 onEditMember(editMemberType, member)
               }
+              crewInfo={crewInfo}
             />
           </BottomSheet>
           {/* 공지 변경 bottomSheet */}

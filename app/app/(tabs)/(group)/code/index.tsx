@@ -2,7 +2,7 @@ import { MODULE } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
@@ -10,7 +10,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function Code() {
   const webviewRef = useRef<WebView>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const initialUrl = ENV.WEB_VIEW_URL + '/group/code';
+  const initialUrl = `${ENV.WEB_VIEW_URL}/group/code`;
 
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
@@ -39,6 +39,7 @@ export default function Code() {
         allowsLinkPreview={false}
         onMessage={receiveMessage}
         allowsBackForwardNavigationGestures={true}
+        mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );

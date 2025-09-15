@@ -11,15 +11,8 @@ import { RunningData } from '@/types/runningTypes';
 import { SOCKET_URL } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
 import { useStartRunning } from '@/hooks/queries/useStartRunning';
 import { useEndRunning } from '@/hooks/queries/useEndRunning';
-
-const stompClient = new Client({
-  webSocketFactory: () =>
-    new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
-  reconnectDelay: 5000
-});
 
 export default function Page() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -38,6 +31,15 @@ export default function Page() {
   const touchEndX = useRef(0);
   const isSwipeActive = useRef(false);
 
+  const stompClient = new Client({
+    webSocketFactory: () => new WebSocket('wss://api.runky.store/ws'),
+    reconnectDelay: 5000,
+    heartbeatIncoming: 4000,
+    heartbeatOutgoing: 4000,
+    connectHeaders: {
+      Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+    }
+  });
   //버튼
   useEffect(() => {
     handleControl('play');
@@ -100,7 +102,7 @@ export default function Page() {
         setElapsedTime(
           Math.floor((Date.now() - (startTime.current || Date.now())) / 1000)
         );
-      }, 1000);
+      }, 5000);
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -117,41 +119,48 @@ export default function Page() {
 
   //이벤트 등록
   useEffect(() => {
+    stompClient.activate();
+
     const handleMessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
-        console.log('Parsed message data:', data);
-        if (data) {
-          setRunningData(prev => [
-            ...prev,
-            { ...data.message, timestamp: data.timestamp }
-          ]);
-          //SOCKET PUBLISH
-          stompClient.publish({
-            destination: SOCKET_URL.RUNNING_PUBLISH(
-              localStorage.getItem('runningId')!
-            ),
-            body: JSON.stringify({
-              x: data.message.latitude,
-              y: data.message.longitude,
-              timestamp: Date.now()
-            }),
-            headers: { 'content-type': 'application/json' }
+        if (data && data.message) {
+          setRunningData(prev => {
+            const newData = [
+              ...prev,
+              { ...data.message, timestamp: data.timestamp }
+            ];
+            return newData;
           });
+          if (stompClient.connected) {
+            const runningId = localStorage.getItem('runningId');
+            stompClient.publish({
+              destination: SOCKET_URL.RUNNING_PUBLISH(runningId!),
+              body: JSON.stringify({
+                runnerId: localStorage.getItem('runnerId'),
+                x: data.message.latitude,
+                y: data.message.longitude,
+                timestamp: Date.now()
+              })
+            });
+          }
         }
       } catch (error) {
-        console.error('error:', error);
+        console.error('❌ 메시지 파싱 에러:', error);
       }
     };
+
     // Android
     document.addEventListener('message', handleMessage as EventListener);
     // iOS
     window.addEventListener('message', handleMessage);
+
     return () => {
       //Android
       document.removeEventListener('message', handleMessage as EventListener);
       //iOS
       window.removeEventListener('message', handleMessage);
+      stompClient.deactivate();
     };
   }, []);
 
@@ -224,7 +233,8 @@ export default function Page() {
         const finishData = {
           runningData,
           averagePace: averagePace,
-          totalDistance: totalDistance,
+          totalDistance: totalDistance * 1000, // Convert totalDistance from km to meters
+
           totalTime: formatTime(totalTime),
           startTime: startTime.current || 0
         };
@@ -275,15 +285,6 @@ export default function Page() {
     }
   };
 
-  //STOMP
-  useEffect(() => {
-    stompClient.activate();
-
-    return () => {
-      stompClient.deactivate();
-    };
-  }, []);
-
   return (
     <div
       className="bg-background relative h-screen w-full overflow-hidden text-white"
@@ -291,6 +292,9 @@ export default function Page() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      <div className="absolute top-0 left-0 font-bold text-white">
+        {localStorage.getItem('runningId')}
+      </div>
       <div
         className="flex h-full w-[200%] transition-transform duration-300 ease-in-out"
         style={{ transform: `translateX(-${currentPage * 50}%)` }}
@@ -304,7 +308,7 @@ export default function Page() {
           <div className="mt-8 grid grid-cols-2 gap-y-10">
             <ExerciseOverview
               remainingDistance={remainingDistance}
-              velocity={currentSpeed().toFixed(1)}
+              velocity={currentSpeed()?.toFixed(1) || '0'}
               averagePace={averagePace}
               time={formatTime(totalTime)}
             />

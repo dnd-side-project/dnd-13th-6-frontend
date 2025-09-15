@@ -5,7 +5,7 @@ import SockJS from 'sockjs-client';
 import { Client, IMessage } from '@stomp/stompjs';
 
 interface UseStompWebSocketProps {
-  socketUrl: string; // ex) "http://localhost:8080/ws"
+  socketUrl: string;
   publishDest?: string; // 메시지를 보낼 Destination
   subscribeTopic?: string; // 구독할 Topic
   connectionHeaders?: Record<string, string>; // 연결 시 사용할 헤더

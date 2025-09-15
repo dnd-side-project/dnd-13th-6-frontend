@@ -97,7 +97,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           <Animated.View
             style={[
               {
-                transform: [{ translateX: -30 }]
+                transform: [{ translateX: (effectiveWidth - 100) / 2 }]
               }
             ]}
           >

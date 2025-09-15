@@ -1,6 +1,6 @@
 export default {
   "expo": {
-    "name": "dnd-iOS",
+    "name": "Runky",
     "slug": "dnd-iOS",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -34,7 +34,7 @@ export default {
     },
     "android": {
       "useNextNotificationsApi": true,
-      
+    
       "package": "com.runky.dnd",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {

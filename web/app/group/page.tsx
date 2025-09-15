@@ -4,7 +4,7 @@ import CrewChallengeCard from '@/components/main/CrewChallengeCard';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { MODULE } from '@/utils/apis/api';
 import { Crew } from '@/types/crew';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CrewApi } from '@/utils/apis/crewApi';
 import { APIResponse } from '@/types/genericTypes';
 export default function Page() {
@@ -15,16 +15,15 @@ export default function Page() {
       type: MODULE.PUSH,
       url: url
     };
-    console.log('url', url);
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
-  useLayoutEffect(() => {
+  useEffect(() => {
+    console.log('here');
     const init = async () => {
       try {
         const response = (await CrewApi.getCrewList()) as APIResponse<{
           crews: Crew[];
         }>;
-        console.log('response', response);
         setCrewList(response.result.crews);
       } catch (error) {
         console.error(error);
@@ -32,36 +31,27 @@ export default function Page() {
     };
     init();
   }, []);
+
+  const moveResultPage = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    crew: Crew
+  ) => {
+    e.stopPropagation();
+    const type = 'crew';
+    const isSuccess =
+      crew.goal > 0 &&
+      Math.round((crew.runningDistance / crew.goal) * 100) >= 100;
+    router.push(`/crew-reward?type=${type}&isSuccess=${isSuccess}`);
+  };
+
   return (
-    <div className="flex h-[calc(100vh-60px)] w-full flex-col">
+    <div className="border-main flex h-screen w-full flex-col">
       <div className="flex flex-grow flex-col gap-5 overflow-y-scroll p-4">
-        <CrewChallengeCard
-          id={'1'}
-          title={'이번 주 크루 챌린지'}
-          distance={42}
-          progress={isNaN(1 / 100) ? 0 : Math.round((1 / 100) * 100)}
-          goal={100}
-          runningDistance={1}
-          isRunning={true}
-          members={['https://picsum.photos/200/300']}
-          className="border !border-[#00FF63]"
-          onClick={() => onMove(`/(tabs)/(group)/running/1`)}
-        >
-          <button
-            className="mt-4 w-full rounded-2xl bg-[#48484A]"
-            onClick={() => router.push('/crew-reward?type=crew&isSuccess=true')}
-          >
-            <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
-              저번 주 결과 보기
-            </div>
-          </button>
-        </CrewChallengeCard>
         {crewList.map(crew => (
           <CrewChallengeCard
             key={crew.crewId}
             id={crew.crewId}
             title={crew.name}
-            distance={42}
             progress={
               isNaN(crew.runningDistance / crew.goal)
                 ? 0
@@ -71,14 +61,12 @@ export default function Page() {
             runningDistance={crew.runningDistance}
             isRunning={crew.isRunning}
             members={crew.badgeImageUrls}
-            className="border !border-[#00FF63]"
+            className={`border ${crew.goal > 0 && Math.round((crew.runningDistance / crew.goal) * 100) >= 100 ? 'border-[#00FF63]' : 'border-none'} `}
             onClick={() => onMove(`/(tabs)/(group)/running/${crew.crewId}`)}
           >
             <button
               className="mt-4 w-full rounded-2xl bg-[#48484A]"
-              onClick={() =>
-                router.push('/crew-reward?type=crew&isSuccess=true')
-              }
+              onClick={e => moveResultPage(e, crew)}
             >
               <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
                 저번 주 결과 보기
@@ -86,7 +74,7 @@ export default function Page() {
             </button>
           </CrewChallengeCard>
         ))}
-        <div className="flex gap-3 bg-none">
+        <div className="mb flex gap-3 bg-none">
           <button
             className="flex-1 rounded-2xl bg-[#48484A]"
             onClick={() => onMove('/(tabs)/(group)/create')}

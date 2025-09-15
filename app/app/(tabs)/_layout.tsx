@@ -103,6 +103,12 @@ export default function TabLayout() {
             href: null // 탭바에는 표시 안 함
           }}
         />
+        <Tabs.Screen
+          name="(onboarding)"
+          options={{
+            href: null // 탭바에는 표시 안 함
+          }}
+        />
       </Tabs>
     </WebViewResetContext.Provider>
   );

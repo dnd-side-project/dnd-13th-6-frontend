@@ -76,14 +76,22 @@ export default function Main() {
     const hash = window.location.hash.substring(1);
     if (hash) {
       const params = new URLSearchParams(hash);
+      console.log('params', params);
       const accessToken = params.get('accessToken');
       const refreshToken = params.get('refreshToken');
-
+      console.log('accessToken', accessToken);
+      console.log('refreshToken', refreshToken);
       if (accessToken && refreshToken) {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
+
+        // URL 정리
         window.history.replaceState(null, '', window.location.pathname);
       }
+      postMessageToApp(
+        MODULE.AUTH,
+        JSON.stringify({ accessToken, refreshToken })
+      );
     }
     postMessageToApp(MODULE.AUTH);
 
