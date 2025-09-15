@@ -79,7 +79,7 @@ export default function Page() {
           onTouchEnd={() => console.log('touch')}
           className={`${crew === '1' ? 'border-2 border-[#32FF76]' : ''}`}
           title="이번 주 크루 챌린지"
-          distance={42}
+          // distance={42}
           progress={0.7}
           id="1"
           goal={100}
