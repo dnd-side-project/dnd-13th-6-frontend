@@ -6,7 +6,7 @@ const CrewChallengeSection = () => {
   const challenges: CrewChallengeCardProps[] = [
     {
       title: '블랙핑크-뛰어',
-      distance: 2.2,
+      // distance:2.2,
       progress: 70,
       members: ['a', 'b', 'c'],
       id: '1',
@@ -16,7 +16,7 @@ const CrewChallengeSection = () => {
     },
     {
       title: '우리 크루, 이번주도 완주 GO!',
-      distance: 2.2,
+      // distance:2.2,
       progress: 70,
       members: ['a', 'b', 'c'],
       id: '2',
