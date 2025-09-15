@@ -120,7 +120,6 @@ export default function Page() {
   //이벤트 등록
   useEffect(() => {
     stompClient.activate();
-
     const handleMessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
@@ -292,9 +291,6 @@ export default function Page() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="absolute top-0 left-0 font-bold text-white">
-        {localStorage.getItem('runningId')}
-      </div>
       <div
         className="flex h-full w-[200%] transition-transform duration-300 ease-in-out"
         style={{ transform: `translateX(-${currentPage * 50}%)` }}
