@@ -33,7 +33,7 @@ function BadgeList({
     fetchBadge();
   }, []);
   return (
-    <div className="mt-6 grid grid-cols-3 gap-4">
+    <div className="mt-6 grid grid-cols-3 gap-[10px]">
       {badges.length > 0 &&
         badges.map(badge => (
           <button

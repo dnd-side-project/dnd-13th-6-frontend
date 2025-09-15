@@ -9,3 +9,21 @@ export const runningEnd = async (runningId: string) => {
   const res = await api.post(RUNNING_API.RUNNING_END(runningId));
   return res.data;
 };
+
+export const postCheerfulMessage = ({
+  runningId,
+  memberId,
+  emojiType
+}: {
+  runningId: string;
+  memberId: string;
+  emojiType: string;
+}) => {
+  api.post(
+    `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/runnings/${runningId}/cheers`,
+    {
+      receiverId: memberId,
+      message: emojiType
+    }
+  );
+};

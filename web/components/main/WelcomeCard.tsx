@@ -48,13 +48,12 @@ const WelcomeCard = ({
           </p>
         </div>
         <div
-          className="relative -mt-16 rotate-20"
+          className={`relative -mt-16 ${badgeId == 6 ? 'rotate-0' : 'rotate-20'}`}
           style={{
-            width: badgeId === 4 ? 80 : 166,
-            height: badgeId === 4 ? 80 : 166
+            width: badgeId === 4 ? 140 : 166,
+            height: badgeId === 4 ? 140 : 166
           }}
         >
-          {/*todo: 뱃지 url 에 맞게 수정해야함.*/}
           {badgeUrl !== '' && (
             <Image
               src={badgeUrl}

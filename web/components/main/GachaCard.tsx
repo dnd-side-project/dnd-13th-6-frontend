@@ -7,6 +7,7 @@ import Image from 'next/image';
 
 const GachaCard = ({ cloverCount }: { cloverCount: number }) => {
   const router = useRouter();
+
   return (
     <Card
       className="bg-primary relative overflow-hidden"

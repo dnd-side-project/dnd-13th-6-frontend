@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-interface AlertConfig {
+export interface AlertConfig {
   title?: string;
   message: string;
   buttons?: Array<{

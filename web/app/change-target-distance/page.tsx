@@ -5,34 +5,29 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import { useSetAtom } from 'jotai/index';
 import { headerBackAtom, headerSaveAtom } from '@/store/header';
 import { useRouter } from 'next/navigation';
-import api from '@/utils/apis/customAxios';
-import { GOAL_API } from '@/utils/apis/api';
+import { useChangeTargetDistance } from '@/hooks/queries/useChangeTargetDistance';
 
 function Page() {
   const router = useRouter();
   const [changedDistance, setChangedDistance] = useState('3.0');
   const [weeklyTargetDistance, setWeeklyTargetDistance] = useState('0');
+  const { mutate: changeDistanceMutate } = useChangeTargetDistance();
+
   useEffect(() => {
     const weeklyGoal = localStorage.getItem('weeklyGoalDistance');
     setWeeklyTargetDistance(weeklyGoal || '0');
     setChangedDistance(weeklyGoal || '0');
   }, []);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const setHandleSave = useSetAtom(headerSaveAtom);
   const setHandleBack = useSetAtom(headerBackAtom);
-  const changeTargetDistance = useCallback(async () => {
-    try {
-      await api.patch(GOAL_API.CHANGE_TARGET_DISTANCE(), {
-        goal: Number(changedDistance)
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }, [changedDistance]);
+
   const actualSave = useCallback(() => {
-    changeTargetDistance();
+    changeDistanceMutate(Number(changedDistance));
     console.log('Saved:', changedDistance);
-  }, [changedDistance, changeTargetDistance]);
+  }, [changedDistance, changeDistanceMutate]);
+
   const openSaveModal = useCallback(() => {
     if (weeklyTargetDistance !== changedDistance) {
       setIsModalOpen(true);
@@ -61,6 +56,7 @@ function Page() {
   const handleOverlayClick = () => {
     setIsModalOpen(false);
   };
+
   return (
     <div className="flex flex-grow flex-col">
       <div>

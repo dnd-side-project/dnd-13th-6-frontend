@@ -8,11 +8,11 @@ import MapView from '@/components/running/MapView/MapView';
 import MainOverview from '@/components/running/OverView/MainOverview';
 import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 import { RunningData } from '@/types/runningTypes';
-import api from '@/utils/apis/customAxios';
-import { RUNNING_API, SOCKET_URL } from '@/utils/apis/api';
+import { SOCKET_URL } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
+import { useStartRunning } from '@/hooks/queries/useStartRunning';
+import { useEndRunning } from '@/hooks/queries/useEndRunning';
 
 export default function Page() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -24,24 +24,27 @@ export default function Page() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // setInterval ID를 저장할 useRef
   const [targetDistance, setTargetDistance] = useState('0');
 
+  const { mutate: startRunningMutate } = useStartRunning();
+  const { mutate: endRunningMutate } = useEndRunning();
+
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const isSwipeActive = useRef(false);
-  const fetchStartRunning = async () => {
-    try {
-      const res = await api.post(RUNNING_API.RUNNING_START());
-      localStorage.setItem('runningId', res.data.result.runningId);
-      localStorage.setItem('runnerId', res.data.result.runnerId);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
+  const stompClient = new Client({
+    webSocketFactory: () => new WebSocket('wss://api.runky.store/ws'),
+    reconnectDelay: 5000,
+    heartbeatIncoming: 4000,
+    heartbeatOutgoing: 4000,
+    connectHeaders: {
+      Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+    }
+  });
   //버튼
   useEffect(() => {
     handleControl('play');
     setTargetDistance(localStorage.getItem('targetDistance') || '0');
-    fetchStartRunning();
+    startRunningMutate();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -116,141 +119,46 @@ export default function Page() {
 
   //이벤트 등록
   useEffect(() => {
-    const stompClient = new Client({
-        webSocketFactory: () =>
-          new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
-        // 또는 직접 WebSocket 사용시:
-        // brokerURL: `${process.env.NEXT_PUBLIC_SERVER_BASE_URL?.replace(/^http/, 'ws')}/ws`,
-        reconnectDelay: 5000,
-        heartbeatIncoming: 4000,
-        heartbeatOutgoing: 4000,
-        debug: str => {
-          console.log('🔧 개인 러닝 STOMP DEBUG:', str);
-        },
-        onConnect: () => {
-          console.log('🔌 개인 러닝 STOMP 연결 성공');
-          const token = localStorage.getItem('accessToken');
-          console.log('🆔 Access Token:', token?.substring(0, 20) + '...');
-          console.log('🌐 서버 URL:', process.env.NEXT_PUBLIC_SERVER_BASE_URL);
-        },
-        onDisconnect: () => {
-          console.log('❌ 개인 러닝 STOMP 연결 해제');
-        },
-        onStompError: frame => {
-          console.error('❌ 개인 러닝 STOMP 에러:', frame);
-        },
-        connectHeaders: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
     stompClient.activate();
-
-    // STOMP 연결 상태 확인
-    const checkConnection = () => {
-      console.log('🔌 STOMP 연결 상태:', stompClient.connected);
-      console.log('🆔 Running ID:', localStorage.getItem('runningId'));
-      console.log('🆔 Runner ID:', localStorage.getItem('runnerId'));
-    };
-
-    // 연결 확인
-    setTimeout(checkConnection, 1000);
-
     const handleMessage = (event: MessageEvent) => {
-      console.log('📱 네이티브 앱에서 메시지 수신:', event.data);
       try {
         const data = JSON.parse(event.data);
-        console.log('✅ 파싱된 메시지 데이터:', data);
         if (data && data.message) {
           setRunningData(prev => {
             const newData = [
               ...prev,
               { ...data.message, timestamp: data.timestamp }
             ];
-            console.log('📊 업데이트된 러닝 데이터:', newData);
             return newData;
           });
+          if (stompClient.connected) {
+            const runningId = localStorage.getItem('runningId');
+            stompClient.publish({
+              destination: SOCKET_URL.RUNNING_PUBLISH(runningId!),
+              body: JSON.stringify({
+                runnerId: localStorage.getItem('runnerId'),
+                x: data.message.latitude,
+                y: data.message.longitude,
+                timestamp: Date.now()
+              })
+            });
+          }
         }
       } catch (error) {
         console.error('❌ 메시지 파싱 에러:', error);
       }
     };
 
-    // STOMP 구독 설정 (서버에서 오는 데이터 수신용)
-    const setupSubscription = () => {
-      if (stompClient.connected) {
-        const runningId = localStorage.getItem('runningId');
-        if (runningId) {
-          const subscribeUrl = SOCKET_URL.RUNNING_SUBSCRIBE(runningId);
-          console.log('🔔 구독 시작:', subscribeUrl);
-
-          stompClient.subscribe(
-            subscribeUrl,
-            message => {
-              console.log('🔔 소켓에서 메시지 수신:', message.body);
-              try {
-                const data = JSON.parse(message.body);
-                console.log('📡 소켓 데이터:', data);
-
-                // 소켓에서 받은 데이터를 runningData에 추가
-                setRunningData(prev => {
-                  const newData = [...prev, { ...data, timestamp: Date.now() }];
-                  console.log('📊 소켓으로 업데이트된 러닝 데이터:', newData);
-                  return newData;
-                });
-              } catch (error) {
-                console.error('❌ 소켓 메시지 파싱 에러:', error);
-              }
-            },
-            {
-              'content-type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-            }
-          );
-        }
-      } else {
-        console.log('⏳ STOMP 연결 대기 중...');
-        setTimeout(setupSubscription, 1000);
-      }
-    };
-
-    // 구독 설정
-    setupSubscription();
-
     // Android
     document.addEventListener('message', handleMessage as EventListener);
     // iOS
     window.addEventListener('message', handleMessage);
-
-    // 5초마다 위치 데이터 발행
-    const publishInterval = setInterval(() => {
-      if (stompClient.connected) {
-        const runningId = localStorage.getItem('runningId');
-        console.log('📤 위치 데이터 발행 중... Running ID:', runningId);
-
-        stompClient.publish({
-          destination: SOCKET_URL.RUNNING_PUBLISH(runningId!),
-          body: JSON.stringify({
-            // runnerId: 10,
-            x: 127.123456,
-            y: 37.123456,
-            timestamp: Date.now()
-          }),
-          headers: {
-            'content-type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
-      } else {
-        console.log('❌ STOMP 연결되지 않음 - 발행 실패');
-      }
-    }, 5000);
 
     return () => {
       //Android
       document.removeEventListener('message', handleMessage as EventListener);
       //iOS
       window.removeEventListener('message', handleMessage);
-      clearInterval(publishInterval);
       stompClient.deactivate();
     };
   }, []);
@@ -371,11 +279,7 @@ export default function Page() {
             pointCount
           }
         };
-        try {
-          await api.post(RUNNING_API.RUNNING_END(runningId || ''), postData);
-        } catch (error) {
-          console.error(error);
-        }
+        endRunningMutate({ runningId: runningId || '', postData });
         break;
     }
   };
@@ -400,7 +304,7 @@ export default function Page() {
           <div className="mt-8 grid grid-cols-2 gap-y-10">
             <ExerciseOverview
               remainingDistance={remainingDistance}
-              velocity={currentSpeed().toFixed(1)}
+              velocity={currentSpeed()?.toFixed(1) || '0'}
               averagePace={averagePace}
               time={formatTime(totalTime)}
             />

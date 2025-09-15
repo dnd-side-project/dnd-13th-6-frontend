@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams, withLayoutContext } from 'expo-router';
-import { createContext, useLayoutEffect, useState } from 'react';
+import { createContext, useLayoutEffect, useMemo, useState } from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Chip from '@/components/chips/Chip';
@@ -49,8 +49,7 @@ const MaterialTopTabsScreenOptions: MaterialTopTabNavigationOptions = {
   tabBarIndicatorStyle: {
     backgroundColor: '#E5E5EA',
     height: 4,
-    width: '45%',
-    marginHorizontal: 12
+    width: '45%'
   },
   tabBarShowLabel: true
 };
@@ -72,6 +71,12 @@ const GroupInfo = ({ crewInfo }: { crewInfo: Crew }) => {
 };
 
 const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
+  const progress = useMemo(() => {
+    if (Math.floor(crewInfo.goal) === 0) return 100;
+    const result =
+      Math.floor(crewInfo.runningDistance) / Math.floor(crewInfo.goal);
+    return isNaN(result) || result === Infinity ? 0 : result * 100;
+  }, [crewInfo.runningDistance, crewInfo.goal]);
   return (
     <View className="p-[18px] bg-gray rounded-xl mt-4 flex justify-between gap-4">
       <Chip className="bg-black px-[8px] py-[3px] self-start">
@@ -79,22 +84,25 @@ const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
           시작한지 + 12일째
         </Text>
       </Chip>
-      <View>
-        <Text className="text-headline1 text-white">최종 목표까지</Text>
-        <Text className="text-headline1 text-white mt-1">
-          <Text className="text-main rounded-xl py-[18px]">
-            {crewInfo.goal - crewInfo.runningDistance}KM
-          </Text>{' '}
-          남았어요!
-        </Text>
-      </View>
-      <ProgressBar
-        progress={
-          isNaN(crewInfo.runningDistance / crewInfo.goal)
-            ? 0
-            : (crewInfo.runningDistance / crewInfo.goal) * 100
-        }
-      />
+      {crewInfo.goal - crewInfo.runningDistance > 0 ? (
+        <View>
+          <Text className="text-headline1 text-white">최종 목표까지</Text>
+          <Text className="text-headline1 text-white mt-1">
+            <Text className="text-main rounded-xl py-[18px]">
+              {Math.floor(crewInfo.goal - crewInfo.runningDistance)}
+              KM
+            </Text>{' '}
+            남았어요!
+          </Text>
+        </View>
+      ) : (
+        <View>
+          <Text className="text-headline1 text-white rounded-xl py-[18px]">
+            주간 목표를 달성했어요!
+          </Text>
+        </View>
+      )}
+      <ProgressBar progress={progress} />
     </View>
   );
 };
@@ -133,7 +141,7 @@ export default function Layout() {
     const init = async () => {
       await Promise.all([crewInfoFetchData(), crewMembersFetchData()]).then(
         ([crewInfo]) => {
-          setIsAdminUser(crewInfo?.isLeader || true);
+          setIsAdminUser(!!crewInfo?.isLeader);
         }
       );
     };
@@ -177,10 +185,7 @@ export default function Layout() {
             setIsGroupCodeAlertVisible(true);
           }}
         >
-          <Image
-            source={require('@/assets/images/UserPlus.png')}
-            style={{ width: 24, height: 24 }}
-          />
+          <Ionicons name="person-add-outline" color={'white'} size={24} />
         </Pressable>
         <Pressable onPress={handleSettingsPress}>
           <Ionicons name="settings-outline" color={'white'} size={24} />
@@ -213,27 +218,18 @@ export default function Layout() {
           </Text>
         </Pressable>
       </View>
-      <BottomSheetContainer
-        crewInfo={
-          crewInfo || {
-            crewId: 0,
-            name: '',
-            leaderNickname: '',
-            notice: '',
-            code: '',
-            createdAt: '',
-            memberCount: 0,
-            goal: 0,
-            runningDistance: 0,
-            isLeader: false
-          }
-        }
-        crewMembers={crewMembers || { members: [] }}
-        isAdminUser={isAdminUser}
-        settingsBottomSheet={settingsBottomSheet}
-        crewId={crewId as string}
-        crewInfoFetchData={crewInfoFetchData}
-      />
+      {crewInfo && crewMembers && (
+        <BottomSheetContainer
+          crewInfo={crewInfo}
+          crewMembers={crewMembers}
+          isAdminUser={isAdminUser}
+          settingsBottomSheet={settingsBottomSheet}
+          crewId={crewId as string}
+          crewInfoFetchData={crewInfoFetchData}
+          showAlert={showAlert}
+          hideAlert={hideAlert}
+        />
+      )}
       <CustomAlert
         visible={visible}
         title={alertConfig?.title}

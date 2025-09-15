@@ -5,7 +5,6 @@ import ProgressBar from '@/components/common/ProgressBar';
 
 export interface CrewChallengeCardProps {
   title: string;
-  distance: number;
   progress: number;
   id: string;
   members: string[]; // For now, just strings
@@ -20,7 +19,6 @@ export interface CrewChallengeCardProps {
 
 const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
   title,
-  distance,
   progress,
   members,
   onClick,
@@ -29,10 +27,9 @@ const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
   children,
   id,
   goal,
-  runningDistance,
-  isRunning
+  runningDistance
 }) => {
-  const isSuccess = runningDistance >= goal;
+  const isSuccess = goal > 0 && runningDistance >= goal;
   return (
     <Card
       className={`mt-[24px] ${className}`}
@@ -78,13 +75,13 @@ const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
           </span>
         ) : (
           <span className="font-lufga flex items-baseline text-[33px] font-bold italic">
-            {distance}
+            {goal}
             <span className="ml-1 text-[16px] font-semibold">km</span>
           </span>
         )}
       </div>
       <ProgressBar
-        progress={progress}
+        progress={goal === 0 ? 0 : progress}
         className="mt-[16px] h-2"
         backgroundStyle="bg-background"
       />

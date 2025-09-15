@@ -4,7 +4,7 @@ import { LockKey } from '@phosphor-icons/react';
 
 function LockBadgeItem() {
   return (
-    <Card className="h-[114px] w-[114px] p-[7px]">
+    <Card className="aspect-square w-full p-[7px]">
       <LockKey
         width={50}
         height={50}

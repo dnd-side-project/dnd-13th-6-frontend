@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, Suspense, useEffect, useCallback } from 'react';
+import React, { useState, Suspense, useEffect, useMemo } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Image from 'next/image';
@@ -7,9 +7,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import UserMarker from '@/components/googleMap/UserMarker';
 import type { MemberData } from '@/types/crew';
 import { useSearchParams } from 'next/navigation';
-import { Client, IMessage } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
 import api from '@/utils/apis/customAxios';
+import { postCheerfulMessage } from '@/utils/apis/running';
 function CrewMemberProfiles({
   users,
   onClick
@@ -57,13 +57,14 @@ const SendCloverButton = ({ member }: { member: MemberData }) => {
     }
     startCloverAnimation();
     const runningId = member?.sub.split('/').at(-1);
-    api.post(
-      `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/runnings/${runningId}/cheers`,
-      {
-        receiverId: member?.memberId,
-        message: emojiType
-      }
-    );
+    //런닝 아이디가 있을 경우에만 클로버 보내기
+    if (runningId && !isNaN(Number(runningId))) {
+      postCheerfulMessage({
+        runningId,
+        memberId: member?.memberId,
+        emojiType
+      });
+    }
   };
   return (
     <button
@@ -109,68 +110,64 @@ const SendCloverButton = ({ member }: { member: MemberData }) => {
 };
 
 function GroupRunningContent() {
-  const searchParams = useSearchParams();
-  const crewId = searchParams.get('q');
-  const [stompClient, setStompClient] = useState<Client | null>(null);
-  const [members, setMembers] = useState<MemberData[]>([]);
-  const [member, setMember] = useState<MemberData | null>(null);
-  const [memberLocation, setMemberLocation] = useState({
-    lat: 35.97664845766847,
-    lng: 126.99597295767953
-  });
-
   // 브라우저 환경 체크
   const isBrowser = typeof window !== 'undefined';
-
   // 안전한 localStorage 접근
-  const getAccessToken = useCallback(() => {
+  const getAccessToken = useMemo(() => {
     if (!isBrowser) return '';
     return localStorage.getItem('accessToken') || '';
   }, [isBrowser]);
+  const searchParams = useSearchParams();
+  const crewId = searchParams.get('q');
+  const [stompClient] = useState(() => {
+    return new Client({
+      webSocketFactory: () => new WebSocket('wss://api.runky.store/ws'),
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+      connectHeaders: {
+        Authorization: `Bearer ${getAccessToken}`
+      }
+    });
+  });
+  const [members, setMembers] = useState<MemberData[]>([]);
+  const [member, setMember] = useState<MemberData | null>(null);
+  const [memberLocation, setMemberLocation] = useState<
+    {
+      lat: number;
+      lng: number;
+    }[]
+  >([]);
+
+  const leastMemberLocation = useMemo(() => {
+    return memberLocation.at(-1);
+  }, [memberLocation]);
 
   const onMemberClick = (member: MemberData) => {
     setMember(member);
-
-    if (!member.isRunning || !isBrowser) {
-      return;
-    }
-
+    if (!member.isRunning || !isBrowser) return;
+    console.log(stompClient, stompClient.connected);
     if (stompClient && stompClient.connected) {
-      // 올바른 subscribe URL 사용 (서버 로그와 일치)
-      const subscribeUrl = member.sub; // 이미 "/topic/runnings/58" 형태
-
+      const subscribeUrl = member.sub;
+      console.log(member.sub);
       stompClient.subscribe(
         subscribeUrl,
-        (message: IMessage) => {
-          console.log('✅ 그룹 러닝 메시지 수신 성공:', message.body);
+        message => {
           try {
-            const data: {
-              x: number;
-              y: number;
-              timestamp: number;
-            } = JSON.parse(message.body);
-            console.log('📍 파싱된 위치 데이터:', data);
-
-            setMemberLocation({
-              lng: data.x,
-              lat: data.y
-            });
-            console.log('🗺️ 업데이트된 멤버 위치:', {
-              lng: data.x,
-              lat: data.y
-            });
-          } catch (parseError) {
-            console.error('❌ 그룹 러닝 메시지 파싱 실패:', parseError);
-          }
+            const data = JSON.parse(message.body);
+            setMemberLocation(prev => [
+              ...prev,
+              {
+                lat: data.message.latitude,
+                lng: data.message.longitude
+              }
+            ]);
+          } catch (error) {}
         },
         {
-          'content-type': 'application/json',
-          Authorization: `Bearer ${getAccessToken()}`
+          'content-type': 'application/json'
         }
       );
-    } else {
-      console.log('❌ STOMP 클라이언트가 연결되지 않았거나 존재하지 않음');
-      console.log('STOMP 클라이언트 상태:', stompClient?.connected);
     }
   };
   useEffect(() => {
@@ -182,7 +179,6 @@ function GroupRunningContent() {
       try {
         const messageEvent = event as MessageEvent;
         const parsedData = JSON.parse(messageEvent.data);
-        console.log('parsedData', parsedData);
         if (parsedData.type === 'SET_CREW_MEMBERS') {
           setMembers(parsedData.message as MemberData[]);
         }
@@ -204,45 +200,12 @@ function GroupRunningContent() {
       }
     };
 
-    // STOMP 클라이언트 생성
-    const client = new Client({
-      webSocketFactory: () =>
-        new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      debug: str => {
-        console.log('🔧 STOMP DEBUG:', str);
-      },
-      onConnect: () => {
-        console.log('🔌 그룹 러닝 STOMP 연결 성공');
-        console.log(
-          '🆔 Access Token:',
-          getAccessToken()?.substring(0, 20) + '...'
-        );
-      },
-      onDisconnect: () => {
-        console.log('❌ 그룹 러닝 STOMP 연결 해제');
-      },
-      onStompError: frame => {
-        console.error('❌ 그룹 러닝 STOMP 에러:', frame);
-      },
-      connectHeaders: {
-        Authorization: `Bearer ${getAccessToken()}`
-      }
-    });
-
-    setStompClient(client);
-
     document.addEventListener('message', handleAndroidMessage);
     window.addEventListener('message', handleIOSMessage);
-
-    client.activate();
 
     return () => {
       document.removeEventListener('message', handleAndroidMessage);
       window.removeEventListener('message', handleIOSMessage);
-      client.deactivate();
     };
   }, [isBrowser, getAccessToken]); // 의존성 추가
 
@@ -253,28 +216,41 @@ function GroupRunningContent() {
         `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/crews/${crewId}/members`
       );
       setMembers(response.data.result.members);
+      stompClient.activate();
     };
     init();
+    return () => {
+      stompClient.deactivate();
+      setMemberLocation([]);
+      setMember(null);
+    };
   }, [crewId]);
 
   return (
-    <div className="text-whit l relative h-full w-full px-4">
+    <div className="relative -mt-6 h-[500px] w-full bg-[#313131] px-4 text-white">
       {members && (
         <CrewMemberProfiles users={members} onClick={onMemberClick} />
       )}
       <div className="relative mt-6 mb-[14px] h-[400px] overflow-y-scroll">
-        <GoogleMap
-          path={[{ lat: memberLocation.lat, lng: memberLocation.lng }]}
-        >
-          {member && (
+        {member && leastMemberLocation && (
+          <>
+            <GoogleMap path={memberLocation}>
+              {member && memberLocation && (
+                <UserMarker
+                  lat={leastMemberLocation.lat}
+                  lng={leastMemberLocation.lng}
+                  imageUrl={member.badgeImageUrl}
+                />
+              )}
+            </GoogleMap>
             <UserMarker
-              lat={memberLocation.lat}
-              lng={memberLocation.lng}
+              lat={leastMemberLocation.lat}
+              lng={leastMemberLocation.lng}
               imageUrl={member.badgeImageUrl}
             />
-          )}
-        </GoogleMap>
-        {member && <SendCloverButton member={member} />}
+            <SendCloverButton member={member} />
+          </>
+        )}
       </div>
     </div>
   );

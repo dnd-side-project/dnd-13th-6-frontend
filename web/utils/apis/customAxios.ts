@@ -18,9 +18,6 @@ const api: AxiosInstance = axios.create({
   }
 });
 
-// 요청 인터셉터:
-// withCredentials: true 옵션으로 HttpOnly 쿠키가 자동으로 전송되므로,
-// 헤더에 수동으로 토큰을 추가하는 로직은 제거합니다.
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // 요청할 때마다 최신 토큰을 가져와서 헤더에 설정
