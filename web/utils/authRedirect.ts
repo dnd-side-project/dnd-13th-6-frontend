@@ -1,5 +1,11 @@
+import { MODULE } from "./apis/api";
+import { postMessageToApp } from "./apis/postMessageToApp";
+
 export const redirectToLogin = () => {
-  if (typeof window !== 'undefined') {
-    window.location.href = '/onboarding';
+  const data= {
+    type:MODULE.PUSH,
+    url:'/(tabs)/(onboarding)'
   }
+  postMessageToApp(MODULE.PUSH,JSON.stringify(data));
+
 };
