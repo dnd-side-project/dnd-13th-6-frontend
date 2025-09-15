@@ -1,5 +1,6 @@
 import './globals.css';
 import ClientLayoutWrapper from '@/components/common/ClientLayoutWrapper'; // 새로 만든 컴포넌트 import
+import QueryProvider from '@/components/common/QueryProvider';
 import { lufga, pretendard } from '@/fonts/fonts';
 import React from 'react';
 
@@ -18,7 +19,9 @@ export default function RootLayout({
       className={`${lufga.variable} ${pretendard.variable} antialiased h-full`}
     >
       <body className="bg-background text-white h-full overflow-hidden">
-        <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+        <QueryProvider>
+          <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+        </QueryProvider>
       </body>
     </html>
   );

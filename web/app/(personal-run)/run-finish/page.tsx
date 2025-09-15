@@ -10,8 +10,7 @@ import ReactConfetti from 'react-confetti';
 import { useEffect, useState } from 'react';
 import formatTo24H from '@/utils/time/formatTo24H';
 import Button from '@/components/common/Button';
-import api from '@/utils/apis/customAxios';
-import { RUNNING_API } from '@/utils/apis/api';
+import { useWeeklyRunDistance } from '@/hooks/queries/useWeeklyRunDistance';
 
 type FinishData = {
   runningData: {
@@ -28,21 +27,11 @@ export default function Page() {
   const navi = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [finishData, setFinishData] = useState<FinishData[] | null>([]);
-  const [weeklyRunDistance, setWeeklyRunDistance] = useState<number>(0);
+  const { data: weeklyRunDistance } = useWeeklyRunDistance();
   const [, setTargetDistance] = useState<number>(0);
-
-  const getWeeklyRunDistance = async () => {
-    try {
-      const res = await api.get(RUNNING_API.WEEKLY_RUNNINGS());
-      setWeeklyRunDistance(res.data.result.totalDistanceKm);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
     setIsClient(true);
-    getWeeklyRunDistance();
     setTargetDistance(Number(localStorage.getItem('weeklyGoalDistance')));
 
     const data = localStorage.getItem('finishData');
