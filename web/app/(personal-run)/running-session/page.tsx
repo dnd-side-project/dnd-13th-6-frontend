@@ -31,15 +31,6 @@ export default function Page() {
   const touchEndX = useRef(0);
   const isSwipeActive = useRef(false);
 
-  const stompClient = new Client({
-    webSocketFactory: () => new WebSocket('wss://api.runky.store/ws'),
-    reconnectDelay: 5000,
-    heartbeatIncoming: 4000,
-    heartbeatOutgoing: 4000,
-    connectHeaders: {
-      Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-    }
-  });
   //버튼
   useEffect(() => {
     handleControl('play');
@@ -119,6 +110,16 @@ export default function Page() {
 
   //이벤트 등록
   useEffect(() => {
+    //localStorage 때문에 클라이언트 사이드에서만 실행
+    const stompClient = new Client({
+      webSocketFactory: () => new WebSocket('wss://api.runky.store/ws'),
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+      connectHeaders: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
     stompClient.activate();
     const handleMessage = (event: MessageEvent) => {
       try {
