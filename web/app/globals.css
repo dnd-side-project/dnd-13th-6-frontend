@@ -110,8 +110,12 @@
 body {
   font-family: Pretendard, Lufga, Arial, Helvetica, sans-serif;
   margin: 0;
+ -ms-overflow-style: none;
+  
 }
-
+::-webkit-scrollbar {
+  display: none;
+}
 .animate-roll {
   animation: roll 5s ease-in-out forwards;
 }
