@@ -26,7 +26,7 @@ export default function DefaultLayout({
   return (
     <div className="flex h-full flex-col">
       {showHeader && (
-        <div className="bg-background fixed top-0 z-10 pt-[env(safe-area-inset-top)]">
+        <div className="bg-background fixed top-0 z-10">
           <header className="flex items-center">
             {backHref && (
               <div className="p-4">
@@ -69,7 +69,7 @@ export default function DefaultLayout({
         className={
           showHeader
             ? 'flex flex-1 flex-col overflow-y-auto px-4 pb-4'
-            : 'h-full overflow-y-auto pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
+            : 'h-full overflow-y-auto'
         }
       >
         {children}
