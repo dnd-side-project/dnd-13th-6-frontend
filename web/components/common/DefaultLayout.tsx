@@ -26,49 +26,56 @@ export default function DefaultLayout({
   return (
     <div className="flex h-full flex-col">
       {showHeader && (
-        <div className="bg-background fixed top-0 z-10">
-          <header className="flex items-center">
-            {backHref && (
-              <div className="p-4">
-                <button
-                  onClick={() => {
-                    if (handleBack) {
-                      handleBack?.();
-                    } else {
-                      router.push(backHref);
-                    }
-                  }}
-                >
-                  <Image
-                    src="/assets/CaretLeft.svg"
-                    alt="Back"
-                    width={24}
-                    height={24}
-                  />
-                </button>
-              </div>
-            )}
-            {title && (
-              <h1 className="absolute left-1/2 -translate-x-1/2 transform text-lg font-bold text-white">
-                {title}
-              </h1>
-            )}
-            {showSaveButton && handleSave && (
-              <button
-                onClick={handleSave}
-                className="ml-auto p-4 text-[1.0625rem] leading-[22px] font-semibold tracking-[-0.43px]"
-              >
-                저장
-              </button>
-            )}
-          </header>
+        <div className="bg-background top-0 z-10">
+          {(backHref || title || showSaveButton) && (
+            <div className="relative h-16">
+              <header className="fixed flex h-16 w-full items-center justify-between px-4">
+                <div className="flex items-center">
+                  {backHref && (
+                    <button
+                      onClick={() => {
+                        if (handleBack) {
+                          handleBack?.();
+                        } else {
+                          router.push(backHref);
+                        }
+                      }}
+                      className="mr-2"
+                    >
+                      <Image
+                        src="/assets/CaretLeft.svg"
+                        alt="Back"
+                        width={24}
+                        height={24}
+                      />
+                    </button>
+                  )}
+                </div>
+                {title && (
+                  <h1 className="flex-grow text-center text-lg font-bold text-white">
+                    {title}
+                  </h1>
+                )}
+                <div className="flex items-center">
+                  {showSaveButton && handleSave && (
+                    <button
+                      onClick={handleSave}
+                      className="text-[1.0625rem] leading-[22px] font-semibold tracking-[-0.43px]"
+                    >
+                      저장
+                    </button>
+                  )}
+                </div>
+              </header>
+            </div>
+          )}
         </div>
       )}
 
       <main
         className={
           showHeader
-            ? 'flex flex-1 flex-col overflow-y-auto px-4 pb-4'
+            ? 'flex flex-1 flex-col overflow-y-auto px-4 pt-4 pb-4'
             : 'h-full overflow-y-auto'
         }
       >
