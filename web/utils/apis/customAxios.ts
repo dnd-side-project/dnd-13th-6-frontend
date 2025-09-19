@@ -58,10 +58,7 @@ api.interceptors.response.use(
       }
     }
 
-    if (status !== 401) {
-      const isDev = process.env.NEXT_PUBLIC_ENV === 'dev';
-      window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=3255efd2af839833b26a422ca203c180&redirect_uri=https://api.runky.store/dev/api/auth/login/oauth2/code/kakao&response_type=code`;
-    }
+    
 
     return Promise.reject(error);
   }
