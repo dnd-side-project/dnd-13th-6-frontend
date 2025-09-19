@@ -5,7 +5,14 @@ import { lufga, pretendard } from '@/fonts/fonts';
 import React from 'react';
 
 export const metadata = {
-  title: 'Runky'
+  title: 'Runky',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    minimumScale: 1,
+    maximumScale: 1,
+    userScalable: false
+  }
 };
 
 export default function RootLayout({
@@ -16,9 +23,9 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${lufga.variable} ${pretendard.variable} antialiased h-full`}
+      className={`${lufga.variable} ${pretendard.variable} h-full antialiased`}
     >
-      <body className="bg-background text-white h-full overflow-hidden">
+      <body className="bg-background h-full overflow-hidden text-white">
         <QueryProvider>
           <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
         </QueryProvider>
