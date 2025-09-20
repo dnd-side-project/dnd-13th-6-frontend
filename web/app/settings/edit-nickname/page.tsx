@@ -6,27 +6,52 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import { useSetAtom } from 'jotai/index';
 import { headerBackAtom, headerSaveAtom } from '@/store/header';
 import { useRouter } from 'next/navigation';
+import { useUserInfo } from '@/hooks/queries/useUserInfo';
+import { useSetNickname } from '@/hooks/queries/useSetNickname';
 
 function Page() {
-  const [name, setName] = useState('진수한접시');
-  const defaultName = '진수한접시';
+  const [name, setName] = useState('');
+  const { data: { nickname: initialNickname = '' } = {} } = useUserInfo();
   const router = useRouter();
-  //TODO:저장버튼 추후 통신 구현
+
+  const passMessage = '✔ 닉네임이 변경되었습니다.';
+
+  const {
+    mutate,
+    isPending,
+    isSuccess,
+    isError,
+    errorMessage,
+    setErrorMessage
+  } = useSetNickname('profile');
+
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value.trim());
+    setErrorMessage('');
+  };
+
   const actualSave = useCallback(() => {
-    router.push('/main');
-  }, []);
+    if (name) {
+      mutate(name);
+    }
+  }, [name, mutate]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const setHandleSave = useSetAtom(headerSaveAtom);
   const setHandleBack = useSetAtom(headerBackAtom);
-  // 값이 변경되었을때 모달 띄우기
+
   const openSaveModal = useCallback(() => {
-    if (name !== defaultName) {
+    if (name !== initialNickname) {
       setIsModalOpen(true);
     } else {
-      router.push('/main');
+      router.back();
     }
-  }, [name, router, defaultName]);
-  //layout의 버튼에 함수 연결
+  }, [name, router, initialNickname]);
+
+  useEffect(() => {
+    setName(initialNickname);
+  }, [initialNickname]);
+
   useEffect(() => {
     setHandleSave(() => actualSave);
     setHandleBack(() => openSaveModal);
@@ -46,8 +71,17 @@ function Page() {
 
   const handleConfirm = () => {
     actualSave();
-    handleCloseModal();
+    setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setTimeout(() => {
+        router.push('/main');
+      }, 1000);
+    }
+  }, [isSuccess, router]);
+
   return (
     <div className="flex w-[calc(100vw-32px)] flex-grow flex-col">
       <div className="bg-gray-90 mb-32px mx-auto flex h-37 w-37 items-center justify-center rounded-full">
@@ -60,7 +94,17 @@ function Page() {
       </div>
       <p className="mt-[32px]">이름</p>
       <div>
-        <NicknameInput type="profile" />
+        <NicknameInput
+          type="profile"
+          nickname={name}
+          onNicknameChange={handleNicknameChange}
+          helpMessage={errorMessage}
+          isError={isError}
+          isSuccess={isSuccess}
+          passMessage={passMessage}
+          isPending={isPending}
+          onSubmit={actualSave}
+        />
       </div>
 
       <ConfirmModal

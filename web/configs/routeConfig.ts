@@ -30,13 +30,24 @@ export const routeConfigs: Record<string, RouteConfig> = {
   },
   '/onboarding/onboarding-finish': { showHeader: true },
 
+  //설정
+  '/settings': {
+    showHeader: true,
+    backHref: '/main',
+    title: '설정'
+  },
+    '/settings/edit-nickname': {
+    showHeader: true,
+    backHref: '/settings',
+    title: '프로필'
+  },
   //메인  페이지
   '/main': { showHeader: true },
-  //뱃지 컬렉션 (마이) 페이지  
+  //배지 컬렉션 페이지  
   '/badge-collection': {
     showHeader: true,
     backHref: '/main',
-    title: '프로필',
+    title: '배지',
     showSaveButton: true
   },
   '/badge-collection/gacha': {
@@ -46,11 +57,7 @@ export const routeConfigs: Record<string, RouteConfig> = {
   '/badge-collection/gacha/result': {
     showHeader: true
   }, 
-  '/badge-collection/edit-nickname': {
-    showHeader: true,
-    backHref: '/badge-collection',
-    title: '프로필'
-  },
+
 
   //알림 페이지
   '/notification': {
