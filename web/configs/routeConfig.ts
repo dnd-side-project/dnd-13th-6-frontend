@@ -88,7 +88,7 @@ export const routeConfigs: Record<string, RouteConfig> = {
     backHref: '/main',
     title: '그룹 달리기 조회'
   },
-  //목표 거리 수저페이지
+  //목표 거리 수정페이지
   '/change-target-distance': {
     showHeader: true,
     backHref: '/main',
