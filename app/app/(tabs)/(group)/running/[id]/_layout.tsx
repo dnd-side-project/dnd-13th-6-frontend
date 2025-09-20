@@ -1,7 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams, withLayoutContext } from 'expo-router';
 import { createContext, useLayoutEffect, useMemo, useState } from 'react';
-import { Image, Pressable, Text, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  ScrollView,
+  Text,
+  View
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Chip from '@/components/chips/Chip';
 import ProgressBar from '@/components/ProgressBar';
@@ -36,9 +43,7 @@ const MaterialTopTabsScreenOptions: MaterialTopTabNavigationOptions = {
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24
   },
-  tabBarIndicatorContainerStyle: {
-    minHeight: 1200
-  },
+  // tabBarIndicatorContainerStyle 제거: 과도한 높이로 인해 스크롤/터치 이슈 유발
   tabBarLabelStyle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -116,6 +121,7 @@ export const MaterialTopTabs = withLayoutContext<
 
 export default function Layout() {
   const insets = useSafeAreaInsets();
+  const windowHeight = Dimensions.get('window').height;
 
   const { id: crewId } = useLocalSearchParams();
   // CustomAlert 훅
@@ -164,51 +170,63 @@ export default function Layout() {
   };
 
   return (
-    <View style={[{ paddingTop: insets.top }]} className="flex-1 bg-black">
-      <View className="flex-row px-4 py-[10px] items-center gap-5">
-        <Pressable
-          onPress={() => {
-            router.replace('/(tabs)/(group)');
-          }}
-        >
-          <Ionicons name="arrow-back-outline" color={'white'} size={24} />
-        </Pressable>
-        <Pressable className="">
-          <Image className="w-6 h-6" />
-        </Pressable>
-        <Text className="text-white text-lg font-semibold flex-grow text-center">
-          크루
-        </Text>
-        <Pressable
-          className="ml-auto"
-          onPress={() => {
-            setIsGroupCodeAlertVisible(true);
-          }}
-        >
-          <Ionicons name="person-add-outline" color={'white'} size={24} />
-        </Pressable>
-        <Pressable onPress={handleSettingsPress}>
-          <Ionicons name="settings-outline" color={'white'} size={24} />
-        </Pressable>
-      </View>
-      <View className="px-[17px] pt-[22px] pb-[26px] bg-black">
-        {crewInfo && (
-          <>
-            <GroupInfo crewInfo={crewInfo} />
-            <GroupGoal crewInfo={crewInfo} />
-          </>
-        )}
-      </View>
-      <CrewContext.Provider value={contextValue}>
-        <MaterialTopTabs screenOptions={MaterialTopTabsScreenOptions}>
-          <MaterialTopTabs.Screen name="index" options={{ title: '랭킹' }} />
-          <MaterialTopTabs.Screen
-            name="runningShare"
-            options={{ title: '러닝 공유' }}
-          />
-        </MaterialTopTabs>
-      </CrewContext.Provider>
-      <View className="bg-gray py-[18px] px-[14px]">
+    <View style={[{ paddingTop: insets.top }]} className="flex-1 bg-[#313131]">
+      <ScrollView
+        className="flex-1 flex-col"
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled
+        contentContainerStyle={{ paddingBottom: 24 }}
+      >
+        <View className="flex-row px-4 py-[10px] items-center gap-5 bg-black">
+          <Pressable
+            onPress={() => {
+              router.replace('/(tabs)/(group)');
+            }}
+          >
+            <Ionicons name="arrow-back-outline" color={'white'} size={24} />
+          </Pressable>
+          <Pressable className="">
+            <Image className="w-6 h-6" />
+          </Pressable>
+          <Text className="text-white text-lg font-semibold flex-grow text-center">
+            크루
+          </Text>
+          <Pressable
+            className="ml-auto"
+            onPress={() => {
+              setIsGroupCodeAlertVisible(true);
+            }}
+          >
+            <Ionicons name="person-add-outline" color={'white'} size={24} />
+          </Pressable>
+          <Pressable onPress={handleSettingsPress}>
+            <Ionicons name="settings-outline" color={'white'} size={24} />
+          </Pressable>
+        </View>
+        <View className="px-[17px] pt-[22px] pb-[26px] bg-black">
+          {crewInfo && (
+            <>
+              <GroupInfo crewInfo={crewInfo} />
+              <GroupGoal crewInfo={crewInfo} />
+            </>
+          )}
+        </View>
+        <View style={{ minHeight: 750, backgroundColor: '#313131', flex: 1 }}>
+          <CrewContext.Provider value={contextValue}>
+            <MaterialTopTabs screenOptions={MaterialTopTabsScreenOptions}>
+              <MaterialTopTabs.Screen
+                name="index"
+                options={{ title: '랭킹' }}
+              />
+              <MaterialTopTabs.Screen
+                name="runningShare"
+                options={{ title: '러닝 공유' }}
+              />
+            </MaterialTopTabs>
+          </CrewContext.Provider>
+        </View>
+      </ScrollView>
+      <View className="fixed bottom-0 bg-gray py-[18px] px-[14px]">
         <Pressable
           className="bg-main text-center py-[18px] rounded-xl"
           onPress={() => router.push('/(tabs)/(single-running)')}

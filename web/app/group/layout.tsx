@@ -15,10 +15,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const config = useMemo(() => {
     return routeConfigs[pathname] || routeConfigs['/group/running'];
   }, [pathname]);
-  // const config = routeConfigs[pathname] || routeConfigs['/group/running'];
   const { backHref, title, showHeader } = config;
   const handleBack = (url: string) => {
-    console.log('url', url);
     const data = {
       type: MODULE.PUSH,
       url

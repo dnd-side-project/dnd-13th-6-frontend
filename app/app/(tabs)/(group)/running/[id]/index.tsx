@@ -57,14 +57,15 @@ function Index() {
   }, []);
   return (
     <ScrollView
-      className="flex-1 bg-gray pb-6"
+      className="bg-gray"
+      nestedScrollEnabled
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ minHeight: 750 }}
+      contentContainerStyle={{ paddingBottom: 24 }}
     >
       <Text className="text-title3 text-white ml-4 mt-9 ">
         이번 주의 크루 MVP는?
       </Text>
-      <View className="flex-1">
+      <View>
         {crewMembers &&
           crewMembers.members
             .sort((a, b) => b.runningDistance - a.runningDistance)

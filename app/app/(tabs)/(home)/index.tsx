@@ -12,6 +12,7 @@ function Index() {
   const initialUrl = `${ENV.WEB_VIEW_URL}/main`;
   const handleMessage = async (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
+    console.log('data', data);
     if (data.type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);

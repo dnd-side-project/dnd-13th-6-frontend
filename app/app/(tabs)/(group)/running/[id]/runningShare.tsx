@@ -6,8 +6,14 @@ import { POST_MESSAGE_TYPE } from '@/utils/webView/consts';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, StyleSheet, View } from 'react-native';
-import WebView from 'react-native-webview';
+import {
+  ActivityIndicator,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  View
+} from 'react-native';
+import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { CrewContext } from './_layout';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -16,10 +22,56 @@ const windowHeight = Dimensions.get('window').height;
 function RunningShare() {
   const { webviewRef, postMessage } = useWebView<MemberData[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [contentHeight, setContentHeight] = useState<number>(windowHeight);
   const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
   const { crewMembers, crewInfo } = useContext(CrewContext);
   const initialUrl = ENV.WEB_VIEW_URL + '/group/running?q=' + crewInfo?.crewId;
   const handleWebViewLoad = () => {};
+  // const measureHeightJS = `
+  //   (function() {
+  //     function postHeight() {
+  //       try {
+  //         var body = document.body;
+  //         var html = document.documentElement;
+  //         var height = Math.max(
+  //           body.scrollHeight,
+  //           body.offsetHeight,
+  //           html.clientHeight,
+  //           html.scrollHeight,
+  //           html.offsetHeight
+  //         );
+  //         window.ReactNativeWebView && window.ReactNativeWebView.postMessage(
+  //           JSON.stringify({ type: 'CONTENT_HEIGHT', height: height })
+  //         );
+  //       } catch (e) {}
+  //     }
+  //     try {
+  //       var css = 'html, body { overflow: hidden !important; overscroll-behavior: none !important; }';
+  //       var style = document.createElement('style');
+  //       style.type = 'text/css';
+  //       style.appendChild(document.createTextNode(css));
+  //       document.head.appendChild(style);
+  //     } catch (e) {}
+  //     window.addEventListener('load', postHeight);
+  //     window.addEventListener('resize', postHeight);
+  //     var observer = new MutationObserver(function() { postHeight(); });
+  //     observer.observe(document.body, { subtree: true, childList: true, attributes: true, characterData: true });
+  //     setTimeout(postHeight, 100);
+  //     setTimeout(postHeight, 500);
+  //     true;
+  //   })();
+  // `;
+
+  const handleWebViewMessage = (event: WebViewMessageEvent) => {
+    try {
+      const data = JSON.parse(event.nativeEvent.data || '{}');
+      if (data?.type === 'CONTENT_HEIGHT' && typeof data.height === 'number') {
+        // 상한/하한 가드
+        const minHeight = Math.max(400, Math.min(data.height, 4000));
+        setContentHeight(minHeight);
+      }
+    } catch (e) {}
+  };
 
   useEffect(() => {
     if (crewMembers && webviewRef.current) {
@@ -52,7 +104,11 @@ function RunningShare() {
   );
 
   return (
-    <View className="flex-1 justify-between items-center">
+    <ScrollView
+      nestedScrollEnabled
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 24 }}
+    >
       {isLoading && (
         <ActivityIndicator
           size="large"
@@ -63,14 +119,23 @@ function RunningShare() {
       <WebView
         ref={webviewRef}
         className="flex-1 bg-gray"
-        style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
+        style={[
+          styles.webview,
+          { height: contentHeight, opacity: isLoading ? 0 : 1 }
+        ]}
         onLoadEnd={handleWebViewLoad}
-        mixedContentMode="always" // HTTP 리소스 허용
+        scrollEnabled={false}
+        overScrollMode="never"
+        nestedScrollEnabled={false}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        mixedContentMode="always"
+        onMessage={handleWebViewMessage}
         source={{
           uri: initialUrl
         }}
       />
-    </View>
+    </ScrollView>
   );
 }
 
