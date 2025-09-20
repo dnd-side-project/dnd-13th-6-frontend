@@ -11,7 +11,7 @@ function ResultPage() {
   const id = searchParams.get('id'); // id 파라미터 가져오기
   const router = useRouter();
   const { data: { nickname = '' } = {} } = useUserInfo();
-  const { data: clover } = useCloverCount();
+  const { data: clover = 0 } = useCloverCount();
   return (
     <div className="m-h-screen relative flex flex-grow flex-col items-center overflow-hidden">
       <p className="onboarding mt-25 text-center whitespace-pre-line">
