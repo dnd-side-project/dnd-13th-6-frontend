@@ -8,33 +8,26 @@ import { headerBackAtom, headerSaveAtom } from '@/store/header';
 import { useRouter } from 'next/navigation';
 import { useUserInfo } from '@/hooks/queries/useUserInfo';
 import { useSetNickname } from '@/hooks/queries/useSetNickname';
-import { AxiosError } from 'axios';
 
 function Page() {
   const [name, setName] = useState('');
   const { data: { nickname: initialNickname = '' } = {} } = useUserInfo();
   const router = useRouter();
 
-  const [helpMessage, setHelpMessage] = useState('');
   const passMessage = '✔ 닉네임이 변경되었습니다.';
 
-  const { mutate, isPending, isSuccess, isError, error } =
-    useSetNickname('profile');
-
-  useEffect(() => {
-    if (isError && error) {
-      if (error instanceof AxiosError && error.response) {
-        const apiError = error.response.data as { message: string };
-        setHelpMessage(apiError.message || '오류가 발생했습니다.');
-      } else {
-        setHelpMessage('알 수 없는 오류가 발생했습니다.');
-      }
-    }
-  }, [isError, error]);
+  const {
+    mutate,
+    isPending,
+    isSuccess,
+    isError,
+    errorMessage,
+    setErrorMessage
+  } = useSetNickname('profile');
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value.trim());
-    setHelpMessage(''); // Reset message on new input
+    setErrorMessage('');
   };
 
   const actualSave = useCallback(() => {
@@ -85,7 +78,7 @@ function Page() {
     if (isSuccess) {
       setTimeout(() => {
         router.push('/main');
-      }, 1000); // Show success message for 1 second
+      }, 1000);
     }
   }, [isSuccess, router]);
 
@@ -105,7 +98,7 @@ function Page() {
           type="profile"
           nickname={name}
           onNicknameChange={handleNicknameChange}
-          helpMessage={helpMessage}
+          helpMessage={errorMessage}
           isError={isError}
           isSuccess={isSuccess}
           passMessage={passMessage}
