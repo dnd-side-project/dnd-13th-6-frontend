@@ -6,7 +6,7 @@ const deleteCrewMember = async (crewId: string, memberId: string) => {
   return fetch(API_END_POINT.CREWS.DELETE_CREW_MEMBER(crewId, memberId), {
     headers: {
       'Content-Type': 'application/json',
-      // Cookie: `accessToken=${token}`,
+      Cookie: `accessToken=${token}`,
       Authorization: `Bearer ${token}`
     }
   });
