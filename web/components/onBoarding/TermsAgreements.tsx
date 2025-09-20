@@ -59,10 +59,7 @@ function TermsAgreements({ onAgreementChange }: TermsAgreementsProps) {
         <p
           className="body2 text-gray-60 underline"
           onClick={() =>
-            window.open(
-              'https://sturdy-hill-971.notion.site/Runky-2733225761d080cc983ed32ecce048e7?pvs=73',
-              '_blank'
-            )
+            window.open(process.env.NEXT_PUBLIC_TERMS_URL, '_blank')
           }
         >
           상세보기
@@ -78,10 +75,7 @@ function TermsAgreements({ onAgreementChange }: TermsAgreementsProps) {
         <p
           className="body2 text-gray-60 underline"
           onClick={() =>
-            window.open(
-              'https://sturdy-hill-971.notion.site/Runky-2733225761d080cc983ed32ecce048e7?pvs=73',
-              '_blank'
-            )
+            window.open(process.env.NEXT_PUBLIC_TERMS_URL, '_blank')
           }
         >
           상세보기

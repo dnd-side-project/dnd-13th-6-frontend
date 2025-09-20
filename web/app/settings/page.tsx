@@ -33,10 +33,7 @@ export default function Settings() {
       <SettingListItem
         text="개인정보 보호 정책"
         onClick={() => {
-          window.open(
-            'https://sturdy-hill-971.notion.site/Runky-2733225761d080cc983ed32ecce048e7?pvs=73',
-            '_blank'
-          );
+          window.open(process.env.NEXT_PUBLIC_TERMS_URL, '_blank');
         }}
       />
       <div className="bg-gray-90 mr-[-16px] ml-[-16px] h-2" />
