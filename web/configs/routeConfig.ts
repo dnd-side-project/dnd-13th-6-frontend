@@ -46,7 +46,7 @@ export const routeConfigs: Record<string, RouteConfig> = {
   '/badge-collection/gacha/result': {
     showHeader: true
   }, 
-   '/badge-collection/edit-nickname': {
+  '/badge-collection/edit-nickname': {
     showHeader: true,
     backHref: '/badge-collection',
     title: '프로필'
