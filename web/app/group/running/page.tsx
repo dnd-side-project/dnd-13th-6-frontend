@@ -227,30 +227,23 @@ function GroupRunningContent() {
   }, [crewId]);
 
   return (
-    <div className="relative -mt-6 h-[500px] w-full bg-[#313131] px-4 text-white">
+    <div className="relative -mt-6 w-full overflow-hidden bg-[#313131] px-4 text-white">
       {members && (
         <CrewMemberProfiles users={members} onClick={onMemberClick} />
       )}
-      <div className="relative mt-6 mb-[14px] h-[400px] overflow-y-scroll">
-        {member && leastMemberLocation && (
-          <>
-            <GoogleMap path={memberLocation}>
-              {member && memberLocation && (
-                <UserMarker
-                  lat={leastMemberLocation.lat}
-                  lng={leastMemberLocation.lng}
-                  imageUrl={member.badgeImageUrl}
-                />
-              )}
-            </GoogleMap>
-            <UserMarker
-              lat={leastMemberLocation.lat}
-              lng={leastMemberLocation.lng}
-              imageUrl={member.badgeImageUrl}
-            />
-            <SendCloverButton member={member} />
-          </>
-        )}
+      <div className="mt-6 mb-[14px] min-h-[400px]">
+        <GoogleMap height="750px" path={memberLocation}>
+          {member && memberLocation && leastMemberLocation && (
+            <>
+              <UserMarker
+                lat={leastMemberLocation.lat}
+                lng={leastMemberLocation.lng}
+                imageUrl={member.badgeImageUrl}
+              />
+              <SendCloverButton member={member} />
+            </>
+          )}
+        </GoogleMap>
       </div>
     </div>
   );

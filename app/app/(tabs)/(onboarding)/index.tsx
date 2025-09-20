@@ -34,9 +34,9 @@ function RunningShare() {
         key={webViewKey}
         style={styles.webview}
         keyboardDisplayRequiresUserAction={false}
-        source={{ uri: ENV.WEB_VIEW_URL + '/group' }}
+        source={{ uri: ENV.WEB_VIEW_URL + '/onboarding' }}
         onMessage={receiveMessage}
-           mixedContentMode="always" // HTTP 리소스 허용
+        mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );

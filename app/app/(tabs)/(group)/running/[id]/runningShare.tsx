@@ -6,8 +6,14 @@ import { POST_MESSAGE_TYPE } from '@/utils/webView/consts';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, StyleSheet, View } from 'react-native';
-import WebView from 'react-native-webview';
+import {
+  ActivityIndicator,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  View
+} from 'react-native';
+import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { CrewContext } from './_layout';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -16,10 +22,24 @@ const windowHeight = Dimensions.get('window').height;
 function RunningShare() {
   const { webviewRef, postMessage } = useWebView<MemberData[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [contentHeight, setContentHeight] = useState<number>(windowHeight);
   const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
   const { crewMembers, crewInfo } = useContext(CrewContext);
   const initialUrl = ENV.WEB_VIEW_URL + '/group/running?q=' + crewInfo?.crewId;
-  const handleWebViewLoad = () => {};
+
+  const handleWebViewMessage = (event: WebViewMessageEvent) => {
+    try {
+      const data = JSON.parse(event.nativeEvent.data || '{}');
+      if (data?.type === 'CONTENT_HEIGHT' && typeof data.height === 'number') {
+        // 최소 높이 보장, 최대 높이 제한
+        const adjustedHeight = Math.max(600, Math.min(data.height, 2000));
+        setContentHeight(adjustedHeight);
+        console.log('WebView height adjusted to:', adjustedHeight);
+      }
+    } catch (e) {
+      console.error('Failed to parse WebView message:', e);
+    }
+  };
 
   useEffect(() => {
     if (crewMembers && webviewRef.current) {
@@ -52,7 +72,11 @@ function RunningShare() {
   );
 
   return (
-    <View className="flex-1 justify-between items-center">
+    <ScrollView
+      scrollEnabled={false}
+      contentContainerStyle={{ flex: 1 }}
+      nestedScrollEnabled={true}
+    >
       {isLoading && (
         <ActivityIndicator
           size="large"
@@ -63,14 +87,26 @@ function RunningShare() {
       <WebView
         ref={webviewRef}
         className="flex-1 bg-gray"
-        style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
-        onLoadEnd={handleWebViewLoad}
-        mixedContentMode="always" // HTTP 리소스 허용
+        style={[
+          {
+            flex: 1,
+            width: windowWidth,
+            opacity: isLoading ? 0 : 1
+          }
+        ]}
+        scrollEnabled={false}
+        bounces={false}
+        overScrollMode="never"
+        nestedScrollEnabled={false}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        mixedContentMode="always"
+        onMessage={handleWebViewMessage}
         source={{
           uri: initialUrl
         }}
       />
-    </View>
+    </ScrollView>
   );
 }
 
