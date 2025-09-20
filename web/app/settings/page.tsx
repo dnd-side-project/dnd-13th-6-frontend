@@ -11,15 +11,15 @@ export default function Settings() {
   const [type, setType] = useState<'logout' | 'withdraw'>('logout');
   const router = useRouter();
   const { mutate: logoutMutate } = useLogout();
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (type === 'logout') {
       logoutMutate();
     } else {
       // todo: 탈퇴 처리 로직
       console.log('탈퇴 처리');
+      localStorage.clear();
+      redirectToLogin();
     }
-    localStorage.clear();
-    redirectToLogin();
   };
   return (
     <div>
