@@ -8,11 +8,13 @@ import MapView from '@/components/running/MapView/MapView';
 import MainOverview from '@/components/running/OverView/MainOverview';
 import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 import { RunningData } from '@/types/runningTypes';
-import { SOCKET_URL } from '@/utils/apis/api';
+import { RUNNING_API, SOCKET_URL } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { Client } from '@stomp/stompjs';
 import { useStartRunning } from '@/hooks/queries/useStartRunning';
 import { useEndRunning } from '@/hooks/queries/useEndRunning';
+import { isAxiosError } from 'axios';
+import api from '@/utils/apis/customAxios';
 
 export default function Page() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -24,7 +26,8 @@ export default function Page() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // setInterval ID를 저장할 useRef
   const [targetDistance, setTargetDistance] = useState('0');
 
-  const { mutate: startRunningMutate } = useStartRunning();
+  const { mutate: startRunningMutate, error: startRunningError } =
+    useStartRunning();
   const { mutate: endRunningMutate } = useEndRunning();
 
   const touchStartX = useRef(0);
@@ -33,12 +36,51 @@ export default function Page() {
 
   //버튼
   useEffect(() => {
-    handleControl('play');
-    setTargetDistance(localStorage.getItem('targetDistance') || '0');
-    startRunningMutate();
+    const initRunning = async () => {
+      const runningId = localStorage.getItem('runningId');
+      if (runningId) {
+        try {
+          await api.delete(RUNNING_API.RUNNING_ACTIVE(runningId));
+          localStorage.removeItem('runningId');
+        } catch (error) {
+          console.error('Error deleting running active:', error);
+        }
+      }
+      handleControl('play');
+      setTargetDistance(localStorage.getItem('targetDistance') || '0');
+      startRunningMutate();
+    };
+    initRunning();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const deleteRunningActive = async () => {
+      if (startRunningError) {
+        handleControl('stop');
+        if (
+          isAxiosError(startRunningError) &&
+          startRunningError.response?.data.code === 'R102'
+        ) {
+          console.log('deleteRunningActive', process.env.NEXT_PUBLIC_ENV);
+          await api
+            .delete(
+              RUNNING_API.RUNNING_ACTIVE(
+                localStorage.getItem('runningId') || ''
+              )
+            )
+            .then(() => {
+              handleControl('stop');
+              startRunningMutate();
+            });
+          return;
+        }
+      }
+    };
+    deleteRunningActive();
+  }, [startRunningError]);
+
   //받아온 데이터 처리
   const totalDistance = useMemo(() => {
     const sum =
@@ -246,7 +288,7 @@ export default function Page() {
           const storedData = localStorage.getItem('finishData');
 
           // storedData가 null이 아니고 유효한 JSON 문자열일 경우에만 파싱
-          if (storedData) {
+          if (storedData && storedData?.length >= 0) {
             existingData = JSON.parse(storedData);
           }
         } catch (e) {
