@@ -30,7 +30,8 @@ export default function DefaultLayout({
           {(backHref || title || showSaveButton) && (
             <div className="relative h-16">
               <header className="fixed flex h-16 w-full items-center justify-between px-4">
-                <div className="flex items-center">
+                {/* 1. 왼쪽 영역 너비 고정 */}
+                <div className="flex w-16 items-center justify-start">
                   {backHref && (
                     <button
                       onClick={() => {
@@ -51,12 +52,16 @@ export default function DefaultLayout({
                     </button>
                   )}
                 </div>
+
+                {/* 2. 제목을 absolute로 중앙 정렬 */}
                 {title && (
-                  <h1 className="flex-grow text-center text-lg font-bold text-white">
+                  <h1 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg font-bold text-white">
                     {title}
                   </h1>
                 )}
-                <div className="flex items-center">
+
+                {/* 3. 오른쪽 영역 너비 고정 */}
+                <div className="flex w-16 items-center justify-end">
                   {showSaveButton && handleSave && (
                     <button
                       onClick={handleSave}

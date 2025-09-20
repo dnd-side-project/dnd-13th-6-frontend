@@ -94,24 +94,8 @@ function Page() {
         )}
       </div>
 
-      <div className="mt-[25px] mb-4 flex items-center justify-center">
-        <p className="font-pretendard w-auto bg-transparent text-center text-[22px] font-bold text-white">
-          {userInfo?.nickname}
-        </p>
-        <span className="font-pretendard mr-2 w-auto bg-transparent text-center text-[22px] font-bold text-white">
-          님
-        </span>
-      </div>
-      <div className="mb-[36px] flex justify-center">
-        <button
-          className="border-gray-20 rounded-full border-1 bg-white/10 px-[12px] py-[6px]"
-          onClick={() => router.push('/badge-collection/edit-nickname')}
-        >
-          <p className="text-gray-20 text-[17px] font-medium tracking-[-0.014em]">
-            수정
-          </p>
-        </button>
-      </div>
+      <div className="mt-[25px] mb-4 flex items-center justify-center"></div>
+
       <p className="pretendard-title3">{userInfo?.nickname} 님의 보유 배지</p>
       <BadgeList
         setMainBadge={setBadgeUrl}
