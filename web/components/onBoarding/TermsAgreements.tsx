@@ -18,7 +18,7 @@ function TermsAgreements({ onAgreementChange }: TermsAgreementsProps) {
     all: false,
     service: false,
     privacy: false,
-    marketing: false,
+    marketing: false
   });
 
   useEffect(() => {
@@ -31,7 +31,7 @@ function TermsAgreements({ onAgreementChange }: TermsAgreementsProps) {
       all: newValue,
       service: newValue,
       privacy: newValue,
-      marketing: newValue,
+      marketing: newValue
     });
   };
 
@@ -56,7 +56,17 @@ function TermsAgreements({ onAgreementChange }: TermsAgreementsProps) {
           onClick={() => handleSingleClick('service')}
           text={'(필수) 서비스 이용 약관'}
         />
-        <p className="body2 text-gray-60 underline">상세보기</p>
+        <p
+          className="body2 text-gray-60 underline"
+          onClick={() =>
+            window.open(
+              'https://sturdy-hill-971.notion.site/Runky-2733225761d080cc983ed32ecce048e7?pvs=73',
+              '_blank'
+            )
+          }
+        >
+          상세보기
+        </p>
       </div>
 
       <div className="flex justify-between">
@@ -65,7 +75,17 @@ function TermsAgreements({ onAgreementChange }: TermsAgreementsProps) {
           onClick={() => handleSingleClick('privacy')}
           text={'(필수) 개인정보 수집 및 이용 동의'}
         />
-        <p className="body2 text-gray-60 underline">상세보기</p>
+        <p
+          className="body2 text-gray-60 underline"
+          onClick={() =>
+            window.open(
+              'https://sturdy-hill-971.notion.site/Runky-2733225761d080cc983ed32ecce048e7?pvs=73',
+              '_blank'
+            )
+          }
+        >
+          상세보기
+        </p>
       </div>
 
       <CheckBox
