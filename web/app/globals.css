@@ -110,8 +110,16 @@
 body {
   font-family: Pretendard, Lufga, Arial, Helvetica, sans-serif;
   margin: 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
+html, body {
+  touch-action: pan-x pan-y;
+}
+::-webkit-scrollbar {
+  display: none;
+}
 .animate-roll {
   animation: roll 5s ease-in-out forwards;
 }

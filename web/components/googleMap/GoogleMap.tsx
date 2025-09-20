@@ -61,7 +61,6 @@ export default function GoogleMap({
     };
   }, []);
 
-  //api 키 체크
   if (!apiKey) {
     return (
       <div
@@ -94,14 +93,13 @@ export default function GoogleMap({
       <div style={{ width, height }}>
         <APIProvider apiKey={apiKey}>
           <Map
-            zoom={isPanning ? null : 18}
+            zoom={isPanning ? undefined : 18}
             center={
-              isPanning ? null : type === 'prepare' ? mapCenter : position
+              isPanning ? undefined : type === 'prepare' ? mapCenter : position
             }
             disableDefaultUI={true}
             gestureHandling="greedy"
-            mapId="DEMO_MAP_ID"
-            controlled={type !== 'todayResult'}
+            mapId="b585e0fdaac591c75d6f5085"
             style={{ height: '100%' }}
             colorScheme="DARK"
             onDragstart={handleDragStart}
