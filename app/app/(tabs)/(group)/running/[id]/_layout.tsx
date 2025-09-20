@@ -211,7 +211,7 @@ export default function Layout() {
             </>
           )}
         </View>
-        <View style={{ minHeight: 750, backgroundColor: '#313131', flex: 1 }}>
+        <View style={{ minHeight: 550, backgroundColor: '#313131', flex: 1 }}>
           <CrewContext.Provider value={contextValue}>
             <MaterialTopTabs screenOptions={MaterialTopTabsScreenOptions}>
               <MaterialTopTabs.Screen
@@ -224,18 +224,19 @@ export default function Layout() {
               />
             </MaterialTopTabs>
           </CrewContext.Provider>
+          <View className=" bg-gray py-[18px] px-[14px]">
+            <Pressable
+              className="bg-main text-center py-[18px] rounded-xl"
+              onPress={() => router.push('/(tabs)/(single-running)')}
+            >
+              <Text className="text-[20px] text-gray font-bold text-center">
+                운동 시작하기
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </ScrollView>
-      <View className="fixed bottom-0 bg-gray py-[18px] px-[14px]">
-        <Pressable
-          className="bg-main text-center py-[18px] rounded-xl"
-          onPress={() => router.push('/(tabs)/(single-running)')}
-        >
-          <Text className="text-[20px] text-gray font-bold text-center">
-            운동 시작하기
-          </Text>
-        </Pressable>
-      </View>
+
       {crewInfo && crewMembers && (
         <BottomSheetContainer
           crewInfo={crewInfo}

@@ -56,29 +56,32 @@ function Index() {
     setDuration(diffDays);
   }, []);
   return (
-    <ScrollView
-      className="bg-gray"
-      nestedScrollEnabled
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24 }}
-    >
-      <Text className="text-title3 text-white ml-4 mt-9 ">
-        이번 주의 크루 MVP는?
-      </Text>
-      <View>
-        {crewMembers &&
-          crewMembers.members
-            .sort((a, b) => b.runningDistance - a.runningDistance)
-            .map((member, index) => (
-              <RankingItem
-                key={member.memberId}
-                name={member.nickname}
-                imageUrl={member.badgeImageUrl}
-                rank={index + 1}
-              />
-            ))}
-      </View>
-    </ScrollView>
+    <View style={{ flex: 1 }}>
+      <ScrollView
+        className="bg-gray"
+        nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        contentContainerStyle={{ paddingBottom: 24 }}
+      >
+        <Text className="text-title3 text-white ml-4 mt-9 ">
+          이번 주의 크루 MVP는?
+        </Text>
+        <View>
+          {crewMembers &&
+            crewMembers.members
+              .sort((a, b) => b.runningDistance - a.runningDistance)
+              .map((member, index) => (
+                <RankingItem
+                  key={member.memberId}
+                  name={member.nickname}
+                  imageUrl={member.badgeImageUrl}
+                  rank={index + 1}
+                />
+              ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 

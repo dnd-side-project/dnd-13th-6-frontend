@@ -26,51 +26,19 @@ function RunningShare() {
   const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
   const { crewMembers, crewInfo } = useContext(CrewContext);
   const initialUrl = ENV.WEB_VIEW_URL + '/group/running?q=' + crewInfo?.crewId;
-  const handleWebViewLoad = () => {};
-  // const measureHeightJS = `
-  //   (function() {
-  //     function postHeight() {
-  //       try {
-  //         var body = document.body;
-  //         var html = document.documentElement;
-  //         var height = Math.max(
-  //           body.scrollHeight,
-  //           body.offsetHeight,
-  //           html.clientHeight,
-  //           html.scrollHeight,
-  //           html.offsetHeight
-  //         );
-  //         window.ReactNativeWebView && window.ReactNativeWebView.postMessage(
-  //           JSON.stringify({ type: 'CONTENT_HEIGHT', height: height })
-  //         );
-  //       } catch (e) {}
-  //     }
-  //     try {
-  //       var css = 'html, body { overflow: hidden !important; overscroll-behavior: none !important; }';
-  //       var style = document.createElement('style');
-  //       style.type = 'text/css';
-  //       style.appendChild(document.createTextNode(css));
-  //       document.head.appendChild(style);
-  //     } catch (e) {}
-  //     window.addEventListener('load', postHeight);
-  //     window.addEventListener('resize', postHeight);
-  //     var observer = new MutationObserver(function() { postHeight(); });
-  //     observer.observe(document.body, { subtree: true, childList: true, attributes: true, characterData: true });
-  //     setTimeout(postHeight, 100);
-  //     setTimeout(postHeight, 500);
-  //     true;
-  //   })();
-  // `;
 
   const handleWebViewMessage = (event: WebViewMessageEvent) => {
     try {
       const data = JSON.parse(event.nativeEvent.data || '{}');
       if (data?.type === 'CONTENT_HEIGHT' && typeof data.height === 'number') {
-        // 상한/하한 가드
-        const minHeight = Math.max(400, Math.min(data.height, 4000));
-        setContentHeight(minHeight);
+        // 최소 높이 보장, 최대 높이 제한
+        const adjustedHeight = Math.max(600, Math.min(data.height, 2000));
+        setContentHeight(adjustedHeight);
+        console.log('WebView height adjusted to:', adjustedHeight);
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error('Failed to parse WebView message:', e);
+    }
   };
 
   useEffect(() => {
@@ -105,9 +73,9 @@ function RunningShare() {
 
   return (
     <ScrollView
-      nestedScrollEnabled
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24 }}
+      scrollEnabled={false}
+      contentContainerStyle={{ flex: 1 }}
+      nestedScrollEnabled={true}
     >
       {isLoading && (
         <ActivityIndicator
@@ -120,11 +88,14 @@ function RunningShare() {
         ref={webviewRef}
         className="flex-1 bg-gray"
         style={[
-          styles.webview,
-          { height: contentHeight, opacity: isLoading ? 0 : 1 }
+          {
+            flex: 1,
+            width: windowWidth,
+            opacity: isLoading ? 0 : 1
+          }
         ]}
-        onLoadEnd={handleWebViewLoad}
         scrollEnabled={false}
+        bounces={false}
         overScrollMode="never"
         nestedScrollEnabled={false}
         showsVerticalScrollIndicator={false}
