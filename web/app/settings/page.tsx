@@ -11,7 +11,7 @@ export default function Settings() {
   const [type, setType] = useState<'logout' | 'withdraw'>('logout');
   const router = useRouter();
   const { mutate: logoutMutate } = useLogout();
-  const { mutate: withdrawMutate } = useWithdraw(); // todo: 탈퇴 api 연결
+  const { mutate: withdrawMutate } = useWithdraw();
   const handleConfirm = async () => {
     if (type === 'logout') {
       logoutMutate();
