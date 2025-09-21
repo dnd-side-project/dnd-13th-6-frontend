@@ -6,8 +6,8 @@ export const useWithdraw = () => {
   return useMutation({
     mutationFn: withdraw,
     onSuccess: () => {
-         localStorage.clear();
-          redirectToLogin();
+      localStorage.clear();
+      redirectToLogin();
     }
   });
 };
