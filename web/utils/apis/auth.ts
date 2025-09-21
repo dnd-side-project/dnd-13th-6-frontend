@@ -21,3 +21,6 @@ export const logout= async()=>{
   await api.post(AUTH_API.LOG_OUT());
   
 }
+export const withdraw = async()=>{
+  await api.delete(AUTH_API.WITHDRAW());
+}

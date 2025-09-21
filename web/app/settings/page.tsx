@@ -2,7 +2,7 @@
 import ConfirmModal from '@/components/common/ConfirmModal';
 import SettingListItem from '@/components/settings/SettingListItem';
 import { useLogout } from '@/hooks/queries/useLogout';
-import { redirectToLogin } from '@/utils/authRedirect';
+import { useWithdraw } from '@/hooks/queries/useWithdraw';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
@@ -11,14 +11,12 @@ export default function Settings() {
   const [type, setType] = useState<'logout' | 'withdraw'>('logout');
   const router = useRouter();
   const { mutate: logoutMutate } = useLogout();
+  const { mutate: withdrawMutate } = useWithdraw(); // todo: 탈퇴 api 연결
   const handleConfirm = async () => {
     if (type === 'logout') {
       logoutMutate();
     } else {
-      // todo: 탈퇴 처리 로직
-      console.log('탈퇴 처리');
-      localStorage.clear();
-      redirectToLogin();
+      withdrawMutate();
     }
   };
   return (
