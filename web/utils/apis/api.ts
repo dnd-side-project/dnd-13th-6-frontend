@@ -45,7 +45,7 @@ export const AUTH_API = {
   SIGN_UP: () => `/${API_SUFFIX}/${MODULE.AUTH}/signup/complete`,
   LOG_OUT: () => `/${API_SUFFIX}/${MODULE.AUTH}/logout`,
   REFRESH_TOKEN: () => `/${API_SUFFIX}/${MODULE.AUTH}/token/refresh`,
-  WITHDRAW : () => `/${API_SUFFIX}/${MODULE.AUTH}/${MODULE.MEMBERS}me`
+  WITHDRAW: () => `/${API_SUFFIX}/${MODULE.AUTH}/${MODULE.MEMBERS}me`
 } as const;
 
 export const MEMBER_API = {
