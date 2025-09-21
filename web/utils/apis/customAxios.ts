@@ -52,7 +52,8 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         const isDev = process.env.NEXT_PUBLIC_ENV === 'dev';
-        window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=3255efd2af839833b26a422ca203c180&redirect_uri=https://api.runky.store/${isDev ? 'dev/' : '/'}api/auth/login/oauth2/code/kakao&response_type=code`;
+        window.location.href = `${isDev?"https://kauth.kakao.com/oauth/authorize?client_id=3255efd2af839833b26a422ca203c180&redirect_uri=https://api.runky.store/dev/api/auth/login/oauth2/code/kakao/local&response_type=code"
+          :process.env.NEXT_PUBLIC_LOGIN_URL}`;
         redirectToLogin();
         return Promise.reject(refreshError);
       }
