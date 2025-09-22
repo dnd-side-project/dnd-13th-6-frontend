@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, Suspense, useEffect, useMemo } from 'react';
+import React, { useState, Suspense, useEffect, useMemo, useRef } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Image from 'next/image';
@@ -10,6 +10,8 @@ import { useSearchParams } from 'next/navigation';
 import { Client } from '@stomp/stompjs';
 import api from '@/utils/apis/customAxios';
 import { postCheerfulMessage } from '@/utils/apis/running';
+import { RUNNING_API } from '@/utils/apis/api';
+// import { RUNNING_API } from '@/utils/apis/api';
 function CrewMemberProfiles({
   users,
   onClick
@@ -119,17 +121,7 @@ function GroupRunningContent() {
   }, [isBrowser]);
   const searchParams = useSearchParams();
   const crewId = searchParams.get('q');
-  const [stompClient] = useState(() => {
-    return new Client({
-      webSocketFactory: () => new WebSocket('wss://api.runky.store/ws'),
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      connectHeaders: {
-        Authorization: `Bearer ${getAccessToken}`
-      }
-    });
-  });
+  // const [stompClient, setStompClient] = useState<Client | null>(null);
   const [members, setMembers] = useState<MemberData[]>([]);
   const [member, setMember] = useState<MemberData | null>(null);
   const [memberLocation, setMemberLocation] = useState<
@@ -142,38 +134,69 @@ function GroupRunningContent() {
   const leastMemberLocation = useMemo(() => {
     return memberLocation.at(-1);
   }, [memberLocation]);
+  // STOMP Client 인스턴스 고정 및 연결 상태 관리
+  const stompClientRef = useRef<Client | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const unsubscribeRef = useRef<(() => void) | null>(null);
 
   const onMemberClick = (member: MemberData) => {
     setMember(member);
     if (!member.isRunning || !isBrowser) return;
-    console.log(stompClient, stompClient.connected);
-    if (stompClient && stompClient.connected) {
-      const subscribeUrl = member.sub;
-      console.log(member.sub);
-      stompClient.subscribe(
-        subscribeUrl,
-        message => {
-          try {
-            const data = JSON.parse(message.body);
-            setMemberLocation(prev => [
-              ...prev,
-              {
-                lat: data.message.latitude,
-                lng: data.message.longitude
-              }
-            ]);
-          } catch (error) {}
-        },
-        {
-          'content-type': 'application/json'
-        }
-      );
-    }
+    console.log(isConnected, stompClientRef.current?.connected);
+    if (!isConnected || !stompClientRef.current?.connected) return;
+    const subscribeUrl = member.sub;
+    const sub = stompClientRef.current.subscribe(
+      subscribeUrl,
+      message => {
+        try {
+          const data = JSON.parse(message.body);
+          setMemberLocation(prev => [
+            ...prev,
+            {
+              lat: data.y,
+              lng: data.x
+            }
+          ]);
+        } catch {}
+      },
+      {
+        'content-type': 'application/json'
+      }
+    );
+    unsubscribeRef.current = () => {
+      try {
+        sub.unsubscribe();
+      } catch {}
+    };
   };
+
   useEffect(() => {
     // 브라우저 환경이 아니면 실행하지 않음
     if (!isBrowser) return;
-
+    // 클라이언트 생성 및 활성화 (한 번만)
+    console.log(getAccessToken);
+    const client = new Client({
+      webSocketFactory: () => new WebSocket('wss://api.runky.store/ws'),
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+      connectHeaders: {
+        Authorization: `Bearer ${getAccessToken}`
+      },
+      onConnect: () => {
+        setIsConnected(true);
+        console.log('connected');
+      },
+      onDisconnect: () => {
+        setIsConnected(false);
+        console.log('disconnected');
+      },
+      onStompError: () => {
+        console.log('error');
+      }
+    });
+    client.activate();
+    stompClientRef.current = client;
     // Android
     const handleAndroidMessage = (event: Event) => {
       try {
@@ -189,7 +212,6 @@ function GroupRunningContent() {
 
     // iOS
     const handleIOSMessage = (event: MessageEvent) => {
-      console.log('event', event);
       try {
         const parsedData = JSON.parse(event.data);
         if (parsedData.type === 'SET_CREW_MEMBERS') {
@@ -206,6 +228,16 @@ function GroupRunningContent() {
     return () => {
       document.removeEventListener('message', handleAndroidMessage);
       window.removeEventListener('message', handleIOSMessage);
+      // 구독 해제 및 연결 종료
+      if (unsubscribeRef.current) {
+        try {
+          unsubscribeRef.current();
+        } catch {}
+        unsubscribeRef.current = null;
+      }
+      try {
+        stompClientRef.current?.deactivate();
+      } catch {}
     };
   }, [isBrowser, getAccessToken]); // 의존성 추가
 
@@ -216,11 +248,9 @@ function GroupRunningContent() {
         `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/crews/${crewId}/members`
       );
       setMembers(response.data.result.members);
-      stompClient.activate();
     };
     init();
     return () => {
-      stompClient.deactivate();
       setMemberLocation([]);
       setMember(null);
     };
@@ -250,6 +280,7 @@ function GroupRunningContent() {
 }
 
 export default function Page() {
+  // api.delete(RUNNING_API.RUNNING_ACTIVE('137'));
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <GroupRunningContent />
