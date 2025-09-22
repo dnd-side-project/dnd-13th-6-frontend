@@ -1,3 +1,4 @@
+import { ENV } from '@/utils/app/consts';
 import { useRef } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,8 +13,8 @@ function Index() {
       <WebView
         ref={webviewRef}
         style={styles.webview}
-        source={{ uri: 'https://web.runky.store' + '/calendar' }}
-          mixedContentMode="always" // HTTP 리소스 허용
+        source={{ uri: ENV.WEB_VIEW_URL + '/calendar' }}
+        mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );

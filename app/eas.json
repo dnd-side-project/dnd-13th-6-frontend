@@ -14,7 +14,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_WEBVIEW_URL": "https://web.runky.store",
+        "EXPO_PUBLIC_WEBVIEW_URL": "https://test.runky.store",
         "EXPO_PUBLIC_SERVER_BASE_URL": "https://api.runky.store"
       }
     },
@@ -24,7 +24,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_WEBVIEW_URL": "https://web.runky.store",
+        "EXPO_PUBLIC_WEBVIEW_URL": "https://test.runky.store",
         "EXPO_PUBLIC_SERVER_BASE_URL": "https://api.runky.store"
       }
     }

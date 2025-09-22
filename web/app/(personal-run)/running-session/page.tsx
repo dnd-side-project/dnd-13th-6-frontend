@@ -179,9 +179,8 @@ export default function Page() {
             stompClient.publish({
               destination: SOCKET_URL.RUNNING_PUBLISH(runningId!),
               body: JSON.stringify({
-                runnerId: localStorage.getItem('runnerId'),
-                x: data.message.latitude,
-                y: data.message.longitude,
+                x: data.message.longitude,
+                y: data.message.latitude,
                 timestamp: Date.now()
               })
             });
@@ -192,6 +191,27 @@ export default function Page() {
       }
     };
 
+    // const test = () => {
+    //   // 126.9538444. 37.47538611
+    //   let latitude = 37.47;
+    //   let longitude = 126.95;
+    //   setInterval(() => {
+    //     stompClient.publish({
+    //       destination: SOCKET_URL.RUNNING_PUBLISH(
+    //         localStorage.getItem('runningId')!
+    //       ),
+    //       body: JSON.stringify({
+    //         x: longitude,
+    //         y: latitude,
+    //         timestamp: Date.now()
+    //       })
+    //     });
+    //     latitude += 0.01;
+    //     longitude += 0.01;
+    //   }, 5000);
+    // };
+
+    // test();
     // Android
     document.addEventListener('message', handleMessage as EventListener);
     // iOS

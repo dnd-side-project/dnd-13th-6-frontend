@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import SockJS from 'sockjs-client';
-import { Client, IMessage } from '@stomp/stompjs';
+import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 
 interface UseStompWebSocketProps {
   socketUrl: string;
-  publishDest?: string; // 메시지를 보낼 Destination
-  subscribeTopic?: string; // 구독할 Topic
+  publishDest?: string; // 기본 발행 Destination (옵션)
+  subscribeTopic?: string; // 초기 구독 Topic (옵션)
   connectionHeaders?: Record<string, string>; // 연결 시 사용할 헤더
-  onMessage?: (msg: string) => void; // 구독 메시지 처리 콜백
+  onMessage?: (msg: any) => void; // 초기 구독 메시지 처리 콜백
+  debug?: boolean; // 디버그 로그 출력 여부
 }
 
 interface LocationPayload {
@@ -22,20 +22,23 @@ export function useStomp({
   publishDest,
   subscribeTopic,
   onMessage,
-  connectionHeaders
+  connectionHeaders,
+  debug
 }: UseStompWebSocketProps) {
   const clientRef = useRef<Client | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const subscriptionsRef = useRef<Map<string, StompSubscription>>(new Map());
 
-  // ✅ WebSocket 연결
   useEffect(() => {
     if (!socketUrl) return;
-
+    console.log(connectionHeaders);
     const stompClient = new Client({
-      webSocketFactory: () => new SockJS(socketUrl),
+      webSocketFactory: () => new WebSocket(socketUrl),
       reconnectDelay: 5000,
-      debug: msg => console.log('[STOMP DEBUG]:', msg),
-      ...connectionHeaders
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+      debug: msg => (debug ? console.log('[STOMP DEBUG]:', msg) : void 0),
+      connectHeaders: connectionHeaders
     });
 
     stompClient.onConnect = () => {
@@ -64,27 +67,100 @@ export function useStomp({
     clientRef.current = stompClient;
 
     return () => {
+      // 모든 구독 해제
+      subscriptionsRef.current.forEach(sub => {
+        try {
+          sub.unsubscribe();
+        } catch {}
+      });
+      subscriptionsRef.current.clear();
       stompClient.deactivate();
     };
-  }, [socketUrl, subscribeTopic, onMessage]);
+  }, [socketUrl, subscribeTopic, onMessage, connectionHeaders, debug]);
 
-  // ✅ 위치 전송 (Runner)
-  const sendLocation = useCallback(
-    (location: LocationPayload) => {
-      if (!clientRef.current?.connected || !publishDest) return;
-
-      clientRef.current.publish({
-        destination: publishDest,
-        body: JSON.stringify({
-          type: 'LOCATION',
-          runnerId: 101,
-          ...location,
-          timestamp: Date.now()
-        })
-      });
+  // ✅ 동적 구독
+  const subscribe = useCallback(
+    (
+      topic: string,
+      handler: (parsed: any, raw: IMessage) => void,
+      headers?: Record<string, string>
+    ) => {
+      if (!clientRef.current?.connected) return () => {};
+      // 이미 존재하면 먼저 해제
+      const existing = subscriptionsRef.current.get(topic);
+      if (existing) {
+        try {
+          existing.unsubscribe();
+        } catch {}
+      }
+      const sub = clientRef.current.subscribe(
+        topic,
+        (message: IMessage) => {
+          try {
+            const parsed = JSON.parse(message.body);
+            handler(parsed, message);
+          } catch (e) {
+            console.error('❌ Failed to parse STOMP message', e);
+          }
+        },
+        headers
+      );
+      subscriptionsRef.current.set(topic, sub);
+      return () => {
+        try {
+          sub.unsubscribe();
+        } catch {}
+        subscriptionsRef.current.delete(topic);
+      };
     },
-    [publishDest]
+    []
   );
 
-  return { isConnected, sendLocation };
+  // ✅ 발행 (일반/위치)
+  const publish = useCallback(
+    (
+      destination: string,
+      payload: unknown,
+      headers?: Record<string, string>
+    ) => {
+      if (!clientRef.current?.connected) return;
+      clientRef.current.publish({
+        destination,
+        body: JSON.stringify(payload),
+        headers
+      });
+    },
+    []
+  );
+
+  const sendLocation = useCallback(
+    (location: LocationPayload, destination?: string) => {
+      const dest = destination ?? publishDest;
+      if (!clientRef.current?.connected || !dest) return;
+      publish(dest, {
+        type: 'LOCATION',
+        ...location,
+        timestamp: Date.now()
+      });
+    },
+    [publishDest, publish]
+  );
+
+  const disconnect = useCallback(() => {
+    if (!clientRef.current) return;
+    try {
+      subscriptionsRef.current.forEach(sub => sub.unsubscribe());
+      subscriptionsRef.current.clear();
+    } catch {}
+    clientRef.current.deactivate();
+  }, []);
+
+  return {
+    isConnected,
+    subscribe,
+    publish,
+    sendLocation,
+    disconnect,
+    client: clientRef.current
+  };
 }
