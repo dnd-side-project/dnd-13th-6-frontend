@@ -45,7 +45,6 @@ export const AUTH_API = {
   SIGN_UP: () => `/${API_SUFFIX}/${MODULE.AUTH}/signup/complete`,
   LOG_OUT: () => `/${API_SUFFIX}/${MODULE.AUTH}/logout`,
   REFRESH_TOKEN: () => `/${API_SUFFIX}/${MODULE.AUTH}/token/refresh`,
-  WITHDRAW: () => `/${API_SUFFIX}/${MODULE.AUTH}/${MODULE.MEMBERS}me`
 } as const;
 
 export const MEMBER_API = {
@@ -53,7 +52,8 @@ export const MEMBER_API = {
   CHANGE_BADGE: () => `/${API_SUFFIX}/${MODULE.MEMBERS}/me/badge`,
   MY_BADGE: (memberId: string | number) =>
     `/${API_SUFFIX}/${MODULE.MEMBERS}/${memberId}/badge`,
-  MY_INFO: () => `/${API_SUFFIX}/${MODULE.MEMBERS}/me`
+  MY_INFO: () => `/${API_SUFFIX}/${MODULE.MEMBERS}/me`,
+  WITHDRAW: () => `/${API_SUFFIX}/${MODULE.MEMBERS}/me`
 };
 export const NOTIFICATION_API = {
   NOTIFICATION_LIST: () => `/${API_SUFFIX}/${MODULE.NOTIFICATIONS}/recent`
