@@ -50,6 +50,9 @@ function Index() {
       <WebView
         ref={webViewRef}
         className="flex-1 bg-gray"
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        overScrollMode={'never'}
         source={{ uri: initialUrl }}
         onMessage={handleMessage}
       />

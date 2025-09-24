@@ -34,11 +34,14 @@ export default function Code() {
         onLoadEnd={() => setIsLoading(false)}
         onLoadStart={() => setIsLoading(true)}
         scrollEnabled={true}
+        showsVerticalScrollIndicator={false}
         javaScriptEnabled={true}
         domStorageEnabled={true}
         allowsLinkPreview={false}
         onMessage={receiveMessage}
         allowsBackForwardNavigationGestures={true}
+        bounces={false}
+        overScrollMode={'never'}
            mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>

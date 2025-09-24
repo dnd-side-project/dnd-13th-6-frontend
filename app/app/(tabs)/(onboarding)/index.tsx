@@ -33,9 +33,12 @@ function RunningShare() {
         ref={webviewRef}
         key={webViewKey}
         style={styles.webview}
+        showsVerticalScrollIndicator={false}
         keyboardDisplayRequiresUserAction={false}
         source={{ uri: ENV.WEB_VIEW_URL + '/onboarding' }}
         onMessage={receiveMessage}
+        bounces={false}
+        overScrollMode={'never'}
         mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
