@@ -42,7 +42,7 @@ export default function Code() {
         allowsBackForwardNavigationGestures={true}
         bounces={false}
         overScrollMode={'never'}
-           mixedContentMode="always" // HTTP 리소스 허용
+        mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );
