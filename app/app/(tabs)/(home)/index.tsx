@@ -26,7 +26,11 @@ function Index() {
       }
     } else if (data.type === MODULE.PUSH) {
       const { type, url } = JSON.parse(data.data);
-      router.push(url);
+      if (url === '/(tabs)/(home)' || url === '/(onboarding)') {
+        router.replace(url);
+      } else {
+        router.push(url);
+      }
     }
     if (data.nickName) {
       AsyncStorage.setItem('nickName', data.nickName);
