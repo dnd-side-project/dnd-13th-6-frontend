@@ -74,6 +74,11 @@ export default function Main() {
         MODULE.AUTH,
         JSON.stringify({ accessToken, refreshToken })
       );
+      const data = {
+        type: MODULE.PUSH,
+        url: '/(tabs)/(home)'
+      };
+      postMessageToApp(MODULE.PUSH, JSON.stringify(data));
     }
     postMessageToApp(MODULE.AUTH);
 
