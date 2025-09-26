@@ -21,8 +21,8 @@ function RunningShare() {
       const url = JSON.parse(data).url;
       if (url === '/(tabs)/(home)') {
         setWebViewKey(prev => prev + 1);
+        router.push(url);
       }
-      router.push(url);
     }
   };
 

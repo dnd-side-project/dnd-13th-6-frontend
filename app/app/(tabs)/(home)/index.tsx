@@ -3,9 +3,9 @@ import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useRef } from 'react';
-import { Pressable, View, Text } from 'react-native';
-import { WebView, WebViewMessageEvent } from 'react-native-webview';
+import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { WebView, WebViewMessageEvent } from 'react-native-webview';
 function Index() {
   const insets = useSafeAreaInsets();
   const webViewRef = useRef<WebView>(null);
