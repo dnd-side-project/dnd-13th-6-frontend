@@ -1,10 +1,14 @@
 import React from 'react';
 
-export default function CalendarMenu() {
-  const [selectedView, setSelectedView] = React.useState<'week' | 'month'>(
-    'week'
-  );
+interface CalendarMenuProps {
+  selectedView: 'week' | 'month';
+  setSelectedView: React.Dispatch<React.SetStateAction<'week' | 'month'>>;
+}
 
+export default function CalendarMenu({
+  selectedView,
+  setSelectedView
+}: CalendarMenuProps) {
   return (
     <>
       <div className="flex justify-between gap-10 p-3">

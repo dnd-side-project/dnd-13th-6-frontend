@@ -1,18 +1,26 @@
 'use client';
 import React, { useState } from 'react';
-import { addMonths, subMonths } from 'date-fns';
-import CalendarHeader from './CalendarHeader';
-import CalendarDays from './CalendarDays';
-import CalendarCells from './CalendarCells';
-import CalendarMenu from './CalendarMenu';
-import CalendarStats from './CalendarStats';
+import {
+  addDays,
+  addMonths,
+  getWeekOfMonth,
+  subDays,
+  subMonths
+} from 'date-fns';
+import CalendarHeader from '@/components/Calendar/CalendarHeader';
+import CalendarDays from '@/components/Calendar/CalendarDays';
+import CalendarCells from '@/components/Calendar/CalendarCells';
+import CalendarMenu from '@/components/Calendar/CalendarMenu';
+import CalendarStats from '@/components/Calendar/CalendarStats';
+import DistanceChart from '@/components/Calendar/Chart/DistanceChart';
 
 export interface RunRecord {
   date: string; // YYYY-MM-DD
 }
 
 function Calendar() {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedView, setSelectedView] = useState<'week' | 'month'>('week');
 
   const records: RunRecord[] = [
     { date: '2025-09-01' },
@@ -22,27 +30,59 @@ function Calendar() {
     { date: '2025-09-25' }
   ];
 
-  const prevMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1));
+  const prev = () => {
+    if (selectedView === 'week') {
+      setCurrentDate(subDays(currentDate, 7));
+    } else {
+      setCurrentDate(subMonths(currentDate, 1));
+    }
   };
 
-  const nextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1));
+  const next = () => {
+    if (selectedView === 'week') {
+      setCurrentDate(addDays(currentDate, 7));
+    } else {
+      setCurrentDate(addMonths(currentDate, 1));
+    }
+  };
+
+  const formatWeekDescription = (date: Date) => {
+    const week = getWeekOfMonth(date, { weekStartsOn: 1 });
+    const weekNumberText = ['첫째주', '둘째주', '셋째주', '넷째주', '다섯째주'];
+    return `${weekNumberText[week - 1] || ''} 주간 기록`;
   };
 
   return (
     <div className="bg-background flex h-full w-full flex-col rounded-lg text-gray-900 shadow-lg dark:text-gray-100">
-      <CalendarMenu />
-      <CalendarHeader
-        currentMonth={currentMonth}
-        prevMonth={prevMonth}
-        nextMonth={nextMonth}
+      <CalendarMenu
+        selectedView={selectedView}
+        setSelectedView={setSelectedView}
       />
-      <CalendarDays />
-      <CalendarCells currentMonth={currentMonth} records={records} />
-      <div className="bg-gray-80 my-10 h-[1px]" />
-
-      <CalendarStats />
+      <CalendarHeader currentDate={currentDate} prev={prev} next={next} />
+      {selectedView === 'week' ? (
+        <>
+          {formatWeekDescription(currentDate)}
+          <CalendarDays currentDate={currentDate} selectedView={selectedView} />
+          <CalendarCells
+            currentDate={currentDate}
+            records={records}
+            selectedView={selectedView}
+          />
+          <CalendarStats />
+          <DistanceChart />
+        </>
+      ) : (
+        <>
+          <CalendarDays />
+          <CalendarCells
+            currentDate={currentDate}
+            records={records}
+            selectedView={selectedView}
+          />
+          <div className="bg-gray-80 my-10 h-[1px]" />
+          <CalendarStats />
+        </>
+      )}
     </div>
   );
 }
