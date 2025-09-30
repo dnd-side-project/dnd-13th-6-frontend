@@ -28,6 +28,7 @@
     "react-circular-progressbar": "^2.2.0",
     "react-confetti": "^6.4.0",
     "react-dom": "19.1.0",
+    "recharts": "^3.2.1",
     "sockjs-client": "^1.6.1",
     "tailwind": "^4.0.0",
     "tailwind-merge": "^3.3.1"
@@ -38,6 +39,7 @@
     "@types/node": "^20.19.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/recharts": "^1.8.29",
     "@types/sockjs-client": "^1.5.4",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
