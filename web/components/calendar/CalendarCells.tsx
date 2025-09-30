@@ -106,7 +106,11 @@ function CalendarCells({
     days = [];
   }
 
-  return <div className="-mt-1 flex flex-col">{rows}</div>;
+  return (
+    <div className={`${selectedView === 'week' && '-mt-1'} flex flex-col`}>
+      {rows}
+    </div>
+  );
 }
 
 export default CalendarCells;

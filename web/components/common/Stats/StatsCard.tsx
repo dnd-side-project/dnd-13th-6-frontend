@@ -5,6 +5,7 @@ interface StatsCardProps {
   title?: string;
   totalDistance: number;
   totalTime: number;
+  className?: string;
 }
 
 const formatDistance = (meters: number) => {
@@ -29,9 +30,14 @@ const formatPace = (distanceMeters: number, durationSeconds: number) => {
   return `${min}'${sec.toString().padStart(2, '0')}''`;
 };
 
-const StatsCard = ({ title, totalDistance, totalTime }: StatsCardProps) => {
+const StatsCard = ({
+  title,
+  totalDistance,
+  totalTime,
+  className
+}: StatsCardProps) => {
   return (
-    <>
+    <div className={className}>
       <p className="text-gray-30 text-[1.0625rem] leading-[1.5] font-medium tracking-[-0.025em]">
         {title}
       </p>
@@ -61,7 +67,7 @@ const StatsCard = ({ title, totalDistance, totalTime }: StatsCardProps) => {
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

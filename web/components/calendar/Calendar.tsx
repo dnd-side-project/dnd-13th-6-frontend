@@ -13,6 +13,8 @@ import CalendarCells from '@/components/Calendar/CalendarCells';
 import CalendarMenu from '@/components/Calendar/CalendarMenu';
 import CalendarStats from '@/components/Calendar/CalendarStats';
 import DistanceChart from '@/components/Calendar/Chart/DistanceChart';
+import TimeChart from './Chart/TimeChart';
+import PaceChart from './Chart/PaceChart';
 
 export interface RunRecord {
   date: string; // YYYY-MM-DD
@@ -70,6 +72,8 @@ function Calendar() {
           />
           <CalendarStats />
           <DistanceChart />
+          <TimeChart />
+          <PaceChart />
         </>
       ) : (
         <>
@@ -79,7 +83,7 @@ function Calendar() {
             records={records}
             selectedView={selectedView}
           />
-          <div className="bg-gray-80 my-10 h-[1px]" />
+          <div className="bg-gray-80 h-[1px]" />
           <CalendarStats />
         </>
       )}
