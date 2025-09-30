@@ -3,7 +3,7 @@ import Calendar from '@/components/Calendar/Calendar';
 
 function Page() {
   return (
-    <div className="h-full w-full">
+    <div className="-mt-[30px] h-full w-full">
       <Calendar />
     </div>
   );
