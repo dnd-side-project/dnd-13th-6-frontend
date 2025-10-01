@@ -8,14 +8,24 @@ export default {
     "scheme": "dndios",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    },
     "ios": {
       "bundleIdentifier": "com.runky.dnd",
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "infoPlist": {
+      "ITSAppUsesNonExemptEncryption": false,
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true,
           "NSAllowsLocalNetworking": true,
+          "ITSAppUsesNonExemptEncryption": false,
           "NSExceptionDomains": {
             "localhost": {
               "NSExceptionAllowsInsecureHTTPLoads": true,
@@ -91,6 +101,7 @@ export default {
           "backgroundColor": "#000000"
         }
       ],
+      "expo-updates",
       "@react-native-firebase/app",
       [
         "expo-build-properties",

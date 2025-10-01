@@ -111,7 +111,7 @@ export default function Main() {
   }, []);
   return (
     <>
-      <button onClick={() => router.push('/login')}>로그인</button>
+      {/* <button onClick={() => router.push('/login')}>로그인</button> */}
       <MainHeader notification={displayNotifications} />
       <WelcomeCard
         nickname={userInfo?.nickname || ''}
