@@ -52,7 +52,12 @@ function CalendarCells({
 
       let shapeClass = 'rounded-full';
       if (isToday && selectedView === 'week') {
-        shapeClass = 'rounded-b-[22px]';
+        shapeClass = ' rounded-b-[22px]';
+      }
+      if (selectedView === 'month') {
+        shapeClass += ' w-[44px] h-[44px] mb-1';
+      } else {
+        shapeClass += ' h-[34px]';
       }
 
       let todayHighlightClass = '';
@@ -60,7 +65,7 @@ function CalendarCells({
       if (isToday) {
         if (selectedView === 'week') {
           todayHighlightClass =
-            'bg-calendar-selected-background text-calendar-selected-text font-medium  ';
+            'bg-calendar-selected-background text-calendar-selected-text font-medium ';
         } else {
           // month view
           todayHighlightClass =
@@ -68,20 +73,20 @@ function CalendarCells({
         }
       }
       if (selectedView === 'week') {
-        weekCalendar = 'h-[24px] pb-2';
+        weekCalendar = 'pb-2';
       }
 
       days.push(
         <div
           className={twMerge(
-            'flex flex-col items-center justify-center rounded-lg pt-1',
+            'flex flex-col items-center justify-center rounded-lg',
             !isSameMonth(day, monthStart) && 'text-gray-60'
           )}
           key={day.toString()}
         >
           <span
             className={twMerge(
-              'flex h-[44px] w-[44px] items-center justify-center text-[24px] font-medium',
+              'flex w-[44px] items-center justify-center text-[24px] font-medium',
               shapeClass,
               todayHighlightClass,
               weekCalendar
@@ -99,18 +104,14 @@ function CalendarCells({
       day = addDays(day, 1);
     }
     rows.push(
-      <div className="grid grid-cols-7 gap-1" key={day.toString()}>
+      <div className="mb-1 grid grid-cols-7 gap-1" key={day.toString()}>
         {days}
       </div>
     );
     days = [];
   }
 
-  return (
-    <div className={`${selectedView === 'week' && '-mt-1'} flex flex-col`}>
-      {rows}
-    </div>
-  );
+  return <div className="flex flex-col">{rows}</div>;
 }
 
 export default CalendarCells;

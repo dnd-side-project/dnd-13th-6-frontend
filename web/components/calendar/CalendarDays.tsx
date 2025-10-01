@@ -24,10 +24,11 @@ function CalendarDays({ currentDate, selectedView }: CalendarDaysProps) {
           <div key={day} className="flex items-center justify-center">
             <span
               className={twMerge(
-                'flex h-[14px] w-[44px] items-center justify-center text-[12px] leading-[24px] font-medium',
+                'flex w-[44px] items-center justify-center text-[12px] leading-[24px] font-medium',
                 selectedView === 'week' && isToday
-                  ? 'bg-calendar-selected-background text-calendar-selected-text rounded-t-[22px] pt-4 pb-4'
-                  : 'text-gray-60'
+                  ? 'bg-calendar-selected-background text-calendar-selected-text rounded-t-[22px]'
+                  : 'text-gray-60',
+                selectedView === 'week' && 'pt-2'
               )}
             >
               {day}
