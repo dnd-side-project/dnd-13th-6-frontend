@@ -65,6 +65,11 @@ export default function TabLayout() {
               <Ionicons size={28} name="home" color={color} />
             )
           }}
+          listeners={{
+            tabPress: e => {
+              router.push('/(tabs)/(home)');
+            }
+          }}
         />
         <Tabs.Screen
           name="(group)"

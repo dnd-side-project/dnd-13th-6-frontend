@@ -280,7 +280,7 @@ function GroupRunningContent() {
 }
 
 export default function Page() {
-  // api.delete(RUNNING_API.RUNNING_ACTIVE('137'));
+  // api.delete(RUNNING_API.RUNNING_ACTIVE('140'));
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <GroupRunningContent />
