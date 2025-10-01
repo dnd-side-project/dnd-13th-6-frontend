@@ -34,6 +34,9 @@ export default function Code() {
         onLoadEnd={() => setIsLoading(false)}
         onLoadStart={() => setIsLoading(true)}
         scrollEnabled={true}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        overScrollMode={'never'}
         javaScriptEnabled={true}
         domStorageEnabled={true}
         allowsLinkPreview={false}

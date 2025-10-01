@@ -316,6 +316,9 @@ function Index() {
         className="flex-1 bg-gray"
         onMessage={receiveMessage}
         onLoadEnd={onLoadEnd}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        overScrollMode={'never'}
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         source={{
           uri: initialUrl

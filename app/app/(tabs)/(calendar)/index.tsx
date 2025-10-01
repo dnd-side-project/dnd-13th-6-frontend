@@ -14,6 +14,9 @@ function Index() {
         ref={webviewRef}
         style={styles.webview}
         source={{ uri: ENV.WEB_VIEW_URL + '/calendar' }}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        overScrollMode={'never'}
         mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>

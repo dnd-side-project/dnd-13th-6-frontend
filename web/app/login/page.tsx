@@ -20,7 +20,10 @@ export default function Login() {
 
       {/* 로그인 버튼 - 화면 정중앙 */}
       <Link
-        href={`https://kauth.kakao.com/oauth/authorize?client_id=3255efd2af839833b26a422ca203c180&redirect_uri=https://api.runky.store/${isDev ? 'dev/' : ''}api/auth/login/oauth2/code/kakao&response_type=code`}
+        href={
+          process.env.NEXT_PUBLIC_LOGIN_URL ||
+          'https://kauth.kakao.com/oauth/authorize?client_id=3255efd2af839833b26a422ca203c180&redirect_uri=https://api.runky.store/dev/api/auth/login/oauth2/code/kakao/local&response_type=code'
+        }
         className="absolute top-1/2 left-1/2 h-[13vw] max-h-[100px] w-[calc(100vw-5vw)] max-w-[400px] -translate-x-1/2 -translate-y-1/2"
       >
         <Image
