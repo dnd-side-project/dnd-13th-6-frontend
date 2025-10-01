@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import MainHeader from '@/components/main/MainHeader';
 import WelcomeCard from '@/components/main/WelcomeCard';
 import WeeklyGoalCard from '@/components/main/WeeklyGoalCard';
-import TodayStatsCard from '@/components/main/TodayStatsCard';
 import GachaCard from '@/components/main/GachaCard';
 import { Notification } from '@/types/notification';
 import { RunningData } from '@/types/runningTypes';
@@ -14,6 +13,7 @@ import { MODULE } from '@/utils/apis/api';
 import { useUserInfo } from '@/hooks/queries/useUserInfo';
 import { useCloverCount } from '@/hooks/queries/useCloverCount';
 import { useNotifications } from '@/hooks/queries/useNotifications';
+import TodayStatsCard from '@/components/main/TodayStatsCard';
 interface FinishDataItem {
   averagePace: string; // ex: "0'00"
   runningData: RunningData[]; // 배열 안에 구체적 타입이 있으면 명시 가능

@@ -18,6 +18,8 @@
   --color-gray-90: #3a3a3c;
   --color-golden: #ffe500;
   --color-red: #ff0000;
+  --color-calendar-selected-background: rgba(0, 255, 99, 0.2);
+  --color-calendar-selected-text: #00ff63;
   --font-pretendard: Pretendard, lufga, Arial, Helvetica, sans-serif;
   --font-lufga: Lufga, pretendard, Arial, Helvetica, sans-serif;
 }
