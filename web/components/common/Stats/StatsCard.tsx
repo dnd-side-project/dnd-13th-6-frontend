@@ -19,12 +19,12 @@ const formatTime = (seconds: number) => {
   const sec = seconds % 60;
   return `${min}:${sec.toString().padStart(2, '0')}`;
 };
-
+const MAX_PACE = 50;
 const formatPace = (distanceMeters: number, durationSeconds: number) => {
   if (!distanceMeters || !durationSeconds) return "-'--''";
   const paceSec = durationSeconds / (distanceMeters / 1000);
   const min = Math.floor(paceSec / 60);
-  if (min >= 50) return "-'--''";
+  if (min >= MAX_PACE) return "-'--''";
 
   const sec = Math.round(paceSec % 60);
   return `${min}'${sec.toString().padStart(2, '0')}''`;
