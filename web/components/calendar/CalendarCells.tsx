@@ -41,13 +41,13 @@ function CalendarCells({
   let day = startDate;
   let formattedDate = '';
 
-  const recordDates = records.map(record => record.date);
+  const recordDates = new Set(records.map(record => record.date));
   const today = new Date();
 
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, 'd');
-      const dayHasRecord = recordDates.includes(format(day, 'yyyy-MM-dd'));
+      const dayHasRecord = recordDates.has(format(day, 'yyyy-MM-dd'));
       const isToday = isSameDay(day, today);
 
       let shapeClass = 'rounded-full';
