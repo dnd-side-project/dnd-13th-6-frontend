@@ -63,7 +63,7 @@ function Calendar() {
       <CalendarHeader currentDate={currentDate} prev={prev} next={next} />
       {selectedView === 'week' ? (
         <>
-          {formatWeekDescription(currentDate)}
+          <p>{formatWeekDescription(currentDate)}</p>
           <CalendarDays currentDate={currentDate} selectedView={selectedView} />
           <CalendarCells
             currentDate={currentDate}
