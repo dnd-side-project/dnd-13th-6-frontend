@@ -7,14 +7,14 @@ import {
   subDays,
   subMonths,
 } from 'date-fns';
-import CalendarHeader from '@/components/Calendar/CalendarHeader';
-import CalendarDays from '@/components/Calendar/CalendarDays';
-import CalendarCells from '@/components/Calendar/CalendarCells';
-import CalendarMenu from '@/components/Calendar/CalendarMenu';
-import CalendarStats from '@/components/Calendar/CalendarStats';
-import DistanceChart from '@/components/Calendar/Chart/DistanceChart';
-import TimeChart from './Chart/TimeChart';
-import PaceChart from './Chart/PaceChart';
+import CalendarHeader from '@/components/calendar/CalendarHeader';
+import CalendarDays from '@/components/calendar/CalendarDays';
+import CalendarCells from '@/components/calendar/CalendarCells';
+import CalendarMenu from '@/components/calendar/CalendarMenu';
+import CalendarStats from '@/components/calendar/CalendarStats';
+import DistanceChart from '@/components/calendar/Chart/DistanceChart';
+import TimeChart from '@/components/calendar/Chart/TimeChart';
+import PaceChart from '@/components/calendar/Chart/PaceChart';
 import { AnimatePresence } from 'framer-motion';
 
 export interface RunRecord {
