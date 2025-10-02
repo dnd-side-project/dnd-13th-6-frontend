@@ -12,17 +12,20 @@ import {
 } from 'date-fns';
 import { RunRecord } from '@/components/Calendar/Calendar';
 import { twMerge } from 'tailwind-merge';
+import { motion } from 'framer-motion';
 
 interface CalendarCellsProps {
   currentDate: Date;
   records: RunRecord[];
   selectedView: 'week' | 'month';
+  setSelectedView: (view: 'week' | 'month') => void;
 }
 
 function CalendarCells({
   currentDate,
   records,
-  selectedView
+  selectedView,
+  setSelectedView
 }: CalendarCellsProps) {
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(monthStart);
@@ -111,7 +114,24 @@ function CalendarCells({
     days = [];
   }
 
-  return <div className="flex flex-col">{rows}</div>;
+  return (
+    <motion.div
+      className="mb-2 flex flex-col"
+      drag="y"
+      dragConstraints={{ top: 0, bottom: 0 }}
+      onDragEnd={(e, { offset }) => {
+        if (offset.y > 50) {
+          setSelectedView('month');
+        }
+      }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      {rows}
+    </motion.div>
+  );
 }
 
 export default CalendarCells;

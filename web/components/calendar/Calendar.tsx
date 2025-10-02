@@ -5,7 +5,7 @@ import {
   addMonths,
   getWeekOfMonth,
   subDays,
-  subMonths
+  subMonths,
 } from 'date-fns';
 import CalendarHeader from '@/components/Calendar/CalendarHeader';
 import CalendarDays from '@/components/Calendar/CalendarDays';
@@ -15,6 +15,7 @@ import CalendarStats from '@/components/Calendar/CalendarStats';
 import DistanceChart from '@/components/Calendar/Chart/DistanceChart';
 import TimeChart from './Chart/TimeChart';
 import PaceChart from './Chart/PaceChart';
+import { AnimatePresence } from 'framer-motion';
 
 export interface RunRecord {
   date: string; // YYYY-MM-DD
@@ -30,7 +31,7 @@ function Calendar() {
     { date: '2025-09-10' },
     { date: '2025-09-15' },
     { date: '2025-09-25' },
-    { date: '2025-10-01' }
+    { date: '2025-10-01' },
   ];
 
   const prev = () => {
@@ -62,32 +63,38 @@ function Calendar() {
         setSelectedView={setSelectedView}
       />
       <CalendarHeader currentDate={currentDate} prev={prev} next={next} />
-      {selectedView === 'week' ? (
-        <>
-          <p>{formatWeekDescription(currentDate)}</p>
-          <CalendarDays currentDate={currentDate} selectedView={selectedView} />
-          <CalendarCells
-            currentDate={currentDate}
-            records={records}
-            selectedView={selectedView}
-          />
-          <CalendarStats />
-          <DistanceChart />
-          <TimeChart />
-          <PaceChart />
-        </>
-      ) : (
-        <>
-          <CalendarDays />
-          <CalendarCells
-            currentDate={currentDate}
-            records={records}
-            selectedView={selectedView}
-          />
-          <div className="bg-gray-80 h-[1px]" />
-          <CalendarStats />
-        </>
-      )}
+      <AnimatePresence mode="wait">
+        {selectedView === 'week' ? (
+          <>
+            <p>{formatWeekDescription(currentDate)}</p>
+            <CalendarDays currentDate={currentDate} selectedView={selectedView} />
+            <CalendarCells
+              key="week"
+              currentDate={currentDate}
+              records={records}
+              selectedView={selectedView}
+              setSelectedView={setSelectedView}
+            />
+            <CalendarStats />
+            <DistanceChart />
+            <TimeChart />
+            <PaceChart />
+          </>
+        ) : (
+          <>
+            <CalendarDays />
+            <CalendarCells
+              key="month"
+              currentDate={currentDate}
+              records={records}
+              selectedView={selectedView}
+              setSelectedView={setSelectedView}
+            />
+            <div className="bg-gray-80 h-[1px]" />
+            <CalendarStats />
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
