@@ -3,7 +3,14 @@ import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useRef } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import {
+  Pressable,
+  SafeAreaView,
+  Text,
+  View,
+  StyleSheet,
+  Dimensions
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 function Index() {
@@ -12,7 +19,6 @@ function Index() {
   const initialUrl = `${ENV.WEB_VIEW_URL}/main`;
   const handleMessage = async (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
-    console.log('data', data);
     if (data.type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);
@@ -26,11 +32,20 @@ function Index() {
       }
     } else if (data.type === MODULE.PUSH) {
       const { type, url } = JSON.parse(data.data);
-      if (url === '/(tabs)/(home)' || url === '/(onboarding)') {
-        router.replace(url);
+      console.log('url', url);
+      if (url === '/(onboarding)') {
+        console.log('url12123', url);
+        router.replace('/(tabs)/(onboarding)');
+      } else if (url === '/(tabs)/(home)') {
+        router.replace('/(tabs)/(home)');
       } else {
         router.push(url);
       }
+      // if (url === '/(tabs)/(home)' || url === '/(tabs)/(onboarding)') {
+      //   router.replace(url);
+      // } else {
+      //   router.push(url);
+      // }
     }
     if (data.nickName) {
       AsyncStorage.setItem('nickName', data.nickName);
@@ -41,27 +56,36 @@ function Index() {
   };
 
   return (
-    <View
-      className="flex-1"
-      style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+    <SafeAreaView
+      style={styles.container}
+      className="flex-1 align-center justify-between py-4"
     >
-      <Pressable
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        onPress={() => router.push('/(tabs)/(group)/code')}
-      >
-        <Text className="text-white">Test</Text>
-      </Pressable>
       <WebView
+        className="flex-1 h-full bg-gray border"
         ref={webViewRef}
-        className="flex-1 bg-gray"
+        style={styles.webview}
         showsVerticalScrollIndicator={false}
+        keyboardDisplayRequiresUserAction={false}
+        source={{ uri: ENV.WEB_VIEW_URL + '/main' }}
+        onMessage={handleMessage}
         bounces={false}
         overScrollMode={'never'}
-        source={{ uri: initialUrl }}
-        onMessage={handleMessage}
+        mixedContentMode="always" // HTTP 리소스 허용
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 export default Index;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width
+  },
+  webview: {
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width
+  }
+});

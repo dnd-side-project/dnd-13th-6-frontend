@@ -2,7 +2,9 @@
 
 # dependencies
 node_modules/
-
+*.apk
+*.ipa
+credentials.json
 # Expo
 .expo/
 dist/

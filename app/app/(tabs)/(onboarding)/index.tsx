@@ -25,13 +25,15 @@ function RunningShare() {
       }
     }
   };
-
+  console.log('ENV.WEB_VIEW_URL0000', ENV.WEB_VIEW_URL);
   return (
-    <SafeAreaView className="flex-1 align-center justify-between py-4">
+    <SafeAreaView
+      style={styles.container}
+      className="flex-1 align-center justify-between py-4"
+    >
       <WebView
-        className="flex-1 bg-gray"
+        className="flex-1 h-full bg-gray border"
         ref={webviewRef}
-        key={webViewKey}
         style={styles.webview}
         showsVerticalScrollIndicator={false}
         keyboardDisplayRequiresUserAction={false}
@@ -48,6 +50,11 @@ function RunningShare() {
 export default RunningShare;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width
+  },
   webview: {
     height: windowHeight,
     width: windowWidth
