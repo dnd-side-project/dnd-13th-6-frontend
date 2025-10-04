@@ -16,6 +16,7 @@ module.exports = function (api) {
         },
       ],
       'react-native-reanimated/plugin',
+      'react-native-worklets/plugin', // 이 줄 추가
     ]
   };
 };
