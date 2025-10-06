@@ -1,8 +1,9 @@
 'use client';
-import React, { TouchEvent, useState } from 'react';
+import React from 'react';
 import Button from '@/components/common/Button';
 import Image from 'next/image';
 import OnBoardingWrapper from '@/components/onBoarding/OnBoardingWrapper';
+import { useCarousel } from '@/hooks/useCarousel';
 
 interface Slide {
   title: string;
@@ -15,22 +16,10 @@ interface OnboardingCarouselProps {
   onComplete: () => void;
 }
 
-// 슬라이드
 function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
-  const [index, setIndex] = useState(0);
-  const [touchStartX, setTouchStartX] = useState(0);
-
-  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
-    setTouchStartX(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchEnd = (e: TouchEvent<HTMLDivElement>) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchDiff = touchEndX - touchStartX;
-
-    if (touchDiff < -50 && index < slides.length - 1) setIndex(index + 1);
-    if (touchDiff > 50 && index > 0) setIndex(index - 1);
-  };
+  const { index, handleTouchStart, handleTouchEnd, nextSlide } = useCarousel({
+    slideCount: slides.length
+  });
 
   return (
     <div
@@ -72,7 +61,7 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
           <div className="absolute right-4 bottom-17 left-4">
             <button
               className="text-gray-60 float-right text-[1rem] sm:text-[1rem]"
-              onClick={() => setIndex(index + 1)}
+              onClick={nextSlide}
             >
               건너뛰기
             </button>

@@ -1,61 +1,20 @@
 'use client';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import DecimalInput from '@/components/common/DecimalInput';
-import ConfirmModal from '@/components/common/ConfirmModal';
-import { useSetAtom } from 'jotai/index';
-import { headerBackAtom, headerSaveAtom } from '@/store/header';
-import { useRouter } from 'next/navigation';
-import { useChangeTargetDistance } from '@/hooks/queries/useChangeTargetDistance';
+import { useChangeTargetDistancePage } from '@/hooks/useChangeTargetDistancePage';
+import { useHeaderControls } from '@/hooks/useHeaderControls';
 
 function Page() {
-  const router = useRouter();
-  const [changedDistance, setChangedDistance] = useState('3.0');
-  const [weeklyTargetDistance, setWeeklyTargetDistance] = useState('0');
-  const { mutate: changeDistanceMutate } = useChangeTargetDistance();
+  const { changedDistance, setChangedDistance, handleSaveClick, handleBack } =
+    useChangeTargetDistancePage();
 
-  useEffect(() => {
-    const weeklyGoal = localStorage.getItem('weeklyGoalDistance');
-    setWeeklyTargetDistance(weeklyGoal || '0');
-    setChangedDistance(weeklyGoal || '0');
-  }, []);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const setHandleSave = useSetAtom(headerSaveAtom);
-  const setHandleBack = useSetAtom(headerBackAtom);
-
-  const actualSave = useCallback(() => {
-    changeDistanceMutate(Number(changedDistance));
-    console.log('Saved:', changedDistance);
-  }, [changedDistance, changeDistanceMutate]);
-
-  const openSaveModal = useCallback(() => {
-    if (weeklyTargetDistance !== changedDistance) {
-      setIsModalOpen(true);
-    } else {
-      router.push('/main');
-    }
-  }, [router, weeklyTargetDistance, changedDistance]);
-
-  useEffect(() => {
-    setHandleSave(() => openSaveModal);
-    setHandleBack(() => openSaveModal);
-    return () => {
-      setHandleSave(undefined);
-      setHandleBack(undefined);
-    };
-  }, [setHandleSave, openSaveModal, setHandleBack]);
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    router.back();
-  };
-  const handleConfirm = () => {
-    actualSave();
-    handleCloseModal();
-  };
-  const handleOverlayClick = () => {
-    setIsModalOpen(false);
-  };
+  useHeaderControls({
+    title: '목표 거리 변경',
+    showBackButton: true,
+    showSaveButton: true,
+    onSave: handleSaveClick,
+    onBack: handleBack
+  });
 
   return (
     <div className="flex flex-grow flex-col">
@@ -83,16 +42,6 @@ function Page() {
           </div>
         </div>
       </div>
-      <ConfirmModal
-        isOpen={isModalOpen}
-        onOverlayClick={handleOverlayClick}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirm}
-        title="변경사항을 저장할까요?"
-        closeText="그냥 나가기"
-        confirmText="저장하기"
-        confirmBtnStyle="bg-primary text-black"
-      />
     </div>
   );
 }

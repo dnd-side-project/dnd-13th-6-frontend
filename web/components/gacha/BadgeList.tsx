@@ -1,37 +1,30 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import BadgeItem from '@/components/gacha/BadgeItem';
 import LockBadgeItem from '@/components/gacha/LockBadgeItem';
-import api from '@/utils/apis/customAxios';
-import { REWARD_API } from '@/utils/apis/api';
+import { useBadges } from '@/hooks/queries/useBadges';
 
-interface Badges {
-  badge: string;
-  badgeId: string;
-}
 function BadgeList({
   badgeUrl,
   setMainBadge,
-  setBadgeId
+  setBadgeId,
 }: {
   badgeUrl: string;
   setMainBadge: (badge: string) => void;
   setBadgeId: (id: string) => void;
 }) {
-  const [badges, setBadges] = useState<Badges[]>([]);
-  const fetchBadge = async () => {
-    try {
-      const res = await api.get(REWARD_API.BADGE_LIST());
-      setBadges(res.data.result.badges);
-      console.log('가진 뱃지개수:', res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const { data: badgesData, isLoading, isError } = useBadges();
 
-  useEffect(() => {
-    fetchBadge();
-  }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error fetching badges.</div>;
+  }
+
+  const badges = badgesData?.badges || [];
+
   return (
     <div className="mt-6 grid grid-cols-3 gap-[10px]">
       {badges.length > 0 &&
