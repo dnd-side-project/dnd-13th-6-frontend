@@ -1,5 +1,4 @@
 import './globals.css';
-import './globals.css';
 import ClientLayoutWrapper from '@/components/common/ClientLayoutWrapper'; // 새로 만든 컴포넌트 import
 import { GlobalConfirmModal } from '@/components/common/GlobalConfirmModal';
 import QueryProvider from '@/components/common/QueryProvider';
@@ -13,12 +12,12 @@ export const metadata = {
     initialScale: 1,
     minimumScale: 1,
     maximumScale: 1,
-    userScalable: false,
-  },
+    userScalable: false
+  }
 };
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -36,4 +35,3 @@ export default function RootLayout({
     </html>
   );
 }
-
