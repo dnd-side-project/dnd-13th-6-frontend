@@ -4,18 +4,24 @@ import { useRouter } from 'next/navigation';
 import { useUserInfo } from '@/hooks/queries/useUserInfo';
 import { useSetNickname } from '@/hooks/queries/useSetNickname';
 import { useHeaderControls } from '@/hooks/useHeaderControls';
-import { useGlobalConfirmModal } from '@/hooks/useGlobalConfirmModal';
+import { useConfirmModal } from '@/hooks/useConfirmModal';
 
 export const useEditNickname = () => {
   const [name, setName] = useState('');
   const { data: { nickname: initialNickname = '' } = {} } = useUserInfo();
   const router = useRouter();
-  const { openModal } = useGlobalConfirmModal();
+  const { openConfirm } = useConfirmModal();
 
   const passMessage = '✔ 닉네임이 변경되었습니다.';
 
-  const { mutate, isPending, isSuccess, isError, errorMessage, setErrorMessage } =
-    useSetNickname('profile');
+  const {
+    mutate,
+    isPending,
+    isSuccess,
+    isError,
+    errorMessage,
+    setErrorMessage
+  } = useSetNickname('profile');
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value.trim());
@@ -30,15 +36,15 @@ export const useEditNickname = () => {
 
   const openSaveModal = useCallback(() => {
     if (name !== initialNickname) {
-      openModal({
+      openConfirm({
         title: '변경사항을 저장할까요?',
         onConfirm: actualSave,
-        onClose: () => router.back(),
+        onClose: () => router.back()
       });
     } else {
       router.back();
     }
-  }, [name, router, initialNickname, openModal, actualSave]);
+  }, [name, router, initialNickname, openConfirm, actualSave]);
 
   useHeaderControls({ onSave: actualSave, onBack: openSaveModal });
 
@@ -62,6 +68,6 @@ export const useEditNickname = () => {
     errorMessage,
     passMessage,
     handleNicknameChange,
-    actualSave,
+    actualSave
   };
 };

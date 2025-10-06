@@ -4,13 +4,13 @@ import { useRouter } from 'next/navigation';
 import { useUserInfo } from '@/hooks/queries/useUserInfo';
 import { useCloverCount } from '@/hooks/queries/useCloverCount';
 import { useChangeBadge } from '@/hooks/queries/useChangeBadge';
-import { useGlobalConfirmModal } from '@/hooks/useGlobalConfirmModal';
+import { useConfirmModal } from '@/hooks/useConfirmModal';
 
 export const useBadgeCollection = () => {
   const [badgeUrl, setBadgeUrl] = useState<string>('');
   const [badgeId, setBadgeId] = useState<string>('');
   const router = useRouter();
-  const { openModal } = useGlobalConfirmModal();
+  const { openConfirm } = useConfirmModal();
 
   const { data: userInfo } = useUserInfo();
   const isInitialized = useRef(false);
@@ -38,7 +38,7 @@ export const useBadgeCollection = () => {
 
   const handleBack = useCallback(() => {
     if (isChanged()) {
-      openModal({
+      openConfirm({
         title: '변경사항을 저장할까요?',
         closeText: '그냥 나가기',
         confirmText: '저장하기',
@@ -54,7 +54,7 @@ export const useBadgeCollection = () => {
     } else {
       router.push('/main');
     }
-  }, [isChanged, router, openModal, actualSave]);
+  }, [isChanged, router, openConfirm, actualSave]);
 
   const handleSave = useCallback(async () => {
     await actualSave();

@@ -1,3 +1,5 @@
+'use client';
+
 import { useSetAtom } from 'jotai';
 import { modalAtom, ModalState } from '@/store/modal';
 
@@ -5,7 +7,7 @@ type OpenConfirmProps = Omit<Partial<ModalState>, 'isOpen'> & {
   onConfirm: () => void;
 };
 
-export function useConfirmModal() {
+export const useConfirmModal = () => {
   const setModal = useSetAtom(modalAtom);
 
   const openConfirm = (props: OpenConfirmProps) => {
@@ -16,9 +18,9 @@ export function useConfirmModal() {
       confirmText: props.confirmText,
       confirmBtnStyle: props.confirmBtnStyle,
       onConfirm: props.onConfirm,
-      onClose: props.onClose,
+      onClose: props.onClose
     });
   };
 
   return { openConfirm };
-}
+};
