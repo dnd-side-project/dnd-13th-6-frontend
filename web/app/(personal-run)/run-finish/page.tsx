@@ -24,12 +24,12 @@ export default function Page() {
   }, []);
 
   const weeklyRunPercent = () => {
-    if (!latestFinishData || !weeklyRunDistance || weeklyRunDistance === 0) {
+    if (!targetDistance || !latestFinishData) {
       return 0;
     }
-    return Math.floor(
-      (latestFinishData.totalDistance / 1000 / weeklyRunDistance) * 100
-    );
+    const totalDistance =
+      (weeklyRunDistance || 0) + latestFinishData.totalDistance / 1000;
+    return Math.floor((totalDistance / targetDistance) * 100);
   };
 
   return (
