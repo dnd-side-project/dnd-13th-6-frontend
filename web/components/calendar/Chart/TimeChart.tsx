@@ -1,14 +1,14 @@
 import React from 'react';
 import Chart from './Chart';
-import { CalendarRecords } from '@/hooks/queries/calendar/useCalendarRecords';
+import { RunRecord } from '@/types/runningTypes';
 import { processRecordsForChart } from '@/utils/charts';
 
 interface TimeChartProps {
-  records: CalendarRecords['histories'];
+  records: RunRecord[];
 }
 
 export default function TimeChart({ records }: TimeChartProps) {
-  const data = processRecordsForChart(records, record => record.distance);
+  const data = processRecordsForChart(records, record => record.duration / 60);
 
   return <Chart title={'시간'} data={data} unit="분" />;
 }
