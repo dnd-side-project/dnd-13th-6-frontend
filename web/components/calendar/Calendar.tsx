@@ -1,12 +1,5 @@
 'use client';
-import React, { useState } from 'react';
-import {
-  addDays,
-  addMonths,
-  getWeekOfMonth,
-  subDays,
-  subMonths,
-} from 'date-fns';
+
 import CalendarHeader from '@/components/calendar/CalendarHeader';
 import CalendarDays from '@/components/calendar/CalendarDays';
 import CalendarCells from '@/components/calendar/CalendarCells';
@@ -53,7 +46,10 @@ function Calendar() {
         {selectedView === 'week' ? (
           <>
             <p>{formatWeekDescription(currentDate)}</p>
-            <CalendarDays currentDate={currentDate} selectedView={selectedView} />
+            <CalendarDays
+              currentDate={currentDate}
+              selectedView={selectedView}
+            />
             <CalendarCells
               key="week"
               currentDate={currentDate}

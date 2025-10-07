@@ -13,10 +13,8 @@ const IconMap = {
   CREW_GOAL_ACHIEVED: flagPennantIcon,
   CREW_GOAL_FAILED: flagPennantIcon,
   CREW_DISBANDED: <ChatTeardropDots size={20} color={'#F2F2F7'} />,
-  RUN_STARTED: flagPennantIcon,
+  RUN_STARTED: flagPennantIcon
 };
-
-type IconCode = keyof typeof IconMap;
 
 // 시간 차이를 상대 시간으로 변환
 const formatTimeAgo = (dateString: string) => {

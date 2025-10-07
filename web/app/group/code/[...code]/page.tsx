@@ -1,16 +1,11 @@
 'use client';
-import { useRouter } from 'next/navigation';
-import CrewChallengeCard, {
-  CrewChallengeCardProps
-} from '@/components/main/CrewChallengeCard';
+import CrewChallengeCard from '@/components/main/CrewChallengeCard';
 import { useState } from 'react';
 import Image from 'next/image';
 import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 function JoinSuccess() {
-  const router = useRouter();
-
   const onMove = () => {
     const data = {
       type: MODULE.PUSH,
@@ -53,7 +48,6 @@ function JoinSuccess() {
 }
 
 export default function Page() {
-  const router = useRouter();
   const [crew, setCrew] = useState<string>('');
   const [isSave, setIsSave] = useState(false);
   const [joinSuccess, setJoinSuccess] = useState(false);
