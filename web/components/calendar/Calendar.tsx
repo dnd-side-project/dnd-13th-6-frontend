@@ -11,6 +11,7 @@ import PaceChart from '@/components/calendar/Chart/PaceChart';
 import { AnimatePresence } from 'framer-motion';
 import { useCalendar } from '@/hooks/useCalendar';
 import { useCalendarRecords } from '@/hooks/queries/calendar/useCalendarRecords';
+import { usePrefetchCalendarRecords } from '@/hooks/queries/calendar/usePrefetchCalendarRecords';
 
 function Calendar() {
   const {
@@ -25,32 +26,7 @@ function Calendar() {
   // Fetch data for the current view
   const { data } = useCalendarRecords(selectedView, currentDate);
   const records = data?.histories || [];
-
-  //빠른 이동을 위한 이전주, 다음 주 미리 통신
-  const prevWeekDate = new Date(currentDate);
-  prevWeekDate.setDate(currentDate.getDate() - 7);
-  useCalendarRecords(selectedView, prevWeekDate, {
-    enabled: selectedView === 'week'
-  });
-
-  const nextWeekDate = new Date(currentDate);
-  nextWeekDate.setDate(currentDate.getDate() + 7);
-  useCalendarRecords(selectedView, nextWeekDate, {
-    enabled: selectedView === 'week'
-  });
-  //빠른 이동을 위한 이전달 다음달 미리 통신
-  const prevMonthDate = new Date(currentDate);
-  prevMonthDate.setMonth(currentDate.getMonth() - 1);
-  useCalendarRecords('month', prevMonthDate, {
-    enabled: selectedView === 'month'
-  });
-
-  const nextMonthDate = new Date(currentDate);
-  nextMonthDate.setMonth(currentDate.getMonth() + 1);
-  useCalendarRecords('month', nextMonthDate, {
-    enabled: selectedView === 'month'
-  });
-
+  usePrefetchCalendarRecords(currentDate, selectedView);
   return (
     <div className="bg-background flex h-full w-full flex-col rounded-lg text-gray-900 shadow-lg dark:text-gray-100">
       <CalendarMenu

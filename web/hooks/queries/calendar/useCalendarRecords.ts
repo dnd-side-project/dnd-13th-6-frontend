@@ -31,7 +31,7 @@ export const useCalendarRecords = (
   const dateForQueryKey =
     view === 'week'
       ? mondayDateString
-      : currentDate.toISOString().split('T')[0];
+      : `${year}-${month}`;
 
   return useQuery<CalendarRecords, Error>({
     queryKey: ['calendarRecords', view, year, month, dateForQueryKey],
