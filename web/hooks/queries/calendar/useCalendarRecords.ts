@@ -1,14 +1,11 @@
 import { getMonthlyCalendar, getWeeklyCalendar } from '@/utils/apis/calendar';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { RunRecord } from '@/types/runningTypes';
 
 export type CalendarRecords = {
   totalDistance: number;
   totalDuration: number;
-  histories: {
-    date: string;
-    distance: number;
-    duration: number;
-  }[];
+  histories: RunRecord[];
 };
 
 export const useCalendarRecords = (
@@ -29,9 +26,7 @@ export const useCalendarRecords = (
   const mondayDateString = monday.toISOString().split('T')[0];
 
   const dateForQueryKey =
-    view === 'week'
-      ? mondayDateString
-      : `${year}-${month}`;
+    view === 'week' ? mondayDateString : `${year}-${month}`;
 
   return useQuery<CalendarRecords, Error>({
     queryKey: ['calendarRecords', view, year, month, dateForQueryKey],
@@ -41,6 +36,6 @@ export const useCalendarRecords = (
       }
       return getMonthlyCalendar(year, month);
     },
-    ...options,
+    ...options
   });
 };

@@ -10,7 +10,7 @@ import {
   isSameMonth,
   isSameDay
 } from 'date-fns';
-import { RunRecord } from '@/components/calendar/Calendar';
+import { RunRecord } from '@/types/runningTypes';
 import { twMerge } from 'tailwind-merge';
 import { motion } from 'framer-motion';
 

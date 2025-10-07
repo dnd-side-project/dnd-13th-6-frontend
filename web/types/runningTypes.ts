@@ -19,5 +19,11 @@ interface EndRunningPostData {
     pointCount: number;
   };
 }
+//캘린더 쪽
+type RunRecord = {
+  date: string;
+  distance: number;
+  duration: number;
+};
 
-export type { RunningData, EndRunningPostData };
+export type { RunningData, EndRunningPostData, RunRecord };
