@@ -71,7 +71,7 @@ export const RUNNING_API = {
   WEEKLY_RUNNINGS: () =>
     `/${API_SUFFIX}/${MODULE.RUNNINGS}/me/weekly/total-distance`,
   RUNNING_ACTIVE: (runningId: string) =>
-    `/${window.location.origin.includes('localhost') ? 'dev/' : ''}${API_SUFFIX}/${window.location.origin.includes('localhost') ? 'running/' : 'runnings'}${runningId}/active`
+    `/${window.location.origin.includes('localhost') ? 'dev/' : ''}${API_SUFFIX}/${window.location.origin.includes('localhost') ? 'running/' : 'runnings/'}${runningId}/active`
 };
 export const GOAL_API = {
   GET_TARGET_DISTANCE: () => `/${API_SUFFIX}/${MODULE.GOALS}/me`,
