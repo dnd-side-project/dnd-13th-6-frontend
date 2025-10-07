@@ -1,12 +1,5 @@
 'use client';
-import React, { useState } from 'react';
-import {
-  addDays,
-  addMonths,
-  getWeekOfMonth,
-  subDays,
-  subMonths,
-} from 'date-fns';
+
 import CalendarHeader from '@/components/calendar/CalendarHeader';
 import CalendarDays from '@/components/calendar/CalendarDays';
 import CalendarCells from '@/components/calendar/CalendarCells';
@@ -21,9 +14,17 @@ export interface RunRecord {
   date: string; // YYYY-MM-DD
 }
 
+import { useCalendar } from '@/hooks/useCalendar';
+
 function Calendar() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedView, setSelectedView] = useState<'week' | 'month'>('week');
+  const {
+    currentDate,
+    selectedView,
+    setSelectedView,
+    prev,
+    next,
+    formatWeekDescription
+  } = useCalendar();
 
   const records: RunRecord[] = [
     { date: '2025-09-01' },
@@ -31,30 +32,8 @@ function Calendar() {
     { date: '2025-09-10' },
     { date: '2025-09-15' },
     { date: '2025-09-25' },
-    { date: '2025-10-01' },
+    { date: '2025-10-01' }
   ];
-
-  const prev = () => {
-    if (selectedView === 'week') {
-      setCurrentDate(subDays(currentDate, 7));
-    } else {
-      setCurrentDate(subMonths(currentDate, 1));
-    }
-  };
-
-  const next = () => {
-    if (selectedView === 'week') {
-      setCurrentDate(addDays(currentDate, 7));
-    } else {
-      setCurrentDate(addMonths(currentDate, 1));
-    }
-  };
-
-  const formatWeekDescription = (date: Date) => {
-    const week = getWeekOfMonth(date, { weekStartsOn: 1 });
-    const weekNumberText = ['첫째주', '둘째주', '셋째주', '넷째주', '다섯째주'];
-    return `${weekNumberText[week - 1] || ''} 주간 기록`;
-  };
 
   return (
     <div className="bg-background flex h-full w-full flex-col rounded-lg text-gray-900 shadow-lg dark:text-gray-100">
@@ -67,7 +46,10 @@ function Calendar() {
         {selectedView === 'week' ? (
           <>
             <p>{formatWeekDescription(currentDate)}</p>
-            <CalendarDays currentDate={currentDate} selectedView={selectedView} />
+            <CalendarDays
+              currentDate={currentDate}
+              selectedView={selectedView}
+            />
             <CalendarCells
               key="week"
               currentDate={currentDate}

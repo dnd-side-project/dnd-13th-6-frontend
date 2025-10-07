@@ -1,3 +1,4 @@
+import { EndRunningPostData } from '@/types/runningTypes';
 import api from '@/utils/apis/customAxios';
 import { CREW_API, RUNNING_API } from '@/utils/apis/api';
 
@@ -6,7 +7,13 @@ export const startRunning = async () => {
   return res.data;
 };
 
-export const endRunning = async ({ runningId, postData }: { runningId: string; postData: any }) => {
+export const endRunning = async ({
+  runningId,
+  postData,
+}: {
+  runningId: string;
+  postData: EndRunningPostData;
+}) => {
   const res = await api.post(RUNNING_API.RUNNING_END(runningId), postData);
   return res.data;
 };

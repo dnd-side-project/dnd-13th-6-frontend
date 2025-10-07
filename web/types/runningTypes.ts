@@ -7,4 +7,17 @@ interface RunningData {
   timestamp: number;
 }
 
-export type { RunningData };
+interface EndRunningPostData {
+  summary: {
+    totalDistanceMinutes: number;
+    durationSeconds: number;
+    avgSpeedMPS: number;
+  };
+  track: {
+    format: string;
+    points: string;
+    pointCount: number;
+  };
+}
+
+export type { RunningData, EndRunningPostData };

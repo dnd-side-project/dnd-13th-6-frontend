@@ -1,7 +1,8 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ChatTeardropDots, Clover, FlagPennant } from '@phosphor-icons/react';
 import NotificationCard from '@/components/notification/NotificationCard';
+import { useNotifications } from '@/hooks/notification/useNotifications';
 
 const flagPennantIcon = <FlagPennant size={20} color={'#F2F2F7'} />;
 
@@ -14,22 +15,6 @@ const IconMap = {
   CREW_DISBANDED: <ChatTeardropDots size={20} color={'#F2F2F7'} />,
   RUN_STARTED: flagPennantIcon
 };
-
-type IconCode = keyof typeof IconMap;
-
-interface Notification {
-  id: number;
-  title: string;
-  text: string;
-  senderId: number | null;
-  createdAt: string;
-  read: boolean;
-  message: {
-    type: IconCode;
-    raw: string;
-    variables: { [key: string]: string | number };
-  };
-}
 
 // 시간 차이를 상대 시간으로 변환
 const formatTimeAgo = (dateString: string) => {
@@ -49,22 +34,7 @@ const formatTimeAgo = (dateString: string) => {
 };
 
 export default function Page() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-
-  useEffect(() => {
-    const storedNotifications = JSON.parse(
-      localStorage.getItem('notification') || '[]'
-    );
-    setNotifications(storedNotifications);
-    // cleanup: 페이지 언마운트 시 read 처리
-    return () => {
-      const updated = storedNotifications.map((n: Notification) => ({
-        ...n,
-        read: true
-      }));
-      localStorage.setItem('notification', JSON.stringify(updated));
-    };
-  }, []);
+  const { notifications } = useNotifications();
 
   return (
     <>

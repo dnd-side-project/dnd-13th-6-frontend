@@ -1,84 +1,27 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
+import { useTargetDistance } from '@/hooks/running/useTargetDistance';
+import { useCurrentPosition } from '@/hooks/running/useCurrentPosition';
 
-interface Position {
-  lat: number;
-  lng: number;
-}
 function Page() {
-  const [targetDistance, setTargetDistance] = useState('');
   const router = useRouter();
   const [onFocus, setOnFocus] = useState(false);
-  const [position, setPosition] = useState<Position>({
-    lat: 37.5665,
-    lng: 126.978
-  });
-  useEffect(() => {
-    const storedTargetDistance = localStorage.getItem('targetDistance');
-    if (storedTargetDistance !== null) {
-      setTargetDistance(storedTargetDistance);
-    }
-  }, []);
+  const { position } = useCurrentPosition();
+
+  const {
+    targetDistance,
+    handleDistanceChange,
+    formatAndSetDistance,
+    saveDistanceToStorage
+  } = useTargetDistance();
+
   const handleStartRun = () => {
-    let distance = targetDistance;
-    if (distance === '' || distance === '0') distance = '3';
-
-    // 항상 소수점 두 자리
-    const formattedDistance = parseFloat(distance).toFixed(2);
-
-    setTargetDistance(formattedDistance); // input에도 반영
-    localStorage.setItem('targetDistance', formattedDistance);
+    saveDistanceToStorage();
     router.push('/start-count');
   };
-  const validateDecimalInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value;
-    // 숫자와 점 이외의 문자 제거
-    val = val.replace(/[^0-9.]/g, '');
-
-    // 점이 두 개 이상일 경우 첫 번째 점만 남김
-    const dotIndex = val.indexOf('.');
-    if (dotIndex > -1) {
-      const afterDot = val.substring(dotIndex + 1).replace(/\./g, '');
-      val = val.substring(0, dotIndex + 1) + afterDot;
-    }
-
-    // 소수점 둘째 자리까지만 허용
-    const parts = val.split('.');
-    if (parts[1] && parts[1].length > 2) {
-      val = `${parts[0]}.${parts[1].substring(0, 2)}`;
-    }
-
-    setTargetDistance(val);
-  };
-  //이벤트 등록
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.message.type === 'RUNNING_PREPARE') {
-          setPosition({
-            lat: data.message.lat,
-            lng: data.message.lng
-          });
-        }
-      } catch (error) {
-        console.error('error:', error);
-      }
-    };
-    // Android
-    document.addEventListener('message', handleMessage as EventListener);
-    // iOS
-    window.addEventListener('message', handleMessage);
-    return () => {
-      //Android
-      document.removeEventListener('message', handleMessage as EventListener);
-      //iOS
-      window.removeEventListener('message', handleMessage);
-    };
-  }, []);
 
   return (
     <div className="relative h-screen">
@@ -108,12 +51,10 @@ function Page() {
               value={targetDistance}
               placeholder="3.00"
               onFocus={() => setOnFocus(true)}
-              onChange={validateDecimalInput}
+              onChange={handleDistanceChange}
               onBlur={() => {
                 setOnFocus(false);
-                if (targetDistance !== '') {
-                  setTargetDistance(parseFloat(targetDistance).toFixed(2));
-                }
+                formatAndSetDistance();
               }}
             />
             <span className="font-lufga text-3xl font-semibold text-gray-50 italic">

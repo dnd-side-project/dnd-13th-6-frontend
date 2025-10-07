@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-const isDev = process.env.NEXT_PUBLIC_ENV === 'dev';
 export default function Login() {
   return (
     <div className="relative min-h-screen w-full">

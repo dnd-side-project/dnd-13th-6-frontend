@@ -4,12 +4,12 @@ import CrewChallengeCard from '@/components/main/CrewChallengeCard';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { MODULE } from '@/utils/apis/api';
 import { Crew } from '@/types/crew';
-import { useEffect, useState } from 'react';
-import { CrewApi } from '@/utils/apis/crewApi';
-import { APIResponse } from '@/types/genericTypes';
+import { useCrews } from '@/hooks/queries/useCrews';
+
 export default function Page() {
   const router = useRouter();
-  const [crewList, setCrewList] = useState<Crew[]>([]);
+  const { data: crewList = [], isLoading, isError } = useCrews();
+
   const onMove = (url: string) => {
     const data = {
       type: MODULE.PUSH,
@@ -17,20 +17,6 @@ export default function Page() {
     };
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
-  useEffect(() => {
-    console.log('here');
-    const init = async () => {
-      try {
-        const response = (await CrewApi.getCrewList()) as APIResponse<{
-          crews: Crew[];
-        }>;
-        setCrewList(response.result.crews);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    init();
-  }, []);
 
   const moveResultPage = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -43,6 +29,14 @@ export default function Page() {
       Math.round((crew.runningDistance / crew.goal) * 100) >= 100;
     router.push(`/crew-reward?type=${type}&isSuccess=${isSuccess}`);
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Or a loading spinner component
+  }
+
+  if (isError) {
+    return <div>Error loading crews.</div>; // Or an error component
+  }
 
   return (
     <div className="border-main flex h-screen w-full flex-col">
@@ -61,7 +55,12 @@ export default function Page() {
             runningDistance={crew.runningDistance}
             isRunning={crew.isRunning}
             members={crew.badgeImageUrls}
-            className={`border ${crew.goal > 0 && Math.round((crew.runningDistance / crew.goal) * 100) >= 100 ? 'border-[#00FF63]' : 'border-none'} `}
+            className={`border ${
+              crew.goal > 0 &&
+              Math.round((crew.runningDistance / crew.goal) * 100) >= 100
+                ? 'border-[#00FF63]'
+                : 'border-none'
+            } `}
             onClick={() => onMove(`/(tabs)/(group)/running/${crew.crewId}`)}
           >
             <button

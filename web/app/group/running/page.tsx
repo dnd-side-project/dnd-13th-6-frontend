@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, Suspense, useEffect, useMemo, useRef } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Image from 'next/image';
@@ -7,11 +7,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import UserMarker from '@/components/googleMap/UserMarker';
 import type { MemberData } from '@/types/crew';
 import { useSearchParams } from 'next/navigation';
-import { Client } from '@stomp/stompjs';
-import api from '@/utils/apis/customAxios';
 import { postCheerfulMessage } from '@/utils/apis/running';
-import { RUNNING_API } from '@/utils/apis/api';
-// import { RUNNING_API } from '@/utils/apis/api';
+import { useCrewRunningSocket } from '@/hooks/running/useCrewRunningSocket';
+import { useCloverAnimation } from '@/hooks/ui/useCloverAnimation';
+
 function CrewMemberProfiles({
   users,
   onClick
@@ -21,45 +20,32 @@ function CrewMemberProfiles({
 }) {
   return (
     <div className="mt-6 flex gap-4 overflow-x-scroll">
-      {users &&
-        users.map((user, index) => (
-          <ProfileImage
-            key={index}
-            onClick={() => {
-              if (user.isRunning) {
-                onClick(user);
-              }
-            }}
-            isRunning={user.isRunning}
-            profileImageUrl={user.badgeImageUrl}
-            alt="user"
-          />
-        ))}
+      {users.map((user, index) => (
+        <ProfileImage
+          key={index}
+          onClick={() => {
+            if (user.isRunning) {
+              onClick(user);
+            }
+          }}
+          isRunning={user.isRunning}
+          profileImageUrl={user.badgeImageUrl}
+          alt="user"
+        />
+      ))}
     </div>
   );
 }
 
 const SendCloverButton = ({ member }: { member: MemberData }) => {
-  const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
+  const { clovers, startCloverAnimation } = useCloverAnimation();
 
-  // 클로버 애니메이션
-  const startCloverAnimation = () => {
-    const id = Date.now();
-    const randomX = Math.random() * 60; // 버튼 기준 좌우 살짝 흔들림
-    setClovers(prev => [...prev, { id, x: randomX }]);
+  const sendEmoji = (emojiType: string) => {
+    if (!member?.isRunning) return;
 
-    setTimeout(() => {
-      setClovers(prev => prev.filter(c => c.id !== id));
-    }, 2000);
-  };
-
-  const sendEmogi = (emojiType: string) => {
-    if (!member?.isRunning) {
-      return;
-    }
     startCloverAnimation();
     const runningId = member?.sub.split('/').at(-1);
-    //런닝 아이디가 있을 경우에만 클로버 보내기
+
     if (runningId && !isNaN(Number(runningId))) {
       postCheerfulMessage({
         runningId,
@@ -68,16 +54,14 @@ const SendCloverButton = ({ member }: { member: MemberData }) => {
       });
     }
   };
+
   return (
     <button
-      onClick={() => sendEmogi('clover')}
+      onClick={() => sendEmoji('clover')}
       className="absolute right-2 bottom-2 z-10 ml-auto flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 text-white"
     >
       <div className="relative h-5 max-h-15 w-5">
         <Image src="/assets/clover.png" alt="clover" fill />
-
-        {/* 클릭 시 생성되는 클로버 애니메이션 */}
-        {/* 처음에는 흐리게* */}
         <div className="pointer-events-none absolute top-0 left-2 h-5 w-5">
           <AnimatePresence>
             {clovers.map(c => (
@@ -85,11 +69,10 @@ const SendCloverButton = ({ member }: { member: MemberData }) => {
                 key={c.id}
                 initial={{ y: 0, scale: 3, opacity: 0.3 }}
                 animate={{
-                  y: -100, // 위로 이동
+                  y: -100,
                   x: 50,
                   scale: 12,
                   opacity: 1,
-                  //오른쪽으로 기울어짐
                   rotate: 45
                 }}
                 transition={{ duration: 0.5 }}
@@ -112,165 +95,28 @@ const SendCloverButton = ({ member }: { member: MemberData }) => {
 };
 
 function GroupRunningContent() {
-  // 브라우저 환경 체크
-  const isBrowser = typeof window !== 'undefined';
-  // 안전한 localStorage 접근
-  const getAccessToken = useMemo(() => {
-    if (!isBrowser) return '';
-    return localStorage.getItem('accessToken') || '';
-  }, [isBrowser]);
   const searchParams = useSearchParams();
   const crewId = searchParams.get('q');
-  // const [stompClient, setStompClient] = useState<Client | null>(null);
-  const [members, setMembers] = useState<MemberData[]>([]);
-  const [member, setMember] = useState<MemberData | null>(null);
-  const [memberLocation, setMemberLocation] = useState<
-    {
-      lat: number;
-      lng: number;
-    }[]
-  >([]);
+  const { members, activeMember, memberLocation, selectMember } =
+    useCrewRunningSocket(crewId);
 
-  const leastMemberLocation = useMemo(() => {
+  const latestMemberLocation = useMemo(() => {
     return memberLocation.at(-1);
   }, [memberLocation]);
-  // STOMP Client 인스턴스 고정 및 연결 상태 관리
-  const stompClientRef = useRef<Client | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const unsubscribeRef = useRef<(() => void) | null>(null);
-
-  const onMemberClick = (member: MemberData) => {
-    setMember(member);
-    if (!member.isRunning || !isBrowser) return;
-    console.log(isConnected, stompClientRef.current?.connected);
-    if (!isConnected || !stompClientRef.current?.connected) return;
-    const subscribeUrl = member.sub;
-    const sub = stompClientRef.current.subscribe(
-      subscribeUrl,
-      message => {
-        try {
-          const data = JSON.parse(message.body);
-          setMemberLocation(prev => [
-            ...prev,
-            {
-              lat: data.y,
-              lng: data.x
-            }
-          ]);
-        } catch {}
-      },
-      {
-        'content-type': 'application/json'
-      }
-    );
-    unsubscribeRef.current = () => {
-      try {
-        sub.unsubscribe();
-      } catch {}
-    };
-  };
-
-  useEffect(() => {
-    // 브라우저 환경이 아니면 실행하지 않음
-    if (!isBrowser) return;
-    // 클라이언트 생성 및 활성화 (한 번만)
-    console.log(getAccessToken);
-    const client = new Client({
-      webSocketFactory: () => new WebSocket('wss://api.runky.store/ws'),
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      connectHeaders: {
-        Authorization: `Bearer ${getAccessToken}`
-      },
-      onConnect: () => {
-        setIsConnected(true);
-        console.log('connected');
-      },
-      onDisconnect: () => {
-        setIsConnected(false);
-        console.log('disconnected');
-      },
-      onStompError: () => {
-        console.log('error');
-      }
-    });
-    client.activate();
-    stompClientRef.current = client;
-    // Android
-    const handleAndroidMessage = (event: Event) => {
-      try {
-        const messageEvent = event as MessageEvent;
-        const parsedData = JSON.parse(messageEvent.data);
-        if (parsedData.type === 'SET_CREW_MEMBERS') {
-          setMembers(parsedData.message as MemberData[]);
-        }
-      } catch (error) {
-        console.error('Error parsing message:', error);
-      }
-    };
-
-    // iOS
-    const handleIOSMessage = (event: MessageEvent) => {
-      try {
-        const parsedData = JSON.parse(event.data);
-        if (parsedData.type === 'SET_CREW_MEMBERS') {
-          setMembers(parsedData.message as MemberData[]);
-        }
-      } catch (error) {
-        console.error('Error parsing message:', error);
-      }
-    };
-
-    document.addEventListener('message', handleAndroidMessage);
-    window.addEventListener('message', handleIOSMessage);
-
-    return () => {
-      document.removeEventListener('message', handleAndroidMessage);
-      window.removeEventListener('message', handleIOSMessage);
-      // 구독 해제 및 연결 종료
-      if (unsubscribeRef.current) {
-        try {
-          unsubscribeRef.current();
-        } catch {}
-        unsubscribeRef.current = null;
-      }
-      try {
-        stompClientRef.current?.deactivate();
-      } catch {}
-    };
-  }, [isBrowser, getAccessToken]); // 의존성 추가
-
-  useEffect(() => {
-    const init = async () => {
-      if (!crewId) return;
-      const response = await api.get(
-        `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/crews/${crewId}/members`
-      );
-      setMembers(response.data.result.members);
-    };
-    init();
-    return () => {
-      setMemberLocation([]);
-      setMember(null);
-    };
-  }, [crewId]);
 
   return (
     <div className="relative -mt-6 w-full overflow-hidden bg-[#313131] px-4 text-white">
-      {members && (
-        <CrewMemberProfiles users={members} onClick={onMemberClick} />
-      )}
+      <CrewMemberProfiles users={members} onClick={selectMember} />
       <div className="mt-6 mb-[14px] min-h-[400px]">
         <GoogleMap height="750px" path={memberLocation}>
-          {member && memberLocation && leastMemberLocation && (
+          {activeMember && latestMemberLocation && (
             <>
               <UserMarker
-                lat={leastMemberLocation.lat}
-                lng={leastMemberLocation.lng}
-                imageUrl={member.badgeImageUrl}
+                lat={latestMemberLocation.lat}
+                lng={latestMemberLocation.lng}
+                imageUrl={activeMember.badgeImageUrl}
               />
-              <SendCloverButton member={member} />
+              <SendCloverButton member={activeMember} />
             </>
           )}
         </GoogleMap>
@@ -280,7 +126,6 @@ function GroupRunningContent() {
 }
 
 export default function Page() {
-  // api.delete(RUNNING_API.RUNNING_ACTIVE('140'));
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <GroupRunningContent />
