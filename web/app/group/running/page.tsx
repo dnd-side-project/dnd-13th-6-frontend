@@ -8,8 +8,8 @@ import UserMarker from '@/components/googleMap/UserMarker';
 import type { MemberData } from '@/types/crew';
 import { useSearchParams } from 'next/navigation';
 import { postCheerfulMessage } from '@/utils/apis/running';
-import { useCrewRunningSocket } from '@/hooks/useCrewRunningSocket';
-import { useCloverAnimation } from '@/hooks/useCloverAnimation';
+import { useCrewRunningSocket } from '@/hooks/running/useCrewRunningSocket';
+import { useCloverAnimation } from '@/hooks/ui/useCloverAnimation';
 
 function CrewMemberProfiles({
   users,

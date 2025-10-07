@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import NicknameInput from '@/components/onBoarding/NicknameInput';
-import { useEditNickname } from '@/hooks/useEditNickname';
+import { useEditNickname } from '@/hooks/user/useEditNickname';
 
 function Page() {
   const {

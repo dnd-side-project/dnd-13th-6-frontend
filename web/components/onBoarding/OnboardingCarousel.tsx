@@ -3,7 +3,7 @@ import React from 'react';
 import Button from '@/components/common/Button';
 import Image from 'next/image';
 import OnBoardingWrapper from '@/components/onBoarding/OnBoardingWrapper';
-import { useCarousel } from '@/hooks/useCarousel';
+import { useCarousel } from '@/hooks/ui/useCarousel';
 
 interface Slide {
   title: string;

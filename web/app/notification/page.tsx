@@ -2,7 +2,7 @@
 import React from 'react';
 import { ChatTeardropDots, Clover, FlagPennant } from '@phosphor-icons/react';
 import NotificationCard from '@/components/notification/NotificationCard';
-import { useNotifications } from '@/hooks/useNotifications';
+import { useNotifications } from '@/hooks/notification/useNotifications';
 
 const flagPennantIcon = <FlagPennant size={20} color={'#F2F2F7'} />;
 

@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
-import { useTargetDistance } from '@/hooks/useTargetDistance';
-import { useCurrentPosition } from '@/hooks/useCurrentPosition';
+import { useTargetDistance } from '@/hooks/running/useTargetDistance';
+import { useCurrentPosition } from '@/hooks/running/useCurrentPosition';
 
 function Page() {
   const router = useRouter();

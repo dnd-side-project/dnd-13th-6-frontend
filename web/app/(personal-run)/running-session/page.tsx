@@ -6,7 +6,7 @@ import ControlPanel from '@/components/running/Control/ControlPanel';
 import PageControl from '@/components/common/PageControl';
 import MapView from '@/components/running/MapView/MapView';
 import MainOverview from '@/components/running/OverView/MainOverview';
-import { useRunningSession } from '@/hooks/useRunningSession';
+import { useRunningSession } from '@/hooks/running/useRunningSession';
 
 export default function Page() {
   const {

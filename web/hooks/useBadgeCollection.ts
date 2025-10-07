@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useUserInfo } from '@/hooks/queries/useUserInfo';
 import { useCloverCount } from '@/hooks/queries/useCloverCount';
 import { useChangeBadge } from '@/hooks/queries/useChangeBadge';
-import { useConfirmModal } from '@/hooks/useConfirmModal';
+import { useConfirmModal } from '@/hooks/ui/useConfirmModal';
 
 export const useBadgeCollection = () => {
   const [badgeUrl, setBadgeUrl] = useState<string>('');

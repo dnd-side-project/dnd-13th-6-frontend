@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import formatTo24H from '@/utils/time/formatTo24H';
 import Button from '@/components/common/Button';
 import { useWeeklyRunDistance } from '@/hooks/queries/useWeeklyRunDistance';
-import { useFinishData } from '@/hooks/useFinishData';
+import { useFinishData } from '@/hooks/running/useFinishData';
 
 export default function Page() {
   const navi = useRouter();

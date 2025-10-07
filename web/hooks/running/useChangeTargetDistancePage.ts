@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useChangeTargetDistance } from '@/hooks/queries/useChangeTargetDistance';
-import { useConfirmModal } from './useConfirmModal';
+import { useConfirmModal } from '@/hooks/ui/useConfirmModal';
 
 export const useChangeTargetDistancePage = () => {
   const router = useRouter();

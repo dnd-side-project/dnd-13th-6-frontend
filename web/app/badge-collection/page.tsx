@@ -4,7 +4,7 @@ import GachaRewardCard from '@/components/gacha/GachaRewardCard';
 import Image from 'next/image';
 import BadgeList from '@/components/gacha/BadgeList';
 import { useBadgeCollection } from '@/hooks/useBadgeCollection';
-import { useHeaderControls } from '@/hooks/useHeaderControls';
+import { useHeaderControls } from '@/hooks/ui/useHeaderControls';
 
 function Page() {
   const {

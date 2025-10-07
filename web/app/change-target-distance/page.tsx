@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import DecimalInput from '@/components/common/DecimalInput';
-import { useChangeTargetDistancePage } from '@/hooks/useChangeTargetDistancePage';
-import { useHeaderControls } from '@/hooks/useHeaderControls';
+import { useChangeTargetDistancePage } from '@/hooks/running/useChangeTargetDistancePage';
+import { useHeaderControls } from '@/hooks/ui/useHeaderControls';
 
 function Page() {
   const { changedDistance, setChangedDistance, handleSaveClick, handleBack } =

@@ -8,10 +8,10 @@ import { useStartRunning } from '@/hooks/queries/useStartRunning';
 import { useEndRunning } from '@/hooks/queries/useEndRunning';
 import { isAxiosError } from 'axios';
 import api from '@/utils/apis/customAxios';
-import { useRunningTimer } from '@/hooks/useRunningTimer';
-import { useStompConnection } from '@/hooks/useStompConnection';
-import { useRunningData } from '@/hooks/useRunningData';
-import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
+import { useRunningTimer } from '@/hooks/running/useRunningTimer';
+import { useStompConnection } from '@/hooks/api/useStompConnection';
+import { useRunningData } from '@/hooks/running/useRunningData';
+import { useSwipeNavigation } from '@/hooks/ui/useSwipeNavigation';
 import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 
 export const useRunningSession = () => {

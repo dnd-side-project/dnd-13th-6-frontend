@@ -3,8 +3,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserInfo } from '@/hooks/queries/useUserInfo';
 import { useSetNickname } from '@/hooks/queries/useSetNickname';
-import { useHeaderControls } from '@/hooks/useHeaderControls';
-import { useConfirmModal } from '@/hooks/useConfirmModal';
+import { useHeaderControls } from '@/hooks/ui/useHeaderControls';
+import { useConfirmModal } from '@/hooks/ui/useConfirmModal';
 
 export const useEditNickname = () => {
   const [name, setName] = useState('');
