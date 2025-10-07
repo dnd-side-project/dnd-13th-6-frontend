@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { updateBadge } from '@/utils/queries/member';
+import { updateBadge } from '@/utils/apis/member';
 import { useRouter } from 'next/navigation';
 
 export const useOnboardingUpdateBadge = () => {

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/utils/queries/queryKeys';
-import { getNotification } from '@/utils/queries/notification';
+import { getNotification } from '@/utils/apis/notification';
 import { Notification } from '@/types/notification';
 
 export const useNotifications = () => {
@@ -8,6 +8,6 @@ export const useNotifications = () => {
     queryKey: queryKeys.notification.all,
     queryFn: getNotification,
     staleTime: 0,
-    gcTime: 0,
+    gcTime: 0
   });
 };

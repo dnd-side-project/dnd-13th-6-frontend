@@ -94,3 +94,10 @@ export const SOCKET_URL = {
 export const CREW_API = {
   MEMBER_RUNNING: () => `/${API_SUFFIX}/${MODULE.CREWS}/members/running`
 };
+
+export const CALENDAR_API = {
+  RUNS_IN_MONTH: (year: number, month: number) =>
+    `/${API_SUFFIX}/${MODULE.CALENDAR}/monthly?year=${year}&month=${month}`,
+  RUNS_IN_WEEK: (date: string) =>
+    `/${API_SUFFIX}/${MODULE.CALENDAR}/weekly?date=${date}`
+};
