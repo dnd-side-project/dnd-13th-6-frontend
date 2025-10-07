@@ -8,7 +8,7 @@ interface TimeChartProps {
 }
 
 export default function TimeChart({ records }: TimeChartProps) {
-  const data = processRecordsForChart(records, record => record.distance);
+  const data = processRecordsForChart(records, record => record.duration / 60);
 
   return <Chart title={'시간'} data={data} unit="분" />;
 }

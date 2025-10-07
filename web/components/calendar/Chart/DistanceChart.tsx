@@ -8,6 +8,6 @@ interface DistanceChartProps {
 }
 
 export default function DistanceChart({ records }: DistanceChartProps) {
-  const data = processRecordsForChart(records, record => record.distance);
+  const data = processRecordsForChart(records, record => record.distance / 1000);
   return <Chart title={'거리'} data={data} unit="km" />;
 }
