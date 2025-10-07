@@ -84,7 +84,7 @@ export default function Chart({
   return (
     <div className="mt-10">
       <p className="pretendard-headline text-gray-20 mb-4">{title}</p>
-      <Card className="p-[-16px]">
+      <Card className="bg-[#252427] p-[-16px]">
         <ResponsiveContainer width="100%" height={152}>
           <BarChart
             data={data}
