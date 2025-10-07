@@ -1,15 +1,27 @@
 import React from 'react';
 import Chart from './Chart';
+import { CalendarRecords } from '@/hooks/queries/calendar/useCalendarRecords';
 
-export default function DistanceChart() {
-  const data = [
-    { name: '월', value: 10 },
-    { name: '화', value: 18 },
-    { name: '수', value: 13 },
-    { name: '목', value: 21 },
-    { name: '금', value: 12 },
-    { name: '토', value: 13 },
-    { name: '일', value: 14 }
-  ];
+interface DistanceChartProps {
+  records: CalendarRecords['histories'];
+}
+
+const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+
+export default function DistanceChart({ records }: DistanceChartProps) {
+  const data = ['월', '화', '수', '목', '금', '토', '일'].map((name) => ({
+    name,
+    value: 0,
+  }));
+
+  records.forEach((record) => {
+    const dayIndex = new Date(record.date).getDay();
+    const dayName = dayOfWeek[dayIndex];
+    const chartData = data.find((d) => d.name === dayName);
+    if (chartData) {
+      chartData.value = record.distance;
+    }
+  });
+
   return <Chart title={'거리'} data={data} unit="km" />;
 }

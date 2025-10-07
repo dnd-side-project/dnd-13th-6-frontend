@@ -9,12 +9,8 @@ import DistanceChart from '@/components/calendar/Chart/DistanceChart';
 import TimeChart from '@/components/calendar/Chart/TimeChart';
 import PaceChart from '@/components/calendar/Chart/PaceChart';
 import { AnimatePresence } from 'framer-motion';
-
-export interface RunRecord {
-  date: string; // YYYY-MM-DD
-}
-
 import { useCalendar } from '@/hooks/useCalendar';
+import { useCalendarRecords } from '@/hooks/queries/calendar/useCalendarRecords';
 
 function Calendar() {
   const {
@@ -26,14 +22,34 @@ function Calendar() {
     formatWeekDescription
   } = useCalendar();
 
-  const records: RunRecord[] = [
-    { date: '2025-09-01' },
-    { date: '2025-09-05' },
-    { date: '2025-09-10' },
-    { date: '2025-09-15' },
-    { date: '2025-09-25' },
-    { date: '2025-10-01' }
-  ];
+  // Fetch data for the current view
+  const { data } = useCalendarRecords(selectedView, currentDate);
+  const records = data?.histories || [];
+
+  //빠른 이동을 위한 이전주, 다음 주 미리 통신
+  const prevWeekDate = new Date(currentDate);
+  prevWeekDate.setDate(currentDate.getDate() - 7);
+  useCalendarRecords(selectedView, prevWeekDate, {
+    enabled: selectedView === 'week'
+  });
+
+  const nextWeekDate = new Date(currentDate);
+  nextWeekDate.setDate(currentDate.getDate() + 7);
+  useCalendarRecords(selectedView, nextWeekDate, {
+    enabled: selectedView === 'week'
+  });
+  //빠른 이동을 위한 이전달 다음달 미리 통신
+  const prevMonthDate = new Date(currentDate);
+  prevMonthDate.setMonth(currentDate.getMonth() - 1);
+  useCalendarRecords('month', prevMonthDate, {
+    enabled: selectedView === 'month'
+  });
+
+  const nextMonthDate = new Date(currentDate);
+  nextMonthDate.setMonth(currentDate.getMonth() + 1);
+  useCalendarRecords('month', nextMonthDate, {
+    enabled: selectedView === 'month'
+  });
 
   return (
     <div className="bg-background flex h-full w-full flex-col rounded-lg text-gray-900 shadow-lg dark:text-gray-100">
@@ -42,7 +58,7 @@ function Calendar() {
         setSelectedView={setSelectedView}
       />
       <CalendarHeader currentDate={currentDate} prev={prev} next={next} />
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         {selectedView === 'week' ? (
           <>
             <p>{formatWeekDescription(currentDate)}</p>
@@ -57,10 +73,13 @@ function Calendar() {
               selectedView={selectedView}
               setSelectedView={setSelectedView}
             />
-            <CalendarStats />
-            <DistanceChart />
-            <TimeChart />
-            <PaceChart />
+            <CalendarStats
+              totalDistance={data?.totalDistance || 0}
+              totalTime={data?.totalDuration || 0}
+            />
+            <DistanceChart records={records} />
+            <TimeChart records={records} />
+            <PaceChart records={records} />
           </>
         ) : (
           <>
@@ -73,7 +92,10 @@ function Calendar() {
               setSelectedView={setSelectedView}
             />
             <div className="bg-gray-80 h-[1px]" />
-            <CalendarStats />
+            <CalendarStats
+              totalDistance={data?.totalDistance || 0}
+              totalTime={data?.totalDuration || 0}
+            />
           </>
         )}
       </AnimatePresence>

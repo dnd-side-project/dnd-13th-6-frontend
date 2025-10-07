@@ -16,6 +16,10 @@ const RoundedBar = (props: RectangleProps) => {
   const { fill, x, y, width, height } = props;
   const radius = 6;
 
+  if (height === 0) {
+    return null;
+  }
+
   // width, height, x, y가 undefined일 수 있으므로 기본값 지정
   const safeX = x ?? 0;
   const safeY = y ?? 0;
