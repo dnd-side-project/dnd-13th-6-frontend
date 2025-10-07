@@ -20,10 +20,10 @@ interface EndRunningPostData {
   };
 }
 //캘린더 쪽
-type RunRecord = {
+interface RunRecord {
   date: string;
   distance: number;
   duration: number;
-};
+}
 
 export type { RunningData, EndRunningPostData, RunRecord };
