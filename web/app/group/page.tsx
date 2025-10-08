@@ -40,7 +40,7 @@ export default function Page() {
 
   return (
     <div className="border-main flex h-screen w-full flex-col">
-      <div className="flex flex-grow flex-col gap-5 overflow-y-scroll p-4">
+      <div className="flex flex-grow flex-col gap-5 p-4">
         {crewList.map(crew => (
           <CrewChallengeCard
             key={crew.crewId}
@@ -73,7 +73,7 @@ export default function Page() {
             </button>
           </CrewChallengeCard>
         ))}
-        <div className="mb flex gap-3 bg-none">
+        <div className="flex gap-3 bg-none">
           <button
             className="flex-1 rounded-2xl bg-[#48484A]"
             onClick={() => onMove('/(tabs)/(group)/create')}

@@ -56,7 +56,7 @@ function Index() {
     setDuration(diffDays);
   }, []);
   return (
-    <View style={{ flex: 1 }}>
+    <View className="bg-gray flex-1">
       <ScrollView
         className="bg-gray"
         nestedScrollEnabled={true}
