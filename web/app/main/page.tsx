@@ -61,8 +61,6 @@ export default function Main() {
       console.log('params', params);
       const accessToken = params.get('accessToken');
       const refreshToken = params.get('refreshToken');
-      console.log('accessToken', accessToken);
-      console.log('refreshToken', refreshToken);
       if (accessToken && refreshToken) {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);

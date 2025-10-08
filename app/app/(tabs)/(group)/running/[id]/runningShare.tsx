@@ -10,8 +10,6 @@ import {
   ActivityIndicator,
   Dimensions,
   ScrollView,
-  StyleSheet,
-  View
 } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { CrewContext } from './_layout';
@@ -23,7 +21,7 @@ function RunningShare() {
   const { webviewRef, postMessage } = useWebView<MemberData[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [contentHeight, setContentHeight] = useState<number>(windowHeight);
-  const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
+  const { showAlert } = useCustomAlert();
   const { crewMembers, crewInfo } = useContext(CrewContext);
   const initialUrl = ENV.WEB_VIEW_URL + '/group/running?q=' + crewInfo?.crewId;
 
@@ -76,6 +74,7 @@ function RunningShare() {
       scrollEnabled={false}
       contentContainerStyle={{ flex: 1 }}
       nestedScrollEnabled={true}
+      className="bg-gray"
     >
       {isLoading && (
         <ActivityIndicator
@@ -111,10 +110,3 @@ function RunningShare() {
 }
 
 export default RunningShare;
-
-const styles = StyleSheet.create({
-  webview: {
-    height: windowHeight,
-    width: windowWidth
-  }
-});

@@ -7,6 +7,7 @@ import { Crew } from '@/types/crew';
 import { useEffect, useState } from 'react';
 import { CrewApi } from '@/utils/apis/crewApi';
 import { APIResponse } from '@/types/genericTypes';
+import { isAxiosError } from 'axios';
 export default function Page() {
   const router = useRouter();
   const [crewList, setCrewList] = useState<Crew[]>([]);
@@ -18,7 +19,6 @@ export default function Page() {
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
   useEffect(() => {
-    console.log('here');
     const init = async () => {
       try {
         const response = (await CrewApi.getCrewList()) as APIResponse<{
@@ -26,7 +26,8 @@ export default function Page() {
         }>;
         setCrewList(response.result.crews);
       } catch (error) {
-        console.error(error);
+        console.log(error,'here')
+        if(isAxiosError(error) && (error.status === 401 || error.status === 500))  router.push('/login')
       }
     };
     init();
@@ -46,7 +47,7 @@ export default function Page() {
 
   return (
     <div className="border-main flex h-screen w-full flex-col">
-      <div className="flex flex-grow flex-col gap-5 overflow-y-scroll p-4">
+      <div className="flex flex-grow flex-col gap-5 p-4">
         {crewList.map(crew => (
           <CrewChallengeCard
             key={crew.crewId}
@@ -74,7 +75,7 @@ export default function Page() {
             </button>
           </CrewChallengeCard>
         ))}
-        <div className="mb flex gap-3 bg-none">
+        <div className="flex gap-3 bg-none">
           <button
             className="flex-1 rounded-2xl bg-[#48484A]"
             onClick={() => onMove('/(tabs)/(group)/create')}
