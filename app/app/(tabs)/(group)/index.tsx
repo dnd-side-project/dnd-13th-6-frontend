@@ -25,7 +25,7 @@ function RunningShare() {
       router.replace(url);
     }
   };
-  console.log('ENV.WEB_VIEW_URL', ENV.WEB_VIEW_URL);
+
   return (
     <SafeAreaView
       style={styles.container}

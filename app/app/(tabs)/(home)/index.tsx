@@ -32,9 +32,8 @@ function Index() {
       }
     } else if (data.type === MODULE.PUSH) {
       const { type, url } = JSON.parse(data.data);
-      console.log('url', url);
+      console.log('url', url, type);
       if (url === '/(onboarding)') {
-        console.log('url12123', url);
         router.replace('/(tabs)/(onboarding)');
       } else if (url === '/(tabs)/(home)') {
         router.replace('/(tabs)/(home)');
