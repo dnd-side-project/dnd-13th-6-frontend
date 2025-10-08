@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import BackgroundLight from '@/public/assets/common/backgroundLight.svg';
 
 function JoinSuccess() {
   const onMove = () => {
@@ -22,13 +23,7 @@ function JoinSuccess() {
       </div>
       <div className="relative mt-14 mb-30 flex items-center justify-center">
         {/* 배경 이미지 */}
-        <Image
-          src="/assets/common/backgroundLight.svg"
-          alt="배경"
-          width={325}
-          height={325}
-          className="object-contain"
-        />
+        <BackgroundLight width={325} height={325} className="object-contain" />
         {/* 물병 이미지 */}
         <Image
           src="/assets/speed-up.png"

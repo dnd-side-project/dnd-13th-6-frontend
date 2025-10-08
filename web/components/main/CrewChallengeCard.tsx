@@ -2,6 +2,7 @@ import React from 'react';
 import Card from '@/components/main/Card';
 import Image from 'next/image';
 import ProgressBar from '@/components/common/ProgressBar';
+import ArrowRight from '@/public/assets/common/arrow-right.svg';
 
 export interface CrewChallengeCardProps {
   title: string;
@@ -45,12 +46,7 @@ const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
                 {title}
               </p>
               <button>
-                <Image
-                  src="/assets/common/arrow-right.svg"
-                  alt="arrow"
-                  width={24}
-                  height={24}
-                />
+                <ArrowRight width={24} height={24} />
               </button>
             </div>
           </div>

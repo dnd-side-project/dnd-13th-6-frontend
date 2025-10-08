@@ -4,6 +4,7 @@ import Button from '@/components/common/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useUserInfo } from '@/hooks/queries/useUserInfo';
 import { useCloverCount } from '@/hooks/queries/useCloverCount';
+import BackgroundLight from '@/public/assets/common/backgroundLight.svg';
 
 function ResultPage() {
   const searchParams = useSearchParams();
@@ -19,13 +20,7 @@ function ResultPage() {
       </p>
       <div className="relative mt-14 mb-30 flex items-center justify-center">
         {/* 배경 이미지 */}
-        <Image
-          src="/assets/common/backgroundLight.svg"
-          alt="배경"
-          width={325}
-          height={325}
-          className="object-contain"
-        />
+        <BackgroundLight width={325} height={325} className="object-contain" />
         {/* 물병 이미지 → url이 있으면 교체 */}
         {imageUrl && (
           <Image

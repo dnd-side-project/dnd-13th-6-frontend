@@ -1,8 +1,8 @@
 'use client';
-import Image from 'next/image';
 import { useAtomValue } from 'jotai';
 import { headerBackAtom, headerSaveAtom } from '@/store/header';
 import { useRouter } from 'next/navigation';
+import CaretLeft from '@/public/assets/CaretLeft.svg';
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
@@ -43,12 +43,7 @@ export default function DefaultLayout({
                       }}
                       className="mr-2"
                     >
-                      <Image
-                        src="/assets/CaretLeft.svg"
-                        alt="Back"
-                        width={24}
-                        height={24}
-                      />
+                      <CaretLeft width={24} height={24} />
                     </button>
                   )}
                 </div>

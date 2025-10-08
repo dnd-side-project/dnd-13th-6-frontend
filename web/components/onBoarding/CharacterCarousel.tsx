@@ -1,11 +1,17 @@
 'use client';
 import React, { TouchEvent, useRef } from 'react';
-import Image from 'next/image';
+import Pig from '@/public/assets/icon/pig.svg';
+import Elephant from '@/public/assets/icon/elephant.svg';
 
 interface Character {
   image: string;
   id: string;
 }
+
+const svgMap: { [key: string]: React.ElementType } = {
+  pig: Pig,
+  elephant: Elephant
+};
 
 interface CharacterCarouselProps {
   characters: Character[];
@@ -62,24 +68,26 @@ function CharacterCarousel({
             gap: `${itemGap}px`
           }}
         >
-          {characters.map((character, i) => (
-            <div
-              key={character.id}
-              className="flex-shrink-0"
-              style={{ width: `${itemWidth}px` }}
-            >
-              <Image
-                src={`/assets/icon/${character.image}.svg`}
-                alt={`${character.image}`}
-                width={itemWidth}
-                height={itemWidth}
-                priority
-                className={`h-auto w-full object-contain transition-transform duration-300 ${
-                  index === i ? 'scale-100' : 'scale-75'
-                }`}
-              />
-            </div>
-          ))}
+          {characters.map((character, i) => {
+            const SvgComponent = svgMap[character.image];
+            return (
+              <div
+                key={character.id}
+                className="flex-shrink-0"
+                style={{ width: `${itemWidth}px` }}
+              >
+                <SvgComponent
+                  alt={`${character.image}`}
+                  width={itemWidth}
+                  height={itemWidth}
+                  priority
+                  className={`h-auto w-full object-contain transition-transform duration-300 ${
+                    index === i ? 'scale-100' : 'scale-75'
+                  }`}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 

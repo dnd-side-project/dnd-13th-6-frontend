@@ -1,9 +1,17 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Button from '@/components/common/Button';
 import { useGacha } from '@/hooks/queries/useGacha';
 import { useCloverCount } from '@/hooks/queries/useCloverCount';
+import PickGachaBall from '@/public/assets/gacha/pickgachaball.svg';
+import VanillaGachaBall from '@/public/assets/gacha/vanilaGachaBall.svg';
+import DisabledGachaBall from '@/public/assets/gacha/disabledgachaball.svg';
+
+const svgMap: { [key: string]: React.ElementType } = {
+  '/assets/gacha/pickgachaball.svg': PickGachaBall,
+  '/assets/gacha/vanilaGachaBall.svg': VanillaGachaBall,
+  '/assets/gacha/disabledgachaball.svg': DisabledGachaBall
+};
 
 function Page() {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -33,6 +41,8 @@ function Page() {
     }
   };
 
+  const SvgComponent = svgMap[canDraw ? image : '/assets/gacha/disabledgachaball.svg'];
+
   return (
     <div
       className="relative flex flex-col items-center overflow-hidden"
@@ -45,8 +55,7 @@ function Page() {
           : `클로버가 조금 부족해요\n러닝으로 더 모아볼까요?`}
       </p>
       {/* 이미지 화면 정중앙 고정 */}
-      <Image
-        src={canDraw ? image : '/assets/gacha/disabledgachaball.svg'}
+      <SvgComponent
         alt="가챠공"
         width={isOnClick ? 228 : canDraw ? 270 : 228}
         height={isOnClick ? 228 : canDraw ? 270 : 228}
