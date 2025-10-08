@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { profile } from 'node:console';
 
 interface Props {
   profileImageUrl: string;

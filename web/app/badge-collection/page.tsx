@@ -1,81 +1,23 @@
 'use client';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import GachaRewardCard from '@/components/gacha/GachaRewardCard';
 import Image from 'next/image';
 import BadgeList from '@/components/gacha/BadgeList';
-import { useSetAtom } from 'jotai';
-import { headerBackAtom, headerSaveAtom } from '@/store/header';
-import ConfirmModal from '@/components/common/ConfirmModal';
-import { useRouter } from 'next/navigation';
-import { useUserInfo } from '@/hooks/queries/useUserInfo';
-import { useCloverCount } from '@/hooks/queries/useCloverCount';
-import { useChangeBadge } from '@/hooks/queries/useChangeBadge';
+import { useBadgeCollection } from '@/hooks/useBadgeCollection';
+import { useHeaderControls } from '@/hooks/ui/useHeaderControls';
 
 function Page() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [badgeUrl, setBadgeUrl] = useState<string>('');
-  const [badgeId, setBadgeId] = useState<string>('');
-  const router = useRouter();
-  const setHandleSave = useSetAtom(headerSaveAtom);
-  const setHandleBack = useSetAtom(headerBackAtom);
+  const {
+    badgeUrl,
+    cloverCount,
+    userInfo,
+    setBadgeUrl,
+    setBadgeId,
+    handleSave,
+    handleBack,
+  } = useBadgeCollection();
 
-  const { data: userInfo } = useUserInfo();
-  const isInitialized = useRef(false);
-
-  useEffect(() => {
-    if (userInfo && !isInitialized.current) {
-      setBadgeUrl(userInfo.badgeUrl || '');
-      isInitialized.current = true;
-    }
-  }, [userInfo]);
-  const { data: cloverCount } = useCloverCount();
-
-  const { mutateAsync: changeBadge } = useChangeBadge();
-
-  const actualSave = useCallback(async () => {
-    if (badgeId) {
-      await changeBadge(Number(badgeId));
-    }
-  }, [badgeId, changeBadge]);
-
-  const isChanged = useCallback(
-    () => userInfo?.badgeUrl !== badgeUrl,
-    [userInfo, badgeUrl]
-  );
-  const handleBack = useCallback(() => {
-    if (isChanged()) {
-      setIsModalOpen(true);
-    } else {
-      router.push('/main');
-    }
-  }, [isChanged, router]);
-
-  const handleSave = useCallback(async () => {
-    await actualSave();
-    router.push('/main');
-  }, [router, actualSave]);
-
-  useEffect(() => {
-    setHandleSave(() => handleSave);
-    setHandleBack(() => handleBack);
-    return () => {
-      setHandleSave(undefined);
-      setHandleBack(undefined);
-    };
-  }, [setHandleSave, handleSave, setHandleBack, handleBack]);
-
-  const handleOverlayClick = () => {
-    setIsModalOpen(false);
-  };
-  const handleCloseModal = () => {
-    handleOverlayClick();
-    router.push('/main');
-  };
-
-  const handleConfirm = async () => {
-    await actualSave();
-    handleCloseModal();
-  };
+  useHeaderControls({ onSave: handleSave, onBack: handleBack });
 
   return (
     <div>
@@ -101,16 +43,6 @@ function Page() {
         setMainBadge={setBadgeUrl}
         badgeUrl={badgeUrl}
         setBadgeId={setBadgeId}
-      />
-      <ConfirmModal
-        isOpen={isModalOpen}
-        onOverlayClick={handleOverlayClick}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirm}
-        title="변경사항을 저장할까요?"
-        closeText="그냥 나가기"
-        confirmText="저장하기"
-        confirmBtnStyle="bg-primary text-black"
       />
     </div>
   );

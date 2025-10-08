@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
-import { endRunning } from '@/utils/queries/running';
+import { runningEnd } from '@/utils/apis/running';
 
 export const useEndRunning = () => {
   return useMutation({
-    mutationFn: endRunning,
-    onError: (error) => {
+    mutationFn: runningEnd,
+    onError: error => {
       console.error(error);
-    },
+    }
   });
 };

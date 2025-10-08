@@ -10,7 +10,7 @@ import {
   isSameMonth,
   isSameDay
 } from 'date-fns';
-import { RunRecord } from '@/components/calendar/Calendar';
+import { RunRecord } from '@/types/runningTypes';
 import { twMerge } from 'tailwind-merge';
 import { motion } from 'framer-motion';
 
@@ -49,61 +49,67 @@ function CalendarCells({
 
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
-      formattedDate = format(day, 'd');
-      const dayHasRecord = recordDates.has(format(day, 'yyyy-MM-dd'));
-      const isToday = isSameDay(day, today);
-
-      let shapeClass = 'rounded-full';
-      if (isToday && selectedView === 'week') {
-        shapeClass = ' rounded-b-[22px]';
-      }
-      if (selectedView === 'month') {
-        shapeClass += ' w-[44px] h-[44px] mb-1';
+      if (selectedView === 'month' && !isSameMonth(day, monthStart)) {
+        days.push(<div key={day.toString()} />);
       } else {
-        shapeClass += ' h-[34px]';
-      }
+        formattedDate = format(day, 'd');
+        const dayHasRecord = recordDates.has(format(day, 'yyyy-MM-dd'));
+        const isToday = isSameDay(day, today);
 
-      let todayHighlightClass = '';
-      let weekCalendar = '';
-      if (isToday) {
-        if (selectedView === 'week') {
-          todayHighlightClass =
-            'bg-calendar-selected-background text-calendar-selected-text font-medium ';
-        } else {
-          // month view
-          todayHighlightClass =
-            'bg-calendar-selected-background text-calendar-selected-text text-[24px] leading-[25px] font-medium tracking-[0px] h-[44px]';
+        let shapeClass = 'rounded-full';
+        if (isToday && selectedView === 'week') {
+          shapeClass = ' rounded-b-[22px]';
         }
-      }
-      if (selectedView === 'week') {
-        weekCalendar = 'pb-2';
-      }
+        if (selectedView === 'month') {
+          shapeClass += ' w-[44px] h-[44px] mb-1';
+        } else {
+          shapeClass += ' h-[34px]';
+        }
 
-      days.push(
-        <div
-          className={twMerge(
-            'flex flex-col items-center justify-center rounded-lg',
-            !isSameMonth(day, monthStart) && 'text-gray-60'
-          )}
-          key={day.toString()}
-        >
-          <span
+        let todayHighlightClass = '';
+        let weekCalendar = '';
+        if (isToday) {
+          if (selectedView === 'week') {
+            todayHighlightClass =
+              'bg-calendar-selected-background text-calendar-selected-text font-medium ';
+          } else {
+            // month view
+            todayHighlightClass =
+              'bg-calendar-selected-background text-calendar-selected-text text-[24px] leading-[25px] font-medium tracking-[0px] h-[44px]';
+          }
+        }
+        if (selectedView === 'week') {
+          weekCalendar = 'pb-2';
+        }
+
+        days.push(
+          <div
             className={twMerge(
-              'flex w-[44px] items-center justify-center text-[24px] font-medium',
-              shapeClass,
-              todayHighlightClass,
-              weekCalendar
+              'flex flex-col items-center justify-center rounded-lg',
+              selectedView === 'week' &&
+                !isSameMonth(day, monthStart) &&
+                'text-gray-60'
             )}
+            key={day.toString()}
           >
-            {formattedDate}
-          </span>
-          <div className="mt-1 flex w-full flex-grow items-center justify-center">
-            {dayHasRecord && (
-              <div className="bg-primary h-2 w-2 rounded-full" />
-            )}
+            <span
+              className={twMerge(
+                'flex w-[44px] items-center justify-center text-[24px] font-medium',
+                shapeClass,
+                todayHighlightClass,
+                weekCalendar
+              )}
+            >
+              {formattedDate}
+            </span>
+            <div className="mt-1 flex w-full flex-grow items-center justify-center">
+              {dayHasRecord && (
+                <div className="bg-primary h-2 w-2 rounded-full" />
+              )}
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
       day = addDays(day, 1);
     }
     rows.push(

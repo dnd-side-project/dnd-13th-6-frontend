@@ -10,8 +10,8 @@ interface ConfirmModalProps {
   onClose: () => void;
   onConfirm: () => void;
   title: string;
-  closeText: string;
-  confirmText: string;
+  closeText: string | undefined;
+  confirmText: string | undefined;
   confirmBtnStyle?: string;
 }
 
@@ -20,7 +20,7 @@ function ConfirmModal({
   onOverlayClick,
   onClose,
   title,
-  closeText = '취소',
+  closeText,
   confirmText,
   confirmBtnStyle = 'bg-[#FF002E]',
   onConfirm

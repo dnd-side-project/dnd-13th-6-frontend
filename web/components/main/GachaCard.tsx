@@ -3,7 +3,7 @@ import React from 'react';
 import Card from '@/components/main/Card';
 import CloverCountChip from '@/components/common/CloverCountChip';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import GachaBall from '@/public/assets/main/gachaball.svg';
 
 const GachaCard = ({ cloverCount }: { cloverCount: number }) => {
   const router = useRouter();
@@ -16,13 +16,7 @@ const GachaCard = ({ cloverCount }: { cloverCount: number }) => {
       }}
     >
       <div className="z-0 flex justify-center">
-        <Image
-          alt="뽑기공"
-          src="/assets/main/gachaball.svg"
-          width={60}
-          height={60}
-          className="z-20"
-        />
+        <GachaBall width={60} height={60} className="z-20" />
       </div>
       <div
         className="absolute inset-0 z-10"

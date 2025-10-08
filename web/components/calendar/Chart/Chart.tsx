@@ -16,6 +16,10 @@ const RoundedBar = (props: RectangleProps) => {
   const { fill, x, y, width, height } = props;
   const radius = 6;
 
+  if (height === 0) {
+    return null;
+  }
+
   // width, height, x, y가 undefined일 수 있으므로 기본값 지정
   const safeX = x ?? 0;
   const safeY = y ?? 0;
@@ -84,7 +88,7 @@ export default function Chart({
   return (
     <div className="mt-10">
       <p className="pretendard-headline text-gray-20 mb-4">{title}</p>
-      <Card className="p-[-16px]">
+      <Card className="bg-[#252427] p-[-16px]">
         <ResponsiveContainer width="100%" height={152}>
           <BarChart
             data={data}
