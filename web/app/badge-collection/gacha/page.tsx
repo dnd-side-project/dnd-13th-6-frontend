@@ -4,7 +4,7 @@ import Button from '@/components/common/Button';
 import { useGacha } from '@/hooks/queries/useGacha';
 import { useCloverCount } from '@/hooks/queries/useCloverCount';
 import PickGachaBall from '@/public/assets/gacha/pickgachaball.svg';
-import VanillaGachaBall from '@/public/assets/gacha/vanilaGachaBall.svg';
+import VanillaGachaBall from '@/public/assets/gacha/vanillaGachaBall.svg';
 import DisabledGachaBall from '@/public/assets/gacha/disabledgachaball.svg';
 
 const svgMap: { [key: string]: React.ElementType } = {
@@ -41,7 +41,8 @@ function Page() {
     }
   };
 
-  const SvgComponent = svgMap[canDraw ? image : '/assets/gacha/disabledgachaball.svg'];
+  const SvgComponent =
+    svgMap[canDraw ? image : '/assets/gacha/disabledgachaball.svg'];
 
   return (
     <div

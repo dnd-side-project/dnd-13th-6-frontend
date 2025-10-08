@@ -21,7 +21,12 @@ function Page() {
         <ProgressBar progress={100} className="h-[6px]" />
         <div className="flex flex-col items-center">
           <p className="text-gray-20 mt-[51px] inline-block justify-center text-center text-[26px] leading-[35px] font-bold tracking-[-0.025em] whitespace-pre-line">
-            <Logo width={88} height={28} className="inline-block" />
+            <Logo
+              width={88}
+              height={28}
+              className="inline-block"
+              title="logo"
+            />
             {`와 함께\n 행운의 첫걸음을 시작해요!`}
           </p>
         </div>

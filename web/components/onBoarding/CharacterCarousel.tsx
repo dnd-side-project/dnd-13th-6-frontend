@@ -77,10 +77,9 @@ function CharacterCarousel({
                 style={{ width: `${itemWidth}px` }}
               >
                 <SvgComponent
-                  alt={`${character.image}`}
+                  title={`${character.image}`}
                   width={itemWidth}
                   height={itemWidth}
-                  priority
                   className={`h-auto w-full object-contain transition-transform duration-300 ${
                     index === i ? 'scale-100' : 'scale-75'
                   }`}

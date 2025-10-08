@@ -47,7 +47,6 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
           alt={slides[index].image}
           width={index === 2 ? 275 : 243}
           height={index === 2 ? 275 : 243}
-          priority
           className="max-w-[70vw] object-contain"
         />
         <div className="mt-19 flex justify-between gap-[3vw]">

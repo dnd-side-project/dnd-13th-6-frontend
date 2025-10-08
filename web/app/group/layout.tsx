@@ -33,11 +33,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <button
                 onClick={() => handleBack(backHref.replace('/native', ''))}
               >
-                <CaretLeft width={24} height={24} />
+                <CaretLeft width={24} height={24} title="back" />
               </button>
             ) : (
               <Link href={backHref!}>
-                <CaretLeft width={24} height={24} />
+                <CaretLeft width={24} height={24} title="back" />
               </Link>
             )}
           </div>

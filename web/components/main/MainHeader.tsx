@@ -12,7 +12,7 @@ const MainHeader = ({ notification }: { notification: Notification[] }) => {
   console.log('hasUnread', hasUnread);
   return (
     <div className="flex w-full items-center justify-between pt-4">
-      <Logo width={92} height={29} />
+      <Logo width={92} height={29} title="logo" />
       <div>
         <button
           className="mr-3"

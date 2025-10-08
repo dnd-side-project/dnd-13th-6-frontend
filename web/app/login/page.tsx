@@ -7,7 +7,7 @@ export default function Login() {
       {/* 로고 영역 */}
       <div className="absolute top-[25%] left-1/2 -translate-x-1/2">
         <div className="flex h-[15vw] max-h-[157px] w-[48vw] max-w-[157px] items-center justify-center text-center">
-          <Logo width={157} height={51} />
+          <Logo width={157} height={51} title="logo" />
         </div>
       </div>
 

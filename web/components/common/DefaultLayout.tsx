@@ -43,7 +43,7 @@ export default function DefaultLayout({
                       }}
                       className="mr-2"
                     >
-                      <CaretLeft width={24} height={24} />
+                      <CaretLeft width={24} height={24} title="back" />
                     </button>
                   )}
                 </div>
