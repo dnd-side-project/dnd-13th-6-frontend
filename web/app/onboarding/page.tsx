@@ -2,7 +2,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import OnboardingCarousel from '@/components/onBoarding/OnboardingCarousel';
-import { useSearchParams } from 'next/navigation';
 function Page() {
   const slides: { title: string; text: string; image: string }[] = [
     {

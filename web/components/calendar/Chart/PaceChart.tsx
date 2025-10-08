@@ -1,21 +1,23 @@
 import React from 'react';
 import Chart from './Chart';
+import { RunRecord } from '@/types/runningTypes';
+import { processRecordsForChart } from '@/utils/charts';
 
-export default function PaceChart() {
-  // Pace in seconds per km
-  const data = [
-    { name: '월', value: 330 }, // 5'30"
-    { name: '화', value: 320 }, // 5'20"
-    { name: '수', value: 340 }, // 5'40"
-    { name: '목', value: 310 }, // 5'10"
-    { name: '금', value: 335 }, // 5'35"
-    { name: '토', value: 325 }, // 5'25"
-    { name: '일', value: 315 }  // 5'15"
-  ];
+interface PaceChartProps {
+  records: RunRecord[];
+}
+
+export default function PaceChart({ records }: PaceChartProps) {
+  const data = processRecordsForChart(records, record => {
+    if (record.distance === 0) return 0;
+    // 페이스 계산 (초/km)
+    return record.duration / (record.distance / 1000);
+  });
 
   const paceFormatter = (value: number) => {
+    if (value === 0) return '0\'00"';
     const minutes = Math.floor(value / 60);
-    const seconds = value % 60;
+    const seconds = Math.round(value % 60);
     return `${minutes}'${seconds.toString().padStart(2, '0')}"`;
   };
 

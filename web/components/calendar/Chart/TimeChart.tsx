@@ -1,15 +1,14 @@
 import React from 'react';
 import Chart from './Chart';
+import { RunRecord } from '@/types/runningTypes';
+import { processRecordsForChart } from '@/utils/charts';
 
-export default function TimeChart() {
-  const data = [
-    { name: '월', value: 30 },
-    { name: '화', value: 45 },
-    { name: '수', value: 25 },
-    { name: '목', value: 60 },
-    { name: '금', value: 35 },
-    { name: '토', value: 50 },
-    { name: '일', value: 70 }
-  ];
+interface TimeChartProps {
+  records: RunRecord[];
+}
+
+export default function TimeChart({ records }: TimeChartProps) {
+  const data = processRecordsForChart(records, record => record.duration / 60);
+
   return <Chart title={'시간'} data={data} unit="분" />;
 }

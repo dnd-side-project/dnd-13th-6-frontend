@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import Image from 'next/image';
 import CloverCountChip from '@/components/common/CloverCountChip';
 import Card from '@/components/main/Card';
 import { useRouter } from 'next/navigation';
+import GachaBall from '@/public/assets/main/gachaball.svg';
 
 function GachaRewardCard({ cloverCount }: { cloverCount: number }) {
   const router = useRouter();
@@ -22,13 +22,7 @@ function GachaRewardCard({ cloverCount }: { cloverCount: number }) {
         }}
       />
       <div className="relative z-20 flex">
-        <Image
-          src="/assets/main/gachaball.svg"
-          alt="가챠 공"
-          width={72}
-          height={72}
-          className="mr-[8px]"
-        />
+        <GachaBall width={72} height={72} className="mr-[8px]" />
         <div>
           <CloverCountChip cloverCount={cloverCount} />
           <p className="whitespace-pre-line">

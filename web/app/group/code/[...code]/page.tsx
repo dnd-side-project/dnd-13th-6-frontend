@@ -1,16 +1,12 @@
 'use client';
-import { useRouter } from 'next/navigation';
-import CrewChallengeCard, {
-  CrewChallengeCardProps
-} from '@/components/main/CrewChallengeCard';
+import CrewChallengeCard from '@/components/main/CrewChallengeCard';
 import { useState } from 'react';
 import Image from 'next/image';
 import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import BackgroundLight from '@/public/assets/common/backgroundLight.svg';
 
 function JoinSuccess() {
-  const router = useRouter();
-
   const onMove = () => {
     const data = {
       type: MODULE.PUSH,
@@ -27,13 +23,7 @@ function JoinSuccess() {
       </div>
       <div className="relative mt-14 mb-30 flex items-center justify-center">
         {/* 배경 이미지 */}
-        <Image
-          src="/assets/common/backgroundLight.svg"
-          alt="배경"
-          width={325}
-          height={325}
-          className="object-contain"
-        />
+        <BackgroundLight width={325} height={325} className="object-contain" />
         {/* 물병 이미지 */}
         <Image
           src="/assets/speed-up.png"
@@ -53,7 +43,6 @@ function JoinSuccess() {
 }
 
 export default function Page() {
-  const router = useRouter();
   const [crew, setCrew] = useState<string>('');
   const [isSave, setIsSave] = useState(false);
   const [joinSuccess, setJoinSuccess] = useState(false);

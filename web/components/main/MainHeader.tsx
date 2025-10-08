@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import Image from 'next/image';
+import Logo from '@/public/assets/LOGO.svg';
 import { Bell, GearSix } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import { Notification } from '@/types/notification';
@@ -12,7 +12,7 @@ const MainHeader = ({ notification }: { notification: Notification[] }) => {
   console.log('hasUnread', hasUnread);
   return (
     <div className="flex w-full items-center justify-between pt-4">
-      <Image src={'/assets/LOGO.svg'} alt={'logo'} width={92} height={29} />
+      <Logo width={92} height={29} title="logo" />
       <div>
         <button
           className="mr-3"

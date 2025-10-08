@@ -1,15 +1,13 @@
 import React from 'react';
 import Chart from './Chart';
+import { RunRecord } from '@/types/runningTypes';
+import { processRecordsForChart } from '@/utils/charts';
 
-export default function DistanceChart() {
-  const data = [
-    { name: '월', value: 10 },
-    { name: '화', value: 18 },
-    { name: '수', value: 13 },
-    { name: '목', value: 21 },
-    { name: '금', value: 12 },
-    { name: '토', value: 13 },
-    { name: '일', value: 14 }
-  ];
+interface DistanceChartProps {
+  records: RunRecord[];
+}
+
+export default function DistanceChart({ records }: DistanceChartProps) {
+  const data = processRecordsForChart(records, record => record.distance / 1000);
   return <Chart title={'거리'} data={data} unit="km" />;
 }
