@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
-import Image from 'next/image';
 import NicknameInput from '@/components/onBoarding/NicknameInput';
 import { useEditNickname } from '@/hooks/user/useEditNickname';
+import Pig from '@/public/assets/icon/pig.svg';
 
 function Page() {
   const {
@@ -13,18 +13,13 @@ function Page() {
     errorMessage,
     passMessage,
     handleNicknameChange,
-    actualSave,
+    actualSave
   } = useEditNickname();
 
   return (
     <div className="flex w-[calc(100vw-32px)] flex-grow flex-col">
       <div className="bg-gray-90 mb-32px mx-auto flex h-37 w-37 items-center justify-center rounded-full">
-        <Image
-          src="/assets/icon/pig.svg"
-          alt="캐릭터"
-          width={120}
-          height={120}
-        />
+        <Pig width={120} height={120} />
       </div>
       <p className="mt-[32px]">이름</p>
       <div>

@@ -1,16 +1,25 @@
 'use client';
 
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/common/Button';
 import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import FourLeafClover from '@/public/assets/lucky-stamp/four-leaf-clover.svg';
+import DisabledFourLeafClover from '@/public/assets/lucky-stamp/disabled-four-leaf-clover.svg';
+import CrewRewardClover from '@/public/assets/lucky-stamp/crew-reward-clover.svg';
+import BackgroundLight from '@/public/assets/common/backgroundLight.svg';
 
 type RewardType = {
   type?: 'personal' | 'crew';
   isSuccess?: boolean;
   targetDistance?: number;
   remainingDistance?: number;
+};
+
+const svgMap: { [key: string]: React.ElementType } = {
+  '/assets/lucky-stamp/four-leaf-clover.svg': FourLeafClover,
+  '/assets/lucky-stamp/disabled-four-leaf-clover.svg': DisabledFourLeafClover,
+  '/assets/lucky-stamp/crew-reward-clover.svg': CrewRewardClover
 };
 
 export default function RunRewardPage({
@@ -94,6 +103,8 @@ export default function RunRewardPage({
     ? rewardContent[type].success
     : rewardContent[type].failure;
 
+  const SvgComponent = svgMap[content.image];
+
   const onMove = () => {
     const data = {
       url: '/(tabs)/(home)'
@@ -108,19 +119,15 @@ export default function RunRewardPage({
         <h1 className="onboarding whitespace-pre-line">{content.title}</h1>
 
         <div className="relative">
-          <Image
-            src="/assets/common/backgroundLight.svg"
-            alt="배경"
+          <BackgroundLight
             width={325}
             height={325}
             className={`${!isSuccess && 'invisible'} object-contain`}
           />
-          <Image
-            src={content.image}
+          <SvgComponent
             alt={isSuccess ? 'Four Leaf Clover' : 'Disabled Four Leaf Clover'}
             width={225}
             height={224}
-            priority
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
           />
         </div>

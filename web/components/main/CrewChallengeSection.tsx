@@ -1,6 +1,6 @@
 import React from 'react';
-import Image from 'next/image';
 import CrewChallengeCard, { CrewChallengeCardProps } from './CrewChallengeCard';
+import ArrowRight from '@/public/assets/common/arrow-right.svg';
 
 const CrewChallengeSection = () => {
   const challenges: CrewChallengeCardProps[] = [
@@ -32,12 +32,7 @@ const CrewChallengeSection = () => {
           내 크루 챌린지
         </p>
         <button>
-          <Image
-            src="/assets/common/arrow-right.svg"
-            alt="arrow"
-            width={24}
-            height={24}
-          />
+          <ArrowRight width={24} height={24} />
         </button>
       </div>
       {challenges.map((challenge, index) => (

@@ -1,12 +1,12 @@
 'use client';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { routeConfigs } from '@/configs/groupRouteConfig';
 import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+import CaretLeft from '@/public/assets/CaretLeft.svg';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -33,21 +33,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <button
                 onClick={() => handleBack(backHref.replace('/native', ''))}
               >
-                <Image
-                  src="/assets/CaretLeft.svg"
-                  alt="Back"
-                  width={24}
-                  height={24}
-                />
+                <CaretLeft width={24} height={24} title="back" />
               </button>
             ) : (
               <Link href={backHref!}>
-                <Image
-                  src="/assets/CaretLeft.svg"
-                  alt="Back"
-                  width={24}
-                  height={24}
-                />
+                <CaretLeft width={24} height={24} title="back" />
               </Link>
             )}
           </div>

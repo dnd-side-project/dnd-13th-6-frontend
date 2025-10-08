@@ -1,15 +1,23 @@
 'use client';
 import React from 'react';
 import Button from '@/components/common/Button';
-import Image from 'next/image';
 import OnBoardingWrapper from '@/components/onBoarding/OnBoardingWrapper';
 import { useCarousel } from '@/hooks/ui/useCarousel';
+import SpeedupPig from '@/public/assets/icon/speedup-pig.svg';
+import LuckyDay from '@/public/assets/icon/lucky-day.svg';
+import GachaBall from '@/public/assets/icon/gacha-ball.svg';
 
 interface Slide {
   title: string;
   text: string;
   image: string;
 }
+
+const svgMap: { [key: string]: React.ElementType } = {
+  'speedup-pig': SpeedupPig,
+  'lucky-day': LuckyDay,
+  'gacha-ball': GachaBall
+};
 
 interface OnboardingCarouselProps {
   slides: Slide[];
@@ -20,6 +28,8 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
   const { index, handleTouchStart, handleTouchEnd, nextSlide } = useCarousel({
     slideCount: slides.length
   });
+
+  const SvgComponent = svgMap[slides[index].image];
 
   return (
     <div
@@ -33,12 +43,10 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
       />
       {/* 이미지 + 점 */}
       <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center pt-20">
-        <Image
-          src={`/assets/icon/${slides[index].image}.svg`}
+        <SvgComponent
           alt={slides[index].image}
           width={index === 2 ? 275 : 243}
           height={index === 2 ? 275 : 243}
-          priority
           className="max-w-[70vw] object-contain"
         />
         <div className="mt-19 flex justify-between gap-[3vw]">
