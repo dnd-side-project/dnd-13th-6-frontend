@@ -20,7 +20,12 @@ function ResultPage() {
       </p>
       <div className="relative mt-14 mb-30 flex items-center justify-center">
         {/* 배경 이미지 */}
-        <BackgroundLight width={325} height={325} className="object-contain" />
+        <BackgroundLight
+          width={325}
+          height={325}
+          className="object-contain"
+          aria-hidden="true"
+        />
         {/* 물병 이미지 → url이 있으면 교체 */}
         {imageUrl && (
           <Image
