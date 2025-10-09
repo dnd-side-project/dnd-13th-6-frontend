@@ -89,12 +89,15 @@ export default function Chart({
     <div className="mt-10">
       <p className="pretendard-headline text-gray-20 mb-4">{title}</p>
       <Card className="bg-[#252427] p-[-16px]">
-        <ResponsiveContainer width="100%" height={152}>
-          {data.every(item => item.value === 0) ? (
-            <div className="flex h-full w-full items-center justify-center text-gray-400">
-              데이터가 없습니다
-            </div>
-          ) : (
+        {data.every(item => item.value === 0) ? (
+          <div
+            className="flex w-full items-center justify-center text-gray-400"
+            style={{ height: 152 }}
+          >
+            데이터가 없습니다
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={152}>
             <BarChart
               data={data}
               margin={{ top: 20, right: 10, left: -10, bottom: 5 }}
@@ -118,8 +121,8 @@ export default function Chart({
                 <LabelList dataKey="value" content={renderLabel} />
               </Bar>
             </BarChart>
-          )}
-        </ResponsiveContainer>
+          </ResponsiveContainer>
+        )}
       </Card>
     </div>
   );
