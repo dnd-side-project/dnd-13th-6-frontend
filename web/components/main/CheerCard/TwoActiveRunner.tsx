@@ -14,8 +14,8 @@ function TwoActiveRunner({ runningUser }: { runningUser: RunningUser[] }) {
             <Image
               src={item.badgeImageUrl}
               alt={item.nickname}
-              width="48"
-              height="48"
+              width="40"
+              height="40"
             />
           </div>
         ))}
