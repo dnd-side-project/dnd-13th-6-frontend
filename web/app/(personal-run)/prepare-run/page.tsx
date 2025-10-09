@@ -25,7 +25,7 @@ function Page() {
 
   return (
     <div className="relative h-screen">
-      <GoogleMap height={'100vh'} path={[position]} type="prepare" />
+      <GoogleMap height={'100vh'} paths={[[position]]} type="prepare" />
 
       {/* 하단 카드 */}
       <div

@@ -16,7 +16,7 @@ import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 
 export const useRunningSession = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [runningData, setRunningData] = useState<RunningData[]>([]);
+  const [runningData, setRunningData] = useState<RunningData[][]>([[]]);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [targetDistance, setTargetDistance] = useState('0');
@@ -42,7 +42,14 @@ export const useRunningSession = () => {
     });
 
   const handleNewRunningData = useCallback((newPoint: RunningData) => {
-    setRunningData(prev => [...prev, newPoint]);
+    setRunningData(prev => {
+      const newPaths = [...prev];
+      if (newPaths.length > 0) {
+        const lastPath = newPaths[newPaths.length - 1];
+        lastPath.push(newPoint);
+      }
+      return newPaths;
+    });
   }, []);
 
   useStompConnection({ onMessageReceived: handleNewRunningData });
@@ -71,11 +78,13 @@ export const useRunningSession = () => {
           break;
         case 'resume':
           setIsPaused(false);
+          setRunningData(prev => [...prev, []]);
           postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_START);
           break;
         case 'stop':
+          const flatRunningData = runningData.flat();
           const finishData = {
-            runningData,
+            runningData: flatRunningData,
             averagePace: averagePace,
             totalDistance: totalDistance * 1000,
             totalTime: formattedTime,
@@ -102,7 +111,10 @@ export const useRunningSession = () => {
           setIsPaused(false);
           postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_END);
 
-          const path = runningData.map(data => [data.latitude, data.longitude]);
+          const path = flatRunningData.map(data => [
+            data.latitude,
+            data.longitude
+          ]);
           const points = { type: 'LineString', coordinates: path };
           const pointCount = path.length;
           const postData = {
@@ -146,6 +158,7 @@ export const useRunningSession = () => {
 
       setIsRunning(true);
       setIsPaused(false);
+      setRunningData([[]]);
       setTargetDistance(localStorage.getItem('targetDistance') || '0');
 
       startRunningMutate(undefined, {

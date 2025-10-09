@@ -56,7 +56,7 @@ export default function TodayRunPage({ finishData }: TodayRunPageProps) {
         {/*지도 55vh 아래*/}
         {/* Removed absolute positioning to allow the map to flow naturally below other content. */}
         <div className="h-[50vh]">
-          <GoogleMap height="100%" path={path} type={'todayResult'} />
+          <GoogleMap height="100%" paths={[path]} type={'todayResult'} />
         </div>
       </div>
     </>
