@@ -108,7 +108,7 @@ function GroupRunningContent() {
     <div className="relative -mt-6 w-full overflow-hidden bg-[#313131] px-4 text-white">
       <CrewMemberProfiles users={members} onClick={selectMember} />
       <div className="mt-6 mb-[14px] min-h-[400px]">
-        <GoogleMap height="750px" path={memberLocation}>
+        <GoogleMap height="750px" paths={[memberLocation]}>
           {activeMember && latestMemberLocation && (
             <>
               <UserMarker

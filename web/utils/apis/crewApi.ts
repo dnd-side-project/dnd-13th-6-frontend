@@ -4,7 +4,7 @@ import api from './customAxios';
 export const CrewApi = {
   getCrewList: async () => {
     const response = await api.get(API_END_POINT.CREWS.GET_CREW_LIST());
-    return response.data;
+    return response.data.result.crews;
   },
   createCrew: async (name: string) => {
     const response = await api.post(API_END_POINT.CREWS.CREATE_CREW(), {

@@ -7,7 +7,7 @@ interface MapViewProps {
   onControl: (action: 'play' | 'pause' | 'stop' | 'resume') => void;
   isRunning: boolean;
   isPaused: boolean;
-  runningData: RunningData[];
+  runningData: RunningData[][];
   time: string;
 }
 
@@ -18,15 +18,17 @@ function MapView({
   runningData,
   time
 }: MapViewProps) {
-  const path = runningData.map(data => ({
-    lat: data.latitude,
-    lng: data.longitude
-  }));
+  const paths = runningData.map(segment =>
+    segment.map(data => ({
+      lat: data.latitude,
+      lng: data.longitude
+    }))
+  );
 
   return (
     <>
       {/* <GpsStatus /> */}
-      <GoogleMap path={path} type="map" />
+      <GoogleMap paths={paths} type="map" />
       <div className="absolute bottom-30 z-10 flex w-[calc(100%-2rem)] items-center justify-center">
         <ControlPanel
           type="map"

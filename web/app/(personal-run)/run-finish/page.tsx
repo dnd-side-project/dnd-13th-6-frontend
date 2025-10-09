@@ -61,7 +61,7 @@ export default function Page() {
         </div>
 
         <div className="absolute right-0 bottom-0 left-0 h-[55vh]">
-          <GoogleMap height="100%" path={pathForMap} />
+          <GoogleMap height="100%" paths={[pathForMap]} />
         </div>
 
         <div className="absolute right-0 bottom-0 left-0 w-full bg-transparent p-4">

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { RunningData } from '@/types/runningTypes';
 
 interface UseRunningDataProps {
-  runningData: RunningData[];
+  runningData: RunningData[][];
   totalTime: number; // elapsedTime from useRunningTimer (in seconds)
   targetDistance: string; // in km
 }
@@ -14,13 +14,16 @@ export const useRunningData = ({
   targetDistance
 }: UseRunningDataProps) => {
   const totalDistance = useMemo(() => {
+    const flatData = runningData.flat();
     const sum =
-      runningData.reduce((acc, cur) => acc + Number(cur.distance), 0) / 1000;
+      flatData.reduce((acc, cur) => acc + Number(cur.distance), 0) / 1000;
     return Math.round(sum * 100) / 100;
   }, [runningData]);
 
   const currentSpeed = useMemo(() => {
-    return runningData.length ? runningData[runningData.length - 1].speed : 0;
+    const lastSegment = runningData[runningData.length - 1];
+    if (!lastSegment || !lastSegment.length) return 0;
+    return lastSegment[lastSegment.length - 1].speed;
   }, [runningData]);
 
   const averagePace = useMemo(() => {
