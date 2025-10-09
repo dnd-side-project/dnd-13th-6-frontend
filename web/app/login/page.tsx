@@ -6,8 +6,8 @@ export default function Login() {
     <div className="relative min-h-screen w-full">
       {/* 로고 영역 */}
       <div className="absolute top-[25%] left-1/2 -translate-x-1/2">
-        <div className="flex w-[157px] items-center justify-center text-center">
-          <Logo title="logo" className="w-full h-auto" />
+        <div className="flex w-[48vw] max-w-[157px] items-center justify-center text-center">
+          <Logo title="logo" className="h-auto w-full" />
         </div>
       </div>
 
