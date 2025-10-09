@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import Card from '@/components/main/Card';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -30,6 +30,26 @@ const WelcomeCard = ({
 }) => {
   const router = useRouter();
   const date = new Date();
+  const nicknameRef = useRef<HTMLParagraphElement>(null);
+  const [nicknameFontSize, setNicknameFontSize] = useState('1.375rem');
+
+  useLayoutEffect(() => {
+    const nicknameEl = nicknameRef.current;
+    if (!nicknameEl || !nicknameEl.parentElement) return;
+
+    // Reset font size to calculate natural width
+    nicknameEl.style.fontSize = '1.375rem';
+
+    const containerWidth = nicknameEl.parentElement.clientWidth;
+    const textWidth = nicknameEl.scrollWidth;
+
+    if (textWidth > containerWidth) {
+      const newFontSize = (1.375 * containerWidth) / textWidth;
+      setNicknameFontSize(`${newFontSize}rem`);
+    } else {
+      setNicknameFontSize('1.375rem');
+    }
+  }, [nickname]);
 
   return (
     <Card
@@ -39,12 +59,19 @@ const WelcomeCard = ({
       }}
     >
       <div className="flex items-center justify-between">
-        <div>
+        <div className="min-w-0">
           <p className="mb-2 text-[1.0625rem] leading-[150%] font-medium tracking-tight text-white/70">
             {formatKoreanDate(date)}
           </p>
-          <p className="text-gray-20 text-[1.375rem] font-bold whitespace-break-spaces">
-            {`안녕하세요,\n${nickname}님`}
+          <p className="text-gray-20 text-[1.375rem] font-bold">
+            안녕하세요,
+          </p>
+          <p
+            ref={nicknameRef}
+            className="text-gray-20 font-bold whitespace-nowrap"
+            style={{ fontSize: nicknameFontSize }}
+          >
+            {nickname}님
           </p>
         </div>
         <div
