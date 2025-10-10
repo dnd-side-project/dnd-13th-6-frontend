@@ -182,16 +182,20 @@ export const useRunningSession = () => {
           isAxiosError(startRunningError) &&
           startRunningError.response?.data.code === 'R102'
         ) {
-          await api
-            .delete(
+          try {
+            await api.delete(
               RUNNING_API.RUNNING_ACTIVE(
                 localStorage.getItem('runningId') || ''
               )
-            )
-            .then(() => {
-              handleControl('stop');
-              startRunningMutate();
-            });
+            );
+            handleControl('stop');
+            startRunningMutate();
+          } catch (error) {
+            console.error(
+              'Failed to delete active run after R102 error:',
+              error
+            );
+          }
           return;
         }
       }

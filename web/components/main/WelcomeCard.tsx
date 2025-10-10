@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import Card from '@/components/main/Card';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-
+const BASE_FONT_SIZE_REM = 1.375;
 function formatKoreanDate(date: Date): string {
   const month = date.getMonth() + 1; // 0~11이므로 +1
   const day = date.getDate();
@@ -37,17 +37,16 @@ const WelcomeCard = ({
     const nicknameEl = nicknameRef.current;
     if (!nicknameEl || !nicknameEl.parentElement) return;
 
-    // Reset font size to calculate natural width
-    nicknameEl.style.fontSize = '1.375rem';
+    nicknameEl.style.fontSize = `${BASE_FONT_SIZE_REM}rem`;
 
     const containerWidth = nicknameEl.parentElement.clientWidth;
     const textWidth = nicknameEl.scrollWidth;
 
     if (textWidth > containerWidth) {
-      const newFontSize = (1.375 * containerWidth) / textWidth;
+      const newFontSize = (BASE_FONT_SIZE_REM * containerWidth) / textWidth;
       setNicknameFontSize(`${newFontSize}rem`);
     } else {
-      setNicknameFontSize('1.375rem');
+      setNicknameFontSize(`${BASE_FONT_SIZE_REM}rem`);
     }
   }, [nickname]);
 
@@ -63,9 +62,7 @@ const WelcomeCard = ({
           <p className="mb-2 text-[1.0625rem] leading-[150%] font-medium tracking-tight text-white/70">
             {formatKoreanDate(date)}
           </p>
-          <p className="text-gray-20 text-[1.375rem] font-bold">
-            안녕하세요,
-          </p>
+          <p className="text-gray-20 text-[1.375rem] font-bold">안녕하세요,</p>
           <p
             ref={nicknameRef}
             className="text-gray-20 font-bold whitespace-nowrap"
