@@ -1,6 +1,7 @@
 import { getMonthlyCalendar, getWeeklyCalendar } from '@/utils/apis/calendar';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { RunRecord } from '@/types/runningTypes';
+import { queryKeys } from '@/utils/queries/queryKeys';
 
 export type CalendarRecords = {
   totalDistance: number;
@@ -25,11 +26,13 @@ export const useCalendarRecords = (
   monday.setDate(diff);
   const mondayDateString = monday.toISOString().split('T')[0];
 
-  const dateForQueryKey =
-    view === 'week' ? mondayDateString : `${year}-${month}`;
+  const key =
+    view === 'week'
+      ? queryKeys.calendar.weekly(mondayDateString)
+      : queryKeys.calendar.monthly(year, month);
 
   return useQuery<CalendarRecords, Error>({
-    queryKey: ['calendarRecords', view, year, month, dateForQueryKey],
+    queryKey: key,
     queryFn: () => {
       if (view === 'week') {
         return getWeeklyCalendar(mondayDateString);

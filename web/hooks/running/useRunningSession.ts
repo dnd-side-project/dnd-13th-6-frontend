@@ -132,7 +132,7 @@ export const useRunningSession = () => {
               pointCount
             }
           };
-          endRunningMutate({ runningId: runningId || '', postData });
+          endRunningMutate({ postData });
           break;
       }
     },

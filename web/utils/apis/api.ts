@@ -64,8 +64,7 @@ export const REWARD_API = {
   GACHA: () => `/${API_SUFFIX}/${MODULE.REWARDS}/gotcha`
 };
 export const RUNNING_API = {
-  RUNNING_END: (runningId: string) =>
-    `/${API_SUFFIX}/${MODULE.RUNNINGS}/${runningId}/end`,
+  RUNNING_END: () => `/${API_SUFFIX}/${MODULE.RUNNINGS}/end`,
   RUNNING_START: () => `/${API_SUFFIX}/${MODULE.RUNNINGS}/start`,
   RUNNING_TODAY: () => `/${API_SUFFIX}/${MODULE.RUNNINGS}/today`,
   WEEKLY_RUNNINGS: () =>
