@@ -26,4 +26,25 @@ interface RunRecord {
   duration: number;
 }
 
-export type { RunningData, EndRunningPostData, RunRecord };
+interface StartRunningSuccessData {
+  result: {
+    runningId: string;
+    runnerId: string;
+  };
+}
+
+interface RunningErrorData {
+  code: string;
+  message: string;
+  result?: {
+    runningId?: string;
+  };
+}
+
+export type {
+  RunningData,
+  EndRunningPostData,
+  RunRecord,
+  StartRunningSuccessData,
+  RunningErrorData,
+};
