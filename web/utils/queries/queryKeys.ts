@@ -26,7 +26,7 @@ export const queryKeys = {
     //오늘 달린 기록
     today: () => [...queryKeys.running.all, 'today'] as const,
     //이번주 달린 기록
-    weeklyStats: () => [...queryKeys.goal.all, 'weeklyStats'] as const
+    weeklyStats: () => [...queryKeys.running.all, 'weeklyStats'] as const
   },
   crew: {
     all: ['crew'] as const,
