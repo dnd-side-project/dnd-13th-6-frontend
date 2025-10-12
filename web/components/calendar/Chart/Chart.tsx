@@ -16,7 +16,7 @@ const RoundedBar = (props: RectangleProps) => {
   const { fill, x, y, width, height } = props;
   const radius = 6;
 
-  if (height === 0) {
+  if (height === undefined || height <= 1) {
     return null;
   }
 
@@ -41,13 +41,19 @@ type ChartProps = {
   data: { name: string; value: number }[];
   unit?: string;
   valueFormatter?: (value: number) => string;
+  domain?: [number, number];
+  ticks?: number[];
+  yAxisTickFormatter?: (value: number) => string;
 };
 
 export default function Chart({
   title,
   data,
   unit,
-  valueFormatter
+  valueFormatter,
+  domain,
+  ticks,
+  yAxisTickFormatter
 }: ChartProps) {
   const formatValue = (value: number) => {
     if (valueFormatter) {
@@ -109,10 +115,13 @@ export default function Chart({
                 tick={{ fill: 'white', fontSize: 12 }}
               />
               <YAxis
+                tickCount={4}
                 axisLine={{ stroke: 'white' }}
                 tickLine={false}
                 tick={{ fill: '#A0A0A0', fontSize: 12 }}
-                tickFormatter={formatValue}
+                domain={domain}
+                ticks={ticks}
+                tickFormatter={yAxisTickFormatter}
               />
               <Bar dataKey="value" shape={<RoundedBar />} maxBarSize={25}>
                 {data.map((entry, index) => (
