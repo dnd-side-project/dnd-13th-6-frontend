@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { RunningData } from '@/types/runningTypes';
+import {
+  RunningData,
+  StartRunningSuccessData,
+  RunningErrorData
+} from '@/types/runningTypes';
 import { RUNNING_API } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { useStartRunning } from '@/hooks/queries/useStartRunning';
@@ -16,13 +20,12 @@ import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 
 export const useRunningSession = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [runningData, setRunningData] = useState<RunningData[]>([]);
+  const [runningData, setRunningData] = useState<RunningData[][]>([[]]);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [targetDistance, setTargetDistance] = useState('0');
 
-  const { mutate: startRunningMutate, error: startRunningError } =
-    useStartRunning();
+  const { mutate: startRunningMutate } = useStartRunning();
   const { mutate: endRunningMutate } = useEndRunning();
 
   const {
@@ -42,7 +45,14 @@ export const useRunningSession = () => {
     });
 
   const handleNewRunningData = useCallback((newPoint: RunningData) => {
-    setRunningData(prev => [...prev, newPoint]);
+    setRunningData(prev => {
+      const newPaths = [...prev];
+      if (newPaths.length > 0) {
+        const lastPath = newPaths[newPaths.length - 1];
+        lastPath.push(newPoint);
+      }
+      return newPaths;
+    });
   }, []);
 
   useStompConnection({ onMessageReceived: handleNewRunningData });
@@ -71,11 +81,13 @@ export const useRunningSession = () => {
           break;
         case 'resume':
           setIsPaused(false);
+          setRunningData(prev => [...prev, []]);
           postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_START);
           break;
         case 'stop':
+          const flatRunningData = runningData.flat();
           const finishData = {
-            runningData,
+            runningData: flatRunningData,
             averagePace: averagePace,
             totalDistance: totalDistance * 1000,
             totalTime: formattedTime,
@@ -102,7 +114,10 @@ export const useRunningSession = () => {
           setIsPaused(false);
           postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_END);
 
-          const path = runningData.map(data => [data.latitude, data.longitude]);
+          const path = flatRunningData.map(data => [
+            data.latitude,
+            data.longitude
+          ]);
           const points = { type: 'LineString', coordinates: path };
           const pointCount = path.length;
           const postData = {
@@ -117,7 +132,7 @@ export const useRunningSession = () => {
               pointCount
             }
           };
-          endRunningMutate({ runningId: runningId || '', postData });
+          endRunningMutate({ postData });
           break;
       }
     },
@@ -133,58 +148,66 @@ export const useRunningSession = () => {
   );
 
   useEffect(() => {
-    const initRunning = async () => {
-      const runningId = localStorage.getItem('runningId');
-      if (runningId) {
-        try {
-          await api.delete(RUNNING_API.RUNNING_ACTIVE(runningId));
-          localStorage.removeItem('runningId');
-        } catch (error) {
-          console.error('Error deleting running active:', error);
-        }
-      }
-
-      setIsRunning(true);
-      setIsPaused(false);
-      setTargetDistance(localStorage.getItem('targetDistance') || '0');
-
-      startRunningMutate(undefined, {
-        onSuccess: data => {
+    const initRunning = () => {
+      const startRunMutationOptions = {
+        onSuccess: (data: StartRunningSuccessData) => {
           const { runningId, runnerId } = data.result;
           const messageData = JSON.stringify({ runningId, runnerId });
           postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_START, messageData);
+        },
+        onError: async (error: Error) => {
+          if (
+            isAxiosError<RunningErrorData>(error) &&
+            error.response?.data.code === 'R102'
+          ) {
+            console.log(
+              'R102 Error: Existing run detected. Attempting to clear and retry.'
+            );
+            const existingRunningId =
+              error.response?.data.result?.runningId ||
+              localStorage.getItem('runningId');
+            if (existingRunningId) {
+              try {
+                await api.delete(RUNNING_API.RUNNING_ACTIVE(existingRunningId));
+                localStorage.removeItem('runningId');
+                console.log(
+                  'Existing run cleared. Retrying to start a new run...'
+                );
+                // Retry mutation once
+                startRunningMutate(undefined, {
+                  onSuccess: startRunMutationOptions.onSuccess, // reuse success handler
+                  onError: (retryError: Error) => {
+                    // If retry also fails, log it and stop to prevent loop.
+                    console.error('Failed to start run on retry:', retryError);
+                  }
+                });
+              } catch (deleteError) {
+                console.error(
+                  'Failed to delete existing running session:',
+                  deleteError
+                );
+              }
+            } else {
+              console.error(
+                'R102 error, but no existing runningId found to delete.'
+              );
+            }
+          } else {
+            console.error('Failed to start running session:', error);
+          }
         }
-      });
+      };
+
+      setIsRunning(true);
+      setIsPaused(false);
+      setRunningData([[]]);
+      setTargetDistance(localStorage.getItem('targetDistance') || '0');
+
+      startRunningMutate(undefined, startRunMutationOptions);
     };
 
     initRunning();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startRunningMutate]);
-
-  useEffect(() => {
-    const deleteRunningActive = async () => {
-      if (startRunningError) {
-        handleControl('stop');
-        if (
-          isAxiosError(startRunningError) &&
-          startRunningError.response?.data.code === 'R102'
-        ) {
-          await api
-            .delete(
-              RUNNING_API.RUNNING_ACTIVE(
-                localStorage.getItem('runningId') || ''
-              )
-            )
-            .then(() => {
-              handleControl('stop');
-              startRunningMutate();
-            });
-          return;
-        }
-      }
-    };
-    deleteRunningActive();
-  }, [startRunningError, handleControl, startRunningMutate]);
 
   const handleClickIndicator = () => {
     setCurrentPage(prev => (prev === 0 ? 1 : 0));

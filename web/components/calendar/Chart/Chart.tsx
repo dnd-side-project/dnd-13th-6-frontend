@@ -16,7 +16,7 @@ const RoundedBar = (props: RectangleProps) => {
   const { fill, x, y, width, height } = props;
   const radius = 6;
 
-  if (height === 0) {
+  if (height === undefined || height <= 1) {
     return null;
   }
 
@@ -41,13 +41,19 @@ type ChartProps = {
   data: { name: string; value: number }[];
   unit?: string;
   valueFormatter?: (value: number) => string;
+  domain?: [number, number];
+  ticks?: number[];
+  yAxisTickFormatter?: (value: number) => string;
 };
 
 export default function Chart({
   title,
   data,
   unit,
-  valueFormatter
+  valueFormatter,
+  domain,
+  ticks,
+  yAxisTickFormatter
 }: ChartProps) {
   const formatValue = (value: number) => {
     if (valueFormatter) {
@@ -89,31 +95,43 @@ export default function Chart({
     <div className="mt-10">
       <p className="pretendard-headline text-gray-20 mb-4">{title}</p>
       <Card className="bg-[#252427] p-[-16px]">
-        <ResponsiveContainer width="100%" height={152}>
-          <BarChart
-            data={data}
-            margin={{ top: 20, right: 10, left: -10, bottom: 5 }}
+        {data.every(item => item.value === 0) ? (
+          <div
+            className="flex w-full items-center justify-center text-gray-400"
+            style={{ height: 152 }}
           >
-            <XAxis
-              dataKey="name"
-              axisLine={{ stroke: 'white' }}
-              tickLine={false}
-              tick={{ fill: 'white', fontSize: 12 }}
-            />
-            <YAxis
-              axisLine={{ stroke: 'white' }}
-              tickLine={false}
-              tick={{ fill: '#A0A0A0', fontSize: 12 }}
-              tickFormatter={formatValue}
-            />
-            <Bar dataKey="value" shape={<RoundedBar />} maxBarSize={25}>
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={'#32ff76'} />
-              ))}
-              <LabelList dataKey="value" content={renderLabel} />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+            데이터가 없습니다
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={152}>
+            <BarChart
+              data={data}
+              margin={{ top: 20, right: 10, left: -10, bottom: 5 }}
+            >
+              <XAxis
+                dataKey="name"
+                axisLine={{ stroke: 'white' }}
+                tickLine={false}
+                tick={{ fill: 'white', fontSize: 12 }}
+              />
+              <YAxis
+                tickCount={4}
+                axisLine={{ stroke: 'white' }}
+                tickLine={false}
+                tick={{ fill: '#A0A0A0', fontSize: 12 }}
+                domain={domain}
+                ticks={ticks}
+                tickFormatter={yAxisTickFormatter}
+              />
+              <Bar dataKey="value" shape={<RoundedBar />} maxBarSize={25}>
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={'#32ff76'} />
+                ))}
+                <LabelList dataKey="value" content={renderLabel} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </Card>
     </div>
   );

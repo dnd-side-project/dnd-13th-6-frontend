@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams, withLayoutContext } from 'expo-router';
-import { createContext, useLayoutEffect, useMemo, useState } from 'react';
+import { createContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {
-  Dimensions,
+  AppState,
   Image,
   Pressable,
   ScrollView,
@@ -10,7 +10,6 @@ import {
   View
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Chip from '@/components/chips/Chip';
 import ProgressBar from '@/components/ProgressBar';
 import CustomAlert from '@/components/modal/CustomAlert';
 import { useCustomAlert } from '@/hooks/useCustomAlert';
@@ -26,6 +25,7 @@ import { Crew, MemberData } from '@/types/crew';
 import BottomSheetContainer from '@/components/containers/running/BottomSheetContainer';
 import GroupCodeAlert from '@/components/modal/GroupCodeAlert';
 import { useBottomSheet } from '@/hooks/useBottomSheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { Navigator } = createMaterialTopTabNavigator();
 
@@ -84,11 +84,9 @@ const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
   }, [crewInfo.runningDistance, crewInfo.goal]);
   return (
     <View className="p-[18px] bg-gray rounded-xl mt-4 flex justify-between gap-4">
-      <Chip className="bg-black px-[8px] py-[3px] self-start">
-        <Text className="text-main text-body3 text-center">
+       <Text className="text-gray50 text-body3">
           시작한지 + 12일째
         </Text>
-      </Chip>
       {crewInfo.goal - crewInfo.runningDistance > 0 ? (
         <View>
           <Text className="text-headline1 text-white">최종 목표까지</Text>
@@ -102,7 +100,7 @@ const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
         </View>
       ) : (
         <View>
-          <Text className="text-headline1 text-white rounded-xl py-[18px]">
+          <Text className="text-headline text-white rounded-xl py-[18px]">
             주간 목표를 달성했어요!
           </Text>
         </View>
@@ -120,8 +118,7 @@ export const MaterialTopTabs = withLayoutContext<
 >(Navigator);
 
 export default function Layout() {
-  const insets = useSafeAreaInsets();
-  const windowHeight = Dimensions.get('window').height;
+  const insets = useSafeAreaInsets();;
 
   const { id: crewId } = useLocalSearchParams();
   // CustomAlert 훅
@@ -143,16 +140,42 @@ export default function Layout() {
     method: 'GET'
   });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const init = async () => {
       await Promise.all([crewInfoFetchData(), crewMembersFetchData()]).then(
         ([crewInfo]) => {
           setIsAdminUser(!!crewInfo?.isLeader);
         }
       );
-    };
-    init();
+    }
+    const checkReboot = async () => {
+      const lastActiveTime = await AsyncStorage.getItem('lastActiveTime');
+      const currentTime = Date.now()  
+
+      if (lastActiveTime) {
+        const timeDiff = currentTime - parseInt(lastActiveTime);
+        // 비정상적으로 긴 시간 차이가 있다면 재부팅 가능성
+        if (timeDiff > 10 * 1000) { // 10초 이상
+          init();
+        };
+
+      } else init();
+    }
+    checkReboot();
+  
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'active') {
+        console.log('update')
+        checkReboot();
+      }
+    });
+    AsyncStorage.setItem('lastActiveTime', Date.now().toString());
+    return () => {
+      AsyncStorage.removeItem('lastActiveTime')
+      subscription.remove();
+    }
   }, []);
+
 
   const contextValue = {
     crewInfo,
@@ -170,9 +193,10 @@ export default function Layout() {
   };
 
   return (
-    <View style={[{ paddingTop: insets.top }]} className="flex-1 bg-[#313131]">
+    <View  className="flex-1 bg-black">
       <ScrollView
         className="flex-1 flex-col"
+        style={[{ paddingTop: insets.top }]}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
         contentContainerStyle={{ paddingBottom: 24 }}

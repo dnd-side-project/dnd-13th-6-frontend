@@ -97,7 +97,7 @@ export default function GroupCodeAlert({
               return (
                 <View
                   key={`groupCode-${index}`}
-                  className="bg-gray10 rounded-lg px-[15px] py-[14px] bg-gray90 flex-1"
+                  className="rounded-lg px-[15px] py-[14px] bg-gray90 flex-1"
                 >
                   <Text className="text-center text-gray20 text-2xl font-semibold">
                     {item}

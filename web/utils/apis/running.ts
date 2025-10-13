@@ -7,13 +7,11 @@ export const runningStart = async () => {
   return res.data;
 };
 export const runningEnd = async ({
-  runningId,
-  postData,
+  postData
 }: {
-  runningId: string;
   postData: EndRunningPostData;
 }) => {
-  const res = await api.post(RUNNING_API.RUNNING_END(runningId), postData);
+  const res = await api.post(RUNNING_API.RUNNING_END(), postData);
   return res.data;
 };
 
