@@ -19,17 +19,17 @@ function CodePad({
   ) => {
     const target = event.currentTarget;
     const value = target.value;
-
+    console.log(value)
     // 영문/숫자만 허용하고 대문자로 정규화
     const alphaNumeric = value.replace(/[^0-9a-zA-Z]/g, '');
-    const normalized = alphaNumeric.toUpperCase();
+    // const normalized = alphaNumeric.toUpperCase();
 
-    if (value !== normalized) {
-      target.value = normalized;
+    if (value !== alphaNumeric) {
+      target.value = alphaNumeric;
     }
-    if (normalized) {
+    if (alphaNumeric) {
       const newCode = [...code];
-      newCode[idx] = normalized.slice(-1);
+      newCode[idx] = alphaNumeric.slice(-1);
       setCode(newCode);
 
       if (idx < 5) {
@@ -37,12 +37,13 @@ function CodePad({
       }
     }
   };
-
+  console.log('here ')
   // iOS 삭제(backspace) 인식: keydown 대신 beforeinput으로 처리
   const handleBeforeInput = (
     event: React.FormEvent<HTMLInputElement>,
     idx: number
   ) => {
+    console.log(event.target)
     const nativeEvent = event.nativeEvent as InputEvent;
     if (nativeEvent.inputType === 'deleteContentBackward') {
       const newCode = [...code];
@@ -104,6 +105,7 @@ export default function Page() {
   const [code, setCode] = useState(Array(6).fill(''));
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // console.log(e.target.)
     e.preventDefault();
     try {
       await api.post(API_END_POINT.CREWS.JOIN_CREW(), {
@@ -128,7 +130,7 @@ export default function Page() {
       {/* Content */}
       <div className="mt-8 flex flex-1 flex-col">
         <p className="text-lg font-bold text-white">
-          초대 코드를 입력해주세요.
+          초대 코드를 입력해주세요11.
         </p>
         <div className="mt-16 w-full">
           <CodePad code={code} setCode={setCode} />
