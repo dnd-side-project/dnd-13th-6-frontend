@@ -12,8 +12,6 @@ import { AnimatePresence } from 'framer-motion';
 import { useCalendar } from '@/hooks/useCalendar';
 import { useCalendarRecords } from '@/hooks/queries/calendar/useCalendarRecords';
 import { usePrefetchCalendarRecords } from '@/hooks/queries/calendar/usePrefetchCalendarRecords';
-import { mockRunRecords } from './Chart/mock';
-
 function Calendar() {
   const {
     currentDate,
@@ -28,21 +26,8 @@ function Calendar() {
   const { data: realData } = useCalendarRecords(selectedView, currentDate);
   usePrefetchCalendarRecords(currentDate, selectedView);
 
-  const useMockData = false; // MOCK DATA FLAG
-
-  const records = useMockData ? mockRunRecords : realData?.histories || [];
-  const data = useMockData
-    ? {
-        totalDistance: mockRunRecords.reduce(
-          (acc, cur) => acc + cur.distance,
-          0
-        ),
-        totalDuration: mockRunRecords.reduce(
-          (acc, cur) => acc + cur.duration,
-          0
-        )
-      }
-    : realData;
+  const records = realData?.histories || [];
+  const data = realData;
   return (
     <div className="bg-background flex h-full w-full flex-col rounded-lg text-gray-900 shadow-lg dark:text-gray-100">
       <CalendarMenu
