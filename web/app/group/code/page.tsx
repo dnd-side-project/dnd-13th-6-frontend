@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { API_END_POINT, MODULE } from '@/utils/apis/api';
 import api from '@/utils/apis/customAxios';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
@@ -14,12 +14,21 @@ function CodePad({
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   // 안드로이드/iOS 공통: 입력 필터링 및 자동 포커스 이동 (영문+숫자 허용, 대문자 변환)
   const handleInput = (
-    event: React.FormEvent<HTMLInputElement>,
+    event: ChangeEvent<HTMLInputElement>,
     idx: number
   ) => {
     const target = event.currentTarget;
     const value = target.value;
-    console.log(value)
+    if(event.keyCode === 8) {
+      setCode((prev:string[]) => {
+        const newCode = [...prev]
+        newCode[idx] = ''
+        return newCode
+      })
+      if(idx === 0) inputsRef.current[0]!.focus();
+      else inputsRef.current[idx -1]!.focus();
+      return;
+    }
     // 영문/숫자만 허용하고 대문자로 정규화
     const alphaNumeric = value.replace(/[^0-9a-zA-Z]/g, '');
     // const normalized = alphaNumeric.toUpperCase();
@@ -37,13 +46,11 @@ function CodePad({
       }
     }
   };
-  console.log('here ')
   // iOS 삭제(backspace) 인식: keydown 대신 beforeinput으로 처리
   const handleBeforeInput = (
     event: React.FormEvent<HTMLInputElement>,
     idx: number
   ) => {
-    console.log(event.target)
     const nativeEvent = event.nativeEvent as InputEvent;
     if (nativeEvent.inputType === 'deleteContentBackward') {
       const newCode = [...code];
@@ -63,7 +70,6 @@ function CodePad({
     const text = event.clipboardData
       .getData('text')
       .replace(/[^0-9a-zA-Z]/g, '')
-      .toUpperCase()
       .slice(0, 6);
     if (!text) return;
     event.preventDefault();
@@ -87,7 +93,8 @@ function CodePad({
           name={`code-${idx}`}
           value={char}
           maxLength={1}
-          onInput={e => handleInput(e, idx)}
+          onChange={e => handleInput(e, idx)}
+          onKeyDown={e => handleInput(e, idx)}
           onBeforeInput={e => handleBeforeInput(e, idx)}
           onPaste={handlePaste}
           className="block h-16 w-13 flex-1 rounded-xl bg-[#3A3A3C] p-4 text-center text-2xl text-[28px] font-bold text-white [-webkit-appearance:none] focus:ring-2 focus:ring-[#32FF76] focus:outline-none"
@@ -118,7 +125,7 @@ export default function Page() {
         })
       );
     } catch (error) {
-      console.error(error, 'here11');
+      console.error(error);
     }
   };
 
