@@ -6,6 +6,8 @@ import { UserInfo } from '@/types/userInfo';
 export const useUserInfo = () => {
   return useQuery<UserInfo>({
     queryKey: queryKeys.member.info(),
-    queryFn: getUserInfo
+    queryFn: getUserInfo,
+    gcTime: 10 * 60 * 1000,
+    staleTime: 5 * 60 * 1000
   });
 };

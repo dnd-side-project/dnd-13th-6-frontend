@@ -5,6 +5,8 @@ import { getCloverCount } from '@/utils/apis/reward';
 export const useCloverCount = () => {
   return useQuery({
     queryKey: queryKeys.reward.cloverCount(),
-    queryFn: getCloverCount
+    queryFn: getCloverCount,
+    gcTime: 10 * 60 * 1000,
+    staleTime: 5 * 60 * 1000
   });
 };

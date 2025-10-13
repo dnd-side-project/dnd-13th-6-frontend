@@ -1,13 +1,15 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { registerWithNickname } from '@/utils/apis/auth';
 import { updateNickname } from '@/utils/apis/member';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
+import { queryKeys } from '@/utils/queries/queryKeys';
 
 export const useSetNickname = (type: 'onboarding' | 'profile') => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState('');
+  const queryClient = useQueryClient();
 
   const mutationFn =
     type === 'onboarding' ? registerWithNickname : updateNickname;
@@ -15,6 +17,7 @@ export const useSetNickname = (type: 'onboarding' | 'profile') => {
   const mutation = useMutation({
     mutationFn,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.member.info() });
       if (type === 'profile') return;
       const destination =
         type === 'onboarding' ? '/onboarding/select-character' : '/main';
