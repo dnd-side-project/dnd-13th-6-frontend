@@ -28,6 +28,7 @@ function GroupExitContent({ onClose, crewInfo }: Props) {
               Authorization: `Bearer ${token}`
             }
           });
+          console.log(ret)
           if (ret.ok) {
             router.push('/(tabs)/(group)');
           }
@@ -48,6 +49,7 @@ function GroupExitContent({ onClose, crewInfo }: Props) {
               Authorization: `Bearer ${token}`
             }
           });
+          console.log(ret)
           if (ret.ok) {
             router.push('/(tabs)/(group)');
           }

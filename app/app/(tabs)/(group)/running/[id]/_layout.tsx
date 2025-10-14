@@ -77,7 +77,7 @@ const GroupInfo = ({ crewInfo }: { crewInfo: Crew }) => {
 
 const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
   const progress = useMemo(() => {
-    if (Math.floor(crewInfo.goal) === 0) return 100;
+    if (Math.floor(crewInfo.goal) === 0) return 0;
     const result =
       Math.floor(crewInfo.runningDistance) / Math.floor(crewInfo.goal);
     return isNaN(result) || result === Infinity ? 0 : result * 100;
@@ -100,12 +100,12 @@ const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
         </View>
       ) : (
         <View>
-          <Text className="text-headline text-white rounded-xl py-[18px]">
-            주간 목표를 달성했어요!
+          <Text className="text-headline text-white font-semibold rounded-xl py-[18px]">
+            {progress === 0 ? '주간 목표를 설정해주세요.': '주간 목표를 달성했어요!'}
           </Text>
         </View>
       )}
-      <ProgressBar progress={progress} />
+      <ProgressBar progress={progress} width={330} />
     </View>
   );
 };
