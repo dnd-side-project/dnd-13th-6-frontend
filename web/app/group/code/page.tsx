@@ -1,9 +1,8 @@
 'use client';
 import { ChangeEvent, useRef, useState } from 'react';
-import { API_END_POINT, MODULE } from '@/utils/apis/api';
+import { API_END_POINT } from '@/utils/apis/api';
 import api from '@/utils/apis/customAxios';
-import { postMessageToApp } from '@/utils/apis/postMessageToApp';
-
+import { useRouter } from 'next/navigation';
 function CodePad({
   code,
   setCode
@@ -11,6 +10,7 @@ function CodePad({
   code: string[];
   setCode: (code: string[]) => void;
 }) {
+
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   // 안드로이드/iOS 공통: 입력 필터링 및 자동 포커스 이동 (영문+숫자 허용, 대문자 변환)
   const handleInput = (
@@ -110,20 +110,22 @@ function CodePad({
 
 export default function Page() {
   const [code, setCode] = useState(Array(6).fill(''));
-
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // console.log(e.target.)
     e.preventDefault();
     try {
-      await api.post(API_END_POINT.CREWS.JOIN_CREW(), {
+      const response = await api.post(API_END_POINT.CREWS.JOIN_CREW(), {
         code: code.join('')
-      });
-      postMessageToApp(
-        MODULE.PUSH,
-        JSON.stringify({
-          url: `/(tabs)/(group)/running/${code.join('')}`
-        })
-      );
+      }) as {
+        status: string;
+        code: string;
+        message: string;
+        result: {
+          crewId: number
+        }
+      };
+      router.push(`/group/code/${response.result.crewId}`)
+
     } catch (error) {
       console.error(error);
     }

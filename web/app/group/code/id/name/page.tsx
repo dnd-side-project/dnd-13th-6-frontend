@@ -1,24 +1,43 @@
 'use client';
 import CrewChallengeCard from '@/components/main/CrewChallengeCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { MODULE } from '@/utils/apis/api';
+import { API_END_POINT, MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import BackgroundLight from '@/public/assets/common/backgroundLight.svg';
-
+import { useParams } from 'next/navigation';
+import { Crew } from '@/types/crew';
+import api from '@/utils/apis/customAxios';
 function JoinSuccess() {
+  const params = useParams();
+  const [crewInfo, setCrewInfo] = useState<Crew>();
+
   const onMove = () => {
-    const data = {
-      type: MODULE.PUSH,
-      url: '/(tabs)/(group-running)/'
-    };
-    postMessageToApp(MODULE.PUSH, JSON.stringify(data));
+    if(!crewInfo) return;
+    postMessageToApp(
+      MODULE.PUSH,
+      JSON.stringify({
+        url: `/(tabs)/(group)/running/${crewInfo.crewId}`
+      })
+    );
   };
+
+  useEffect(() => {
+    const init = async() => {
+      const crewId = parseInt(params.crewId as string);
+      const { data} = await api.get(API_END_POINT.CREWS.GET_CREW_DETAIL(crewId))
+      setCrewInfo(data);
+    }
+
+    init();
+  })
+  if(!crewInfo) return <p>Loading...</p>
+
 
   return (
     <div className="flex h-[calc(100vh-90px)] w-full flex-col items-center justify-center px-2">
       <div className="w-full flex-grow text-left text-[26px] font-bold text-[#E5E5EA]">
-        블랙핑크 뛰어
+        {crewInfo.name}
         <br /> 크루에 가입했어요!!
       </div>
       <div className="relative mt-14 mb-30 flex items-center justify-center">

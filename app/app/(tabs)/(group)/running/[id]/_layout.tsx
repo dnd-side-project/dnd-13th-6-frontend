@@ -121,11 +121,13 @@ export default function Layout() {
   const insets = useSafeAreaInsets();;
 
   const { id: crewId } = useLocalSearchParams();
+  if(!crewId) {
+    router.push('/(tabs)/(group)')
+  }
   // CustomAlert 훅
   const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
   const [isGroupCodeAlertVisible, setIsGroupCodeAlertVisible] = useState(false);
 
-  const [isAdminUser, setIsAdminUser] = useState(false);
 
   const { data: crewInfo, fetchData: crewInfoFetchData } = useFetch<Crew>(
     API_END_POINT.CREWS.GET_CREW_DETAIL(crewId as string),
@@ -142,11 +144,7 @@ export default function Layout() {
 
   useEffect(() => {
     const init = async () => {
-      await Promise.all([crewInfoFetchData(), crewMembersFetchData()]).then(
-        ([crewInfo]) => {
-          setIsAdminUser(!!crewInfo?.isLeader);
-        }
-      );
+      await Promise.all([crewInfoFetchData(), crewMembersFetchData().then((res) => console.log(res))])
     }
     const checkReboot = async () => {
       const lastActiveTime = await AsyncStorage.getItem('lastActiveTime');
@@ -265,7 +263,7 @@ export default function Layout() {
         <BottomSheetContainer
           crewInfo={crewInfo}
           crewMembers={crewMembers}
-          isAdminUser={isAdminUser}
+          isAdminUser={crewInfo.isLeader}
           settingsBottomSheet={settingsBottomSheet}
           crewId={crewId as string}
           crewInfoFetchData={crewInfoFetchData}
