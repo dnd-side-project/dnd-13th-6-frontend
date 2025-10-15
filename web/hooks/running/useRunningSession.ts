@@ -1,11 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import {
-  RunningData,
-  StartRunningSuccessData,
-  EndRunningPostData
-} from '@/types/runningTypes';
+import { RunningData } from '@/types/runningTypes';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { useStartRunning } from '@/hooks/queries/useStartRunning';
 import { useEndRunning } from '@/hooks/queries/useEndRunning';
@@ -14,7 +10,6 @@ import { useStompConnection } from '@/hooks/api/useStompConnection';
 import { useRunningData } from '@/hooks/running/useRunningData';
 import { useSwipeNavigation } from '@/hooks/ui/useSwipeNavigation';
 import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
-import { start } from 'repl';
 
 export const useRunningSession = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -158,8 +153,11 @@ export const useRunningSession = () => {
             },
             track: {
               format: 'JSON',
-        points: JSON.stringify({ type: 'LineString', coordinates: [[126.9780, 37.5665]] }),
-        pointCount: 1,
+              points: JSON.stringify({
+                type: 'LineString',
+                coordinates: [[126.978, 37.5665]]
+              }),
+              pointCount: 1
             }
           }
         };
@@ -174,6 +172,8 @@ export const useRunningSession = () => {
   };
 
   useEffect(() => {
+    setIsRunning(true);
+    setTargetDistance(localStorage.getItem('targetDistance') || '0');
     startWithRetry();
   }, []);
 
