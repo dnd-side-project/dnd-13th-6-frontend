@@ -1,12 +1,12 @@
 import React from 'react';
-import Image from 'next/image';
 import CrewChallengeCard, { CrewChallengeCardProps } from './CrewChallengeCard';
+import ArrowRight from '@/public/assets/common/arrow-right.svg';
 
 const CrewChallengeSection = () => {
   const challenges: CrewChallengeCardProps[] = [
     {
       title: '블랙핑크-뛰어',
-      distance: 2.2,
+      // distance:2.2,
       progress: 70,
       members: ['a', 'b', 'c'],
       id: '1',
@@ -16,7 +16,7 @@ const CrewChallengeSection = () => {
     },
     {
       title: '우리 크루, 이번주도 완주 GO!',
-      distance: 2.2,
+      // distance:2.2,
       progress: 70,
       members: ['a', 'b', 'c'],
       id: '2',
@@ -32,12 +32,7 @@ const CrewChallengeSection = () => {
           내 크루 챌린지
         </p>
         <button>
-          <Image
-            src="/assets/common/arrow-right.svg"
-            alt="arrow"
-            width={24}
-            height={24}
-          />
+          <ArrowRight width={24} height={24} />
         </button>
       </div>
       {challenges.map((challenge, index) => (

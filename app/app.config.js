@@ -1,6 +1,6 @@
 export default {
   "expo": {
-    "name": "dnd-iOS",
+    "name": "Runky",
     "slug": "dnd-iOS",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,14 +8,24 @@ export default {
     "scheme": "dndios",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    },
     "ios": {
       "bundleIdentifier": "com.runky.dnd",
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "infoPlist": {
+      "ITSAppUsesNonExemptEncryption": false,
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true,
           "NSAllowsLocalNetworking": true,
+          "ITSAppUsesNonExemptEncryption": false,
           "NSExceptionDomains": {
             "localhost": {
               "NSExceptionAllowsInsecureHTTPLoads": true,
@@ -34,11 +44,11 @@ export default {
     },
     "android": {
       "useNextNotificationsApi": true,
-      
+    
       "package": "com.runky.dnd",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -91,6 +101,7 @@ export default {
           "backgroundColor": "#000000"
         }
       ],
+      "expo-updates",
       "@react-native-firebase/app",
       [
         "expo-build-properties",

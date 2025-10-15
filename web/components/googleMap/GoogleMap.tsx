@@ -13,21 +13,25 @@ interface LatLng {
 export default function GoogleMap({
   width = '100%',
   height = '100%',
-  path = [],
+  paths = [],
   type,
   children
 }: {
   width?: string;
   height?: string;
-  path?: LatLng[];
+  paths?: LatLng[][];
   type?: string;
   children?: React.ReactNode;
 }) {
-  const position = useMemo(
-    () =>
-      path.length > 0 ? path[path.length - 1] : { lat: 37.5665, lng: 126.978 }, // Default to Seoul
-    [path]
-  );
+  const position = useMemo(() => {
+    if (paths.length > 0) {
+      const lastSegment = paths[paths.length - 1];
+      if (lastSegment.length > 0) {
+        return lastSegment[lastSegment.length - 1];
+      }
+    }
+    return { lat: 37.5665, lng: 126.978 }; // Default to Seoul
+  }, [paths]);
 
   const mapCenter = useMemo(() => {
     // Y-axis offset to move the center of the map down, thus moving the marker up.
@@ -61,7 +65,6 @@ export default function GoogleMap({
     };
   }, []);
 
-  //api 키 체크
   if (!apiKey) {
     return (
       <div
@@ -83,7 +86,6 @@ export default function GoogleMap({
     );
   }
 
-  const polyline = path.slice(0, path.length - 1);
   return (
     <>
       {type === 'map' ? (
@@ -94,20 +96,19 @@ export default function GoogleMap({
       <div style={{ width, height }}>
         <APIProvider apiKey={apiKey}>
           <Map
-            zoom={isPanning ? null : 18}
+            zoom={isPanning ? undefined : 18}
             center={
-              isPanning ? null : type === 'prepare' ? mapCenter : position
+              isPanning ? undefined : type === 'prepare' ? mapCenter : position
             }
             disableDefaultUI={true}
             gestureHandling="greedy"
-            mapId="DEMO_MAP_ID"
-            controlled={type !== 'todayResult'}
+            mapId="b585e0fdaac591c75d6f5085"
             style={{ height: '100%' }}
             colorScheme="DARK"
             onDragstart={handleDragStart}
             onDragend={handleDragEnd}
           >
-            {path.length > 0 && (
+            {paths.flat().length > 0 && (
               <>
                 <AdvancedMarker position={position} title="My location">
                   <div
@@ -116,7 +117,7 @@ export default function GoogleMap({
                   />
                 </AdvancedMarker>
                 {children}
-                <Polyline path={polyline} />
+                <Polyline paths={paths} />
               </>
             )}
           </Map>

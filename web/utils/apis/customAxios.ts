@@ -3,16 +3,28 @@ import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { redirectToLogin } from '@/utils/authRedirect';
 import { tokenRefresh } from '@/utils/apis/auth';
 
+const getAccessToken = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('accessToken') || '';
+  }
+  return '';
+};
+
 const api: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_BASE_URL,
-  withCredentials: true
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
-// 요청 인터셉터:
-// withCredentials: true 옵션으로 HttpOnly 쿠키가 자동으로 전송되므로,
-// 헤더에 수동으로 토큰을 추가하는 로직은 제거합니다.
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    // 요청할 때마다 최신 토큰을 가져와서 헤더에 설정
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
     return config;
   },
   error => Promise.reject(error)
@@ -32,22 +44,16 @@ api.interceptors.response.use(
 
     if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-
+      localStorage.removeItem('accessToken');
       try {
         // HttpOnly refresh token으로 새 액세스 토큰 발급 요청
         await tokenRefresh();
 
         return api(originalRequest);
       } catch (refreshError) {
-        console.error('토큰 재발급 실패', refreshError);
-        // window.location.href="https://kauth.kakao.com/oauth/authorize?client_id=3255efd2af839833b26a422ca203c180&redirect_uri=https://api.runky.store/api/auth/login/oauth2/code/kakao&response_type=code"
         redirectToLogin();
         return Promise.reject(refreshError);
       }
-    }
-
-    if (status !== 401) {
-      console.error('API error', error.response.data);
     }
 
     return Promise.reject(error);

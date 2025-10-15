@@ -1,6 +1,6 @@
 import { twMerge } from 'tailwind-merge';
 
-export default function wCard({
+export default function Card({
   children,
   className,
   onClick,

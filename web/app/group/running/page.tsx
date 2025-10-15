@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, Suspense, useLayoutEffect, useEffect } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import ProfileImage from '@/components/common/ProfileImage';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import Image from 'next/image';
@@ -7,9 +7,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import UserMarker from '@/components/googleMap/UserMarker';
 import type { MemberData } from '@/types/crew';
 import { useSearchParams } from 'next/navigation';
-import axios from 'axios';
-import { Client, IMessage } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
+import { postCheerfulMessage } from '@/utils/apis/running';
+import { useCrewRunningSocket } from '@/hooks/running/useCrewRunningSocket';
+import { useCloverAnimation } from '@/hooks/ui/useCloverAnimation';
+
 function CrewMemberProfiles({
   users,
   onClick
@@ -35,50 +36,32 @@ function CrewMemberProfiles({
     </div>
   );
 }
-console.log('group/running');
-const stompClient = new Client({
-  webSocketFactory: () =>
-    new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
-  reconnectDelay: 5000
-});
 
 const SendCloverButton = ({ member }: { member: MemberData }) => {
-  const [clovers, setClovers] = useState<{ id: number; x: number }[]>([]);
-  // 클로버 애니메이션
-  const startCloverAnimation = () => {
-    const id = Date.now();
-    const randomX = Math.random() * 60; // 버튼 기준 좌우 살짝 흔들림
-    setClovers(prev => [...prev, { id, x: randomX }]);
+  const { clovers, startCloverAnimation } = useCloverAnimation();
 
-    setTimeout(() => {
-      setClovers(prev => prev.filter(c => c.id !== id));
-    }, 2000);
-  };
+  const sendEmoji = (emojiType: string) => {
+    if (!member?.isRunning) return;
 
-  const sendEmogi = (emojiType: string) => {
-    if (!member?.isRunning) {
-      return;
-    }
     startCloverAnimation();
     const runningId = member?.sub.split('/').at(-1);
-    axios.post(
-      `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/runnings/${runningId}/cheers`,
-      {
-        receiverId: member?.memberId,
-        message: emojiType
-      }
-    );
+
+    if (runningId && !isNaN(Number(runningId))) {
+      postCheerfulMessage({
+        runningId,
+        memberId: member?.memberId,
+        emojiType
+      });
+    }
   };
+
   return (
     <button
-      onClick={() => sendEmogi('clover')}
+      onClick={() => sendEmoji('clover')}
       className="absolute right-2 bottom-2 z-10 ml-auto flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 text-white"
     >
       <div className="relative h-5 max-h-15 w-5">
         <Image src="/assets/clover.png" alt="clover" fill />
-
-        {/* 클릭 시 생성되는 클로버 애니메이션 */}
-        {/* 처음에는 흐리게* */}
         <div className="pointer-events-none absolute top-0 left-2 h-5 w-5">
           <AnimatePresence>
             {clovers.map(c => (
@@ -86,11 +69,10 @@ const SendCloverButton = ({ member }: { member: MemberData }) => {
                 key={c.id}
                 initial={{ y: 0, scale: 3, opacity: 0.3 }}
                 animate={{
-                  y: -100, // 위로 이동
+                  y: -100,
                   x: 50,
                   scale: 12,
                   opacity: 1,
-                  //오른쪽으로 기울어짐
                   rotate: 45
                 }}
                 transition={{ duration: 0.5 }}
@@ -115,103 +97,29 @@ const SendCloverButton = ({ member }: { member: MemberData }) => {
 function GroupRunningContent() {
   const searchParams = useSearchParams();
   const crewId = searchParams.get('q');
+  const { members, activeMember, memberLocation, selectMember } =
+    useCrewRunningSocket(crewId);
 
-  //TODO 크루 ID를 통해 크루 조회
-
-  const [members, setMembers] = useState<MemberData[]>([]);
-  const [member, setMember] = useState<MemberData | null>(null);
-  const [memberLocation, setMemberLocation] = useState({
-    lat: 35.97664845766847,
-    lng: 126.99597295767953
-  });
-
-  //TODO 멤버 타입 정의
-  const onMemberClick = (member: MemberData) => {
-    setMember(member);
-    if (!member.isRunning) {
-      return;
-    }
-    stompClient.subscribe(member.sub, (message: IMessage) => {
-      const data: {
-        x: number;
-        y: number;
-        timestamp: number;
-      } = JSON.parse(message.body);
-      setMemberLocation({
-        lng: data.x,
-        lat: data.y
-      });
-    });
-  };
-
-  useEffect(() => {
-    // Android
-    const handleAndroidMessage = (event: Event) => {
-      try {
-        const messageEvent = event as MessageEvent;
-        const parsedData = JSON.parse(messageEvent.data);
-        if (parsedData.type === 'SET_CREW_MEMBERS') {
-          setMembers(parsedData.message as MemberData[]);
-        }
-      } catch (error) {
-        console.error('Error parsing message:', error);
-      }
-    };
-
-    // iOS
-    const handleIOSMessage = (event: MessageEvent) => {
-      try {
-        const parsedData = JSON.parse(event.data);
-        if (parsedData.type === 'SET_CREW_MEMBERS') {
-          setMembers(parsedData.message as MemberData[]);
-        }
-      } catch (error) {
-        console.error('Error parsing message:', error);
-      }
-    };
-
-    document.addEventListener('message', handleAndroidMessage);
-    window.addEventListener('message', handleIOSMessage);
-
-    return () => {
-      document.removeEventListener('message', handleAndroidMessage);
-      window.removeEventListener('message', handleIOSMessage);
-      stompClient.deactivate();
-    };
-  }, []);
-
-  useLayoutEffect(() => {
-    const init = async () => {
-      axios(
-        `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/crews/${crewId}/members`,
-        {
-          method: 'GET',
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-    };
-    init();
-  });
+  const latestMemberLocation = useMemo(() => {
+    return memberLocation.at(-1);
+  }, [memberLocation]);
 
   return (
-    <div className="text-whit l relative h-full w-full bg-[#313131] px-4">
-      <CrewMemberProfiles users={members} onClick={onMemberClick} />
-      <div className="relative mt-6 mb-[14px] h-[400px] overflow-y-scroll">
-        <GoogleMap
-          path={[{ lat: memberLocation.lat, lng: memberLocation.lng }]}
-        >
-          {member && (
-            <UserMarker
-              lat={memberLocation.lat}
-              lng={memberLocation.lng}
-              imageUrl={member.badgeImageUrl}
-            />
+    <div className="relative -mt-6 w-full overflow-hidden bg-[#313131] px-4 text-white">
+      <CrewMemberProfiles users={members} onClick={selectMember} />
+      <div className="mt-6 mb-[14px] min-h-[400px]">
+        <GoogleMap height="750px" paths={[memberLocation]}>
+          {activeMember && latestMemberLocation && (
+            <>
+              <UserMarker
+                lat={latestMemberLocation.lat}
+                lng={latestMemberLocation.lng}
+                imageUrl={activeMember.badgeImageUrl}
+              />
+              <SendCloverButton member={activeMember} />
+            </>
           )}
         </GoogleMap>
-        {member && <SendCloverButton member={member} />}
       </div>
     </div>
   );

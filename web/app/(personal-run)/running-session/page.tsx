@@ -1,24 +1,12 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React from 'react';
 import ExerciseOverview from '@/components/running/OverView/ExerciseOverview';
 import ControlPanel from '@/components/running/Control/ControlPanel';
 import PageControl from '@/components/common/PageControl';
 import MapView from '@/components/running/MapView/MapView';
 import MainOverview from '@/components/running/OverView/MainOverview';
-import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
-import { RunningData } from '@/types/runningTypes';
-import api from '@/utils/apis/customAxios';
-import { RUNNING_API, SOCKET_URL } from '@/utils/apis/api';
-import { postMessageToApp } from '@/utils/apis/postMessageToApp';
-import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-
-const stompClient = new Client({
-  webSocketFactory: () =>
-    new SockJS(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/ws`),
-  reconnectDelay: 5000
-});
+import { useRunningSession } from '@/hooks/running/useRunningSession';
 
 export default function Page() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -132,17 +120,17 @@ export default function Page() {
             { ...data.message, timestamp: data.timestamp }
           ]);
           //SOCKET PUBLISH
-          stompClient.publish({
-            destination: SOCKET_URL.RUNNING_PUBLISH(
-              localStorage.getItem('runningId')!
-            ),
-            body: JSON.stringify({
-              x: data.message.latitude,
-              y: data.message.longitude,
-              timestamp: Date.now()
-            }),
-            headers: { 'content-type': 'application/json' }
-          });
+          // stompClient.publish({
+          //   destination: SOCKET_URL.RUNNING_PUBLISH(
+          //     localStorage.getItem('runningId')!
+          //   ),
+          //   body: JSON.stringify({
+          //     x: data.message.latitude,
+          //     y: data.message.longitude,
+          //     timestamp: Date.now()
+          //   }),
+          //   headers: { 'content-type': 'application/json' }
+          // });
         }
       } catch (error) {
         console.error('error:', error);
@@ -306,18 +294,16 @@ export default function Page() {
         className="flex h-full w-[200%] transition-transform duration-300 ease-in-out"
         style={{ transform: `translateX(-${currentPage * 50}%)` }}
       >
-        {/* Stats View */}
         <div className="flex h-full w-1/2 flex-col px-4 pb-4">
-          {/* <GpsStatus /> */}
           <div className="flex flex-3/12 flex-col items-center justify-center text-center">
             <MainOverview distance={totalDistance} />
           </div>
           <div className="mt-8 grid grid-cols-2 gap-y-10">
             <ExerciseOverview
               remainingDistance={remainingDistance}
-              velocity={currentSpeed().toFixed(1)}
+              velocity={currentSpeed.toFixed(1) || '0'}
               averagePace={averagePace}
-              time={formatTime(totalTime)}
+              time={formattedTime}
             />
           </div>
           <div className="mb-10 flex flex-1/12 items-center justify-center">
@@ -329,19 +315,17 @@ export default function Page() {
           </div>
         </div>
 
-        {/* Map View */}
         <div className="relative h-full w-1/2">
           <MapView
             onControl={handleControl}
             isRunning={isRunning}
             isPaused={isPaused}
             runningData={runningData}
-            time={formatTime(totalTime)}
+            time={formattedTime}
           />
         </div>
       </div>
 
-      {/* Sticky PageControl */}
       <div className="absolute right-0 bottom-15 left-0 z-10 flex justify-center">
         <PageControl
           pages={2}

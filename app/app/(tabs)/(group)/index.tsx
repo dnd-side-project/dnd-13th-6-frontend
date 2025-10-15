@@ -1,10 +1,10 @@
-import { ENV } from '@/utils/app/consts';
-import { useRef, useState } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
-import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { MODULE } from '@/utils/apis/api';
-import { router } from 'expo-router';
+import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import { useRef, useState } from 'react';
+import { Dimensions, SafeAreaView, StyleSheet, View } from 'react-native';
+import WebView, { WebViewMessageEvent } from 'react-native-webview';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -13,30 +13,36 @@ function RunningShare() {
   const [webViewKey, setWebViewKey] = useState(0);
   const receiveMessage = (event: WebViewMessageEvent) => {
     const { type, data } = JSON.parse(event.nativeEvent.data);
-    console.log('type', data);
     if (type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);
       }
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;
-      console.log('url', url);
       if (url === '/(tabs)/(home)') {
         setWebViewKey(prev => prev + 1);
       }
-      router.push(url);
+      router.replace(url);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={styles.container}
+      className="flex-1 align-center justify-between py-4"
+    >
       <WebView
+        className="flex-1 h-full bg-gray border"
         ref={webviewRef}
         key={webViewKey}
         style={styles.webview}
+        showsVerticalScrollIndicator={false}
         keyboardDisplayRequiresUserAction={false}
         source={{ uri: ENV.WEB_VIEW_URL + '/group' }}
         onMessage={receiveMessage}
+        bounces={false}
+        overScrollMode={'never'}
+        mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );
@@ -46,15 +52,11 @@ export default RunningShare;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16
+    flex: 1
   },
   webview: {
     flex: 1,
-    height: windowHeight,
     width: windowWidth,
-    backgroundColor: '#313131'
+    height: windowHeight
   }
 });

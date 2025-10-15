@@ -1,17 +1,17 @@
 import React from 'react';
-import Image from 'next/image';
 import { RunningUser } from '@/types/runningUser';
+import Image from 'next/image';
 
 function OneActiveRunner({ runningUser }: { runningUser: RunningUser[] }) {
   return (
     <div className="relative z-20 flex-col pt-1">
       <div className="flex justify-center">
-        <div className="bg-background z-10 flex h-[60px] w-[60px] justify-center rounded-full">
+        <div className="bg-background z-10 flex h-[60px] w-[60px] items-center justify-center rounded-full">
           <Image
-            src="/assets/icon/elephant.svg"
-            alt="elephant"
-            width={39.5}
-            height={35}
+            src={runningUser[0].badgeImageUrl}
+            width="40"
+            height="40"
+            alt={runningUser[0].nickname}
           />
         </div>
       </div>

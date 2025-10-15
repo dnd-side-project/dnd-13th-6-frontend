@@ -10,64 +10,26 @@ import ReactConfetti from 'react-confetti';
 import { useEffect, useState } from 'react';
 import formatTo24H from '@/utils/time/formatTo24H';
 import Button from '@/components/common/Button';
-import api from '@/utils/apis/customAxios';
-import { RUNNING_API } from '@/utils/apis/api';
-
-type FinishData = {
-  runningData: {
-    latitude: number;
-    longitude: number;
-  }[];
-  averagePace: string;
-  totalDistance: number;
-  totalTime: string;
-  startTime: number;
-};
+import { useWeeklyRunDistance } from '@/hooks/queries/useWeeklyRunDistance';
+import { useFinishData } from '@/hooks/running/useFinishData';
 
 export default function Page() {
   const navi = useRouter();
-  const [isClient, setIsClient] = useState(false);
-  const [finishData, setFinishData] = useState<FinishData[] | null>([]);
-  const [weeklyRunDistance, setWeeklyRunDistance] = useState<number>(0);
-  const [, setTargetDistance] = useState<number>(0);
-
-  const getWeeklyRunDistance = async () => {
-    try {
-      const res = await api.get(RUNNING_API.WEEKLY_RUNNINGS());
-      setWeeklyRunDistance(res.data.result.totalDistanceKm);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { latestFinishData, pathForMap, isClient } = useFinishData();
+  const { data: weeklyRunDistance } = useWeeklyRunDistance();
+  const [targetDistance, setTargetDistance] = useState<number>(0);
 
   useEffect(() => {
-    setIsClient(true);
-    getWeeklyRunDistance();
     setTargetDistance(Number(localStorage.getItem('weeklyGoalDistance')));
-
-    const data = localStorage.getItem('finishData');
-    if (data) {
-      const parsedData = JSON.parse(data) as FinishData[];
-      setFinishData(parsedData);
-    }
   }, []);
 
-  // 배열에서 최근 데이터 선택
-  const latestFinishData = finishData?.[finishData.length - 1];
-
-  // 맵 경로
-  const pathForMap = latestFinishData?.runningData
-    ? latestFinishData.runningData.map(p => ({
-        lat: p.latitude,
-        lng: p.longitude
-      }))
-    : [{ lat: 37.5665, lng: 126.978 }];
-
-  // 주간 달리기 진행률
-  const WeeklyRunPercent = () => {
-    return weeklyRunDistance !== 0 && latestFinishData
-      ? Math.floor((latestFinishData.totalDistance / weeklyRunDistance) * 100)
-      : 0;
+  const weeklyRunPercent = () => {
+    if (!targetDistance || !latestFinishData) {
+      return 0;
+    }
+    const totalDistance =
+      (weeklyRunDistance || 0) + latestFinishData.totalDistance / 1000;
+    return Math.floor((totalDistance / targetDistance) * 100);
   };
 
   return (
@@ -89,7 +51,7 @@ export default function Page() {
                 distance={latestFinishData?.totalDistance}
               />
             </div>
-            <CircleProgress percent={WeeklyRunPercent()} />
+            <CircleProgress percent={weeklyRunPercent()} />
           </div>
           <FinishOverView
             averagePace={latestFinishData?.averagePace}
@@ -98,12 +60,10 @@ export default function Page() {
           />
         </div>
 
-        {/* 지도 55vh 아래 */}
         <div className="absolute right-0 bottom-0 left-0 h-[55vh]">
-          <GoogleMap height="100%" path={pathForMap} />
+          <GoogleMap height="100%" paths={[pathForMap]} />
         </div>
 
-        {/* 종료 버튼 */}
         <div className="absolute right-0 bottom-0 left-0 w-full bg-transparent p-4">
           <Button
             onClickAction={() => navi.push('/lucky-stamp')}

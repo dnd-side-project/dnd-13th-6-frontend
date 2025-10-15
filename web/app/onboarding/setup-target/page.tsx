@@ -4,22 +4,21 @@ import ProgressBar from '@/components/common/ProgressBar';
 import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
 import DecimalInput from '@/components/common/DecimalInput';
-import api from '@/utils/apis/customAxios';
-import { GOAL_API } from '@/utils/apis/api';
+import { useChangeTargetDistance } from '@/hooks/queries/useChangeTargetDistance';
 
 function Page() {
   const [targetDistance, setTargetDistance] = useState('3.00');
   const router = useRouter();
-  const changeTargetDistance = async () => {
-    try {
-      await api.patch(GOAL_API.CHANGE_TARGET_DISTANCE(), {
-        goal: Number(targetDistance)
-      });
-      router.push('/onboarding/onboarding-finish');
-    } catch (error) {
-      console.error(error);
-    }
+  const { mutate: changeDistanceMutate } = useChangeTargetDistance();
+
+  const handleChangeTargetDistance = () => {
+    changeDistanceMutate(Number(targetDistance), {
+      onSuccess: () => {
+        router.push('/onboarding/onboarding-finish');
+      },
+    });
   };
+
   return (
     <div className="flex flex-grow flex-col">
       <div>
@@ -58,7 +57,10 @@ function Page() {
           }
         </p>
       </div>
-      <Button className="mb-5 h-15 w-full" onClickAction={changeTargetDistance}>
+      <Button
+        className="mb-5 h-15 w-full"
+        onClickAction={handleChangeTargetDistance}
+      >
         시작하기
       </Button>
     </div>

@@ -1,49 +1,48 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Button from '@/components/common/Button';
-import { useRouter } from 'next/navigation';
-import api from '@/utils/apis/customAxios';
-import { REWARD_API } from '@/utils/apis/api';
+import { useGacha } from '@/hooks/queries/useGacha';
+import { useCloverCount } from '@/hooks/queries/useCloverCount';
+import PickGachaBall from '@/public/assets/gacha/pickgachaball.svg';
+import VanillaGachaBall from '@/public/assets/gacha/vanillaGachaBall.svg';
+import DisabledGachaBall from '@/public/assets/gacha/disabledgachaball.svg';
+
+const svgMap: { [key: string]: React.ElementType } = {
+  '/assets/gacha/pickgachaball.svg': PickGachaBall,
+  '/assets/gacha/vanilaGachaBall.svg': VanillaGachaBall,
+  '/assets/gacha/disabledgachaball.svg': DisabledGachaBall
+};
 
 function Page() {
-  const [clover, setClover] = useState(0);
-
   const [isAnimating, setIsAnimating] = useState(false);
+  const { mutate: gachaMutate } = useGacha();
+  const { data: clover = 0 } = useCloverCount();
+
   const validateCount = () => {
     return clover / 10 >= 1;
   };
   const [nickname, setNickName] = useState('');
   useEffect(() => {
     setNickName(localStorage.getItem('nickname') || '');
-    setClover(Number(localStorage.getItem('cloverCount')) || 0);
   }, []);
 
   const canDraw = validateCount();
   const [image, setImage] = useState('/assets/gacha/pickgachaball.svg');
   const [isOnClick, setIsOnClick] = useState(false);
-  const router = useRouter();
-  const gachaStart = async () => {
-    try {
-      const res = await api.patch(REWARD_API.GACHA());
-      console.log(res.data.result);
-      router.push(
-        `/badge-collection/gacha/result?id=${res.data?.result.id}&url=${res.data?.result.imageUrl}`
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const handleGacha = () => {
     if (validateCount()) {
       setIsOnClick(true);
       setIsAnimating(true);
       setImage('/assets/gacha/vanilaGachaBall.svg');
       setTimeout(() => {
-        gachaStart();
+        gachaMutate();
       }, 5000);
     }
   };
+
+  const SvgComponent =
+    svgMap[canDraw ? image : '/assets/gacha/disabledgachaball.svg'];
 
   return (
     <div
@@ -57,8 +56,7 @@ function Page() {
           : `클로버가 조금 부족해요\n러닝으로 더 모아볼까요?`}
       </p>
       {/* 이미지 화면 정중앙 고정 */}
-      <Image
-        src={canDraw ? image : '/assets/gacha/disabledgachaball.svg'}
+      <SvgComponent
         alt="가챠공"
         width={isOnClick ? 228 : canDraw ? 270 : 228}
         height={isOnClick ? 228 : canDraw ? 270 : 228}

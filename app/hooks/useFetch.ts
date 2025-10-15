@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ENV } from '@/utils/app/consts';
 import { APIResponse } from '@/types/genericTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,13 +13,13 @@ const useFetch = <T>(url: string, options?: RequestInit) => {
       const res = await fetch(`${ENV.API_BASE_URL}/${url}`, {
         headers: {
           'Content-Type': 'application/json',
-          Cookie: `accessToken=${token}`
+          Cookie: `accessToken=${token}`,
+          Authorization: `Bearer ${token}`
         },
         ...options
       });
       const result = (await res.json()) as APIResponse<T>;
       if (res.ok) {
-        // console.log(result.result.members);
         setData(result.result);
         setError(null);
       } else {

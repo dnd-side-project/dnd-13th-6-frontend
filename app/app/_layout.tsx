@@ -56,24 +56,26 @@ function AnimatedSplashScreen({
   }, [isAppReady]);
 
   async function onFetchUpdateAsync() {
-    try {
-      if (!__DEV__) {
-        const update = await Updates.checkForUpdateAsync();
+    if (__DEV__) {
+      console.log('개발 모드에서는 OTA 업데이트 체크를 스킵합니다.');
+      return;
+    }
 
-        if (update.isAvailable) {
-          await Updates.fetchUpdateAsync();
-          Alert.alert('Update available', 'Please update your app', [
-            {
-              text: 'Update',
-              onPress: () => Updates.reloadAsync()
-            },
-            { text: 'Cancel', style: 'cancel' }
-          ]);
-        }
+    try {
+      const update = await Updates.checkForUpdateAsync();
+
+      if (update.isAvailable) {
+        await Updates.fetchUpdateAsync();
+        Alert.alert('Update available', 'Please update your app', [
+          {
+            text: 'Update',
+            onPress: () => Updates.reloadAsync()
+          },
+          { text: 'Cancel', style: 'cancel' }
+        ]);
       }
-    } catch (error) {
-      console.error(error);
-      alert(`Error fetching latest Expo update: ${error}`);
+    } catch (e) {
+      console.error('Update check failed:', e);
     }
   }
 

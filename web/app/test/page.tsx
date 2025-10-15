@@ -1,157 +1,206 @@
-'use client';
+// // 캔버스 에디터 컴포넌트 - 면접 연습용 코드
+// import React, { useState, useEffect, useRef } from 'react';
 
-import { useEffect, useRef, useState } from 'react';
-import api from '@/utils/apis/customAxios';
+// const CanvasEditor = () => {
+//   const canvasRef = useRef(null);
+//   const [objects, setObjects] = useState([]);
+//   const [selectedObject, setSelectedObject] = useState(null);
+//   const [isDragging, setIsDragging] = useState(false);
+//   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
-// RN WebView 타입 선언 (이 컴포넌트 파일 안에서만 사용할 경우)
-interface ReactNativeWebView {
-  postMessage: (message: string) => void;
-}
+//   // 객체 추가
+//   const addObject = type => {
+//     const newObject = {
+//       id: Date.now(),
+//       type: type,
+//       x: Math.random() * 400,
+//       y: Math.random() * 300,
+//       width: 100,
+//       height: 100,
+//       color: '#' + Math.floor(Math.random() * 16777215).toString(16),
+//       text: type === 'text' ? 'Sample Text' : ''
+//     };
+//     setObjects([...objects, newObject]);
+//   };
 
-// window 객체에 ReactNativeWebView 추가
-declare global {
-  interface Window {
-    ReactNativeWebView?: ReactNativeWebView;
-  }
-}
+//   // 캔버스 렌더링
+//   const renderCanvas = () => {
+//     const canvas = canvasRef.current;
+//     const ctx = canvas.getContext('2d');
 
-export default function WebViewTestPage() {
-  const [message, setMessage] = useState<string>('');
-  const [receivedMessages, setReceivedMessages] = useState<string[]>([]);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  const messageEndRef = useRef<HTMLDivElement | null>(null);
+//     // 캔버스 초기화
+//     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // React Native에서 보내는 메시지 수신 처리
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleMessage = (event: MessageEvent<any>): void => {
-      const data = JSON.parse(event.data);
-      if (data) {
-        setReceivedMessages(prev => [...prev, `RN: ${data.message}`]);
-      }
-    };
+//     // 모든 객체 렌더링
+//     objects.forEach(obj => {
+//       ctx.fillStyle = obj.color;
 
-    window.addEventListener('message', handleMessage);
+//       if (obj.type === 'rectangle') {
+//         ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+//       } else if (obj.type === 'circle') {
+//         ctx.beginPath();
+//         ctx.arc(
+//           obj.x + obj.width / 2,
+//           obj.y + obj.height / 2,
+//           obj.width / 2,
+//           0,
+//           2 * Math.PI
+//         );
+//         ctx.fill();
+//       } else if (obj.type === 'text') {
+//         ctx.fillStyle = 'black';
+//         ctx.font = '16px Arial';
+//         ctx.fillText(obj.text, obj.x, obj.y);
+//       }
 
-    if (
-      (window as unknown as { ReactNativeWebView: ReactNativeWebView })
-        .ReactNativeWebView
-    ) {
-      (
-        window as unknown as { ReactNativeWebView: ReactNativeWebView }
-      ).ReactNativeWebView.postMessage(
-        JSON.stringify({ type: 'WEBVIEW_READY' })
-      );
-      setIsConnected(true);
-    }
+//       // 선택된 객체에 테두리 그리기
+//       if (selectedObject && selectedObject.id === obj.id) {
+//         ctx.strokeStyle = 'blue';
+//         ctx.lineWidth = 2;
+//         ctx.strokeRect(obj.x - 2, obj.y - 2, obj.width + 4, obj.height + 4);
+//       }
+//     });
+//   };
 
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, []);
+//   // 마우스 이벤트 핸들러
+//   const handleMouseDown = e => {
+//     const rect = canvasRef.current.getBoundingClientRect();
+//     const x = e.clientX - rect.left;
+//     const y = e.clientY - rect.top;
 
-  // 스크롤 자동 하단 이동
-  useEffect(() => {
-    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [receivedMessages]);
+//     // 클릭된 객체 찾기
+//     for (let i = objects.length - 1; i >= 0; i--) {
+//       const obj = objects[i];
+//       if (
+//         x >= obj.x &&
+//         x <= obj.x + obj.width &&
+//         y >= obj.y &&
+//         y <= obj.y + obj.height
+//       ) {
+//         setSelectedObject(obj);
+//         setIsDragging(true);
+//         setDragOffset({
+//           x: x - obj.x,
+//           y: y - obj.y
+//         });
+//         return;
+//       }
+//     }
+//     setSelectedObject(null);
+//   };
 
-  const sendMessage = (): void => {
-    if (!message.trim()) return;
+//   const handleMouseMove = e => {
+//     if (!isDragging || !selectedObject) return;
 
-    const newMessage = `WEB: ${message}`;
-    setReceivedMessages(prev => [...prev, newMessage]);
+//     const rect = canvasRef.current.getBoundingClientRect();
+//     const x = e.clientX - rect.left;
+//     const y = e.clientY - rect.top;
 
-    if (
-      (window as unknown as { ReactNativeWebView: ReactNativeWebView })
-        .ReactNativeWebView
-    ) {
-      (
-        window as unknown as { ReactNativeWebView: ReactNativeWebView }
-      ).ReactNativeWebView.postMessage(
-        JSON.stringify({
-          type: 'MESSAGE',
-          message: message,
-          timestamp: new Date().toISOString()
-        })
-      );
-    }
+//     // 선택된 객체 위치 업데이트
+//     const updatedObjects = objects.map(obj => {
+//       if (obj.id === selectedObject.id) {
+//         return {
+//           ...obj,
+//           x: x - dragOffset.x,
+//           y: y - dragOffset.y
+//         };
+//       }
+//       return obj;
+//     });
 
-    setMessage('');
-  };
+//     setObjects(updatedObjects);
+//     setSelectedObject({
+//       ...selectedObject,
+//       x: x - dragOffset.x,
+//       y: y - dragOffset.y
+//     });
+//   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
+//   const handleMouseUp = () => {
+//     setIsDragging(false);
+//   };
 
-  const handleButton = async () => {
-    try {
-      const data = await api.get('https://api.runky.store/api/members/me');
-      window.alert(data);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-  return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="mx-auto max-w-md overflow-hidden rounded-lg bg-white shadow-md">
-        <div className="border-b p-4">
-          <h1 className="text-xl font-bold">WebView 통신 테스트</h1>
-          <div className="mt-2 flex items-center">
-            <div
-              className={`mr-2 h-3 w-3 rounded-full ${
-                isConnected ? 'bg-green-500' : 'bg-red'
-              }`}
-            ></div>
-            <span className="text-sm text-gray-600">
-              {isConnected ? 'React Native와 연결됨' : '연결 대기 중...'}
-            </span>
-          </div>
-        </div>
+//   // 객체 삭제
+//   const deleteObject = () => {
+//     if (selectedObject) {
+//       setObjects(objects.filter(obj => obj.id !== selectedObject.id));
+//       setSelectedObject(null);
+//     }
+//   };
 
-        <div className="h-80 overflow-y-auto bg-gray-50 p-4">
-          {receivedMessages.length === 0 ? (
-            <div className="flex h-full items-center justify-center text-gray-400">
-              메시지를 주고받아보세요!
-            </div>
-          ) : (
-            receivedMessages.map((msg, index) => (
-              <div
-                key={index}
-                className={`mb-2 max-w-[80%] rounded-lg p-2 ${
-                  msg.startsWith('WEB:')
-                    ? 'ml-auto bg-blue-100 text-blue-800'
-                    : 'mr-auto bg-gray-200 text-gray-800'
-                }`}
-              >
-                {msg}
-              </div>
-            ))
-          )}
-          <div ref={messageEndRef} />
-        </div>
+//   // 실행 취소
+//   const undo = () => {
+//     // 간단한 구현 - 마지막 객체 제거
+//     if (objects.length > 0) {
+//       setObjects(objects.slice(0, -1));
+//     }
+//   };
 
-        <div className="border-t p-4">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={message}
-              onChange={e => setMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="메시지를 입력하세요..."
-              className="flex-1 rounded border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-            <button
-              onClick={handleButton}
-              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              전송
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+//   // 캔버스 내보내기
+//   const exportCanvas = () => {
+//     const canvas = canvasRef.current;
+//     const link = document.createElement('a');
+//     link.download = 'canvas.png';
+//     link.href = canvas.toDataURL();
+//     link.click();
+//   };
+
+//   // 렌더링 효과
+//   useEffect(() => {
+//     renderCanvas();
+//   }, [objects, selectedObject]);
+
+//   return (
+//     <div style={{ display: 'flex', gap: '20px' }}>
+//       <div>
+//         <canvas
+//           ref={canvasRef}
+//           width={800}
+//           height={600}
+//           style={{
+//             border: '1px solid #ccc',
+//             cursor: isDragging ? 'grabbing' : 'grab'
+//           }}
+//           onMouseDown={handleMouseDown}
+//           onMouseMove={handleMouseMove}
+//           onMouseUp={handleMouseUp}
+//         />
+//       </div>
+
+//       <div style={{ padding: '20px' }}>
+//         <h3>도구</h3>
+//         <button onClick={() => addObject('rectangle')}>사각형 추가</button>
+//         <button onClick={() => addObject('circle')}>원 추가</button>
+//         <button onClick={() => addObject('text')}>텍스트 추가</button>
+
+//         <h3>편집</h3>
+//         <button onClick={deleteObject} disabled={!selectedObject}>
+//           삭제
+//         </button>
+//         <button onClick={undo}>실행 취소</button>
+//         <button onClick={exportCanvas}>내보내기</button>
+
+//         <div style={{ marginTop: '20px' }}>
+//           <h4>객체 개수: {objects.length}</h4>
+//           {selectedObject && (
+//             <div>
+//               <h4>선택된 객체:</h4>
+//               <p>타입: {selectedObject.type}</p>
+//               <p>
+//                 위치: ({Math.round(selectedObject.x)},{' '}
+//                 {Math.round(selectedObject.y)})
+//               </p>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CanvasEditor;
+import React from 'react';
+
+export default function Page() {
+  return <div>page</div>;
 }

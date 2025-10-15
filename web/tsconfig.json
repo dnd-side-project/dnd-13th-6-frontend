@@ -27,7 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "server.hs"
+    "server.hs",
+    "types/react-native-webview.d.ts"
   ],
   "exclude": ["node_modules"]
 }

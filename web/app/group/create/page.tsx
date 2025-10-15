@@ -1,11 +1,9 @@
 'use client';
 import { useState } from 'react';
 import { CrewApi } from '@/utils/apis/crewApi';
-import { useRouter } from 'next/navigation';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { MODULE } from '@/utils/apis/api';
 export default function Page() {
-  const router = useRouter();
   const [crewName, setCrewName] = useState('');
 
   const onMove = (url: string) => {
@@ -19,7 +17,7 @@ export default function Page() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await CrewApi.createCrew(crewName);
+      await CrewApi.createCrew(crewName);
 
       onMove('/(tabs)/(group)');
     } catch (error) {
@@ -30,7 +28,7 @@ export default function Page() {
   return (
     <form
       onSubmit={onSubmit}
-      className="mt-6 flex h-[calc(100vh-90px)] w-full flex-col px-4"
+      className="mt-6 flex h-[calc(100vh-90px)] w-full flex-col p-4"
     >
       <div className="pretendard-title1 text-gray20 w-full">
         크루 정보를 입력해주세요.
@@ -54,7 +52,7 @@ export default function Page() {
       <button
         type="submit"
         disabled={crewName.length < 1 || crewName.length > 10}
-        className="bg-primary title-5 justify-self-end rounded-2xl py-[18px] text-center text-black disabled:opacity-20"
+        className="bg-primary pretendard-title5 justify-self-end rounded-2xl py-[18px] text-center text-black disabled:opacity-20"
       >
         크루 만들기
       </button>

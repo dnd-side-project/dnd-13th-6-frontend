@@ -1,22 +1,18 @@
 'use client';
-import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Button from '@/components/common/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useUserInfo } from '@/hooks/queries/useUserInfo';
+import { useCloverCount } from '@/hooks/queries/useCloverCount';
+import BackgroundLight from '@/public/assets/common/backgroundLight.svg';
 
 function ResultPage() {
-  const [nickname, setNickName] = useState('');
-  const [clover, setClover] = useState(0);
   const searchParams = useSearchParams();
   const imageUrl = searchParams.get('url'); // url 파라미터 가져오기
   const id = searchParams.get('id'); // id 파라미터 가져오기
   const router = useRouter();
-  useEffect(() => {
-    setNickName(localStorage.getItem('nickname') || '');
-    setClover(Number(localStorage.getItem('cloverCount')) || 0);
-  }, []);
-  console.log('urlId:', id);
-
+  const { data: { nickname = '' } = {} } = useUserInfo();
+  const { data: clover = 0 } = useCloverCount();
   return (
     <div className="m-h-screen relative flex flex-grow flex-col items-center overflow-hidden">
       <p className="onboarding mt-25 text-center whitespace-pre-line">
@@ -24,12 +20,11 @@ function ResultPage() {
       </p>
       <div className="relative mt-14 mb-30 flex items-center justify-center">
         {/* 배경 이미지 */}
-        <Image
-          src="/assets/common/backgroundLight.svg"
-          alt="배경"
+        <BackgroundLight
           width={325}
           height={325}
           className="object-contain"
+          aria-hidden="true"
         />
         {/* 물병 이미지 → url이 있으면 교체 */}
         {imageUrl && (

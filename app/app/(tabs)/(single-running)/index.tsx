@@ -1,4 +1,3 @@
-import Chip from '@/components/chips/Chip';
 import { useWebView } from '@/hooks/useWebView';
 import { RunningData } from '@/types/runnintTypes';
 import { MODULE } from '@/utils/apis/api';
@@ -14,21 +13,18 @@ import dayjs from 'dayjs';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import * as TaskManager from 'expo-task-manager';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   AppState,
   Dimensions,
-  Image,
   SafeAreaView,
-  StyleSheet,
-  Text,
-  View
+  StyleSheet
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
-import { useWebViewReset } from '../_layout';
+import GpsInfoChip from '@/components/chips/GpsInfoChip';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -130,12 +126,13 @@ const stopBackgroundLocation = async () => {
     );
   }
 };
-
+const initialUrl = ENV.WEB_VIEW_URL + '/prepare-run';
 function Index() {
   const insets = useSafeAreaInsets();
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isGpsInfoVisible, setIsGpsInfoVisible] = useState<boolean>(false);
   //TODO.. 위치 표시 UI 추가시 구현
   const [isGPSEnabled, setIsGPSEnabled] = useState<
     'granted' | 'waiting' | 'denied'
@@ -144,11 +141,10 @@ function Index() {
   const { webviewRef, postMessage } = useWebView<
     RunningData | { type: string; lat: number; lng: number } | string
   >();
-  const { resetTrigger } = useWebViewReset();
-  const initialUrl = ENV.WEB_VIEW_URL + '/prepare-run';
 
   const setGpsStatus = async () => {
     const providerStatus = await Location.getProviderStatusAsync();
+    setIsGpsInfoVisible(providerStatus.locationServicesEnabled);
     setIsGPSEnabled(
       providerStatus.locationServicesEnabled ? 'granted' : 'denied'
     );
@@ -168,7 +164,6 @@ function Index() {
         const runningData =
           (await getStorage<RunningData[]>(STORAGE_KEY.RUNNING_DATA)) || [];
         const location = await getLocation();
-        console.log('location', location);
         setGpsStatus();
         const { latitude, longitude } = location.coords;
 
@@ -201,7 +196,14 @@ function Index() {
         setIsRunning(true);
         postGeoLocation();
         break;
+      case SEND_MESSAGE_TYPE.RUNNING_PAUSE:
+        if (intervalId) clearInterval(intervalId);
+        setIntervalId(null);
+        setIsRunning(false);
+        stopBackgroundLocation();
+        break;
       case SEND_MESSAGE_TYPE.RUNNING_END:
+        setIsGpsInfoVisible(false);
         if (intervalId) clearInterval(intervalId);
         setIntervalId(null);
         setIsRunning(false);
@@ -209,12 +211,6 @@ function Index() {
         //TODO.. 운동 종료 로직 추가
         setStorage(STORAGE_KEY.RUNNING_DATA, []);
         setStorage(STORAGE_KEY.RUNNING_PENDING_MESSAGES, []);
-        break;
-      case SEND_MESSAGE_TYPE.RUNNING_PAUSE:
-        if (intervalId) clearInterval(intervalId);
-        setIntervalId(null);
-        setIsRunning(false);
-        stopBackgroundLocation();
         break;
       case MODULE.PUSH:
         const { type, data } = JSON.parse(event.nativeEvent.data);
@@ -289,66 +285,45 @@ function Index() {
     init();
   }, []);
 
-  // 탭 전환 시 WebView URI 초기화
-  useEffect(() => {
-    if (resetTrigger > 0 && webviewRef.current) {
-      const script = `window.location.href = '${initialUrl}'; true;`;
-      webviewRef.current.injectJavaScript(script);
-    }
-  }, [resetTrigger]);
+  const onLoadEnd = async () => {
+    const location = await getLocation();
+    const { latitude, longitude } = location.coords;
+    setIsLoading(false);
+    postMessage(POST_MESSAGE_TYPE.MESSAGE, {
+      type: SEND_MESSAGE_TYPE.RUNNING_PREPARE,
+      lat: latitude,
+      lng: longitude
+    });
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Chip style={[styles.chip, { top: insets.top + 30 }]}>
-        <View style={styles.chipContent}>
-          <Image
-            source={
-              isGPSEnabled === 'granted'
-                ? require('@/assets/images/ellipse-green.png')
-                : isGPSEnabled === 'waiting'
-                ? require('@/assets/images/ellipse-yellow.png')
-                : require('@/assets/images/ellipse-red.png')
-            }
-            style={{ width: 16, height: 16 }}
-          />
-          <Text style={styles.chipText}>
-            {isGPSEnabled === 'granted'
-              ? 'GPS 연결됨'
-              : isGPSEnabled === 'waiting'
-              ? 'GPS 연결중'
-              : 'GPS 연결 실패'}
-          </Text>
-        </View>
-      </Chip>
+    <SafeAreaView className="flex-1 items-center justify-between relative">
+      {isGpsInfoVisible && (
+        <GpsInfoChip
+          isGPSEnabled={isGPSEnabled}
+          style={[{ top: insets.top + 30 }]}
+        />
+      )}
       {isLoading && (
         <ActivityIndicator
           color="#32FF76"
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: windowHeight
-          }}
+          className="flex-1 justify-center items-center"
+          style={[{ height: windowHeight }]}
         />
       )}
       <WebView
         ref={webviewRef}
+        className="flex-1 bg-gray"
         onMessage={receiveMessage}
-        onLoadEnd={async () => {
-          // try {
-          const location = await getLocation();
-          postMessage(POST_MESSAGE_TYPE.MESSAGE, {
-            type: SEND_MESSAGE_TYPE.RUNNING_PREPARE,
-            lat: location.coords.latitude,
-            lng: location.coords.longitude
-          });
-          setIsLoading(false);
-          // }
-        }}
+        onLoadEnd={onLoadEnd}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        overScrollMode={'never'}
         style={[styles.webview, { opacity: isLoading ? 0 : 1 }]}
         source={{
           uri: initialUrl
         }}
+        mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );
@@ -357,33 +332,8 @@ function Index() {
 export default Index;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    position: 'relative'
-  },
   webview: {
-    flex: 1,
     width: windowWidth,
-    height: windowHeight,
-    position: 'relative'
-  },
-  //웹뷰 기준으로 띄우기 위해 절대 위치 사용
-  chip: {
-    backgroundColor: 'rgba(28, 28, 30, 0.5)',
-    position: 'absolute',
-    zIndex: 100,
-    left: 16
-  },
-  chipContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8
-  },
-  chipText: {
-    color: '#fff',
-    opacity: 1,
-    fontSize: 14
+    height: windowHeight
   }
 });

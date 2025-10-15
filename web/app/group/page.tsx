@@ -4,38 +4,48 @@ import CrewChallengeCard from '@/components/main/CrewChallengeCard';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { MODULE } from '@/utils/apis/api';
 import { Crew } from '@/types/crew';
-import { useLayoutEffect, useState } from 'react';
-import { CrewApi } from '@/utils/apis/crewApi';
-import { APIResponse } from '@/types/genericTypes';
+import { useCrews } from '@/hooks/queries/useCrews';
+
 export default function Page() {
   const router = useRouter();
-  const [crewList, setCrewList] = useState<Crew[]>([]);
+  const { data: crewList = [], isLoading, isError } = useCrews();
+
   const onMove = (url: string) => {
     const data = {
       type: MODULE.PUSH,
       url: url
     };
-    console.log('url', url);
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   };
-  useLayoutEffect(() => {
-    const init = async () => {
-      const response = (await CrewApi.getCrewList()) as APIResponse<{
-        crews: Crew[];
-      }>;
-      setCrewList(response.result.crews);
-    };
-    init();
-  }, []);
+
+  const moveResultPage = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    crew: Crew
+  ) => {
+    e.stopPropagation();
+    const type = 'crew';
+    const isSuccess =
+      crew.goal > 0 &&
+      Math.round((crew.runningDistance / crew.goal) * 100) >= 100;
+    router.push(`/crew-reward?type=${type}&isSuccess=${isSuccess}`);
+  };
+
+  if (isLoading) {
+    return <div></div>; // Or a loading spinner component
+  }
+
+  if (isError) {
+    return <div></div>; // Or an error component
+  }
+
   return (
-    <div className="flex h-[calc(100vh-60px)] w-full flex-col">
-      <div className="flex flex-grow flex-col gap-5 overflow-y-scroll p-4">
+    <div className="border-main flex h-screen w-full flex-col">
+      <div className="flex flex-grow flex-col gap-5 p-4">
         {crewList.map(crew => (
           <CrewChallengeCard
             key={crew.crewId}
             id={crew.crewId}
             title={crew.name}
-            distance={42}
             progress={
               isNaN(crew.runningDistance / crew.goal)
                 ? 0
@@ -45,14 +55,17 @@ export default function Page() {
             runningDistance={crew.runningDistance}
             isRunning={crew.isRunning}
             members={crew.badgeImageUrls}
-            className="border !border-[#00FF63]"
+            className={`border ${
+              crew.goal > 0 &&
+              Math.round((crew.runningDistance / crew.goal) * 100) >= 100
+                ? 'border-[#00FF63]'
+                : 'border-none'
+            } `}
             onClick={() => onMove(`/(tabs)/(group)/running/${crew.crewId}`)}
           >
             <button
               className="mt-4 w-full rounded-2xl bg-[#48484A]"
-              onClick={() =>
-                router.push('/crew-reward?type=crew&isSuccess=true')
-              }
+              onClick={e => moveResultPage(e, crew)}
             >
               <div className="py-3 text-[18px] font-bold text-[#E5E5EA]">
                 저번 주 결과 보기

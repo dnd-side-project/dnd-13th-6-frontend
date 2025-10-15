@@ -18,6 +18,8 @@
   --color-gray-90: #3a3a3c;
   --color-golden: #ffe500;
   --color-red: #ff0000;
+  --color-calendar-selected-background: rgba(0, 255, 99, 0.2);
+  --color-calendar-selected-text: #00ff63;
   --font-pretendard: Pretendard, lufga, Arial, Helvetica, sans-serif;
   --font-lufga: Lufga, pretendard, Arial, Helvetica, sans-serif;
 }
@@ -107,9 +109,22 @@
   }
 }
 
+html,
 body {
-  font-family: Pretendard, Lufga, Arial, Helvetica, sans-serif;
   margin: 0;
+  height: 100%;
+  font-family: Pretendard, Lufga, Arial, Helvetica, sans-serif;
+  touch-action: pan-x pan-y;
+  overflow: auto; /* 스크롤 가능 */
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+  overscroll-behavior: none;
+}
+
+/* Chrome, Safari, Opera */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 
 .animate-roll {

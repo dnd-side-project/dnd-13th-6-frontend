@@ -29,11 +29,11 @@ function EditGroupNotificationContent({
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Cookie: `accessToken=${token}`
+          Cookie: `accessToken=${token}`,
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({ notice })
       });
-      console.log(res, 'res');
       onClose();
     } catch (error) {
       console.log(error);

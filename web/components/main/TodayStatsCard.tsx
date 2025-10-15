@@ -1,9 +1,9 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import Card from '@/components/main/Card';
+import React from 'react';
 import { useRouter } from 'next/navigation';
-import api from '@/utils/apis/customAxios';
-import { RUNNING_API } from '@/utils/apis/api';
+import { useTodayRunning } from '@/hooks/queries/useTodayRunning';
+import StatsCard from '@/components/common/Stats/StatsCard';
+import Card from '@/components/main/Card';
 
 const TodayStatsCard = () => {
   const router = useRouter();
@@ -52,36 +52,20 @@ const TodayStatsCard = () => {
   const handleMove = () => {
     router.push('/today-run-result');
   };
+
+  const totalDistance = todayRunningData?.totalDistanceMeter ?? 0;
+  const totalTime = todayRunningData?.durationSeconds ?? 0;
+
   return (
     <Card
       className="relative mt-[24px] pt-[16px] pb-[16px]"
       onClick={handleMove}
     >
-      <p className="text-gray-30 text-[1.0625rem] leading-[1.5] font-medium tracking-[-0.025em]">        오늘 달린 기록
-      </p>
-      <div className="mt-[12px] flex justify-around">
-        <div className="flex flex-col items-center">
-          <p className="font-lufga text-gray-20 inline-block -skew-x-2 transform text-[1.75rem] font-semibold tracking-[0] italic">
-            {formatDistance(totalDistance)}km
-          </p>
-          <p className="font-regular text-[0.9375rem] leading-[1.5] tracking-[-0.025em]">            거리
-          </p>
-        </div>
-        <div className="flex flex-col items-center">
-          <p className="font-lufga text-gray-20 text-[1.75rem] font-semibold tracking-[0] italic">
-            {formatTime(totalTime)}
-          </p>
-          <p className="font-regular text-[0.9375rem] leading-[1.5] tracking-[-0.025em]">            시간
-          </p>
-        </div>
-        <div className="flex flex-col items-center">
-          <p className="font-lufga text-gray-20 text-[1.75rem] font-semibold tracking-[0] italic">
-            {formatPace(distanceForPace, totalTime)}
-          </p>
-          <p className="font-regular text-[0.9375rem] leading-[1.5] tracking-[-0.025em]">            페이스
-          </p>
-        </div>
-      </div>
+      <StatsCard
+        title="오늘 달린 기록"
+        totalDistance={totalDistance}
+        totalTime={totalTime}
+      />
     </Card>
   );
 };

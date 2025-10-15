@@ -1,9 +1,11 @@
 const API_SUFFIX = 'api';
-export const API_VERSION_PREFIX = 'api/v1';
+export const API_VERSION_PREFIX = '/api/v1'
 
 export const MODULE = {
   AUTH: `auth`,
   USERS: 'users',
+  MEMBERS: 'members',
+  NOTIFICATIONS: 'notifications',
   CREWS: `crews`,
   GOALS: 'goals',
   REWARDS: 'rewards',
@@ -39,34 +41,44 @@ export const API_END_POINT: { [K in keyof APIDefinitions]: APIDefinitions[K] } =
   };
 
 export const AUTH_API = {
-  SIGN_UP: () => `/api/auth/signup/complete`,
-  LOG_OUT: () => `/api/auth/logout`,
-  REFRESH_TOKEN: () => `/api/auth/token/refresh`
+  SIGN_UP: () => `/${API_SUFFIX}/${MODULE.AUTH}/signup/complete`,
+  LOG_OUT: () => `/${API_SUFFIX}/${MODULE.AUTH}/logout`,
+  REFRESH_TOKEN: () => `/${API_SUFFIX}/${MODULE.AUTH}/token/refresh`
 } as const;
 
 export const MEMBER_API = {
-  CHANGE_NICKNAME: () => `/api/members/me/nickname`,
-  CHANGE_BADGE: () => `/api/members/me/badge`,
-  MY_BADGE: (memberId: string | number) => `/api/members/${memberId}/badge`,
-  MY_INFO: () => `/api/members/me`
+  CHANGE_NICKNAME: () => `/${API_SUFFIX}/${MODULE.MEMBERS}/me/nickname`,
+  CHANGE_BADGE: () => `/${API_SUFFIX}/${MODULE.MEMBERS}/me/badge`,
+  MY_BADGE: (memberId: string | number) =>
+    `/${API_SUFFIX}/${MODULE.MEMBERS}/${memberId}/badge`,
+  MY_INFO: () => `/${API_SUFFIX}/${MODULE.MEMBERS}/me`,
+  WITHDRAW: () => `/${API_SUFFIX}/${MODULE.MEMBERS}/me`
 };
 export const NOTIFICATION_API = {
-  NOTIFICATION_LIST: () => `/api/notifications/recent`
+  NOTIFICATION_LIST: () => `/${API_SUFFIX}/${MODULE.NOTIFICATIONS}/recent`
 };
 export const REWARD_API = {
-  CLOVER: () => `/api/rewards/clovers`,
-  BADGE_LIST: () => `/api/rewards/badges`,
-  GACHA: () => `/api/rewards/gotcha`
+  CLOVER: () => `/${API_SUFFIX}/${MODULE.REWARDS}/clovers`,
+  BADGE_LIST: () => `/${API_SUFFIX}/${MODULE.REWARDS}/badges`,
+  GACHA: () => `/${API_SUFFIX}/${MODULE.REWARDS}/gotcha`
 };
 export const RUNNING_API = {
-  RUNNING_END: (runningId: string) => `/api/runnings/${runningId}/end`,
-  RUNNING_START: () => `/api/runnings/start`,
-  RUNNING_TODAY: () => `/api/runnings/today`,
-  WEEKLY_RUNNINGS: () => `/api/runnings/me/weekly/total-distance`
+  RUNNING_END: () => `/${API_SUFFIX}/${MODULE.RUNNINGS}/end`,
+  RUNNING_START: () => `/${API_SUFFIX}/${MODULE.RUNNINGS}/start`,
+  RUNNING_TODAY: () => `/${API_SUFFIX}/${MODULE.RUNNINGS}/today`,
+  WEEKLY_RUNNINGS: () =>
+    `/${API_SUFFIX}/${MODULE.RUNNINGS}/me/weekly/total-distance`,
+  RUNNING_ACTIVE: (runningId: string) => {
+    const isLocal =
+      typeof window !== 'undefined' &&
+      window.location.origin.includes('localhost');
+    const path = isLocal ? 'running' : 'runnings';
+    return `/${API_SUFFIX}/${path}/${runningId}/active`;
+  }
 };
 export const GOAL_API = {
-  GET_TARGET_DISTANCE: () => '/api/goals/me',
-  CHANGE_TARGET_DISTANCE: () => '/api/goals/me'
+  GET_TARGET_DISTANCE: () => `/${API_SUFFIX}/${MODULE.GOALS}/me`,
+  CHANGE_TARGET_DISTANCE: () => `/${API_SUFFIX}/${MODULE.GOALS}/me`
 };
 
 export const SOCKET_URL = {
@@ -77,5 +89,12 @@ export const SOCKET_URL = {
 };
 
 export const CREW_API = {
-  MEMBER_RUNNING: () => `/api/crews/members/running`
+  MEMBER_RUNNING: () => `/${API_SUFFIX}/${MODULE.CREWS}/members/running`
+};
+
+export const CALENDAR_API = {
+  RUNS_IN_MONTH: (year: number, month: number) =>
+    `/${API_SUFFIX}/${MODULE.CALENDAR}/monthly?year=${year}&month=${month}`,
+  RUNS_IN_WEEK: (date: string) =>
+    `/${API_SUFFIX}/${MODULE.CALENDAR}/weekly?date=${date}`
 };

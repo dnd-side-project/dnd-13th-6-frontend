@@ -1,29 +1,43 @@
-import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
-import { ENV } from '@/utils/app/consts';
-import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { MODULE } from '@/utils/apis/api';
+import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useWebViewReset } from '../_layout';
-import { useEffect, useRef } from 'react';
 import { router } from 'expo-router';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
+import { useRef } from 'react';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Dimensions
+} from 'react-native';
+import { WebView, WebViewMessageEvent } from 'react-native-webview';
 function Index() {
   const webViewRef = useRef<WebView>(null);
-  const { resetTrigger } = useWebViewReset();
-  const initialUrl = `${ENV.WEB_VIEW_URL}/main`;
-
-  const handleMessage = (event: WebViewMessageEvent) => {
+  const handleMessage = async (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
-    console.log('data', data);
     if (data.type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);
+        AsyncStorage.setItem(
+          'user',
+          JSON.stringify({
+            nickname: data.nickName,
+            userId: data.userId
+          })
+        );
       }
     } else if (data.type === MODULE.PUSH) {
       const { type, url } = JSON.parse(data.data);
-      router.push(url);
+      if (url === '/(onboarding)') {
+        router.replace('/(tabs)/(onboarding)');
+      } else if (url === '/(tabs)/(home)') {
+        router.replace('/(tabs)/(home)');
+      } else {
+        router.push(url);
+      }
+      // if (url === '/(tabs)/(home)' || url === '/(tabs)/(onboarding)') {
+      //   router.replace(url);
+      // } else {
+      //   router.push(url);
+      // }
     }
     if (data.nickName) {
       AsyncStorage.setItem('nickName', data.nickName);
@@ -33,21 +47,22 @@ function Index() {
     }
   };
 
-  // 탭 전환 시 WebView URI 초기화
-  useEffect(() => {
-    if (resetTrigger > 0 && webViewRef.current) {
-      const script = `window.location.href = '${initialUrl}'; true;`;
-      webViewRef.current.injectJavaScript(script);
-    }
-  }, [resetTrigger]);
-
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={styles.container}
+      className="flex-1 align-center justify-between py-4"
+    >
       <WebView
+        className="flex-1 h-full bg-gray border"
         ref={webViewRef}
         style={styles.webview}
-        source={{ uri: initialUrl }}
+        showsVerticalScrollIndicator={false}
+        keyboardDisplayRequiresUserAction={false}
+        source={{ uri: ENV.WEB_VIEW_URL + '/main' }}
         onMessage={handleMessage}
+        bounces={false}
+        overScrollMode={'never'}
+        mixedContentMode="always" // HTTP 리소스 허용
       />
     </SafeAreaView>
   );
@@ -57,21 +72,12 @@ export default Index;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width
   },
   webview: {
-    flex: 1,
-    backgroundColor: '#333333'
-  },
-  runningButton: {
-    backgroundColor: 'gray',
-    borderRadius: 100,
-    paddingVertical: 10,
-    paddingHorizontal: 20
-  },
-  runningButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold'
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width
   }
 });

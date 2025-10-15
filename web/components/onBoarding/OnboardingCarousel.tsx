@@ -1,8 +1,11 @@
 'use client';
-import React, { TouchEvent, useState } from 'react';
+import React from 'react';
 import Button from '@/components/common/Button';
-import Image from 'next/image';
 import OnBoardingWrapper from '@/components/onBoarding/OnBoardingWrapper';
+import { useCarousel } from '@/hooks/ui/useCarousel';
+import SpeedupPig from '@/public/assets/icon/speedup-pig.svg';
+import LuckyDay from '@/public/assets/icon/lucky-day.svg';
+import GachaBall from '@/public/assets/icon/gacha-ball.svg';
 
 interface Slide {
   title: string;
@@ -10,27 +13,23 @@ interface Slide {
   image: string;
 }
 
+const svgMap: { [key: string]: React.ElementType } = {
+  'speedup-pig': SpeedupPig,
+  'lucky-day': LuckyDay,
+  'gacha-ball': GachaBall
+};
+
 interface OnboardingCarouselProps {
   slides: Slide[];
   onComplete: () => void;
 }
 
-// 슬라이드
 function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
-  const [index, setIndex] = useState(0);
-  const [touchStartX, setTouchStartX] = useState(0);
+  const { index, handleTouchStart, handleTouchEnd, nextSlide } = useCarousel({
+    slideCount: slides.length
+  });
 
-  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
-    setTouchStartX(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchEnd = (e: TouchEvent<HTMLDivElement>) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchDiff = touchEndX - touchStartX;
-
-    if (touchDiff < -50 && index < slides.length - 1) setIndex(index + 1);
-    if (touchDiff > 50 && index > 0) setIndex(index - 1);
-  };
+  const SvgComponent = svgMap[slides[index].image];
 
   return (
     <div
@@ -44,12 +43,10 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
       />
       {/* 이미지 + 점 */}
       <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center pt-20">
-        <Image
-          src={`/assets/icon/${slides[index].image}.svg`}
+        <SvgComponent
           alt={slides[index].image}
           width={index === 2 ? 275 : 243}
           height={index === 2 ? 275 : 243}
-          priority
           className="max-w-[70vw] object-contain"
         />
         <div className="mt-19 flex justify-between gap-[3vw]">
@@ -72,7 +69,7 @@ function OnboardingCarousel({ slides, onComplete }: OnboardingCarouselProps) {
           <div className="absolute right-4 bottom-17 left-4">
             <button
               className="text-gray-60 float-right text-[1rem] sm:text-[1rem]"
-              onClick={() => setIndex(index + 1)}
+              onClick={nextSlide}
             >
               건너뛰기
             </button>

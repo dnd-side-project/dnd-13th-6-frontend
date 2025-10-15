@@ -7,6 +7,7 @@ export interface RouteConfig {
 }
 
 export const routeConfigs: Record<string, RouteConfig> = {
+  //로그인 및 온보딩
   '/login': { showHeader: false },
   '/onboarding': {
     showHeader: true
@@ -28,11 +29,25 @@ export const routeConfigs: Record<string, RouteConfig> = {
     backHref: '/onboarding/select-character'
   },
   '/onboarding/onboarding-finish': { showHeader: true },
+
+  //설정
+  '/settings': {
+    showHeader: true,
+    backHref: '/main',
+    title: '설정'
+  },
+  '/settings/edit-nickname': {
+    showHeader: true,
+    backHref: '/settings',
+    title: '프로필'
+  },
+  //메인  페이지
   '/main': { showHeader: true },
+  //배지 컬렉션 페이지
   '/badge-collection': {
     showHeader: true,
     backHref: '/main',
-    title: '프로필',
+    title: '배지',
     showSaveButton: true
   },
   '/badge-collection/gacha': {
@@ -42,12 +57,18 @@ export const routeConfigs: Record<string, RouteConfig> = {
   '/badge-collection/gacha/result': {
     showHeader: true
   },
+
+  //알림 페이지
   '/notification': {
     showHeader: true,
     backHref: '/main',
     title: '알림'
   },
+
+  //뽑기 페이지
   '/lucky-stamp': { showHeader: true, backHref: '/main', title: '러닝종료' },
+
+  //크루 페이지
   '/crew-reward': {
     showHeader: true,
     backHref: '/main',
@@ -73,22 +94,21 @@ export const routeConfigs: Record<string, RouteConfig> = {
     backHref: '/main',
     title: '그룹 달리기 조회'
   },
+  //목표 거리 수정페이지
   '/change-target-distance': {
     showHeader: true,
     backHref: '/main',
     title: '목표 수정',
     showSaveButton: true
   },
+  //오늘 뛴 결과 페이지
   '/today-run-result': {
     showHeader: true,
     backHref: '/main'
   },
-  '/badge-collection/edit-nickname': {
-    showHeader: true,
-    backHref: '/badge-collection',
-    title: '프로필'
-  },
+  //캘린더 페이지
   '/calendar': {
-    showHeader: true
+    showHeader: true,
+    title: '캘린더'
   }
 };

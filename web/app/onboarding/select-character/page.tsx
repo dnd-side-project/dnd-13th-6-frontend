@@ -1,23 +1,22 @@
 'use client';
 import React, { useState } from 'react';
 import ProgressBar from '@/components/common/ProgressBar';
-import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
 import CharacterCarousel from '@/components/onBoarding/CharacterCarousel';
-import { MEMBER_API } from '@/utils/apis/api';
-import api from '@/utils/apis/customAxios';
+import { useOnboardingUpdateBadge } from '@/hooks/queries/useOnboardingUpdateBadge';
 
 function Page() {
-  const router = useRouter();
   const characters = [
     { image: 'pig', id: '1' },
     { image: 'elephant', id: '2' }
   ];
 
   const [selectedId, setSelectedId] = useState(0);
-  const handleNext = async () => {
-    await api.patch(MEMBER_API.CHANGE_BADGE(), { badgeId: selectedId + 1 });
-    router.push('/onboarding/setup-target');
+
+  const { mutate: changeBadge, isPending } = useOnboardingUpdateBadge();
+
+  const handleNext = () => {
+    changeBadge(selectedId + 1);
   };
   return (
     <div className="flex flex-grow flex-col justify-between overflow-hidden">
@@ -41,8 +40,12 @@ function Page() {
           }
         </p>
       </div>
-      <Button className="mb-5 h-15 w-full" onClickAction={handleNext}>
-        다음으로
+      <Button
+        className="mb-5 h-15 w-full"
+        onClickAction={handleNext}
+        disabled={isPending}
+      >
+        {isPending ? '저장 중...' : '다음으로'}
       </Button>
     </div>
   );
