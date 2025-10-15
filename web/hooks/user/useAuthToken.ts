@@ -2,18 +2,39 @@
 import { useEffect } from 'react';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { MODULE } from '@/utils/apis/api';
+import api from '@/utils/apis/customAxios';
+
+
+async function exchangeToken(code: string) {
+  const response = await api.post('/api/auth/token/exchange', {authCode: code})
+  const accessToken = response.headers.get('authorization')!;
+  const refreshToken = response.headers.get('x-refresh-token');
+
+  localStorage.setItem('accessToken', accessToken.split("Bearer")[1]);
+  localStorage.setItem('refreshToken', refreshToken);
+}
 
 export const useAuthToken = () => {
   useEffect(() => {
+
     const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const token = localStorage.getItem('accessToken');
+    if(code && !token) {
+       exchangeToken(code);
+       return;
+    }
     if (!hash) {
       postMessageToApp(MODULE.AUTH);
       return;
     }
 
-    const params = new URLSearchParams(hash);
     const accessToken = params.get('accessToken');
     const refreshToken = params.get('refreshToken');
+
+
+
 
     if (accessToken && refreshToken) {
       localStorage.setItem('accessToken', accessToken);

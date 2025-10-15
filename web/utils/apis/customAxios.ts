@@ -44,7 +44,7 @@ api.interceptors.response.use(
 
     if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-
+      localStorage.removeItem('accessToken');
       try {
         // HttpOnly refresh token으로 새 액세스 토큰 발급 요청
         await tokenRefresh();

@@ -48,7 +48,7 @@ function CodePad({
   };
   // iOS 삭제(backspace) 인식: keydown 대신 beforeinput으로 처리
   const handleBeforeInput = (
-    event: React.FormEvent<HTMLInputElement>,
+    event: KeyboardEvent | InputEvent,
     idx: number
   ) => {
     const nativeEvent = event.nativeEvent as InputEvent;

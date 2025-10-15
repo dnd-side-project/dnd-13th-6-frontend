@@ -4,22 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useRef } from 'react';
 import {
-  Pressable,
   SafeAreaView,
-  Text,
-  View,
   StyleSheet,
   Dimensions
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 function Index() {
-  const insets = useSafeAreaInsets();
   const webViewRef = useRef<WebView>(null);
-  const initialUrl = `${ENV.WEB_VIEW_URL}/main`;
   const handleMessage = async (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
-    console.log(data)
     if (data.type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);
