@@ -17,7 +17,7 @@ export const useSetNickname = (type: 'onboarding' | 'profile') => {
   const mutation = useMutation({
     mutationFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.member.info() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.member.all });
       if (type === 'profile') return;
       const destination =
         type === 'onboarding' ? '/onboarding/select-character' : '/main';
