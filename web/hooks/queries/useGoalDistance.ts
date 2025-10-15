@@ -26,9 +26,9 @@ export const useGoalDistance = () => {
   }, [queryClient, queryKey]);
 
   return useQuery({
-    queryKey, 
+    queryKey,
     queryFn: getGoalDistance,
-    staleTime: Infinity,                                                                                                                                                                                                                           │
-    gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days        
+    staleTime: Infinity,
+    gcTime: 1000 * 60 * 60 * 24 * 7 // 7 days
   });
 };

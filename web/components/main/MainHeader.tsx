@@ -8,8 +8,6 @@ import { Notification } from '@/types/notification';
 const MainHeader = ({ notification }: { notification: Notification[] }) => {
   const router = useRouter();
   const hasUnread = notification.some(n => !n.read);
-  console.log('after', notification);
-  console.log('hasUnread', hasUnread);
   return (
     <div className="flex w-full items-center justify-between pt-4">
       <Logo width={92} height={29} title="logo" />

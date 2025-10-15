@@ -38,7 +38,6 @@ export default function Main() {
         );
         return prev ? { ...f, read: prev.read } : { ...f, read: false };
       });
-      console.log(merged);
       localStorage.setItem('notification', JSON.stringify(merged));
       setDisplayNotifications(merged);
     }
