@@ -18,8 +18,8 @@ export default function SpeechBubble({
   showTail = true
 }: Props) {
   return (
-    <View style={styles.wrapper}>
-      <View style={styles.container} className={className}>
+    <View className='relative'>
+      <View className={className}>
         {/* 말풍선 내용 */}
         {children}
       </View>
@@ -42,23 +42,17 @@ export default function SpeechBubble({
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    alignItems: 'center' // 전체 컴포넌트를 중앙 정렬
-  },
-  container: {
-    // 말풍선 본체는 자체 스타일에 의존
-  },
   tailContainer: {
     position: 'absolute',
     bottom: -8, // 말풍선 아래에 정확히 붙도록
-    left: '50%', // 중앙 위치
+    left: '0%', // 중앙 위치
     transform: [{ translateX: -6 }], // 꼬리 너비의 절반만큼 이동 (정확한 중앙)
     zIndex: 1
   },
   tailContainerUp: {
     position: 'absolute',
     top: -8, // 말풍선 위에 정확히 붙도록
-    left: '50%', // 중앙 위치
+    left: 25, // 중앙 위치
     transform: [{ translateX: -6 }], // 꼬리 너비의 절반만큼 이동
     zIndex: 1
   },

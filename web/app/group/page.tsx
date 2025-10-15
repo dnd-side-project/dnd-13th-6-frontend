@@ -31,11 +31,11 @@ export default function Page() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; // Or a loading spinner component
+    return <div></div>; // Or a loading spinner component
   }
 
   if (isError) {
-    return <div>Error loading crews.</div>; // Or an error component
+    return <div></div>; // Or an error component
   }
 
   return (

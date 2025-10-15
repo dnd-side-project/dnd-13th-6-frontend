@@ -14,6 +14,7 @@ import useFetch from '@/hooks/useFetch';
 import { API_END_POINT } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
 import { CrewApi } from '@/utils/apis/crewApi';
+import GroupExitContent from '@/components/bottom-sheets/contents/GroupExitContent';
 export default function BottomSheetContainer({
   crewInfo,
   crewMembers,
@@ -36,7 +37,7 @@ export default function BottomSheetContainer({
   const [editMemberType, setEditMemberType] = useState<
     'editMember' | 'editOwner'
   >('editMember');
-
+  console.log(isAdminUser)
   const { showSuccess, showError } = useToast();
 
   const groupExitBottomSheet = useBottomSheet({
@@ -57,29 +58,7 @@ export default function BottomSheetContainer({
   // 바텀시트 핸들러들
   const handleEditMemberPress = () => editMemberBottomSheet.present();
   const handleEditNoticePress = () => editNoticeBottomSheet.present();
-  //그룹 나가기
-  const onGroupExit = async () => {
-    try {
-      if (crewInfo) {
-        const url = `${ENV.API_BASE_URL}/${API_END_POINT.CREWS.DELETE_CREW(
-          crewInfo.crewId
-        )}`;
-        const ret = await fetch(url, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Cookie: `accessToken=${await AsyncStorage.getItem('accessToken')}`,
-            Authorization: `Bearer ${await AsyncStorage.getItem('accessToken')}`
-          }
-        });
-        if (ret.ok) {
-          router.push('/(tabs)/(group)');
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
 
   const onEditMember = (
     type: 'editMember' | 'editOwner',
@@ -190,11 +169,8 @@ export default function BottomSheetContainer({
           isAdminUser={isAdminUser}
           onClose={settingsBottomSheet.close}
           onExitPress={() => {
-            if (crewMembers?.members.length === 1) {
-              onGroupExit();
-            } else {
-              groupExitBottomSheet.present();
-            }
+            settingsBottomSheet.close();
+            groupExitBottomSheet.present();
           }}
           onEditMemberPress={() => onEditGroupInfo('editMember')}
           onEditGroupInfoPress={() => onEditGroupInfo('editOwner')}
@@ -205,7 +181,7 @@ export default function BottomSheetContainer({
         ref={groupExitBottomSheet.bottomSheetRef}
         {...groupExitBottomSheet.config}
       >
-        {isAdminUser ? (
+        {isAdminUser && crewMembers.members.length > 1 ? (
           <SelectNewCrewContent
             onClose={() => {
               groupExitBottomSheet.close();
@@ -218,16 +194,13 @@ export default function BottomSheetContainer({
             }}
           />
         ) : (
-          <SelectNewCrewContent
+          <GroupExitContent
             onClose={() => {
               groupExitBottomSheet.close();
-              editMemberBottomSheet.present();
+              if(!crewInfo.isLeader)editMemberBottomSheet.present()
             }}
-            onConfirm={() => {
-              groupExitBottomSheet.close();
-              setEditMemberType('editOwner');
-              editMemberBottomSheet.present();
-            }}
+            crewInfo={crewInfo}
+            
           />
         )}
       </BottomSheet>

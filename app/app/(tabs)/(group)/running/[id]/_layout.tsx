@@ -77,7 +77,7 @@ const GroupInfo = ({ crewInfo }: { crewInfo: Crew }) => {
 
 const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
   const progress = useMemo(() => {
-    if (Math.floor(crewInfo.goal) === 0) return 100;
+    if (Math.floor(crewInfo.goal) === 0) return 0;
     const result =
       Math.floor(crewInfo.runningDistance) / Math.floor(crewInfo.goal);
     return isNaN(result) || result === Infinity ? 0 : result * 100;
@@ -100,12 +100,12 @@ const GroupGoal = ({ crewInfo }: { crewInfo: Crew }) => {
         </View>
       ) : (
         <View>
-          <Text className="text-headline text-white rounded-xl py-[18px]">
-            주간 목표를 달성했어요!
+          <Text className="text-headline text-white font-semibold rounded-xl py-[18px]">
+            {progress === 0 ? '주간 목표를 설정해주세요.': '주간 목표를 달성했어요!'}
           </Text>
         </View>
       )}
-      <ProgressBar progress={progress} />
+      <ProgressBar progress={progress} width={330} />
     </View>
   );
 };
@@ -121,11 +121,13 @@ export default function Layout() {
   const insets = useSafeAreaInsets();;
 
   const { id: crewId } = useLocalSearchParams();
+  if(!crewId) {
+    router.push('/(tabs)/(group)')
+  }
   // CustomAlert 훅
   const { alertConfig, visible, showAlert, hideAlert } = useCustomAlert();
   const [isGroupCodeAlertVisible, setIsGroupCodeAlertVisible] = useState(false);
 
-  const [isAdminUser, setIsAdminUser] = useState(false);
 
   const { data: crewInfo, fetchData: crewInfoFetchData } = useFetch<Crew>(
     API_END_POINT.CREWS.GET_CREW_DETAIL(crewId as string),
@@ -142,11 +144,7 @@ export default function Layout() {
 
   useEffect(() => {
     const init = async () => {
-      await Promise.all([crewInfoFetchData(), crewMembersFetchData()]).then(
-        ([crewInfo]) => {
-          setIsAdminUser(!!crewInfo?.isLeader);
-        }
-      );
+      await Promise.all([crewInfoFetchData(), crewMembersFetchData().then((res) => console.log(res))])
     }
     const checkReboot = async () => {
       const lastActiveTime = await AsyncStorage.getItem('lastActiveTime');
@@ -265,7 +263,7 @@ export default function Layout() {
         <BottomSheetContainer
           crewInfo={crewInfo}
           crewMembers={crewMembers}
-          isAdminUser={isAdminUser}
+          isAdminUser={crewInfo.isLeader}
           settingsBottomSheet={settingsBottomSheet}
           crewId={crewId as string}
           crewInfoFetchData={crewInfoFetchData}

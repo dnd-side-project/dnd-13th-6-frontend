@@ -1,6 +1,5 @@
-const isDev = process.env.NEXT_PUBLIC_ENV === 'dev';
 const API_SUFFIX = 'api';
-export const API_VERSION_PREFIX = isDev ? '/dev/api/v1' : '/api/v1';
+export const API_VERSION_PREFIX = '/api/v1'
 
 export const MODULE = {
   AUTH: `auth`,
@@ -73,9 +72,8 @@ export const RUNNING_API = {
     const isLocal =
       typeof window !== 'undefined' &&
       window.location.origin.includes('localhost');
-    const prefix = isLocal ? 'dev/' : '';
     const path = isLocal ? 'running' : 'runnings';
-    return `/${prefix}${API_SUFFIX}/${path}/${runningId}/active`;
+    return `/${API_SUFFIX}/${path}/${runningId}/active`;
   }
 };
 export const GOAL_API = {

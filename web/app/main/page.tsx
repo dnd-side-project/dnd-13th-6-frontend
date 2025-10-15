@@ -10,13 +10,13 @@ import { useUserInfo } from '@/hooks/queries/useUserInfo';
 import { useCloverCount } from '@/hooks/queries/useCloverCount';
 import { useNotifications } from '@/hooks/queries/useNotifications';
 import TodayStatsCard from '@/components/main/TodayStatsCard';
-
 import { useAuthToken } from '@/hooks/user/useAuthToken';
 
 export default function Main() {
   const [displayNotifications, setDisplayNotifications] = useState<
     Notification[]
   >([]);
+  useAuthToken();
   //사용자 정보
   const { data: userInfo } = useUserInfo();
   //클로버 개수
@@ -24,7 +24,6 @@ export default function Main() {
 
   const { data: notifications } = useNotifications();
 
-  useAuthToken();
 
   useEffect(() => {
     if (notifications) {

@@ -11,7 +11,7 @@ function SelectNewCrewContent({ onClose, onConfirm }: Props) {
       <Text className="text-white text-title3">
         떠나기 전에 새 리더를 정해주세요
       </Text>
-      <Text className="font-medium mt-2 text-gray40">{`현재 크루 리더는 [닉네임]닙이에요.\n새 리더를 정해야 탈퇴할 수 있어요.`}</Text>
+      <Text className="font-medium mt-2 text-gray40">{`현재 크루 리더는 [닉네임]님이에요.\n새 리더를 정해야 탈퇴할 수 있어요.`}</Text>
       <Button
         className="bg-main rounded-xl text-body1 mt-11 py-[14px]"
         onPress={onConfirm}
