@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getBadges, BadgesResponse } from '@/utils/apis/badge';
 import { queryKeys } from '@/utils/queries/queryKeys';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export const useBadges = () => {
   const queryClient = useQueryClient();
-  const queryKey = queryKeys.reward.badgeList();
+  const queryKey = useMemo(() => queryKeys.reward.badgeList(), []);
 
   useEffect(() => {
     const today = new Date();
@@ -26,6 +26,6 @@ export const useBadges = () => {
     queryKey,
     queryFn: getBadges,
     staleTime: Infinity,
-    gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days
+    gcTime: 1000 * 60 * 60 * 24 * 7 // 7 days
   });
 };
