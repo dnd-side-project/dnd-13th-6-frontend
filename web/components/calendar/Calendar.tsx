@@ -12,7 +12,6 @@ import { AnimatePresence } from 'framer-motion';
 import { useCalendar } from '@/hooks/useCalendar';
 import { useCalendarRecords } from '@/hooks/queries/calendar/useCalendarRecords';
 import { usePrefetchCalendarRecords } from '@/hooks/queries/calendar/usePrefetchCalendarRecords';
-
 function Calendar() {
   const {
     currentDate,
@@ -24,9 +23,11 @@ function Calendar() {
   } = useCalendar();
 
   // Fetch data for the current view
-  const { data } = useCalendarRecords(selectedView, currentDate);
-  const records = data?.histories || [];
+  const { data: realData } = useCalendarRecords(selectedView, currentDate);
   usePrefetchCalendarRecords(currentDate, selectedView);
+
+  const records = realData?.histories || [];
+  const data = realData;
   return (
     <div className="bg-background flex h-full w-full flex-col rounded-lg text-gray-900 shadow-lg dark:text-gray-100">
       <CalendarMenu
