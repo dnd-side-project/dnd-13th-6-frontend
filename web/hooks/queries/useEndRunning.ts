@@ -8,18 +8,12 @@ export const useEndRunning = () => {
   return useMutation({
     mutationFn: runningEnd,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.running.today() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.running.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.goal.all });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.running.weeklyStats(),
-      });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.reward.cloverCount(),
-      });
-      queryClient.invalidateQueries({ queryKey: queryKeys.reward.badgeList() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.reward.all });
     },
     onError: error => {
       console.error(error);
-    },
+    }
   });
 };

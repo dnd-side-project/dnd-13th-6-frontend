@@ -10,16 +10,13 @@ export const useGacha = () => {
   return useMutation({
     mutationFn: gacha,
     onSuccess: data => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.reward.cloverCount(),
-      });
-      queryClient.invalidateQueries({ queryKey: queryKeys.reward.badgeList() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.reward.all });
       router.push(
-        `/badge-collection/gacha/result?id=${data.result?.id}&url=${data.result?.imageUrl}`,
+        `/badge-collection/gacha/result?id=${data.result?.id}&url=${data.result?.imageUrl}`
       );
     },
     onError: error => {
       console.error(error);
-    },
+    }
   });
 };
