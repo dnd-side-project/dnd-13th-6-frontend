@@ -23,6 +23,7 @@ interface APIDefinitions {
     CREATE_CREW: () => string;
     JOIN_CREW: () => string;
     GET_CREW_DETAIL: (crewId: number) => string;
+    GET_MEMBERS:(crewId: number) => string;
   };
   // ✅ 다른 모듈도 여기에 추가 가능
   // AUTH: { LOGIN: () => string; LOGOUT: () => string; }
@@ -36,7 +37,8 @@ export const API_END_POINT: { [K in keyof APIDefinitions]: APIDefinitions[K] } =
       CREATE_CREW: () => `${API_SUFFIX}/${MODULE.CREWS}`,
       JOIN_CREW: () => `${API_SUFFIX}/${MODULE.CREWS}/join`,
       GET_CREW_DETAIL: (crewId: number) =>
-        `${API_SUFFIX}/${MODULE.CREWS}/${crewId}`
+        `${API_SUFFIX}/${MODULE.CREWS}/${crewId}`,
+      GET_MEMBERS: (crewId: number) => `${API_SUFFIX}/${MODULE.CREWS}/${crewId}/members`,
     }
   };
 
