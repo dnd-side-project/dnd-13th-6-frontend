@@ -7,11 +7,15 @@ import api from '@/utils/apis/customAxios';
 
 async function exchangeToken(code: string) {
   const response = await api.post('/api/auth/token/exchange', {authCode: code})
-  const accessToken = response.headers.get('authorization')!;
-  const refreshToken = response.headers.get('x-refresh-token');
+  const accessToken = response.headers.authorization;
+  const refreshToken = response.headers['x-refresh-token'];
 
-  localStorage.setItem('accessToken', accessToken.split("Bearer")[1]);
-  localStorage.setItem('refreshToken', refreshToken);
+  if (accessToken) {
+    localStorage.setItem('accessToken', accessToken.replace('Bearer ', ''));
+  }
+  if (refreshToken) {
+    localStorage.setItem('refreshToken', refreshToken);
+  }
 }
 
 export const useAuthToken = () => {
