@@ -116,7 +116,7 @@ export default function Page() {
         })
       );
     } catch (error) {
-      console.error(error, 'here11');
+      console.error(error);
     }
   };
 
