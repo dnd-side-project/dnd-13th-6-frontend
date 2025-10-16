@@ -191,98 +191,110 @@ export default function Layout() {
   };
 
   return (
-    <View  className="flex-1 bg-black">
-      <ScrollView
-        className="flex-1 flex-col"
-        style={[{ paddingTop: insets.top }]}
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled
-        contentContainerStyle={{ paddingBottom: 24 }}
+      <View className="flex-1 bg-black" style={{ paddingTop: insets.top }}>
+    {/* 헤더 */}
+    <View className="flex-row px-4 py-[10px] items-center gap-5 bg-black">
+      <Pressable onPress={() => router.replace('/(tabs)/(group)')}>
+        <Ionicons name="arrow-back-outline" color={'white'} size={24} />
+      </Pressable>
+      <Text className="text-white text-lg font-semibold flex-grow text-center">
+        크루
+      </Text>
+      <Pressable
+        className="ml-auto"
+        onPress={() => setIsGroupCodeAlertVisible(true)}
       >
-        <View className="flex-row px-4 py-[10px] items-center gap-5 bg-black">
-          <Pressable
-            onPress={() => {
-              router.replace('/(tabs)/(group)');
-            }}
-          >
-            <Ionicons name="arrow-back-outline" color={'white'} size={24} />
-          </Pressable>
-          <Pressable className="">
-            <Image className="w-6 h-6" />
-          </Pressable>
-          <Text className="text-white text-lg font-semibold flex-grow text-center">
-            크루
-          </Text>
-          <Pressable
-            className="ml-auto"
-            onPress={() => {
-              setIsGroupCodeAlertVisible(true);
-            }}
-          >
-            <Ionicons name="person-add-outline" color={'white'} size={24} />
-          </Pressable>
-          <Pressable onPress={handleSettingsPress}>
-            <Ionicons name="settings-outline" color={'white'} size={24} />
-          </Pressable>
-        </View>
-        <View className="px-[17px] pt-[22px] pb-[26px] bg-black">
-          {crewInfo && (
-            <>
-              <GroupInfo crewInfo={crewInfo} />
-              <GroupGoal crewInfo={crewInfo} />
-            </>
-          )}
-        </View>
-        <View style={{ minHeight: 550, backgroundColor: '#313131', flex: 1 }}>
-          <CrewContext.Provider value={contextValue}>
-            <MaterialTopTabs screenOptions={MaterialTopTabsScreenOptions}>
-              <MaterialTopTabs.Screen
-                name="index"
-                options={{ title: '랭킹' }}
-              />
-              <MaterialTopTabs.Screen
-                name="runningShare"
-                options={{ title: '러닝 공유' }}
-              />
-            </MaterialTopTabs>
-          </CrewContext.Provider>
-          <View className=" bg-gray py-[18px] px-[14px]">
-            <Pressable
-              className="bg-main text-center py-[18px] rounded-xl"
-              onPress={() => router.push('/(tabs)/(single-running)')}
-            >
-              <Text className="text-[20px] text-gray font-bold text-center">
-                운동 시작하기
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-      </ScrollView>
-
-      {crewInfo && crewMembers && (
-        <BottomSheetContainer
-          crewInfo={crewInfo}
-          crewMembers={crewMembers}
-          isAdminUser={crewInfo.isLeader}
-          settingsBottomSheet={settingsBottomSheet}
-          crewId={crewId as string}
-          crewInfoFetchData={crewInfoFetchData}
-          showAlert={showAlert}
-          hideAlert={hideAlert}
-        />
-      )}
-      <CustomAlert
-        visible={visible}
-        title={alertConfig?.title}
-        message={alertConfig?.message || ''}
-        buttons={alertConfig?.buttons}
-        onClose={hideAlert}
-      />
-      <GroupCodeAlert
-        visible={isGroupCodeAlertVisible}
-        onClose={() => setIsGroupCodeAlertVisible(false)}
-        code={crewInfo?.code || ''}
-      />
+        <Ionicons name="person-add-outline" color={'white'} size={24} />
+      </Pressable>
+      <Pressable onPress={handleSettingsPress}>
+        <Ionicons name="settings-outline" color={'white'} size={24} />
+      </Pressable>
     </View>
+
+    {/* 전체 스크롤 영역 */}
+    <ScrollView
+      style={{ flex: 1 }}
+      showsVerticalScrollIndicator={false}
+      nestedScrollEnabled
+    >
+      {/* 상단 그룹 정보 */}
+      {crewInfo && (
+        <View className="px-[17px] pt-[22px] pb-[26px] bg-black">
+          <GroupInfo crewInfo={crewInfo} />
+          <GroupGoal crewInfo={crewInfo} />
+        </View>
+      )}
+
+      {/* 탭 전체를 감싸는 고정 영역 */}
+      <View
+        style={{
+          flex: 1,
+          minHeight: 500, // 기본 높이 확보
+          backgroundColor: '#313131',
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+        }}
+      >
+        <CrewContext.Provider value={contextValue}>
+          <MaterialTopTabs
+            screenOptions={{
+              ...MaterialTopTabsScreenOptions,
+              // 각 탭 스크린에서도 자체 스크롤 허용
+              swipeEnabled: true,
+              lazy: true,
+            }}
+          >
+            <MaterialTopTabs.Screen
+              name="index"
+              options={{ title: '랭킹' }}
+            />
+            <MaterialTopTabs.Screen
+              name="runningShare"
+              options={{ title: '러닝 공유' }}
+            />
+          </MaterialTopTabs>
+        </CrewContext.Provider>
+      </View>
+          {/* 하단 고정 버튼 */}
+    <View className=" bg-[#313131] py-[18px] px-[14px]">
+      <Pressable
+        className="bg-main text-center py-[18px] rounded-xl"
+        onPress={() => router.push('/(tabs)/(single-running)')}
+      >
+        <Text className="text-[20px] text-gray font-bold text-center">
+          운동 시작하기
+        </Text>
+      </Pressable>
+    </View>
+
+    </ScrollView>
+
+
+    {/* 모달 및 알림 */}
+    {crewInfo && crewMembers && (
+      <BottomSheetContainer
+        crewInfo={crewInfo}
+        crewMembers={crewMembers}
+        isAdminUser={crewInfo.isLeader}
+        settingsBottomSheet={settingsBottomSheet}
+        crewId={crewId as string}
+        crewInfoFetchData={crewInfoFetchData}
+        showAlert={showAlert}
+        hideAlert={hideAlert}
+      />
+    )}
+    <CustomAlert
+      visible={visible}
+      title={alertConfig?.title}
+      message={alertConfig?.message || ''}
+      buttons={alertConfig?.buttons}
+      onClose={hideAlert}
+    />
+    <GroupCodeAlert
+      visible={isGroupCodeAlertVisible}
+      onClose={() => setIsGroupCodeAlertVisible(false)}
+      code={crewInfo?.code || ''}
+    />
+  </View>
   );
 }
