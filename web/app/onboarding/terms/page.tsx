@@ -2,29 +2,24 @@
 import React, { useEffect, useState } from 'react';
 import ProgressBar from '@/components/common/ProgressBar';
 import Button from '@/components/common/Button';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import OnBoardingWrapper from '@/components/onBoarding/OnBoardingWrapper';
 import TermsAgreements from '@/components/onBoarding/TermsAgreements';
+import { useSetAtom } from 'jotai';
+import { signupTokenAtom } from '@/store/auth';
 
 function Page() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const router = useRouter();
+  const setSignupToken = useSetAtom(signupTokenAtom);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-      const params = new URLSearchParams(hash);
-      const signupToken = params.get('signupToken');
-      if (signupToken) {
-        sessionStorage.setItem('signupToken', signupToken);
-        window.history.replaceState(
-          null,
-          '',
-          window.location.pathname + window.location.search
-        );
-      }
+    const signupToken = searchParams.get('signupToken');
+    if (signupToken) {
+      setSignupToken(signupToken);
     }
-  }, []);
+  }, [searchParams, setSignupToken]);
 
   const handleAgreementChange = (isValid: boolean) => {
     setIsButtonDisabled(!isValid);

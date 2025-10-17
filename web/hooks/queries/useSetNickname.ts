@@ -5,15 +5,20 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { queryKeys } from '@/utils/queries/queryKeys';
+import { useAtomValue } from 'jotai';
+import { signupTokenAtom } from '@/store/auth';
 
 export const useSetNickname = (type: 'onboarding' | 'profile') => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState('');
   const queryClient = useQueryClient();
-
-  const mutationFn =
-    type === 'onboarding' ? registerWithNickname : updateNickname;
-
+  const signupToken = useAtomValue(signupTokenAtom);
+  const mutationFn = (nickname: string) => {
+    if (type === 'onboarding') {
+      return registerWithNickname({ nickname, signupToken });
+    }
+    return updateNickname(nickname);
+  };
   const mutation = useMutation({
     mutationFn,
     onSuccess: () => {

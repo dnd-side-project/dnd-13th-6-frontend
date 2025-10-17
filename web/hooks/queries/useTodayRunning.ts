@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/utils/queries/queryKeys';
 import { getTodayRunning } from '@/utils/apis/running';
+import { hasAccessToken } from '@/utils/apis/auth';
 
 export const useTodayRunning = () => {
-  const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('accessToken');
+  const hasToken = hasAccessToken();
 
   return useQuery({
     queryKey: queryKeys.running.today(),
