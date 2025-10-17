@@ -16,7 +16,6 @@ function Page() {
 
   useEffect(() => {
     const signupToken = searchParams.get('signupToken');
-    console.log('signupToken', signupToken);
     if (signupToken) {
       setSignupToken(signupToken);
     }
