@@ -3,22 +3,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { MODULE } from '@/utils/apis/api';
-import api from '@/utils/apis/customAxios';
-
-async function exchangeToken(code: string) {
-  const response = await api.post('/api/auth/token/exchange', {
-    authCode: code
-  });
-  const accessToken = response.headers.authorization;
-  const refreshToken = response.headers['x-refresh-token'];
-
-  if (accessToken) {
-    localStorage.setItem('accessToken', accessToken.replace('Bearer ', ''));
-  }
-  if (refreshToken) {
-    localStorage.setItem('refreshToken', refreshToken);
-  }
-}
+import { exchangeToken } from '@/utils/apis/auth';
 
 async function handleAuthCodeExchange(router: ReturnType<typeof useRouter>) {
   const hash = window.location.hash.substring(1);
@@ -29,7 +14,7 @@ async function handleAuthCodeExchange(router: ReturnType<typeof useRouter>) {
     try {
       await exchangeToken(code);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       router.replace(window.location.pathname);
     }

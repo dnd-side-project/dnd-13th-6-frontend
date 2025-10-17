@@ -24,7 +24,6 @@ export default function Main() {
 
   const { data: notifications } = useNotifications();
 
-
   useEffect(() => {
     if (notifications) {
       const fetched: Notification[] = notifications;
