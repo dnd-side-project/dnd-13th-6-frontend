@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import ProgressBar from '@/components/common/ProgressBar';
 import Button from '@/components/common/Button';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import OnBoardingWrapper from '@/components/onBoarding/OnBoardingWrapper';
 import TermsAgreements from '@/components/onBoarding/TermsAgreements';
 import { useSetAtom } from 'jotai';
@@ -12,14 +12,15 @@ function Page() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const router = useRouter();
   const setSignupToken = useSetAtom(signupTokenAtom);
-  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const signupToken = searchParams.get('signupToken');
+    const params = new URLSearchParams(window.location.search);
+    const signupToken = params.get('signupToken');
     if (signupToken) {
       setSignupToken(signupToken);
+      router.replace(window.location.pathname);
     }
-  }, [searchParams, setSignupToken]);
+  }, [router, setSignupToken]);
 
   const handleAgreementChange = (isValid: boolean) => {
     setIsButtonDisabled(!isValid);
