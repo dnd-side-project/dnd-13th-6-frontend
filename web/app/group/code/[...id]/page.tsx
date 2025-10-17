@@ -6,11 +6,11 @@ import { API_END_POINT, MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import BackgroundLight from '@/public/assets/common/backgroundLight.svg';
 import { useParams } from 'next/navigation';
-import { Crew } from '@/types/crew';
+import { Crew, MemberData } from '@/types/crew';
 import api from '@/utils/apis/customAxios';
-function JoinSuccess() {
-  const params = useParams();
-  const [crewInfo, setCrewInfo] = useState<Crew>();
+function JoinSuccess({crewInfo}: {crewInfo: Crew}) {
+ 
+
 
   const onMove = () => {
     if(!crewInfo) return;
@@ -22,15 +22,7 @@ function JoinSuccess() {
     );
   };
 
-  useEffect(() => {
-    const init = async() => {
-      const crewId = parseInt(params.crewId as string);
-      const { data} = await api.get(API_END_POINT.CREWS.GET_CREW_DETAIL(crewId))
-      setCrewInfo(data);
-    }
 
-    init();
-  })
   if(!crewInfo) return <p>Loading...</p>
 
 
@@ -62,19 +54,36 @@ function JoinSuccess() {
 }
 
 export default function Page() {
+  const params = useParams();
   const [crew, setCrew] = useState<string>('');
+  const [crewMembers, setCrewMembers] = useState<Array<string>>([]);
   const [isSave, setIsSave] = useState(false);
   const [joinSuccess, setJoinSuccess] = useState(false);
-
+  const [crewInfo, setCrewInfo] = useState<Crew>();
   const onJoinCrew = () => {
-    console.log('click');
     setJoinSuccess(true);
     setIsSave(true);
   };
 
+
+  useEffect(() => {
+    const init = async() => {
+      const crewId = parseInt(params.id![0]);
+      const { data} = await api.get(API_END_POINT.CREWS.GET_CREW_DETAIL(crewId))
+      const {data:memberData} = await api.get(API_END_POINT.CREWS.GET_MEMBERS(crewId));
+      setCrewInfo(data.result);
+      setCrewMembers(memberData.result.members.map((member: MemberData) => member.badgeImageUrl));
+    }
+    
+    init();
+  },[])
+
+  if(!crewInfo || !crewMembers) return <div>Loading...</div>
+
   if (isSave) {
-    return joinSuccess ? <JoinSuccess /> : <div>실패</div>;
+    return joinSuccess ? <JoinSuccess crewInfo={crewInfo} /> : <div>실패</div>;
   }
+  
 
   return (
     <div className="max-h-[calc(100vh-200px)] w-full px-2">
@@ -83,17 +92,16 @@ export default function Page() {
       </div>
       <div className="relative flex flex-col">
         <CrewChallengeCard
-          onClick={() => setCrew('1')}
-          onTouchEnd={() => console.log('touch')}
-          className={`${crew === '1' ? 'border-2 border-[#32FF76]' : ''}`}
-          title="이번 주 크루 챌린지"
-          // distance={42}
+          onClick={() => setCrew(crewInfo.crewId)}
+          onTouchEnd={() => setCrew(crewInfo.crewId)}
+          className={`${crew === crewInfo.crewId ? 'border-2 border-[#32FF76]' : ''}`}
+          title={crewInfo.name}
           progress={0.7}
-          id="1"
-          goal={100}
-          runningDistance={100}
-          isRunning={true}
-          members={['A', 'B', 'C', 'D', 'E']}
+          id={crewInfo.crewId}
+          goal={crewInfo.goal}
+          runningDistance={crewInfo.runningDistance}
+          isRunning={false}
+          members={crewMembers}
         />
       </div>
       <button
