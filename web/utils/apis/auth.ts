@@ -2,10 +2,44 @@ import api from '@/utils/apis/customAxios';
 import { AUTH_API, MEMBER_API } from '@/utils/apis/api';
 import axios from 'axios';
 
-export const registerWithNickname = async (nickname: string) => {
-  const res = await api.post(AUTH_API.SIGN_UP(), { nickname });
+export async function exchangeToken(code: string) {
+  const response = await api.post('/api/auth/token/exchange', {
+    authCode: code
+  });
+  const accessToken = response.headers.authorization;
+  const refreshToken = response.headers['x-refresh-token'];
 
-  return res.data.result;
+  if (accessToken) {
+    localStorage.setItem('accessToken', accessToken.replace('Bearer ', ''));
+  }
+  if (refreshToken) {
+    localStorage.setItem('refreshToken', refreshToken);
+  }
+}
+
+export const registerWithNickname = async ({
+  nickname,
+  signupToken
+}: {
+  nickname: string;
+  signupToken: string | null;
+}) => {
+  const res = await api.post(
+    AUTH_API.SIGN_UP(),
+    { nickname },
+    {
+      params: {
+        signupToken
+      }
+    }
+  );
+  if (res.data.result.authCode) {
+    try {
+      exchangeToken(res.data.result.authCode);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 };
 
 export const tokenRefresh = async () => {
@@ -29,4 +63,11 @@ export const logout = async () => {
 };
 export const withdraw = async () => {
   await api.delete(MEMBER_API.WITHDRAW());
+};
+
+export const hasAccessToken = (): boolean => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+  return !!localStorage.getItem('accessToken');
 };
