@@ -35,7 +35,7 @@ export const registerWithNickname = async ({
   );
   if (res.data.result.authCode) {
     try {
-      exchangeToken(res.data.result.authCode);
+      await exchangeToken(res.data.result.authCode);
     } catch (error) {
       console.error(error);
     }

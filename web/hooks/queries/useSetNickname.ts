@@ -13,14 +13,14 @@ export const useSetNickname = (type: 'onboarding' | 'profile') => {
   const [errorMessage, setErrorMessage] = useState('');
   const queryClient = useQueryClient();
   const signupToken = useAtomValue(signupTokenAtom);
-
+  const mutationFn = (nickname: string) => {
+    if (type === 'onboarding') {
+      return registerWithNickname({ nickname, signupToken });
+    }
+    return updateNickname(nickname);
+  };
   const mutation = useMutation({
-    mutationFn: (nickname: string) => {
-      if (type === 'onboarding') {
-        return registerWithNickname({ nickname, signupToken });
-      }
-      return updateNickname(nickname);
-    },
+    mutationFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.member.all });
       if (type === 'profile') return;

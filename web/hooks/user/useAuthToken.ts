@@ -30,7 +30,6 @@ async function handleAuthCodeExchange(router: ReturnType<typeof useRouter>) {
 
   if (accessToken && refreshToken) {
     localStorage.setItem('accessToken', accessToken);
-    console.log('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
 
     //앱에서 토큰을 받은 후 URL 정리 (쿼리 파라미터 및 해시 제거)
