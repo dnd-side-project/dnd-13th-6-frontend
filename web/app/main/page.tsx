@@ -43,7 +43,6 @@ export default function Main() {
   const router= useRouter();
   return (
     <>
-      <button onClick={() => router.push('/login')}>로그인</button>
       <MainHeader notification={displayNotifications} />
       <WelcomeCard
         nickname={userInfo?.nickname || ''}
