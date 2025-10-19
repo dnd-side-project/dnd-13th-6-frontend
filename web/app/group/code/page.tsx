@@ -1,5 +1,5 @@
 'use client';
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState, Dispatch, SetStateAction } from 'react';
 import { API_END_POINT, MODULE } from '@/utils/apis/api';
 import api from '@/utils/apis/customAxios';
 import { useRouter } from 'next/navigation';
@@ -9,44 +9,39 @@ function CodePad({
   setCode
 }: {
   code: string[];
-  setCode: (code: string[]) => void;
+  setCode: Dispatch<SetStateAction<string[]>>;
 }) {
 
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   // 안드로이드/iOS 공통: 입력 필터링 및 자동 포커스 이동 (영문+숫자 허용, 대문자 변환)
-  const handleInput = (
-    event: ChangeEvent<HTMLInputElement>,
-    idx: number
-  ) => {
+  const handleInput = (event: ChangeEvent<HTMLInputElement>, idx: number) => {
     const target = event.currentTarget;
     const value = target.value;
-    if(event.keyCode === 8) {
-      setCode((prev:string[]) => {
-        const newCode = [...prev]
-        newCode[idx] = ''
-        return newCode
-      })
-      if(idx === 0) inputsRef.current[0]!.focus();
-      else inputsRef.current[idx -1]!.focus();
-      return;
-    }
-    // 영문/숫자만 허용하고 대문자로 정규화
-    const alphaNumeric = value.replace(/[^0-9a-zA-Z]/g, '');
-    // const normalized = alphaNumeric.toUpperCase();
 
-    if (value !== alphaNumeric) {
-      target.value = alphaNumeric;
-    }
+    const alphaNumeric = value.replace(/[^0-9a-zA-Z]/g, '');
+    if (value !== alphaNumeric) target.value = alphaNumeric;
+
     if (alphaNumeric) {
       const newCode = [...code];
       newCode[idx] = alphaNumeric.slice(-1);
       setCode(newCode);
 
-      if (idx < 5) {
-        inputsRef.current[idx + 1]?.focus();
-      }
+      if (idx < 5) inputsRef.current[idx + 1]?.focus();
     }
   };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
+     if (event.key === 'Backspace') {
+       event.preventDefault();
+       setCode(prev => {
+        const newCode = [...prev];
+        newCode[idx] = '';
+        return newCode;
+      }); 
+       if (idx > 0) inputsRef.current[idx - 1]?.focus();
+    }
+  };
+
   // iOS 삭제(backspace) 인식: keydown 대신 beforeinput으로 처리
   const handleBeforeInput = (
     event: React.FormEvent<HTMLInputElement>,
@@ -85,24 +80,19 @@ function CodePad({
       {code.map((char, idx) => (
         <input
           key={idx}
-          ref={el => {
+          ref={(el) => {
             inputsRef.current[idx] = el;
           }}
           type="text"
           inputMode="text"
           pattern="[A-Za-z0-9]*"
-          name={`code-${idx}`}
           value={char}
           maxLength={1}
           onChange={e => handleInput(e, idx)}
-          onKeyDown={e => handleInput(e, idx)}
+          onKeyDown={e => handleKeyDown(e, idx)}  // ✅ 분리
           onBeforeInput={e => handleBeforeInput(e, idx)}
           onPaste={handlePaste}
-          className="block h-16 w-13 flex-1 rounded-xl bg-[#3A3A3C] p-4 text-center text-2xl text-[28px] font-bold text-white [-webkit-appearance:none] focus:ring-2 focus:ring-[#32FF76] focus:outline-none"
-          autoComplete="off"
-          autoCorrect="off"
-          autoCapitalize="none"
-          placeholder=""
+          className="block h-16 w-13 flex-1 rounded-xl bg-[#3A3A3C] p-4 text-center text-[28px] font-bold text-white focus:ring-2 focus:ring-[#32FF76] focus:outline-none"
         />
       ))}
     </div>
@@ -110,7 +100,7 @@ function CodePad({
 }
 
 export default function Page() {
-  const [code, setCode] = useState(Array(6).fill(''));
+  const [code, setCode] = useState<string[]>(Array(6).fill(''));
   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
