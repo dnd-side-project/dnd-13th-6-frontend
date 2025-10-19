@@ -128,7 +128,7 @@ export default function Page() {
       {/* Content */}
       <div className="mt-8 flex flex-1 flex-col">
         <p className="text-lg font-bold text-white">
-          초대 코드를 입력해주세요11.
+          초대 코드를 입력해주세요.
         </p>
         <div className="mt-16 w-full">
           <CodePad code={code} setCode={setCode} />
