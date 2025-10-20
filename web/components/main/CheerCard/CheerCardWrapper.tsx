@@ -13,7 +13,6 @@ import { useRunningUsers } from '@/hooks/queries/useRunningUsers';
 
 const CheerCardWrapper = () => {
   const { data: runningUser = [] } = useRunningUsers();
-  console.log('cheerCardData', runningUser);
   const count = runningUser?.length ?? 0;
   const renderRunnerComponent = (runningUser: RunningUser[]) => {
     switch (count) {

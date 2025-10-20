@@ -11,7 +11,6 @@ import { useCloverCount } from '@/hooks/queries/useCloverCount';
 import { useNotifications } from '@/hooks/queries/useNotifications';
 import TodayStatsCard from '@/components/main/TodayStatsCard';
 import { useAuthToken } from '@/hooks/user/useAuthToken';
-
 export default function Main() {
   const [displayNotifications, setDisplayNotifications] = useState<
     Notification[]
@@ -23,7 +22,6 @@ export default function Main() {
   const { data: cloverCount } = useCloverCount();
 
   const { data: notifications } = useNotifications();
-
 
   useEffect(() => {
     if (notifications) {
@@ -41,10 +39,8 @@ export default function Main() {
       setDisplayNotifications(merged);
     }
   }, [notifications]);
-
   return (
     <>
-      {/* <button onClick={() => router.push('/login')}>로그인</button> */}
       <MainHeader notification={displayNotifications} />
       <WelcomeCard
         nickname={userInfo?.nickname || ''}

@@ -1,17 +1,10 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import {
-  RunningData,
-  StartRunningSuccessData,
-  RunningErrorData
-} from '@/types/runningTypes';
-import { RUNNING_API } from '@/utils/apis/api';
+import { RunningData } from '@/types/runningTypes';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import { useStartRunning } from '@/hooks/queries/useStartRunning';
 import { useEndRunning } from '@/hooks/queries/useEndRunning';
-import { isAxiosError } from 'axios';
-import api from '@/utils/apis/customAxios';
 import { useRunningTimer } from '@/hooks/running/useRunningTimer';
 import { useStompConnection } from '@/hooks/api/useStompConnection';
 import { useRunningData } from '@/hooks/running/useRunningData';
@@ -147,67 +140,42 @@ export const useRunningSession = () => {
     ]
   );
 
-  useEffect(() => {
-    const initRunning = () => {
-      const startRunMutationOptions = {
-        onSuccess: (data: StartRunningSuccessData) => {
-          const { runningId, runnerId } = data.result;
-          const messageData = JSON.stringify({ runningId, runnerId });
-          postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_START, messageData);
-        },
-        onError: async (error: Error) => {
-          if (
-            isAxiosError<RunningErrorData>(error) &&
-            error.response?.data.code === 'R102'
-          ) {
-            console.log(
-              'R102 Error: Existing run detected. Attempting to clear and retry.'
-            );
-            const existingRunningId =
-              error.response?.data.result?.runningId ||
-              localStorage.getItem('runningId');
-            if (existingRunningId) {
-              try {
-                await api.delete(RUNNING_API.RUNNING_ACTIVE(existingRunningId));
-                localStorage.removeItem('runningId');
-                console.log(
-                  'Existing run cleared. Retrying to start a new run...'
-                );
-                // Retry mutation once
-                startRunningMutate(undefined, {
-                  onSuccess: startRunMutationOptions.onSuccess, // reuse success handler
-                  onError: (retryError: Error) => {
-                    // If retry also fails, log it and stop to prevent loop.
-                    console.error('Failed to start run on retry:', retryError);
-                  }
-                });
-              } catch (deleteError) {
-                console.error(
-                  'Failed to delete existing running session:',
-                  deleteError
-                );
-              }
-            } else {
-              console.error(
-                'R102 error, but no existing runningId found to delete.'
-              );
+  const startWithRetry = () => {
+    startRunningMutate(undefined, {
+      onError: initialError => {
+        console.error('러닝 시작 실패, 재시도 중...', initialError);
+        const data = {
+          postData: {
+            summary: {
+              totalDistanceMinutes: 0,
+              durationSeconds: 0,
+              avgSpeedMPS: 0
+            },
+            track: {
+              format: 'JSON',
+              points: JSON.stringify({
+                type: 'LineString',
+                coordinates: [[126.978, 37.5665]]
+              }),
+              pointCount: 1
             }
-          } else {
-            console.error('Failed to start running session:', error);
           }
-        }
-      };
+        };
+        endRunningMutate(data, {
+          onSuccess: () => {
+            console.log('이전 러닝 세션 종료 성공, 다시 시작 시도...');
+            startRunningMutate();
+          }
+        });
+      }
+    });
+  };
 
-      setIsRunning(true);
-      setIsPaused(false);
-      setRunningData([[]]);
-      setTargetDistance(localStorage.getItem('targetDistance') || '0');
-
-      startRunningMutate(undefined, startRunMutationOptions);
-    };
-
-    initRunning();
-  }, [startRunningMutate]);
+  useEffect(() => {
+    setIsRunning(true);
+    setTargetDistance(localStorage.getItem('targetDistance') || '0');
+    startWithRetry();
+  }, []);
 
   const handleClickIndicator = () => {
     setCurrentPage(prev => (prev === 0 ? 1 : 0));

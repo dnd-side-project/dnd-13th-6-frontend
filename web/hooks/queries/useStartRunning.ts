@@ -1,12 +1,17 @@
 import { useMutation } from '@tanstack/react-query';
 import { runningStart } from '@/utils/apis/running';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import { SEND_MESSAGE_TYPE } from '@/utils/webView/consts';
 
 export const useStartRunning = () => {
   return useMutation({
     mutationFn: runningStart,
     onSuccess: data => {
-      localStorage.setItem('runningId', data.result.runningId);
-      localStorage.setItem('runnerId', data.result.runnerId);
+      const { runningId, runnerId } = data.result;
+      const messageData = JSON.stringify({ runningId, runnerId });
+      postMessageToApp(SEND_MESSAGE_TYPE.RUNNING_START, messageData);
+      localStorage.setItem('runningId', runningId);
+      localStorage.setItem('runnerId', runnerId);
     },
     onError: async error => {
       throw error;

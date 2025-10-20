@@ -5,26 +5,22 @@ import Button from '@/components/common/Button';
 import { useRouter } from 'next/navigation';
 import OnBoardingWrapper from '@/components/onBoarding/OnBoardingWrapper';
 import TermsAgreements from '@/components/onBoarding/TermsAgreements';
+import { useSetAtom } from 'jotai';
+import { signupTokenAtom } from '@/store/auth';
 
 function Page() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const router = useRouter();
+  const setSignupToken = useSetAtom(signupTokenAtom);
 
   useEffect(() => {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-      const params = new URLSearchParams(hash);
-      const signupToken = params.get('signupToken');
-      if (signupToken) {
-        sessionStorage.setItem('signupToken', signupToken);
-        window.history.replaceState(
-          null,
-          '',
-          window.location.pathname + window.location.search
-        );
-      }
+    const params = new URLSearchParams(window.location.search);
+    const signupToken = params.get('signupToken');
+    if (signupToken) {
+      setSignupToken(signupToken);
+      router.replace(window.location.pathname);
     }
-  }, []);
+  }, [router, setSignupToken]);
 
   const handleAgreementChange = (isValid: boolean) => {
     setIsButtonDisabled(!isValid);

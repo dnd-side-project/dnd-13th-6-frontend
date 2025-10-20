@@ -14,10 +14,20 @@ export const useRunningData = ({
   targetDistance
 }: UseRunningDataProps) => {
   const totalDistance = useMemo(() => {
-    const flatData = runningData.flat();
-    const sum =
-      flatData.reduce((acc, cur) => acc + Number(cur.distance), 0) / 1000;
-    return Math.round(sum * 100) / 100;
+    const total = runningData.reduce((acc, segment, segmentIndex) => {
+      const segmentTotal = segment.reduce((segmentAcc, point, pointIndex) => {
+        // 첫 번째 세그먼트가 아니면서, 해당 세그먼트의 첫 번째 포인트인 경우
+        // distance 값을 합산에서 제외합니다.
+        if (segmentIndex > 0 && pointIndex === 0) {
+          return segmentAcc;
+        }
+        return segmentAcc + Number(point.distance);
+      }, 0);
+      return acc + segmentTotal;
+    }, 0);
+
+    const sumInKm = total / 1000;
+    return Math.round(sumInKm * 100) / 100;
   }, [runningData]);
 
   const currentSpeed = useMemo(() => {

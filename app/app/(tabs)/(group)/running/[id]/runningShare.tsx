@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Dimensions,
   ScrollView,
+  View,
 } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { CrewContext } from './_layout';
@@ -28,9 +29,10 @@ function RunningShare() {
   const handleWebViewMessage = (event: WebViewMessageEvent) => {
     try {
       const data = JSON.parse(event.nativeEvent.data || '{}');
-      if (data?.type === 'CONTENT_HEIGHT' && typeof data.height === 'number') {
+      const height = data.data.height
+      if (data?.type === 'CONTENT_HEIGHT' && typeof height === 'number') {
         // 최소 높이 보장, 최대 높이 제한
-        const adjustedHeight = Math.max(600, Math.min(data.height, 2000));
+        const adjustedHeight = Math.max(400, Math.min(height, 2000));
         setContentHeight(adjustedHeight);
         console.log('WebView height adjusted to:', adjustedHeight);
       }
@@ -71,40 +73,41 @@ function RunningShare() {
 
   return (
     <ScrollView
-      scrollEnabled={false}
-      contentContainerStyle={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: '#313131',  }}
       nestedScrollEnabled={true}
-      className="bg-gray"
+      showsVerticalScrollIndicator={true}
     >
-      {isLoading && (
-        <ActivityIndicator
-          size="large"
-          color="#313131"
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        />
-      )}
-      <WebView
-        ref={webviewRef}
-        className="flex-1 bg-gray"
-        style={[
-          {
-            flex: 1,
-            width: windowWidth,
-            opacity: isLoading ? 0 : 1
-          }
-        ]}
-        scrollEnabled={false}
-        bounces={false}
-        overScrollMode="never"
-        nestedScrollEnabled={false}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        mixedContentMode="always"
-        onMessage={handleWebViewMessage}
-        source={{
-          uri: initialUrl
+      {/* 웹뷰 */}
+      <View
+        style={{
+          flex: 1,
+          minHeight: 550,
+          backgroundColor: '#313131',
+          overflow: 'hidden',
         }}
-      />
+      >
+        <WebView
+          ref={webviewRef}
+          source={{ uri: initialUrl }}
+          style={{
+            width: windowWidth,
+            height: 550,
+            opacity: isLoading ? 0 : 1,
+          }}
+          onMessage={handleWebViewMessage}
+          originWhitelist={['*']}
+          startInLoadingState={false}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          allowsInlineMediaPlayback
+          mixedContentMode="always"
+          // ✅ 핵심 포인트
+          scrollEnabled={true}           // 내부 스크롤 허용
+          nestedScrollEnabled={true}     // 상위 ScrollView와 연동 허용
+          showsVerticalScrollIndicator={true}
+          bounces={false}
+        />
+      </View>
     </ScrollView>
   );
 }

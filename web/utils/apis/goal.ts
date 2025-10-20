@@ -8,7 +8,7 @@ export const getGoalDistance = async () => {
 
 export const changeTargetDistance = async (distance: number) => {
   const res = await api.patch(GOAL_API.CHANGE_TARGET_DISTANCE(), {
-    goal: distance,
+    goal: distance
   });
   return res.data;
 };
@@ -16,11 +16,11 @@ export const changeTargetDistance = async (distance: number) => {
 export const getWeeklyGoal = async () => {
   const [goalRes, weeklyRunRes] = await Promise.all([
     api.get(GOAL_API.GET_TARGET_DISTANCE()),
-    api.get(RUNNING_API.WEEKLY_RUNNINGS()),
+    api.get(RUNNING_API.WEEKLY_RUNNINGS())
   ]);
   localStorage.setItem('weeklyGoalDistance', goalRes.data.result.goal);
   return {
     goalDistance: goalRes.data.result.goal,
-    weeklyRunDistance: weeklyRunRes.data.result.totalDistanceKm,
+    weeklyRunDistance: weeklyRunRes.data.result.totalDistanceKm
   };
 };

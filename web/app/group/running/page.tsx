@@ -10,6 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import { postCheerfulMessage } from '@/utils/apis/running';
 import { useCrewRunningSocket } from '@/hooks/running/useCrewRunningSocket';
 import { useCloverAnimation } from '@/hooks/ui/useCloverAnimation';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 function CrewMemberProfiles({
   users,
@@ -37,7 +38,7 @@ function CrewMemberProfiles({
   );
 }
 
-const SendCloverButton = ({ member }: { member: MemberData }) => {
+const SendCloverButton = ({ member }: { member: MemberData | null }) => {
   const { clovers, startCloverAnimation } = useCloverAnimation();
 
   const sendEmoji = (emojiType: string) => {
@@ -58,7 +59,8 @@ const SendCloverButton = ({ member }: { member: MemberData }) => {
   return (
     <button
       onClick={() => sendEmoji('clover')}
-      className="absolute right-2 bottom-2 z-10 ml-auto flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 text-white"
+      disabled={!member}
+      className="absolute right-2 bottom-2 z-50 ml-auto flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 text-white"
     >
       <div className="relative h-5 max-h-15 w-5">
         <Image src="/assets/clover.png" alt="clover" fill />
@@ -101,31 +103,40 @@ function GroupRunningContent() {
     useCrewRunningSocket(crewId);
 
   const latestMemberLocation = useMemo(() => {
-    return memberLocation.at(-1);
+    return memberLocation.at(-1)
   }, [memberLocation]);
 
+  const data = {
+    type: 'CONTENT_HEIGHT',
+    height: 400
+  };
+     postMessageToApp('CONTENT_HEIGHT', JSON.stringify(data));
+
   return (
-    <div className="relative -mt-6 w-full overflow-hidden bg-[#313131] px-4 text-white">
+    <div className="relative -mt-6 w-full max-h-[650px] overflow-hidden bg-[#313131] px-4 text-white">
       <CrewMemberProfiles users={members} onClick={selectMember} />
-      <div className="mt-6 mb-[14px] min-h-[400px]">
-        <GoogleMap height="750px" paths={[memberLocation]}>
-          {activeMember && latestMemberLocation && (
+      <div className="mt-6 mb-[14px] bg-[#313131] relative">
+        <GoogleMap height="450px" paths={[memberLocation]}>
+          {(
             <>
-              <UserMarker
-                lat={latestMemberLocation.lat}
-                lng={latestMemberLocation.lng}
-                imageUrl={activeMember.badgeImageUrl}
-              />
-              <SendCloverButton member={activeMember} />
+              {activeMember && latestMemberLocation &&
+                <UserMarker
+                  lat={latestMemberLocation.lat}
+                  lng={latestMemberLocation.lng}
+                  imageUrl={activeMember.badgeImageUrl}
+                />
+              }
             </>
           )}
         </GoogleMap>
+        <SendCloverButton member={activeMember} />
       </div>
     </div>
   );
 }
 
 export default function Page() {
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <GroupRunningContent />

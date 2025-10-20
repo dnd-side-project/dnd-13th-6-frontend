@@ -1,20 +1,28 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { registerWithNickname } from '@/utils/apis/auth';
 import { updateNickname } from '@/utils/apis/member';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
+import { queryKeys } from '@/utils/queries/queryKeys';
+import { useAtomValue } from 'jotai';
+import { signupTokenAtom } from '@/store/auth';
 
 export const useSetNickname = (type: 'onboarding' | 'profile') => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState('');
-
-  const mutationFn =
-    type === 'onboarding' ? registerWithNickname : updateNickname;
-
+  const queryClient = useQueryClient();
+  const signupToken = useAtomValue(signupTokenAtom);
+  const mutationFn = (nickname: string) => {
+    if (type === 'onboarding') {
+      return registerWithNickname({ nickname, signupToken });
+    }
+    return updateNickname(nickname);
+  };
   const mutation = useMutation({
     mutationFn,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.member.all });
       if (type === 'profile') return;
       const destination =
         type === 'onboarding' ? '/onboarding/select-character' : '/main';
