@@ -40,7 +40,6 @@ export default function Main() {
       setDisplayNotifications(merged);
     }
   }, [notifications]);
-  const router= useRouter();
   return (
     <>
       <MainHeader notification={displayNotifications} />
