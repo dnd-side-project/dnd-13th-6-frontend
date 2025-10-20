@@ -11,7 +11,6 @@ import { useCloverCount } from '@/hooks/queries/useCloverCount';
 import { useNotifications } from '@/hooks/queries/useNotifications';
 import TodayStatsCard from '@/components/main/TodayStatsCard';
 import { useAuthToken } from '@/hooks/user/useAuthToken';
-import { useRouter } from 'next/navigation';
 export default function Main() {
   const [displayNotifications, setDisplayNotifications] = useState<
     Notification[]
