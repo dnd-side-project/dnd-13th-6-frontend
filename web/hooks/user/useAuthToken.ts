@@ -10,6 +10,10 @@ async function handleAuthCodeExchange(router: ReturnType<typeof useRouter>) {
   const params = new URLSearchParams(window.location.search);
   const code = params.get('code');
   const token = localStorage.getItem('accessToken');
+  const data = {
+    type: MODULE.PUSH,
+    url: '/(tabs)/(home)'
+  };
   if (code && !token) {
     try {
       await exchangeToken(code);
@@ -17,6 +21,7 @@ async function handleAuthCodeExchange(router: ReturnType<typeof useRouter>) {
       console.error(error);
     } finally {
       router.replace(window.location.pathname);
+      postMessageToApp(MODULE.PUSH, JSON.stringify(data));
     }
     return;
   }
@@ -42,10 +47,6 @@ async function handleAuthCodeExchange(router: ReturnType<typeof useRouter>) {
     );
 
     // 앱의 홈 화면으로 리디렉션 요청
-    const data = {
-      type: MODULE.PUSH,
-      url: '/(tabs)/(home)'
-    };
     postMessageToApp(MODULE.PUSH, JSON.stringify(data));
   } else {
     // 해시는 있지만 토큰이 없는 경우
