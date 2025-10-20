@@ -11,8 +11,8 @@ import { useCloverCount } from '@/hooks/queries/useCloverCount';
 import { useNotifications } from '@/hooks/queries/useNotifications';
 import TodayStatsCard from '@/components/main/TodayStatsCard';
 import { useAuthToken } from '@/hooks/user/useAuthToken';
-import { MODULE } from '@/utils/apis/api';
 import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import { MODULE } from '@/utils/apis/api';
 export default function Main() {
   const [displayNotifications, setDisplayNotifications] = useState<
     Notification[]

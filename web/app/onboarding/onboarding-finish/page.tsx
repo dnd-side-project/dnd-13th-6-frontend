@@ -4,12 +4,18 @@ import ProgressBar from '@/components/common/ProgressBar';
 import { useRouter } from 'next/navigation';
 import Logo from '@/public/assets/LOGO.svg';
 import StartIcon from '@/public/assets/icon/start.svg';
+import { MODULE } from '@/utils/apis/api';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 
 function Page() {
   const router = useRouter();
+  const data = {
+    type: MODULE.PUSH,
+    url: '/(tabs)/(home)'
+  };
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace('/main');
+      postMessageToApp(MODULE.PUSH, JSON.stringify(data));
     }, 3000);
 
     return () => clearTimeout(timer);
