@@ -20,12 +20,11 @@ function RunningShare() {
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;
       if (url === '/(tabs)/(home)') {
-        setWebViewKey(prev => prev + 1);
+        // setWebViewKey(prev => prev + 1);
         router.push(url);
       }
     }
   };
-  console.log('ENV.WEB_VIEW_URL0000', ENV.WEB_VIEW_URL);
   return (
     <SafeAreaView
       style={styles.container}
