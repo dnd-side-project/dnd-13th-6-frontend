@@ -11,6 +11,8 @@ import { useCloverCount } from '@/hooks/queries/useCloverCount';
 import { useNotifications } from '@/hooks/queries/useNotifications';
 import TodayStatsCard from '@/components/main/TodayStatsCard';
 import { useAuthToken } from '@/hooks/user/useAuthToken';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
+import { MODULE } from '@/utils/apis/api';
 export default function Main() {
   const [displayNotifications, setDisplayNotifications] = useState<
     Notification[]
@@ -39,6 +41,17 @@ export default function Main() {
       setDisplayNotifications(merged);
     }
   }, [notifications]);
+
+  useEffect(() => {
+    const onMove = () => {
+      const data = {
+        type: MODULE.PUSH,
+        url: '/(tabs)/(home)'
+      };
+      postMessageToApp(MODULE.PUSH, JSON.stringify(data));
+    };
+    onMove();
+  },[])
   return (
     <>
       <MainHeader notification={displayNotifications} />

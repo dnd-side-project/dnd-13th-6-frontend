@@ -13,7 +13,6 @@ function Index() {
   const webViewRef = useRef<WebView>(null);
   const handleMessage = async (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
-    console.log(data)
     if (data.type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);
@@ -27,18 +26,15 @@ function Index() {
       } else router.replace('/(tabs)/(onboarding)')
     } else if (data.type === MODULE.PUSH) {
       const { type, url } = JSON.parse(data.data);
-      if (url === '/(onboarding)') {
+      console.log(url, type)
+      if (url === '/(onboarding)' || url === '/(tabs)/(onboarding)') {
         router.replace('/(tabs)/(onboarding)');
       } else if (url === '/(tabs)/(home)') {
-        router.replace('/(tabs)/(home)');
+        console.log('r')
+        return;
       } else {
         router.push(url);
-      }
-      // if (url === '/(tabs)/(home)' || url === '/(tabs)/(onboarding)') {
-      //   router.replace(url);
-      // } else {
-      //   router.push(url);
-      // }
+      } 
     }
     if (data.nickName) {
       AsyncStorage.setItem('nickName', data.nickName);
