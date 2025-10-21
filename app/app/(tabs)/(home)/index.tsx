@@ -2,18 +2,14 @@ import { MODULE } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { useRef } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Dimensions
-} from 'react-native';
+import { useRef, useState } from 'react';
+import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 function Index() {
   const webViewRef = useRef<WebView>(null);
+  const [webViewKey, setWebViewKey] = useState(0);
   const handleMessage = async (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
-    console.log(data)
     if (data.type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);
@@ -24,21 +20,19 @@ function Index() {
             userId: data.userId
           })
         );
-      } else router.replace('/(tabs)/(onboarding)')
+      } else router.replace('/(tabs)/(onboarding)');
     } else if (data.type === MODULE.PUSH) {
       const { type, url } = JSON.parse(data.data);
-      if (url === '/(onboarding)') {
+      console.log(url, type);
+      if (url === '/(onboarding)' || url === '/(tabs)/(onboarding)') {
+        setWebViewKey(prev => prev + 1);
         router.replace('/(tabs)/(onboarding)');
       } else if (url === '/(tabs)/(home)') {
-        router.replace('/(tabs)/(home)');
+        console.log('r');
+        return;
       } else {
         router.push(url);
       }
-      // if (url === '/(tabs)/(home)' || url === '/(tabs)/(onboarding)') {
-      //   router.replace(url);
-      // } else {
-      //   router.push(url);
-      // }
     }
     if (data.nickName) {
       AsyncStorage.setItem('nickName', data.nickName);
@@ -56,6 +50,7 @@ function Index() {
       <WebView
         className="flex-1 h-full bg-gray border"
         ref={webViewRef}
+        key={webViewKey}
         style={styles.webview}
         showsVerticalScrollIndicator={false}
         keyboardDisplayRequiresUserAction={false}
