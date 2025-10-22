@@ -16,6 +16,7 @@ function RunningShare() {
     if (type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);
+        router.push('/(tabs)/(home)')
       }
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;
