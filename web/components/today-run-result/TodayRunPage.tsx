@@ -41,7 +41,11 @@ export default function TodayRunPage({ finishData }: TodayRunPageProps) {
               <RunningNameInput />
               <MainOverview
                 type={'finish'}
-                distance={finishData?.totalDistance}
+                distance={
+                  finishData?.totalDistance
+                    ? Number((finishData?.totalDistance / 1000).toFixed(2))
+                    : 0
+                }
               />
             </div>
           </div>

@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
     domains: ['picsum.photos', 'runky-bucket.s3.ap-northeast-2.amazonaws.com']
   },

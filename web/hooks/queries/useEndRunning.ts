@@ -9,8 +9,15 @@ export const useEndRunning = () => {
     mutationFn: runningEnd,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.running.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.running.today() });
       queryClient.invalidateQueries({ queryKey: queryKeys.goal.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.reward.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.running.weeklyStats()
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.calendar.all
+      });
     },
     onError: error => {
       console.error(error);
