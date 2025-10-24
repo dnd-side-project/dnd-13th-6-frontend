@@ -38,6 +38,17 @@ export const useRunningSession = () => {
     });
 
   const handleNewRunningData = useCallback((newPoint: RunningData) => {
+    // Validate latitude and longitude
+    if (
+      typeof newPoint.latitude !== 'number' ||
+      isNaN(newPoint.latitude) ||
+      typeof newPoint.longitude !== 'number' ||
+      isNaN(newPoint.longitude)
+    ) {
+      console.warn('Invalid newPoint received, skipping:', newPoint);
+      return; // Skip if coordinates are invalid
+    }
+
     setRunningData(prev => {
       const newPaths = [...prev];
       if (newPaths.length > 0) {
@@ -141,33 +152,32 @@ export const useRunningSession = () => {
     ]
   );
 
-  const startWithRetry = () => {
+  const startWithRetry = async () => {
     startRunningMutate(undefined, {
       onError: initialError => {
         console.error('러닝 시작 실패, 재시도 중...', initialError);
-        const data = {
-          postData: {
-            summary: {
-              totalDistanceMeter: 0,
-              durationSeconds: 0,
-              avgSpeedMPS: 0
-            },
-            track: {
-              format: 'JSON',
-              points: JSON.stringify({
-                type: 'LineString',
-                coordinates: [[126.978, 37.5665]]
-              }),
-              pointCount: 1
-            }
+        const points = { type: 'LineString', coordinates: [] };
+        const postData = {
+          summary: {
+            totalDistanceMeter: 0,
+            durationSeconds: 0,
+            avgSpeedMPS: 0
+          },
+          track: {
+            format: 'JSON',
+            points: JSON.stringify(points),
+            pointCount: 0
           }
         };
-        endRunningMutate(data, {
-          onSuccess: () => {
-            console.log('이전 러닝 세션 종료 성공, 다시 시작 시도...');
-            startRunningMutate();
+        endRunningMutate(
+          { postData },
+          {
+            onSuccess: () => {
+              console.log('이전 러닝 세션 종료 성공, 다시 시작 시도...');
+              startRunningMutate();
+            }
           }
-        });
+        );
       }
     });
   };

@@ -48,7 +48,13 @@ export default function Page() {
               <RunningNameInput />
               <MainOverview
                 type="finish"
-                distance={latestFinishData?.totalDistance}
+                distance={
+                  latestFinishData?.totalDistance
+                    ? Number(
+                        (latestFinishData?.totalDistance / 1000).toFixed(2)
+                      )
+                    : 0
+                }
               />
             </div>
             <CircleProgress percent={weeklyRunPercent()} />

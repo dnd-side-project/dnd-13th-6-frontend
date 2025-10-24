@@ -38,10 +38,13 @@ export default function TodayRunPage({ finishData }: TodayRunPageProps) {
         <div className="flex flex-col justify-around">
           <div className="flex items-center justify-around gap-8">
             <div className="flex flex-col items-start justify-center">
-              <RunningNameInput />
               <MainOverview
                 type={'finish'}
-                distance={finishData?.totalDistance}
+                distance={
+                  finishData?.totalDistance
+                    ? Number((finishData?.totalDistance / 1000).toFixed(2))
+                    : 0
+                }
               />
             </div>
           </div>

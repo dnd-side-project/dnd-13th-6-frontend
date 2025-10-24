@@ -66,7 +66,7 @@ export const routeConfigs: Record<string, RouteConfig> = {
   },
 
   //뽑기 페이지
-  '/lucky-stamp': { showHeader: true, backHref: '/main', title: '러닝종료' },
+  '/lucky-stamp': { showHeader: true, title: '러닝종료' },
 
   //크루 페이지
   '/crew-reward': {
