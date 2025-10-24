@@ -39,6 +39,7 @@ export const useRunningData = ({
   const averagePace = useMemo(() => {
     if (totalDistance === 0 || totalTime === 0) return `0'00"`;
     const pace = totalTime / 60 / totalDistance;
+    if (isNaN(pace)) return `0'00"`;
     const minutes = Math.floor(pace);
     const seconds = Math.round((pace - minutes) * 60);
     return `${minutes}'${seconds.toString().padStart(2, '0')}"`;

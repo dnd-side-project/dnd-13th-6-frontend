@@ -43,11 +43,25 @@ export const registerWithNickname = async ({
 };
 
 export const tokenRefresh = async () => {
-  await axios.post(
+  const response = await axios.post(
     `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}${AUTH_API.REFRESH_TOKEN()}`,
     {},
-    { withCredentials: true } // 브라우저가 자동으로 refresh token 쿠키를 포함하여 전송
+    {
+      withCredentials: true, // 브라우저가 자동으로 refresh token 쿠키를 포함하여 전송
+      headers: {
+        'X-Refresh-Token': localStorage.getItem('refreshToken') || ''
+      }
+    }
   );
+  const accessToken = response.headers.authorization;
+  const refreshToken = response.headers['x-refresh-token'];
+
+  if (accessToken) {
+    localStorage.setItem('accessToken', accessToken.replace('Bearer ', ''));
+  }
+  if (refreshToken) {
+    localStorage.setItem('refreshToken', refreshToken);
+  }
 };
 
 export const logout = async () => {
