@@ -17,7 +17,7 @@ function MainOverview({ type, distance }: MainOverviewProps) {
         <span
           className={`${type === 'finish' ? 'text-7xl' : 'text-8xl'} font-lufga font-extrabold italic`}
         >
-          {distance == 0 ? '0.00' : distance}
+          {distance === 0 ? '0.00' : distance}
         </span>
 
         <span className="font-lufga ml-2 text-4xl font-semibold text-gray-50 italic">
