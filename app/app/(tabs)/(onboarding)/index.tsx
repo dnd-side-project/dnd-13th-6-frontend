@@ -16,6 +16,12 @@ function RunningShare() {
     if (type === MODULE.AUTH) {
       if (data?.accessToken) {
         AsyncStorage.setItem('accessToken', data.accessToken);
+        try {
+          router.push('/(tabs)/(home)');
+        } catch (error) {
+          console.error("Navigation error:", error);
+          // Optionally, display an error message to the user
+        }
       }
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;

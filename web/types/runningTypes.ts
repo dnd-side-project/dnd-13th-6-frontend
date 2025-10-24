@@ -9,7 +9,7 @@ interface RunningData {
 
 interface EndRunningPostData {
   summary: {
-    totalDistanceMinutes: number;
+    totalDistanceMeter: number;
     durationSeconds: number;
     avgSpeedMPS: number;
   };
@@ -46,5 +46,5 @@ export type {
   EndRunningPostData,
   RunRecord,
   StartRunningSuccessData,
-  RunningErrorData,
+  RunningErrorData
 };
