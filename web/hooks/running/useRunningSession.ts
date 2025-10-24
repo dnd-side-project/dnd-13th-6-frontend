@@ -115,7 +115,7 @@ export const useRunningSession = () => {
           const pointCount = path.length;
           const postData = {
             summary: {
-              totalDistanceMinutes: totalDistance,
+              totalDistanceMeter: totalDistance,
               durationSeconds: totalTime,
               avgSpeedMPS: totalDistance / totalTime
             },
@@ -147,7 +147,7 @@ export const useRunningSession = () => {
         const data = {
           postData: {
             summary: {
-              totalDistanceMinutes: 0,
+              totalDistanceMeter: 0,
               durationSeconds: 0,
               avgSpeedMPS: 0
             },
