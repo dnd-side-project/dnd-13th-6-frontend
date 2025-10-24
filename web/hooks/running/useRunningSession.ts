@@ -115,9 +115,10 @@ export const useRunningSession = () => {
           const pointCount = path.length;
           const postData = {
             summary: {
-              totalDistanceMeter: totalDistance,
+              totalDistanceMeter: totalDistance * 1000,
               durationSeconds: totalTime,
-              avgSpeedMPS: totalDistance / totalTime
+              avgSpeedMPS:
+                totalTime > 0 ? (totalDistance * 1000) / totalTime : 0
             },
             track: {
               format: 'JSON',
