@@ -128,11 +128,7 @@ export const useRunningSession = () => {
           const pointCount = path.length;
           const postData = {
             summary: {
-<<<<<<< HEAD
-              totalDistanceMeter: totalDistance,
-=======
               totalDistanceMeter: totalDistance * 1000,
->>>>>>> dev
               durationSeconds: totalTime,
               avgSpeedMPS:
                 totalTime > 0 ? (totalDistance * 1000) / totalTime : 0
@@ -158,37 +154,6 @@ export const useRunningSession = () => {
     ]
   );
 
-<<<<<<< HEAD
-  const startWithRetry = () => {
-    const runningId = localStorage.getItem('runningId');
-    startRunningMutate(undefined, {
-      onError: initialError => {
-        console.error('러닝 시작 실패, 재시도 중...', initialError);
-        const data = {
-          postData: {
-            summary: {
-              totalDistanceMeter: 0,
-              durationSeconds: 0,
-              avgSpeedMPS: 0
-            },
-            track: {
-              format: 'JSON',
-              points: JSON.stringify({
-                type: 'LineString',
-                coordinates: [[126.978, 37.5665]]
-              }),
-              pointCount: 1
-            }
-          }
-        };
-        endRunningMutate(data, {
-          onSuccess: () => {
-            console.log('이전 러닝 세션 종료 성공, 다시 시작 시도...');
-            startRunningMutate();
-          },
-          onError:() => {
-            deleteRunning(Number(runningId));
-=======
   const startWithRetry = async () => {
     startRunningMutate(undefined, {
       onError: initialError => {
@@ -213,7 +178,6 @@ export const useRunningSession = () => {
               console.log('이전 러닝 세션 종료 성공, 다시 시작 시도...');
               startRunningMutate();
             }
->>>>>>> dev
           }
         );
       }
