@@ -39,6 +39,17 @@ export const useRunningSession = () => {
     });
 
   const handleNewRunningData = useCallback((newPoint: RunningData) => {
+    // Validate latitude and longitude
+    if (
+      typeof newPoint.latitude !== 'number' ||
+      isNaN(newPoint.latitude) ||
+      typeof newPoint.longitude !== 'number' ||
+      isNaN(newPoint.longitude)
+    ) {
+      console.warn('Invalid newPoint received, skipping:', newPoint);
+      return; // Skip if coordinates are invalid
+    }
+
     setRunningData(prev => {
       const newPaths = [...prev];
       if (newPaths.length > 0) {
@@ -117,9 +128,14 @@ export const useRunningSession = () => {
           const pointCount = path.length;
           const postData = {
             summary: {
+<<<<<<< HEAD
               totalDistanceMeter: totalDistance,
+=======
+              totalDistanceMeter: totalDistance * 1000,
+>>>>>>> dev
               durationSeconds: totalTime,
-              avgSpeedMPS: totalDistance / totalTime
+              avgSpeedMPS:
+                totalTime > 0 ? (totalDistance * 1000) / totalTime : 0
             },
             track: {
               format: 'JSON',
@@ -142,6 +158,7 @@ export const useRunningSession = () => {
     ]
   );
 
+<<<<<<< HEAD
   const startWithRetry = () => {
     const runningId = localStorage.getItem('runningId');
     startRunningMutate(undefined, {
@@ -171,8 +188,34 @@ export const useRunningSession = () => {
           },
           onError:() => {
             deleteRunning(Number(runningId));
+=======
+  const startWithRetry = async () => {
+    startRunningMutate(undefined, {
+      onError: initialError => {
+        console.error('러닝 시작 실패, 재시도 중...', initialError);
+        const points = { type: 'LineString', coordinates: [] };
+        const postData = {
+          summary: {
+            totalDistanceMeter: 0,
+            durationSeconds: 0,
+            avgSpeedMPS: 0
+          },
+          track: {
+            format: 'JSON',
+            points: JSON.stringify(points),
+            pointCount: 0
           }
-        });
+        };
+        endRunningMutate(
+          { postData },
+          {
+            onSuccess: () => {
+              console.log('이전 러닝 세션 종료 성공, 다시 시작 시도...');
+              startRunningMutate();
+            }
+>>>>>>> dev
+          }
+        );
       }
     });
   };

@@ -1,3 +1,4 @@
+import GpsInfoChip from '@/components/chips/GpsInfoChip';
 import { useWebView } from '@/hooks/useWebView';
 import { RunningData } from '@/types/runnintTypes';
 import { MODULE } from '@/utils/apis/api';
@@ -24,7 +25,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
-import GpsInfoChip from '@/components/chips/GpsInfoChip';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -129,6 +129,7 @@ const stopBackgroundLocation = async () => {
 const initialUrl = ENV.WEB_VIEW_URL + '/prepare-run';
 function Index() {
   const insets = useSafeAreaInsets();
+  const [webViewKey, setWebViewKey] = useState<number>(0);
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -216,6 +217,7 @@ function Index() {
       case MODULE.PUSH:
         const { type, data } = JSON.parse(event.nativeEvent.data);
         if (type === MODULE.PUSH) {
+          setWebViewKey(prev => prev + 1);
           router.push(JSON.parse(data).url);
         }
         break;
@@ -314,6 +316,7 @@ function Index() {
       )}
       <WebView
         ref={webviewRef}
+        key={webViewKey}
         className="flex-1 bg-gray"
         onMessage={receiveMessage}
         onLoadEnd={onLoadEnd}

@@ -47,7 +47,7 @@ export default function Page() {
           <div className="mt-8 grid grid-cols-2 gap-y-10">
             <ExerciseOverview
               remainingDistance={remainingDistance}
-              velocity={currentSpeed?.toFixed(1) || '0'}
+              velocity={(currentSpeed || 0).toFixed(1)}
               averagePace={averagePace}
               time={formattedTime}
             />

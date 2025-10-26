@@ -46,5 +46,5 @@ export type {
   EndRunningPostData,
   RunRecord,
   StartRunningSuccessData,
-  RunningErrorData,
+  RunningErrorData
 };
