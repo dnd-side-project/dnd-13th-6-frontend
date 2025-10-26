@@ -41,6 +41,8 @@ function ControlPanel({
     setStopModalOpen(false);
   };
 
+
+
   if (type === 'map') {
     return (
       <>
