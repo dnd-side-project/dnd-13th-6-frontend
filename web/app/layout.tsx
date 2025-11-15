@@ -4,6 +4,7 @@ import { GlobalConfirmModal } from '@/components/common/GlobalConfirmModal';
 import QueryProvider from '@/components/common/QueryProvider';
 import { lufga, pretendard } from '@/fonts/fonts';
 import React from 'react';
+import { headers } from 'next/headers';
 
 export const metadata = {
   title: 'Runky',
@@ -21,12 +22,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerList = headers();
+  const webviewSecret = headerList.get('X-App-Auth');
   return (
     <html
       lang="ko"
       className={`${lufga.variable} ${pretendard.variable} h-full antialiased`}
     >
-      <body className="bg-background h-full overflow-hidden text-white">
+      <body
+        className="bg-background h-full overflow-hidden text-white"
+        data-webview-secret={webviewSecret}
+      >
         <QueryProvider>
           <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
           <GlobalConfirmModal />
