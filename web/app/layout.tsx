@@ -23,7 +23,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const headerList = headers();
-  const webviewSecret = headerList.get('X-App-Auth');
   return (
     <html
       lang="ko"
@@ -31,7 +30,6 @@ export default function RootLayout({
     >
       <body
         className="bg-background h-full overflow-hidden text-white"
-        data-webview-secret={webviewSecret}
       >
         <QueryProvider>
           <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
