@@ -48,6 +48,6 @@ export const config = {
      * - _next (Next.js internal files, includes static, image, data, etc.)
      * - (paths with a dot) (static assets like .png, .ico, .svg, etc.)
      */
-    '/((?!api|_next|main|login|.*\\..*).*)'
+    '/((?!api|_next|main|.*\\..*).*)'
   ]
 };
