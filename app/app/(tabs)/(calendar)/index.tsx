@@ -1,16 +1,14 @@
+import AuthenticatedWebView from '@/components/AuthenticatedWebView';
 import { ENV } from '@/utils/app/consts';
 import { useRef } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import WebView from 'react-native-webview';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import { StyleSheet } from 'react-native';
+import { WebView } from 'react-native-webview';
+import { SafeAreaView } from 'react-native-safe-area-context';
 function Index() {
-  const inset = useSafeAreaInsets();
   const webviewRef = useRef<WebView>(null);
   return (
     <SafeAreaView style={styles.container}>
-      <WebView
+      <AuthenticatedWebView
         ref={webviewRef}
         style={styles.webview}
         source={{ uri: ENV.WEB_VIEW_URL + '/calendar' }}

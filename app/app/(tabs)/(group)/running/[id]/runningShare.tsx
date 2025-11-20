@@ -1,3 +1,4 @@
+import AuthenticatedWebView from '@/components/AuthenticatedWebView';
 import { useCustomAlert } from '@/hooks/useCustomAlert';
 import { useWebView } from '@/hooks/useWebView';
 import { MemberData } from '@/types/crew';
@@ -7,12 +8,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   Dimensions,
   ScrollView,
   View,
 } from 'react-native';
-import WebView, { WebViewMessageEvent } from 'react-native-webview';
+import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { CrewContext } from './_layout';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -86,7 +86,7 @@ function RunningShare() {
           overflow: 'hidden',
         }}
       >
-        <WebView
+        <AuthenticatedWebView
           ref={webviewRef}
           source={{ uri: initialUrl }}
           style={{
