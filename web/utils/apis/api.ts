@@ -76,7 +76,8 @@ export const RUNNING_API = {
       window.location.origin.includes('localhost');
     const path = isLocal ? 'running' : 'runnings';
     return `/${API_SUFFIX}/${path}/${runningId}/active`;
-  }
+  },
+  DELETE_RUNNING: (runningId: number) => `/${API_SUFFIX}/${MODULE.RUNNINGS}/${runningId}/active`,
 };
 export const GOAL_API = {
   GET_TARGET_DISTANCE: () => `/${API_SUFFIX}/${MODULE.GOALS}/me`,

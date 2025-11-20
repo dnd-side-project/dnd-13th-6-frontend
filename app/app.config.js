@@ -71,8 +71,9 @@ export default {
       "edgeToEdgeEnabled": true,
     },
     "extra": {
+      "EXPO_PUBLIC_APP_WEBVIEW_SECRET": "wlstngkswjqtl",
       "eas": {
-        "projectId": "fa2044ae-6823-4e2c-8376-e7aa23b5f8d5"
+        "projectId": "fa2044ae-6823-4e2c-8376-e7aa23b5f8d5",
       }
     },
     "web": {

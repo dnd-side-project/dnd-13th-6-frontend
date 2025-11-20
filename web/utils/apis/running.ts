@@ -47,3 +47,8 @@ export const getRunningUsers = async () => {
   const res = await api.get(CREW_API.MEMBER_RUNNING());
   return res.data.result.runningMembers;
 };
+
+export const deleteRunning = async (runningId: number) => {
+  const res = await api.delete(RUNNING_API.DELETE_RUNNING(runningId));
+  return res.data;
+}

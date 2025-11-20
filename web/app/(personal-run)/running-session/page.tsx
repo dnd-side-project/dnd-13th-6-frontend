@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import ExerciseOverview from '@/components/running/OverView/ExerciseOverview';
 import ControlPanel from '@/components/running/Control/ControlPanel';
 import PageControl from '@/components/common/PageControl';
@@ -25,7 +25,9 @@ export default function Page() {
     handleTouchMove,
     handleTouchEnd
   } = useRunningSession();
-
+  useEffect(() => {
+    handleControl('play') 
+  },[])
   return (
     <div
       className="bg-background relative h-screen w-full overflow-hidden text-white"
@@ -33,13 +35,14 @@ export default function Page() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      {runningData?.length}
       <div
         className="flex h-full w-[200%] transition-transform duration-300 ease-in-out"
         style={{ transform: `translateX(-${currentPage * 50}%)` }}
       >
         <div className="flex h-full w-1/2 flex-col px-4 pb-4">
           <div className="flex flex-3/12 flex-col items-center justify-center text-center">
-            <MainOverview distance={totalDistance} />
+            {totalDistance && <MainOverview distance={totalDistance} /> }
           </div>
           <div className="mt-8 grid grid-cols-2 gap-y-10">
             <ExerciseOverview
@@ -59,13 +62,13 @@ export default function Page() {
         </div>
 
         <div className="relative h-full w-1/2">
-          <MapView
+          {/* <MapView
             onControl={handleControl}
             isRunning={isRunning}
             isPaused={isPaused}
             runningData={runningData}
             time={formattedTime}
-          />
+          /> */}
         </div>
       </div>
 

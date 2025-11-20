@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import ControlPanel from '@/components/running/Control/ControlPanel';
 import GoogleMap from '@/components/googleMap/GoogleMap';
 import { RunningData } from '@/types/runningTypes';
@@ -18,17 +18,21 @@ function MapView({
   runningData,
   time
 }: MapViewProps) {
-  const paths = runningData.map(segment =>
-    segment.map(data => ({
-      lat: data.latitude,
-      lng: data.longitude
-    }))
-  );
-
+  const paths = useMemo(() => {
+    if(runningData.length) {
+      runningData.map(segment =>
+        segment.map(data => ({
+          lat: data.latitude,
+          lng: data.longitude
+        }))
+      );
+    }
+    return []
+  },[runningData])
   return (
     <>
       {/* <GpsStatus /> */}
-      <GoogleMap paths={paths} type="map" />
+      {paths.length && <GoogleMap paths={paths} type="map" /> }
       <div className="absolute bottom-30 z-10 flex w-[calc(100%-2rem)] items-center justify-center">
         <ControlPanel
           type="map"

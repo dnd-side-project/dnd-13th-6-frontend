@@ -24,6 +24,7 @@ export const useStompConnection = ({
 
     const handleMessage = (event: MessageEvent) => {
       try {
+        console.log(event)
         const data = JSON.parse(event.data);
         if (data && data.message) {
           const newRunningData: RunningData = {

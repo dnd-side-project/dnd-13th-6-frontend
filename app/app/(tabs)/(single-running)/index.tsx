@@ -1,3 +1,4 @@
+import AuthenticatedWebView from '@/components/AuthenticatedWebView';
 import GpsInfoChip from '@/components/chips/GpsInfoChip';
 import { useWebView } from '@/hooks/useWebView';
 import { RunningData } from '@/types/runnintTypes';
@@ -24,7 +25,8 @@ import {
   StyleSheet
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import WebView, { WebViewMessageEvent } from 'react-native-webview';
+import { WebView, WebViewMessageEvent } from 'react-native-webview';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -192,6 +194,7 @@ function Index() {
 
   const receiveMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
+    console.log(data)
     switch (data.type) {
       case SEND_MESSAGE_TYPE.RUNNING_START:
         setIsRunning(true);
@@ -313,7 +316,7 @@ function Index() {
           style={[{ height: windowHeight }]}
         />
       )}
-      <WebView
+      <AuthenticatedWebView
         ref={webviewRef}
         key={webViewKey}
         className="flex-1 bg-gray"

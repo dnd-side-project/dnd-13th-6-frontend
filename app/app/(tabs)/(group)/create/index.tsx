@@ -1,10 +1,11 @@
+import AuthenticatedWebView from '@/components/AuthenticatedWebView';
 import { MODULE } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
-import WebView, { WebViewMessageEvent } from 'react-native-webview';
+import { WebViewMessageEvent, WebView } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 export default function Code() {
@@ -25,12 +26,14 @@ export default function Code() {
 
   return (
     <SafeAreaView className="flex-1 justify-between items-center">
-      <WebView
+      <AuthenticatedWebView
         className="flex-1 bg-gray"
         style={styles.webview}
         ref={webviewRef}
         keyboardDisplayRequiresUserAction={false}
-        source={{ uri: initialUrl }}
+        source={{
+          uri: initialUrl
+        }}
         onLoadEnd={() => setIsLoading(false)}
         onLoadStart={() => setIsLoading(true)}
         scrollEnabled={true}

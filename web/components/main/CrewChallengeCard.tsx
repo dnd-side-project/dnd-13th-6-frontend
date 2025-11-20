@@ -53,10 +53,10 @@ const CrewChallengeCard: React.FC<CrewChallengeCardProps> = ({
           {/* 아바타들 */}
           <div className="mt-1 flex flex-row">
             {members &&
-              members.map(member => (
+              members.map((member, index) => (
                 <Image
                   //next 고유키
-                  key={`${id}-${member}`}
+                  key={`${id}-${member}-${index}`}
                   src={`${member}`}
                   alt={member}
                   width={24}
