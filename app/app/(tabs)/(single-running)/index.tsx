@@ -194,6 +194,7 @@ function Index() {
 
   const receiveMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
+    console.log(data)
     switch (data.type) {
       case SEND_MESSAGE_TYPE.RUNNING_START:
         setIsRunning(true);
