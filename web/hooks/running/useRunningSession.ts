@@ -155,6 +155,11 @@ export const useRunningSession = () => {
   );
 
   const startWithRetry = async () => {
+    const runningId = localStorage.getItem('runningId');
+    if(runningId !== undefined) {
+      await deleteRunning(Number(runningId));
+      localStorage.removeItem('runningId');
+    }
     startRunningMutate(undefined, {
       onError: initialError => {
         console.error('러닝 시작 실패, 재시도 중...', initialError);
@@ -176,6 +181,9 @@ export const useRunningSession = () => {
           {
             onSuccess: () => {
               console.log('이전 러닝 세션 종료 성공, 다시 시작 시도...');
+              startRunningMutate();
+            },
+            onError: async () => {
               startRunningMutate();
             }
           }
