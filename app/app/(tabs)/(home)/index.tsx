@@ -1,3 +1,4 @@
+import AuthenticatedWebView from '@/components/AuthenticatedWebView';
 import { MODULE } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -47,7 +48,7 @@ function Index() {
       style={styles.container}
       className="flex-1 align-center justify-between py-4"
     >
-      <WebView
+      <AuthenticatedWebView
         className="flex-1 h-full bg-gray border"
         ref={webViewRef}
         key={webViewKey}
