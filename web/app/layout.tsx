@@ -4,6 +4,7 @@ import { GlobalConfirmModal } from '@/components/common/GlobalConfirmModal';
 import QueryProvider from '@/components/common/QueryProvider';
 import { lufga, pretendard } from '@/fonts/fonts';
 import React from 'react';
+import { headers } from 'next/headers';
 
 export const metadata = {
   title: 'Runky',
@@ -21,12 +22,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerList = headers();
   return (
     <html
       lang="ko"
       className={`${lufga.variable} ${pretendard.variable} h-full antialiased`}
     >
-      <body className="bg-background h-full overflow-hidden text-white">
+      <body
+        className="bg-background h-full overflow-hidden text-white"
+      >
         <QueryProvider>
           <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
           <GlobalConfirmModal />

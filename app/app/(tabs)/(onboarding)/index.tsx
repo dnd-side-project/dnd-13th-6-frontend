@@ -1,10 +1,11 @@
+import AuthenticatedWebView from '@/components/AuthenticatedWebView';
 import { MODULE } from '@/utils/apis/api';
 import { ENV } from '@/utils/app/consts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
-import WebView, { WebViewMessageEvent } from 'react-native-webview';
+import { WebView, WebViewMessageEvent } from 'react-native-webview';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -36,7 +37,7 @@ function RunningShare() {
       style={styles.container}
       className="flex-1 align-center justify-between py-4"
     >
-      <WebView
+      <AuthenticatedWebView
         className="flex-1 h-full bg-gray border"
         ref={webviewRef}
         style={styles.webview}
