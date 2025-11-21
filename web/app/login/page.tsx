@@ -30,7 +30,6 @@ export default function Login() {
       </Link> */}
       <Link
         href={
-          process.env.NEXT_PUBLIC_LOGIN_URL ||
           `https://appleid.apple.com/auth/authorize?client_id=api.runky.store&redirect_uri=https://api.runky.store/api/auth/login/oauth2/code/apple&response_type=code&response_mode=form_post&scope=name%20email`
         }
         className="flex items-center  h-[13vw] max-h-[60px] rounded-lg px-2 w-[calc(100vw-5vw)] max-w-[400px]  bg-white text-black font-semibold text-lg"
