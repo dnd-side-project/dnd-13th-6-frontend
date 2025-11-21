@@ -13,7 +13,7 @@ export default function Login() {
 
       {/* 로그인 버튼 - 화면 정중앙 */}
       <div className="flex flex-col items-center justify-between  absolute top-1/2 left-1/2  -translate-x-1/2 -translate-y-1/2 gap-4">
-      {/* <Link
+      <Link
         href={
           process.env.NEXT_PUBLIC_LOGIN_URL ||
           `https://kauth.kakao.com/oauth/authorize?client_id=3255efd2af839833b26a422ca203c180&redirect_uri=https://api.runky.store/api/auth/login/oauth2/code/kakao&response_type=code`
@@ -27,13 +27,12 @@ export default function Login() {
           height={24}
         />
          <div className='text-center flex-grow mr-5'> 카카오 로그인</div>
-      </Link> */}
+      </Link>
       <Link
         href={
-          process.env.NEXT_PUBLIC_LOGIN_URL ||
           `https://appleid.apple.com/auth/authorize?client_id=api.runky.store&redirect_uri=https://api.runky.store/api/auth/login/oauth2/code/apple&response_type=code&response_mode=form_post&scope=name%20email`
         }
-        className="flex items-center  h-[13vw] max-h-[60px] rounded-lg px-2 w-[calc(100vw-5vw)] max-w-[400px]  bg-white text-black font-semibold text-lg"
+        className="flex items-center mt-10  h-[13vw] max-h-[60px] rounded-lg px-2 w-[calc(100vw-5vw)] max-w-[400px]  bg-white text-black font-semibold text-lg"
       >
         
         <Image
