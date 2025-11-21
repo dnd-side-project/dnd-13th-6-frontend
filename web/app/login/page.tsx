@@ -13,7 +13,7 @@ export default function Login() {
 
       {/* 로그인 버튼 - 화면 정중앙 */}
       <div className="flex flex-col items-center justify-between  absolute top-1/2 left-1/2  -translate-x-1/2 -translate-y-1/2 gap-4">
-      <Link
+      {/* <Link
         href={
           process.env.NEXT_PUBLIC_LOGIN_URL ||
           `https://kauth.kakao.com/oauth/authorize?client_id=3255efd2af839833b26a422ca203c180&redirect_uri=https://api.runky.store/api/auth/login/oauth2/code/kakao&response_type=code`
@@ -27,7 +27,7 @@ export default function Login() {
           height={24}
         />
          <div className='text-center flex-grow mr-5'> 카카오 로그인</div>
-      </Link>
+      </Link> */}
       <Link
         href={
           process.env.NEXT_PUBLIC_LOGIN_URL ||
