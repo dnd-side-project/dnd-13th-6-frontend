@@ -12,7 +12,7 @@ export default function Login() {
       </div>
 
       {/* 로그인 버튼 - 화면 정중앙 */}
-      <div className="flex flex-col items-center justify-between  absolute top-1/2 left-1/2  -translate-x-1/2 -translate-y-1/2 gap-10">
+      <div className="flex flex-col items-center justify-between  absolute top-1/2 left-1/2  -translate-x-1/2 -translate-y-1/2 gap-4">
       <Link
         href={
           process.env.NEXT_PUBLIC_LOGIN_URL ||
