@@ -32,7 +32,7 @@ function MapView({
   return (
     <>
       {/* <GpsStatus /> */}
-      {paths.length && <GoogleMap paths={paths} type="map" /> }
+      <GoogleMap paths={paths} type="map" /> 
       <div className="absolute bottom-30 z-10 flex w-[calc(100%-2rem)] items-center justify-center">
         <ControlPanel
           type="map"
