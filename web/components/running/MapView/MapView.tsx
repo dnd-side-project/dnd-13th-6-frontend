@@ -20,7 +20,7 @@ function MapView({
 }: MapViewProps) {
   const paths = useMemo(() => {
     if(runningData.length) {
-      runningData.map(segment =>
+      return runningData.map(segment =>
         segment.map(data => ({
           lat: data.latitude,
           lng: data.longitude
