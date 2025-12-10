@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet } from 'react-native';
-import { WebViewMessageEvent, WebView } from 'react-native-webview';
+import { WebView, WebViewMessageEvent } from 'react-native-webview';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 export default function Code() {
@@ -17,6 +17,7 @@ export default function Code() {
     const { type, data } = JSON.parse(event.nativeEvent.data);
     if (type === MODULE.AUTH) {
       if (data?.accessToken) {
+        AsyncStorage.removeItem('accessToken');
         AsyncStorage.setItem('accessToken', data.accessToken);
       }
     } else if (type === MODULE.PUSH) {
