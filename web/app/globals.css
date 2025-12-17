@@ -112,19 +112,41 @@
 html,
 body {
   margin: 0;
+  padding: 0;
   height: 100%;
   font-family: Pretendard, Lufga, Arial, Helvetica, sans-serif;
   touch-action: pan-x pan-y;
-  overflow: auto; /* 스크롤 가능 */
+  overflow: hidden; /* body 자체는 overflow 제한 */
   -ms-overflow-style: none; /* IE, Edge */
   scrollbar-width: none; /* Firefox */
   overscroll-behavior: none;
+  /* iOS WebView 바운스 방지 */
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Chrome, Safari, Opera */
+/* 실제 스크롤 컨테이너 */
+#__next {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+}
+
+/* Chrome, Safari, Opera - 모든 요소의 스크롤바 숨김 */
+*::-webkit-scrollbar {
+  display: none;
+}
+
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;
+}
+
+/* 모든 요소의 스크롤바 숨김 */
+* {
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .animate-roll {

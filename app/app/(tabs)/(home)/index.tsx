@@ -48,6 +48,7 @@ function Index() {
       style={styles.container}
       className="flex-1 align-center justify-between py-4"
     >
+
       <AuthenticatedWebView
         className="flex-1 h-full bg-gray border"
         ref={webViewRef}
@@ -57,7 +58,6 @@ function Index() {
         keyboardDisplayRequiresUserAction={false}
         source={{ uri: ENV.WEB_VIEW_URL + '/main' }}
         onMessage={handleMessage}
-        bounces={false}
         overScrollMode={'never'}
         mixedContentMode="always" // HTTP 리소스 허용
       />
