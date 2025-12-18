@@ -45,8 +45,8 @@ export default function Login() {
         <Image
           src="/assets/apple-logo.png"
           alt="애플 로그인"
-          width="36"
-          height="36"
+          width={36}
+          height={36}
           priority
           className="object-contain"
         />
