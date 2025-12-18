@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import WebView, { WebViewProps } from 'react-native-webview';
-
+import { Colors } from '../constants/Colors';
 // iOS 웹뷰 바운스를 완전히 막기 위한 JavaScript 코드
 const injectedJavaScript = `
   (function() {
@@ -54,7 +54,7 @@ const injectedJavaScript = `
 // 로딩 중 보여줄 컴포넌트
 const renderLoading = () => (
   <View style={styles.loadingContainer}>
-    <ActivityIndicator size="large" color="#32ff76" />
+    <ActivityIndicator size="large" color={Colors.web.primary} />
   </View>
 );
 
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#211e22'
+    backgroundColor: Colors.web.background
   }
 });
 
