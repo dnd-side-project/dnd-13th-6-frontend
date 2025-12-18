@@ -1,13 +1,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import Logo from '@/public/assets/LOGO.svg';
 export default function Login() {
   return (
     <div className="relative min-h-screen w-full">
       {/* 로고 영역 */}
       <div className="absolute top-[25%] left-1/2 -translate-x-1/2">
         <div className="flex w-[48vw] max-w-[157px] items-center justify-center text-center">
-          <Logo title="logo" className="h-auto w-full" />
+          <Image
+            src="/assets/LOGO.svg"
+            alt="Runky Logo"
+            width={157}
+            height={50}
+            priority
+            className="h-auto w-full"
+          />
         </div>
       </div>
 
@@ -25,6 +31,7 @@ export default function Login() {
           alt="카카오 로그인"
           width={24}
           height={24}
+          priority
         />
          <div className='text-center flex-grow mr-5'> 카카오 로그인</div>
       </Link>
@@ -38,8 +45,9 @@ export default function Login() {
         <Image
           src="/assets/apple-logo.png"
           alt="애플 로그인"
-          width="36"
-          height="36"
+          width={36}
+          height={36}
+          priority
           className="object-contain"
         />
         <div className='text-center flex-grow mr-5'> 애플 로그인</div>

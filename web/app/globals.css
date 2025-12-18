@@ -114,6 +114,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  background-color: var(--color-background); /* 깜박임 방지를 위한 배경색 */
   font-family: Pretendard, Lufga, Arial, Helvetica, sans-serif;
   touch-action: pan-x pan-y;
   overflow: hidden; /* body 자체는 overflow 제한 */
