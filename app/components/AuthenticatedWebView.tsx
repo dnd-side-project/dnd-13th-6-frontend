@@ -51,6 +51,20 @@ const injectedJavaScript = `
   true;
 `;
 
+// 스타일 정의 (renderLoading 함수보다 먼저 정의되어야 함)
+const styles = StyleSheet.create({
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.web.background
+  }
+});
+
 // 로딩 중 보여줄 컴포넌트
 const renderLoading = () => (
   <View style={styles.loadingContainer}>
@@ -96,18 +110,5 @@ const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
 );
 
 AuthenticatedWebView.displayName = 'AuthenticatedWebView';
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.web.background
-  }
-});
 
 export default AuthenticatedWebView;
