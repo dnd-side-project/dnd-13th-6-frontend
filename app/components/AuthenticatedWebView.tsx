@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import WebView, { WebViewProps } from 'react-native-webview';
 
 // iOS 웹뷰 바운스를 완전히 막기 위한 JavaScript 코드
@@ -57,6 +58,13 @@ const injectedJavaScript = `
   true;
 `;
 
+// 로딩 중 보여줄 컴포넌트
+const renderLoading = () => (
+  <View style={styles.loadingContainer}>
+    <ActivityIndicator size="large" color="#32ff76" />
+  </View>
+);
+
 const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
   ({ source, injectedJavaScript: customInjectedJS, ...props }, ref) => {
     const headers = {
@@ -87,11 +95,26 @@ const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
         bounces={false}
         scrollEnabled={props.scrollEnabled !== false}
         injectedJavaScript={combinedJS}
+        startInLoadingState={true}
+        renderLoading={renderLoading}
       />
     );
   }
 );
 
 AuthenticatedWebView.displayName = 'AuthenticatedWebView';
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#211e22'
+  }
+});
 
 export default AuthenticatedWebView;
