@@ -27,7 +27,6 @@ export default function RootLayout({
     <html
       lang="ko"
       className={`${lufga.variable} ${pretendard.variable} h-full antialiased bg-background`}
-      style={{ backgroundColor: 'var(--color-background)' }}
     >
       <body className="bg-background h-full overflow-hidden text-white">
         <QueryProvider>
