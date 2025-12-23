@@ -8,10 +8,8 @@ import BackgroundLight from '@/public/assets/common/backgroundLight.svg';
 import { useParams } from 'next/navigation';
 import { Crew, MemberData } from '@/types/crew';
 import api from '@/utils/apis/customAxios';
+import { useAuthToken } from '@/hooks/user/useAuthToken';
 function JoinSuccess({crewInfo}: {crewInfo: Crew}) {
- 
-
-
   const onMove = () => {
     if(!crewInfo) return;
     postMessageToApp(
@@ -64,7 +62,7 @@ export default function Page() {
     setJoinSuccess(true);
     setIsSave(true);
   };
-
+  useAuthToken();
 
   useEffect(() => {
     const init = async() => {
