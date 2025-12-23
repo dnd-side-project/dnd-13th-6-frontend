@@ -19,6 +19,7 @@ export default function Code() {
     const { type, data } = JSON.parse(event.nativeEvent.data);
     if (type === MODULE.AUTH) {
       if (data?.accessToken) {
+        AsyncStorage.removeItem('accessToken');
         AsyncStorage.setItem('accessToken', data.accessToken);
       }
     } else if (type === MODULE.PUSH) {
@@ -32,7 +33,7 @@ export default function Code() {
         className="flex-1 bg-gray"
         style={styles.webview}
         ref={webviewRef}
-        keyboardDisplayRequiresUserAction={false}
+      keyboardDisplayRequiresUserAction={false}
         source={{ uri: initialUrl }}
         onLoadEnd={() => setIsLoading(false)}
         onLoadStart={() => setIsLoading(true)}

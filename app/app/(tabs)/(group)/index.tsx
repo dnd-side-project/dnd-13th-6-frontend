@@ -16,6 +16,7 @@ function RunningShare() {
     const { type, data } = JSON.parse(event.nativeEvent.data);
     if (type === MODULE.AUTH) {
       if (data?.accessToken) {
+        AsyncStorage.removeItem('accessToken');
         AsyncStorage.setItem('accessToken', data.accessToken);
       }
     } else if (type === MODULE.PUSH) {
