@@ -33,7 +33,7 @@ export default function Code() {
         className="flex-1 bg-gray"
         style={styles.webview}
         ref={webviewRef}
-        keyboardDisplayRequiresUserAction={false}
+      keyboardDisplayRequiresUserAction={false}
         source={{ uri: initialUrl }}
         onLoadEnd={() => setIsLoading(false)}
         onLoadStart={() => setIsLoading(true)}
