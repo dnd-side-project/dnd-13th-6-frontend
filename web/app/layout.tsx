@@ -5,9 +5,9 @@ import QueryProvider from '@/components/common/QueryProvider';
 import { lufga, pretendard } from '@/fonts/fonts';
 import React from 'react';
 import { headers } from 'next/headers';
-
 export const metadata = {
   title: 'Runky',
+  themeColor: 'var(--color-background)',
   viewport: {
     width: 'device-width',
     initialScale: 1,
@@ -26,11 +26,9 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${lufga.variable} ${pretendard.variable} h-full antialiased`}
+      className={`${lufga.variable} ${pretendard.variable} h-full antialiased bg-background`}
     >
-      <body
-        className="bg-background h-full overflow-hidden text-white"
-      >
+      <body className="bg-background h-full overflow-hidden text-white">
         <QueryProvider>
           <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
           <GlobalConfirmModal />

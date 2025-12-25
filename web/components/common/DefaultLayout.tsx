@@ -73,6 +73,7 @@ export default function DefaultLayout({
       )}
 
       <main
+        style={{ overscrollBehavior: 'none', WebkitOverflowScrolling: 'touch' }}
         className={
           showHeader
             ? 'flex flex-1 flex-col overflow-y-auto px-4 pt-4 pb-4'
