@@ -27,7 +27,7 @@ const useFetch = <T>(url: string, options?: RequestInit) => {
       }
       return result.result;
     } catch (error: unknown) {
-      if(error.code === 401 || error.code === 403) {
+      if( error.code === 401 || error.code === 403) {
         AsyncStorage.removeItem('accessToken');
         AsyncStorage.removeItem('refreshToken');
         useRouter().push('/(tabs)/(onboarding)');
