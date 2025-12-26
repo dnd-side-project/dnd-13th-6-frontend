@@ -57,7 +57,7 @@ function AnimatedSplashScreen({
 
   async function onFetchUpdateAsync() {
     if (__DEV__) {
-      console.log('개발 모드에서는 OTA 업데이트 체크를 스킵합니다.');
+      // console.log('개발 모드에서는 OTA 업데이트 체크를 스킵합니다.');
       return;
     }
 

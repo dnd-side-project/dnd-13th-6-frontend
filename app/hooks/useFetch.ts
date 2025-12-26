@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ENV } from '@/utils/app/consts';
 import { APIResponse } from '@/types/genericTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useRouter } from 'expo-router';
 const useFetch = <T>(url: string, options?: RequestInit) => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>();
@@ -27,7 +27,11 @@ const useFetch = <T>(url: string, options?: RequestInit) => {
       }
       return result.result;
     } catch (error: unknown) {
-      console.log(error);
+      if(error.code === 401 || error.code === 403) {
+        AsyncStorage.removeItem('accessToken');
+        AsyncStorage.removeItem('refreshToken');
+        useRouter().push('/(tabs)/(onboarding)');
+      }
       setError(error as Error);
     }
   };

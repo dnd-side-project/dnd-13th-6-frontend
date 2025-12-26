@@ -97,14 +97,10 @@ true;
 // 스타일 정의 (renderLoading 함수보다 먼저 정의되어야 함)
 const styles = StyleSheet.create({
   loadingContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.web.background
+    backgroundColor: 'transparent' // 로딩 오버레이가 탭바까지 가리는 걸 방지
   }
 });
 
@@ -138,10 +134,11 @@ const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
       : injectedJavaScript;
 
     return (
-      <WebView 
-        ref={ref} 
-        source={newSource}  
-        {...props} 
+      <WebView
+        ref={ref}
+        source={newSource}
+        {...props}
+        style={[{ flex: 1 }, (props as any).style]} // 기본으로 flex:1 적용
         bounces={false}
         scrollEnabled={props.scrollEnabled !== false}
         injectedJavaScript={Platform.OS !== 'web' ? combinedJS : undefined}

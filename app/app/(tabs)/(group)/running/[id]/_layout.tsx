@@ -144,10 +144,11 @@ export default function Layout() {
 
   useEffect(() => {
     const init = async () => {
-      await Promise.all([crewInfoFetchData(), crewMembersFetchData().then((res) => console.log(res))])
+      await Promise.all([crewInfoFetchData(), crewMembersFetchData()]);
     }
     const checkReboot = async () => {
-      const lastActiveTime = await AsyncStorage.getItem('lastActiveTime');
+      try {
+        const lastActiveTime = await AsyncStorage.getItem('lastActiveTime');
       const currentTime = Date.now()  
 
       if (lastActiveTime) {
@@ -158,6 +159,9 @@ export default function Layout() {
         };
 
       } else init();
+      } catch (error) {
+        console.error('Error checking reboot:', error);
+      }
     }
     checkReboot();
   
