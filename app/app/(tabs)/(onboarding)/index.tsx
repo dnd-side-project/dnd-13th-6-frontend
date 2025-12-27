@@ -28,7 +28,7 @@ function RunningShare() {
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;
       if (url === '/(tabs)/(home)') {
-        // setWebViewKey(prev => prev + 1);
+        setWebViewKey(prev => prev + 1);
         router.push(url);
       }
     }
@@ -39,6 +39,7 @@ function RunningShare() {
       className="flex-1 align-center justify-between py-4"
     >
       <AuthenticatedWebView
+        key={webViewKey}
         className="flex-1 h-full bg-gray border"
         ref={webviewRef}
         style={styles.webview}
