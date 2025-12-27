@@ -107,7 +107,7 @@ const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
 
     // 토큰을 localStorage에 주입하는 스크립트
     const tokenInjectionScript = accessToken
-      ? `localStorage.setItem('accessToken', '${accessToken}');`
+      ? `localStorage.setItem('accessToken', ${JSON.stringify(accessToken)});`
       : '';
 
     // props로 전달된 injectedJavaScriptBeforeContentLoaded와 병합
