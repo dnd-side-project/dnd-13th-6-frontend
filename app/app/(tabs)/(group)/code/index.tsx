@@ -16,11 +16,13 @@ export default function Code() {
   const initialUrl = `${ENV.WEB_VIEW_URL}/group/code`;
 
   const receiveMessage = (event: WebViewMessageEvent) => {
-    const { type, data } = JSON.parse(event.nativeEvent.data);
+    const message = JSON.parse(event.nativeEvent.data);
+    const { type, accessToken, data } = message;
+    
     if (type === MODULE.AUTH) {
-      if (data?.accessToken) {
+      if (accessToken) {
         AsyncStorage.removeItem('accessToken');
-        AsyncStorage.setItem('accessToken', data.accessToken);
+        AsyncStorage.setItem('accessToken', accessToken);
       }
     } else if (type === MODULE.PUSH) {
       router.push(JSON.parse(data).url);

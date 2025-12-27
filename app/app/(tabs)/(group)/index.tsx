@@ -13,11 +13,13 @@ function RunningShare() {
   const webviewRef = useRef<WebView>(null);
   const [webViewKey, setWebViewKey] = useState(0);
   const receiveMessage = (event: WebViewMessageEvent) => {
-    const { type, data } = JSON.parse(event.nativeEvent.data);
+    const message = JSON.parse(event.nativeEvent.data);
+    const { type, accessToken, data } = message;
+    
     if (type === MODULE.AUTH) {
-      if (data?.accessToken) {
+      if (accessToken) {
         AsyncStorage.removeItem('accessToken');
-        AsyncStorage.setItem('accessToken', data.accessToken);
+        AsyncStorage.setItem('accessToken', accessToken);
       }
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;

@@ -1,5 +1,6 @@
 import api from '@/utils/apis/customAxios';
-import { AUTH_API, MEMBER_API } from '@/utils/apis/api';
+import { AUTH_API, MEMBER_API, MODULE } from '@/utils/apis/api';
+import { postMessageToApp } from '@/utils/apis/postMessageToApp';
 import axios from 'axios';
 
 export async function exchangeToken(code: string) {
@@ -62,6 +63,9 @@ export const tokenRefresh = async () => {
   if (refreshToken) {
     localStorage.setItem('refreshToken', refreshToken);
   }
+
+  // RN으로 새 토큰 전송
+  postMessageToApp(MODULE.AUTH);
 };
 
 export const logout = async () => {

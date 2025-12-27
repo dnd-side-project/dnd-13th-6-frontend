@@ -13,22 +13,24 @@ function RunningShare() {
   const webviewRef = useRef<WebView>(null);
   const [webViewKey, setWebViewKey] = useState(0);
   const receiveMessage = (event: WebViewMessageEvent) => {
-    const { type, data } = JSON.parse(event.nativeEvent.data);
+    const message = JSON.parse(event.nativeEvent.data);
+    const { type, accessToken, data } = message;
+    
     if (type === MODULE.AUTH) {
-      if (data?.accessToken) {
+      // postMessageToApp은 accessToken을 최상위 레벨에 넣음
+      if (accessToken) {
         AsyncStorage.removeItem('accessToken');
-        AsyncStorage.setItem('accessToken', data.accessToken);
+        AsyncStorage.setItem('accessToken', accessToken);
         try {
           router.push('/(tabs)/(home)');
         } catch (error) {
           console.error("Navigation error:", error);
-          // Optionally, display an error message to the user
         }
       }
     } else if (type === MODULE.PUSH) {
       const url = JSON.parse(data).url;
       if (url === '/(tabs)/(home)') {
-        // setWebViewKey(prev => prev + 1);
+        setWebViewKey(prev => prev + 1);
         router.push(url);
       }
     }
@@ -39,6 +41,7 @@ function RunningShare() {
       className="flex-1 align-center justify-between py-4"
     >
       <AuthenticatedWebView
+        key={webViewKey}
         className="flex-1 h-full bg-gray border"
         ref={webviewRef}
         style={styles.webview}

@@ -10,21 +10,27 @@ function Index() {
   const webViewRef = useRef<WebView>(null);
   const [webViewKey, setWebViewKey] = useState(0);
   const handleMessage = async (event: WebViewMessageEvent) => {
-    const data = JSON.parse(event.nativeEvent.data);
-    if (data.type === MODULE.AUTH) {
-      if (data?.accessToken) {
-      AsyncStorage.removeItem('accessToken');
-        AsyncStorage.setItem('accessToken', data.accessToken);
-        AsyncStorage.setItem(
-          'user',
-          JSON.stringify({
-            nickname: data.nickName,
-            userId: data.userId
-          })
-        );
-      } else router.replace('/(tabs)/(onboarding)');
-    } else if (data.type === MODULE.PUSH) {
-      const { type, url } = JSON.parse(data.data);
+    const message = JSON.parse(event.nativeEvent.data);
+    const { type, accessToken, nickName, userId, data } = message;
+    
+    if (type === MODULE.AUTH) {
+      if (accessToken) {
+        AsyncStorage.removeItem('accessToken');
+        AsyncStorage.setItem('accessToken', accessToken);
+        if (nickName && userId) {
+          AsyncStorage.setItem(
+            'user',
+            JSON.stringify({
+              nickname: nickName,
+              userId: userId
+            })
+          );
+        }
+      } else {
+        router.replace('/(tabs)/(onboarding)');
+      }
+    } else if (type === MODULE.PUSH) {
+      const { type, url } = JSON.parse(data);
       console.log(url, type);
       if (url === '/(onboarding)' || url === '/(tabs)/(onboarding)') {
         setWebViewKey(prev => prev + 1);
@@ -36,11 +42,13 @@ function Index() {
         router.push(url);
       }
     }
-    if (data.nickName) {
-      AsyncStorage.setItem('nickName', data.nickName);
+    
+    // 추가 사용자 정보 저장
+    if (nickName) {
+      AsyncStorage.setItem('nickName', nickName);
     }
-    if (data.userId) {
-      AsyncStorage.setItem('userId', data.userId);
+    if (userId) {
+      AsyncStorage.setItem('userId', userId);
     }
   };
 
