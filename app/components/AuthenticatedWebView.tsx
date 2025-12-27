@@ -1,13 +1,12 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import WebView, { WebViewProps } from 'react-native-webview';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Colors } from '../constants/Colors';
 
 
 const injectedJavaScript = `
 (function () {
-  // 이 스크립트는 DOM 구조나 스타일을 변경하지 않는다.
-  // 오직 사용자 제스처 이벤트만 제어한다.
 
   let lastTouchEnd = 0;
 
@@ -70,7 +69,22 @@ const renderLoading = () => (
 );
 
 const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
-  ({ source, injectedJavaScript: customInjectedJS, ...props }, ref) => {
+  ({ source, injectedJavaScript: customInjectedJS, injectedJavaScriptBeforeContentLoaded: customInjectedJSBefore, ...props }, ref) => {
+    const [accessToken, setAccessToken] = useState<string | null>(null);
+
+    // AsyncStorage에서 토큰 읽기
+    useEffect(() => {
+      const loadToken = async () => {
+        try {
+          const token = await AsyncStorage.getItem('accessToken');
+          setAccessToken(token);
+        } catch (e) {
+          console.error('Failed to load access token from AsyncStorage', e);
+        }
+      };
+      loadToken();
+    }, []);
+
     const headers = {
       'X-App-Auth': process.env.EXPO_PUBLIC_APP_WEBVIEW_SECRET || ''
     };
@@ -91,6 +105,16 @@ const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
       ? `${injectedJavaScript}\n${customInjectedJS}`
       : injectedJavaScript;
 
+    // 토큰을 localStorage에 주입하는 스크립트
+    const tokenInjectionScript = accessToken
+      ? `localStorage.setItem('accessToken', '${accessToken}');`
+      : '';
+
+    // props로 전달된 injectedJavaScriptBeforeContentLoaded와 병합
+    const combinedJSBefore = [tokenInjectionScript, customInjectedJSBefore]
+      .filter(Boolean)
+      .join('\n');
+
     return (
       <WebView
         ref={ref}
@@ -101,6 +125,7 @@ const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
         bounces={false}
         scrollEnabled={props.scrollEnabled !== false}
         injectedJavaScript={Platform.OS !== 'web' ? combinedJS : undefined}
+        injectedJavaScriptBeforeContentLoaded={Platform.OS !== 'web' ? combinedJSBefore : undefined}
         startInLoadingState={true}
         renderLoading={renderLoading}
       />
