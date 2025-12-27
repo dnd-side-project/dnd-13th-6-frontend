@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 const useFetch = <T>(url: string, options?: RequestInit) => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>();
-
+  const router = useRouter();
   const fetchData = async () => {
     try {
       const token = await AsyncStorage.getItem('accessToken');
@@ -30,7 +30,7 @@ const useFetch = <T>(url: string, options?: RequestInit) => {
       if( error.code === 401 || error.code === 403) {
         AsyncStorage.removeItem('accessToken');
         AsyncStorage.removeItem('refreshToken');
-        useRouter().push('/(tabs)/(onboarding)');
+        router.push('/(tabs)/(onboarding)');
       }
       setError(error as Error);
     }
