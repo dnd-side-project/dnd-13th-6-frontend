@@ -10,11 +10,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 function Index() {
   const webviewRef = useRef<WebView>(null);
 
-  const handleMessage = (event: WebViewMessageEvent) => {
-    const { type, accessToken } = JSON.parse(event.nativeEvent.data);
-    if (type === MODULE.AUTH && accessToken) {
-      AsyncStorage.removeItem('accessToken');
-      AsyncStorage.setItem('accessToken', accessToken);
+  const handleMessage = async (event: WebViewMessageEvent) => {
+    try {
+      const { type, accessToken } = JSON.parse(event.nativeEvent.data);
+      if (type === MODULE.AUTH && accessToken) {
+        await AsyncStorage.setItem('accessToken', accessToken);
+      }
+    } catch (error) {
+      console.error('WebView로부터 받은 메시지 처리 중 오류 발생:', error);
     }
   };
 
