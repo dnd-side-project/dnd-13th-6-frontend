@@ -3,7 +3,7 @@ import { router, Tabs, useSegments } from 'expo-router';
 import React, { createContext, useEffect, useState } from 'react';
 import { Image } from 'react-native';
 
-const hideTabBarScreens = ['(single-running)', '(group-running)', '(onboarding)'];
+const hideTabBarScreens = ['(single-running)', '(group-running)', ];
 
 // WebView 초기화를 위한 Context
 export const WebViewResetContext = createContext<{

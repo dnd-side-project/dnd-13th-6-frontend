@@ -15,8 +15,8 @@ function Index() {
     
     if (type === MODULE.AUTH) {
       if (accessToken) {
-        AsyncStorage.removeItem('accessToken');
-        AsyncStorage.setItem('accessToken', accessToken);
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.setItem('accessToken', accessToken);
         if (nickName && userId) {
           AsyncStorage.setItem(
             'user',
@@ -31,7 +31,6 @@ function Index() {
       }
     } else if (type === MODULE.PUSH) {
       const { type, url } = JSON.parse(data);
-      console.log(url, type);
       if (url === '/(onboarding)' || url === '/(tabs)/(onboarding)') {
         setWebViewKey(prev => prev + 1);
         router.replace('/(tabs)/(onboarding)');

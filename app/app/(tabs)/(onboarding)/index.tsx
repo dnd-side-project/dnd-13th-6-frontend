@@ -12,15 +12,15 @@ const windowHeight = Dimensions.get('window').height;
 function RunningShare() {
   const webviewRef = useRef<WebView>(null);
   const [webViewKey, setWebViewKey] = useState(0);
-  const receiveMessage = (event: WebViewMessageEvent) => {
+  const receiveMessage = async (event: WebViewMessageEvent) => {
     const message = JSON.parse(event.nativeEvent.data);
     const { type, accessToken, data } = message;
     
     if (type === MODULE.AUTH) {
       // postMessageToApp은 accessToken을 최상위 레벨에 넣음
       if (accessToken) {
-        AsyncStorage.removeItem('accessToken');
-        AsyncStorage.setItem('accessToken', accessToken);
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.setItem('accessToken', accessToken);
         try {
           router.push('/(tabs)/(home)');
         } catch (error) {
