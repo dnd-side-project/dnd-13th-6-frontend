@@ -69,7 +69,7 @@ const renderLoading = () => (
 );
 
 const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
-  ({ source, injectedJavaScript: customInjectedJS, injectedJavaScriptBeforeContentLoaded: customInjectedJSBefore, ...props }, ref) => {
+  ({ source, injectedJavaScript: customInjectedJS, injectedJavaScriptBeforeContentLoaded: customInjectedJSBefore, onMessage, ...props }, ref) => {
     const [accessToken, setAccessToken] = useState<string | null>(null);
 
     // AsyncStorage에서 토큰 읽기
@@ -84,6 +84,27 @@ const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
       };
       loadToken();
     }, []);
+
+    // WebView에서 메시지 수신 처리
+    const handleMessage = async (event: any) => {
+      try {
+        const data = JSON.parse(event.nativeEvent.data);
+        
+        if (data.type === 'CLEAR_TOKENS') {
+          // AsyncStorage에서 토큰들 삭제
+          await AsyncStorage.multiRemove(['accessToken', 'refreshToken']);
+          console.log('Tokens cleared from AsyncStorage:', data.action);
+          setAccessToken(null);
+        }
+      } catch (e) {
+        console.error('Failed to parse message from WebView', e);
+      }
+      
+      // 기존 onMessage 핸들러도 호출
+      if (onMessage) {
+        onMessage(event);
+      }
+    };
 
     const headers = {
       'X-App-Auth': process.env.EXPO_PUBLIC_APP_WEBVIEW_SECRET || ''
@@ -128,6 +149,7 @@ const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
         injectedJavaScriptBeforeContentLoaded={Platform.OS !== 'web' ? combinedJSBefore : undefined}
         startInLoadingState={true}
         renderLoading={renderLoading}
+        onMessage={handleMessage}
       />
     );
   }
