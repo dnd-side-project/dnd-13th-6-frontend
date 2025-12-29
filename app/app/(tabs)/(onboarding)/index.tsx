@@ -22,6 +22,7 @@ function RunningShare() {
         await AsyncStorage.removeItem('accessToken');
         await AsyncStorage.setItem('accessToken', accessToken);
         try {
+          setWebViewKey(prev => prev + 1);
           router.push('/(tabs)/(home)');
         } catch (error) {
           console.error("Navigation error:", error);
