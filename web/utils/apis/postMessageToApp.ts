@@ -1,4 +1,4 @@
-export const postMessageToApp = (type: string, data?: string) => {
+export const postMessageToApp = (type: string, data?: any) => {
   if (window.ReactNativeWebView) {
     // 쿠키에서 accessToken 가져오기
     const match = document.cookie.match(/(^|;\s*)accessToken=([^;]+)/);
@@ -13,7 +13,7 @@ export const postMessageToApp = (type: string, data?: string) => {
       refreshToken,
       nickName,
       userId,
-      data
+      data: typeof data === 'string' ? data : JSON.stringify(data)
     });
     window.ReactNativeWebView.postMessage(message);
   }
