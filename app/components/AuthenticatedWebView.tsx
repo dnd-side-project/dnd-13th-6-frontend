@@ -86,7 +86,7 @@ const AuthenticatedWebView = forwardRef<WebView, WebViewProps>(
     }, []);
 
     // WebView에서 메시지 수신 처리
-    const handleMessage = async (event: any) => {
+    const handleMessage = async (event: WebViewMessageEvent) => {
       try {
         const data = JSON.parse(event.nativeEvent.data);
         
