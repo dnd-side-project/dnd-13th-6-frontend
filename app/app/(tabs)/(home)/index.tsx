@@ -44,11 +44,10 @@ function Index() {
     
     // 추가 사용자 정보 저장
     if (nickName) {
-      AsyncStorage.setItem('nickName', nickName);
+     await AsyncStorage.setItem('nickName', nickName);
     }
     if (userId) {
-      AsyncStorage.setItem('userId', userId);
-    }
+      await AsyncStorage.setItem('userId', userId);
   };
 
   return (

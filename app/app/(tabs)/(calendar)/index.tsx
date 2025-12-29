@@ -14,6 +14,7 @@ function Index() {
     try {
       const { type, accessToken } = JSON.parse(event.nativeEvent.data);
       if (type === MODULE.AUTH && accessToken) {
+        await AsyncStorage.removeItem('accessToken');
         await AsyncStorage.setItem('accessToken', accessToken);
       }
     } catch (error) {
