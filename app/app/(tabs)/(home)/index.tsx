@@ -48,6 +48,7 @@ function Index() {
     }
     if (userId) {
       await AsyncStorage.setItem('userId', userId);
+    }
   };
 
   return (
