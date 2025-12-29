@@ -6,10 +6,11 @@ import { useRouter } from 'expo-router';
 const useFetch = <T>(url: string, options?: RequestInit) => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>();
-
+  const router = useRouter();
   const fetchData = async () => {
     try {
       const token = await AsyncStorage.getItem('accessToken');
+      console.log('begoreTOken', token)
       const res = await fetch(`${ENV.API_BASE_URL}/${url}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +31,7 @@ const useFetch = <T>(url: string, options?: RequestInit) => {
       if( error.code === 401 || error.code === 403) {
         AsyncStorage.removeItem('accessToken');
         AsyncStorage.removeItem('refreshToken');
-        useRouter().push('/(tabs)/(onboarding)');
+        router.push('/(tabs)/(onboarding)');
       }
       setError(error as Error);
     }

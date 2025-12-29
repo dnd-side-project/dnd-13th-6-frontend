@@ -15,12 +15,14 @@ export default function Code() {
   const [isLoading, setIsLoading] = useState(true);
   const initialUrl = `${ENV.WEB_VIEW_URL}/group/code`;
 
-  const receiveMessage = (event: WebViewMessageEvent) => {
-    const { type, data } = JSON.parse(event.nativeEvent.data);
+  const receiveMessage = async (event: WebViewMessageEvent) => {
+    const message = JSON.parse(event.nativeEvent.data);
+    const { type, accessToken, data } = message;
+    
     if (type === MODULE.AUTH) {
-      if (data?.accessToken) {
-        AsyncStorage.removeItem('accessToken');
-        AsyncStorage.setItem('accessToken', data.accessToken);
+      if (accessToken) {
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.setItem('accessToken', accessToken);
       }
     } else if (type === MODULE.PUSH) {
       router.push(JSON.parse(data).url);
