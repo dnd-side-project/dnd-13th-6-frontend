@@ -8,13 +8,13 @@ import { headers } from 'next/headers';
 export const metadata = {
   title: 'Runky',
   themeColor: 'var(--color-background)',
-  // viewport: {
-  //   width: 'device-width',
-  //   initialScale: 1,
-  //   minimumScale: 1,
-  //   maximumScale: 1,
-  //   userScalable: false
-  // }
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    minimumScale: 1,
+    maximumScale: 1,
+    userScalable: false
+  }
 };
 
 export default function RootLayout({
